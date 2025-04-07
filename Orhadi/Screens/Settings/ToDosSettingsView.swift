@@ -33,7 +33,7 @@ struct ToDosSettingsView: View {
                 Toggle(
                     "Agendar Notificações",
                     isOn: $settings.scheduleNotifications
-                ).tint(.green).disabled(notificationStatus)
+                ).tint(.green).disabled(!notificationStatus)
             } header: {
                 Text("Notificações")
             } footer: {
@@ -45,8 +45,11 @@ struct ToDosSettingsView: View {
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            Task {
-                notificationStatus = await NotificationsManager.shared.notificationStatus()
+            NotificationsManager.shared.notificationStatus { authorizedStatus in
+                notificationStatus = authorizedStatus
+                if !notificationStatus {
+                    settings.scheduleNotifications = false
+                }
             }
         }
     }

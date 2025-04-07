@@ -24,7 +24,7 @@ struct SharedStudyRoutineView: View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    subjects: subjects,
+                    subjects: subjects.filter { $0.isHidden != true },
                     dateExtractor: { $0.studyDay }
                 ) { subject in
                     AnyView(
@@ -135,6 +135,7 @@ struct SharedStudyRoutineListCell: View {
                     .bold()
                     .blur(radius: !isEditing || !settings.editButton ? 0 : 8)
                     .opacity(!isEditing || !settings.editButton ? 1 : 0)
+                    .scaleEffect(!isEditing || !settings.editButton ? 1 : 0.2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .offset(x: isEditing && settings.editButton ? 45 : 0)

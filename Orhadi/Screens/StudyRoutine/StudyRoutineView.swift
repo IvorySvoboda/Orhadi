@@ -104,7 +104,9 @@ struct StudyRoutineView: View {
                             return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
                         }
 
-                        navigateToStudyingView.toggle()
+                        if !subjectsToStudy.isEmpty {
+                            navigateToStudyingView.toggle()
+                        }
                     }) {
                         Image(systemName: "play.circle.fill")
                             .font(.title2)
@@ -175,6 +177,7 @@ struct StudyRoutineListCell: View {
                     .bold()
                     .blur(radius: !isEditing || !settings.editButton ? 0 : 8)
                     .opacity(!isEditing || !settings.editButton ? 1 : 0)
+                    .scaleEffect(!isEditing || !settings.editButton ? 1 : 0.2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .offset(x: isEditing && settings.editButton ? 45 : 0)
@@ -380,11 +383,12 @@ struct SRAddView: View {
     }
 
     private func addSRSubject() {
+        let currentWeekday = Calendar.current.component(.weekday, from: Date())
         let newSRSubject = SRSubject(
             name: name,
             studyDay: Calendar.current.date(
                 byAdding: .weekday,
-                value: studyDay,
+                value: studyDay - currentWeekday,
                 to: Date()
             )!,
             studyTime: studyTime
