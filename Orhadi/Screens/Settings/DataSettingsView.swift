@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DataSettingsView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
     @Query(animation: .smooth) private var subjects: [Subject]
@@ -94,6 +95,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Matérias")
             }
+            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
             /// To-Dos Import/Export
             Section {
@@ -158,6 +160,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Tarefas")
             }
+            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
             /// Study Routine Subjects Import/Export
             Section {
@@ -221,9 +224,15 @@ struct DataSettingsView: View {
             } header: {
                 Text("Rotina de Estudos")
             }
+            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
         }
+        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .scrollContentBackground(.hidden)
         .navigationTitle("Dados")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(
+            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            for: .navigationBar)
     }
 
     /// Exporter
