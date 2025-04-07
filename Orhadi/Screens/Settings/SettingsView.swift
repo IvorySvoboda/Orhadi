@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
 
     @State private var id: UUID = UUID()
@@ -38,7 +39,7 @@ struct SettingsView: View {
                             "Rotina de Estudos",
                             systemImage: "graduationcap.fill")
                     }
-                }
+                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
                 Section {
                     Picker("Tema", selection: $settings.theme) {
@@ -65,7 +66,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     Text("Aparência")
-                }
+                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
                 Section {
                     Toggle(isOn: $settings.swipeActions) {
@@ -95,7 +96,7 @@ struct SettingsView: View {
                     Text("Interação")
                 } footer: {
                     Text("Essas configurações alteram a forma de interagir com os itens da interface.")
-                }
+                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
                 Section {
                     NavigationLink("Dados") {
@@ -122,7 +123,7 @@ struct SettingsView: View {
 
                 } header: {
                     Text("Dados")
-                }
+                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
                 Section {
                     HStack {
@@ -142,7 +143,7 @@ struct SettingsView: View {
                             Text("Versão: \(version) (\(build))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                            Text("© Zyvoxi")
+                            Text("© Zyvoxi Industries")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }.padding(.vertical, 5)
@@ -153,8 +154,15 @@ struct SettingsView: View {
                             top: 10, leading: 10, bottom: 10, trailing: 10))
                 } header: {
                     Text("Sobre")
-                }
-            }.navigationTitle("Ajustes")
+                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            }
+            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Ajustes")
+            .toolbarBackground(
+                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                for: .navigationBar)
+
         }.id(id)
     }
 

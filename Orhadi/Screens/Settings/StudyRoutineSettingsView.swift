@@ -9,7 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct StudyRoutineSettingsView: View {
-    @Query(animation: .smooth)
+    @Environment(\.colorScheme) private var colorScheme
+    @Query(sort: [SortDescriptor(\Subject.name)], animation: .smooth)
     private var subjects: [Subject]
 
     @Bindable var settings: Settings
@@ -51,6 +52,7 @@ struct StudyRoutineSettingsView: View {
             } header: {
                 Text("Geral")
             }
+            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
 
             if settings.sharedSubjects {
                 Section {
@@ -87,9 +89,15 @@ struct StudyRoutineSettingsView: View {
                 } header: {
                     Text("Matérias Ocultas")
                 }
+                .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
             }
         }
+        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .scrollContentBackground(.hidden)
         .navigationTitle("Estudos")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(
+            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            for: .navigationBar)
     }
 }

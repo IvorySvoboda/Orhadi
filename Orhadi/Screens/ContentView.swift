@@ -43,6 +43,10 @@ struct ContentView: View {
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
+                    .toolbarBackground(
+                        OrhadiTheme.getBackgroundColor(
+                            for: colorScheme),
+                        for: .tabBar)
             }
         }
         .preferredColorScheme(OrhadiTheme.getTheme(for: settings.theme))
