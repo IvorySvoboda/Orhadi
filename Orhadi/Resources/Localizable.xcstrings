@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "" : {
+
+    },
     ":" : {
       "localizations" : {
         "en" : {
@@ -46,6 +49,9 @@
           }
         }
       }
+    },
+    "%lld de Abril de 2025" : {
+
     },
     "© Zyvoxi" : {
       "localizations" : {
@@ -961,6 +967,9 @@
         }
       }
     },
+    "Relatório Semanal" : {
+
+    },
     "Rosa" : {
       "localizations" : {
         "en" : {
@@ -1054,6 +1063,9 @@
         }
       }
     },
+    "Shape Color" : {
+
+    },
     "Sobre" : {
       "localizations" : {
         "en" : {
@@ -1125,6 +1137,12 @@
         }
       }
     },
+    "Total de Horas Estudadas na Semana" : {
+
+    },
+    "Total studied hours" : {
+
+    },
     "Verde" : {
       "localizations" : {
         "en" : {
@@ -1170,6 +1188,9 @@
           }
         }
       }
+    },
+    "Weekday" : {
+
     }
   },
   "version" : "1.0"
