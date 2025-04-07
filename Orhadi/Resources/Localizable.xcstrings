@@ -2,7 +2,14 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     ":" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : ":"
+          }
+        }
+      }
     },
     "%@" : {
       "localizations" : {
@@ -31,7 +38,14 @@
       }
     },
     "%lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "© Zyvoxi" : {
       "localizations" : {
@@ -384,7 +398,14 @@
       }
     },
     "Descanso" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Break"
+          }
+        }
+      }
     },
     "Deslize itens para a esquerda ou direita para executar ações rapidamente." : {
       "localizations" : {
@@ -478,7 +499,14 @@
       }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action is permanent and cannot be undone. Are you sure you want to delete this subject from the Studies?"
+          }
+        }
+      }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria?" : {
       "localizations" : {
@@ -521,7 +549,14 @@
       }
     },
     "Estudando" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studying"
+          }
+        }
+      }
     },
     "Estudos" : {
       "localizations" : {
@@ -534,7 +569,14 @@
       }
     },
     "Estudos completados! 🔥" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studies completed! 🔥"
+          }
+        }
+      }
     },
     "Excluir" : {
       "extractionState" : "manual",

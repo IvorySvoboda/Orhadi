@@ -23,12 +23,11 @@ class NotificationsManager {
             }
     }
 
-    func notificationStatus() async -> Bool {
-        await withCheckedContinuation { continuation in
-            center.getNotificationSettings { settings in
-                let authorized = settings.authorizationStatus == .authorized
-                continuation.resume(returning: authorized)
-            }
+    func notificationStatus(completion: @escaping (Bool) -> Void) {
+        let center = UNUserNotificationCenter.current()
+        center.getNotificationSettings { (settings) in
+            let authorized = settings.authorizationStatus == .authorized
+            completion(authorized)
         }
     }
 
@@ -44,11 +43,15 @@ class NotificationsManager {
         )
 
         center.removePendingNotificationRequests(
-            withIdentifiers: identifiers)
+            withIdentifiers: identifiers
+        )
     }
 
     func addNotification(
-        identifier: String, title: String, body: String, date: Date
+        identifier: String,
+        title: String,
+        body: String,
+        date: Date
     ) {
         guard date > Date() else { return }
 
@@ -58,13 +61,17 @@ class NotificationsManager {
         content.sound = .default
 
         let triggerDate = Calendar.current.dateComponents(
-            [.year, .month, .day, .hour, .minute], from: date
+            [.year, .month, .day, .hour, .minute],
+            from: date
         )
         let trigger = UNCalendarNotificationTrigger(
-            dateMatching: triggerDate, repeats: false
+            dateMatching: triggerDate,
+            repeats: false
         )
         let request = UNNotificationRequest(
-            identifier: identifier, content: content, trigger: trigger
+            identifier: identifier,
+            content: content,
+            trigger: trigger
         )
 
         center.add(request) { error in
