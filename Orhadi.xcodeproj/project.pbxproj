@@ -12,7 +12,7 @@
 
 /* Begin PBXFileReference section */
 		2804F4D82D92275700649FD0 /* Orhadi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Orhadi.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		28AA05E72DA8073300814D25 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		28AA05E72DA8073300814D25 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
