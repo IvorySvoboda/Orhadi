@@ -47,19 +47,8 @@
         }
       }
     },
-    "© Zyvoxi" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "© Zyvoxi"
-          }
-        }
-      }
-    },
     "© Zyvoxi Industries" : {
-
+      "shouldTranslate" : false
     },
     "5m" : {
       "localizations" : {
@@ -425,7 +414,14 @@
       }
     },
     "Dia da Semana" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekday"
+          }
+        }
+      }
     },
     "Dia de Estudo:" : {
       "localizations" : {
@@ -699,6 +695,16 @@
         }
       }
     },
+    "Horas Estudadas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studied Hours"
+          }
+        }
+      }
+    },
     "Importar Matérias" : {
       "localizations" : {
         "en" : {
@@ -810,10 +816,24 @@
       }
     },
     "Matérias Estudadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Studied Subjects"
+          }
+        }
+      }
     },
     "Matérias mais Estudada por Dia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Most Studied Subjects by Day"
+          }
+        }
+      }
     },
     "Matérias Ocultas" : {
       "localizations" : {
@@ -929,7 +949,7 @@
       }
     },
     "Orhadi © Zyvoxi Industries" : {
-
+      "shouldTranslate" : false
     },
     "Prazo:" : {
       "localizations" : {
@@ -984,7 +1004,14 @@
       }
     },
     "Relatório Semanal" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly Report"
+          }
+        }
+      }
     },
     "Rosa" : {
       "localizations" : {
@@ -1151,13 +1178,24 @@
       }
     },
     "Total de Horas Estudadas por Dia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Studied Hours by Day"
+          }
+        }
+      }
     },
     "Total de Matérias Estudadas por Dia" : {
-
-    },
-    "Total studied hours" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total Studied Subjects by Day"
+          }
+        }
+      }
     },
     "Verde" : {
       "localizations" : {
@@ -1204,9 +1242,6 @@
           }
         }
       }
-    },
-    "Weekday" : {
-
     }
   },
   "version" : "1.0"

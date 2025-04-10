@@ -180,11 +180,11 @@ struct StudiedHoursChart: View {
                     ForEach(data) { data in
                         BarMark(
                             x: .value(
-                                "Weekday",
+                                "Dia da Semana",
                                 "\(Calendar.weekdays[data.day]!.prefix(3))."
                             ),
                             y: .value(
-                                "Total studied hours",
+                                "Horas Estudadas",
                                 data.totalStudiedHour
                             )
                         )
@@ -232,11 +232,11 @@ struct MostStudiedSubjectsByDayChart: View {
                     ForEach(data) { data in
                         BarMark(
                             x: .value(
-                                "Weekday",
+                                "Dia da Semana",
                                 "\(Calendar.weekdays[data.day]!.prefix(3))."
                             ),
                             y: .value(
-                                "Total studied hours",
+                                "Horas Estudadas",
                                 data.totalStudiedHour
                             )
                         )

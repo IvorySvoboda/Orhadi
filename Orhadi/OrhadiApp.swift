@@ -55,13 +55,9 @@ struct RootView: View {
                     modelContext.insert(Settings())
                 }
                 if weeklyReports.first == nil {
-                    print("nil")
                     modelContext.insert(WeeklyReport.sampleData.first!)
                 }
                 NotificationsManager.shared.requestNotificationAuthorization()
-                for report in weeklyReports {
-                    print(report)
-                }
             }
             .environment(settings.first ?? Settings())
     }
