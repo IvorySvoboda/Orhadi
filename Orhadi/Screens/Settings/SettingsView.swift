@@ -39,7 +39,7 @@ struct SettingsView: View {
                             "Rotina de Estudos",
                             systemImage: "graduationcap.fill")
                     }
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Picker("Tema", selection: $settings.theme) {
@@ -66,7 +66,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     Text("Aparência")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Toggle(isOn: $settings.swipeActions) {
@@ -96,7 +96,7 @@ struct SettingsView: View {
                     Text("Interação")
                 } footer: {
                     Text("Essas configurações alteram a forma de interagir com os itens da interface.")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     NavigationLink("Dados") {
@@ -123,7 +123,7 @@ struct SettingsView: View {
 
                 } header: {
                     Text("Dados")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     HStack {
@@ -154,7 +154,7 @@ struct SettingsView: View {
                             top: 10, leading: 10, bottom: 10, trailing: 10))
                 } header: {
                     Text("Sobre")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
             .scrollContentBackground(.hidden)

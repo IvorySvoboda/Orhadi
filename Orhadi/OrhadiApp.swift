@@ -17,6 +17,7 @@ struct OrhadiApp: App {
             SRSubject.self,
             ToDo.self,
             Settings.self,
+            WeeklyReport.self,
         ])
 
         let modelConfiguration = ModelConfiguration(
@@ -45,6 +46,7 @@ struct OrhadiApp: App {
 struct RootView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var settings: [Settings]
+    @Query private var weeklyReports: [WeeklyReport]
 
     var body: some View {
         ContentView()
@@ -52,7 +54,14 @@ struct RootView: View {
                 if settings.first == nil {
                     modelContext.insert(Settings())
                 }
+                if weeklyReports.first == nil {
+                    print("nil")
+                    modelContext.insert(WeeklyReport.sampleData.first!)
+                }
                 NotificationsManager.shared.requestNotificationAuthorization()
+                for report in weeklyReports {
+                    print(report)
+                }
             }
             .environment(settings.first ?? Settings())
     }

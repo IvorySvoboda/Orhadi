@@ -29,7 +29,7 @@ struct ToDosSettingsView: View {
             } header: {
                 Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             Section {
                 Toggle(
@@ -43,7 +43,7 @@ struct ToDosSettingsView: View {
                     "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
                 )
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
         .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
         .scrollContentBackground(.hidden)

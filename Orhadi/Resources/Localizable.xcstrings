@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
-    "" : {
-
-    },
     ":" : {
       "localizations" : {
         "en" : {
@@ -50,10 +47,8 @@
         }
       }
     },
-    "%lld de Abril de 2025" : {
-
-    },
     "© Zyvoxi" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -62,6 +57,9 @@
           }
         }
       }
+    },
+    "© Zyvoxi Industries" : {
+
     },
     "5m" : {
       "localizations" : {
@@ -72,6 +70,9 @@
           }
         }
       }
+    },
+    "7 de Abril de 2025" : {
+
     },
     "10m" : {
       "localizations" : {
@@ -422,6 +423,9 @@
           }
         }
       }
+    },
+    "Dia da Semana" : {
+
     },
     "Dia de Estudo:" : {
       "localizations" : {
@@ -805,6 +809,12 @@
         }
       }
     },
+    "Matérias Estudadas" : {
+
+    },
+    "Matérias mais Estudada por Dia" : {
+
+    },
     "Matérias Ocultas" : {
       "localizations" : {
         "en" : {
@@ -814,6 +824,9 @@
           }
         }
       }
+    },
+    "Meta" : {
+
     },
     "Minha matéria" : {
       "localizations" : {
@@ -914,6 +927,9 @@
           }
         }
       }
+    },
+    "Orhadi © Zyvoxi Industries" : {
+
     },
     "Prazo:" : {
       "localizations" : {
@@ -1063,9 +1079,6 @@
         }
       }
     },
-    "Shape Color" : {
-
-    },
     "Sobre" : {
       "localizations" : {
         "en" : {
@@ -1137,7 +1150,10 @@
         }
       }
     },
-    "Total de Horas Estudadas na Semana" : {
+    "Total de Horas Estudadas por Dia" : {
+
+    },
+    "Total de Matérias Estudadas por Dia" : {
 
     },
     "Total studied hours" : {

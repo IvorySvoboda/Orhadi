@@ -300,15 +300,14 @@ struct SubjectAddView: View {
     @State private var teacher: String = String(localized: "Prof. Ivory")
     @State private var email: String = String(localized: "email@exemple.com")
     @State private var schedule: Date
-    @State private var startTime: Date = Calendar.current.date(
-        bySettingHour: 7, minute: 0, second: 0, of: Date())!
+    @State private var startTime: Date
     @State private var endTime: Date = Calendar.current.date(
         bySettingHour: 7, minute: 50, second: 0, of: Date())!
     @State private var place: String = String(localized: "Sala 101")
     @State private var selectedWeekday: Int
 
     init() {
-        let date: Date = {
+        let scheduleDate: Date = {
             var components = Calendar.current.dateComponents(
                 [.year, .month, .day], from: Date())
             components.year = 2024
@@ -317,9 +316,20 @@ struct SubjectAddView: View {
             return Calendar.current.date(from: components)!
         }()
 
-        _schedule = State(initialValue: date)
+        let startTimeDate: Date = {
+            var components = Calendar.current.dateComponents(
+                [.year, .month, .day], from: Date())
+            components.year = 0
+            components.month = 1
+            components.day = 1
+            return Calendar.current.date(from: components)!
+        }()
+
+
+        _schedule = State(initialValue: scheduleDate)
+        _startTime = State(initialValue: startTimeDate)
         _selectedWeekday = State(
-            initialValue: Calendar.current.component(.weekday, from: date)
+            initialValue: Calendar.current.component(.weekday, from: scheduleDate)
         )
     }
 

@@ -25,7 +25,7 @@ struct SubjectsSettingsView: View {
             } header: {
                 Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
         .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
         .scrollContentBackground(.hidden)

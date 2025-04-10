@@ -17,6 +17,14 @@ enum OrhadiTheme {
         }
     }
 
+    static func getSecondaryBGColor(for theme: ColorScheme) -> Color {
+        switch theme {
+        case .dark: return Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05)
+        case .light: return Color(red: 0.56, green: 0.56, blue: 0.79, opacity: 0.08)
+        default: return Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05)
+        }
+    }
+
     static func getAccentColor(from accentColor: Int) -> Color {
         switch accentColor {
         case 0: return Color.accentColor

@@ -95,7 +95,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Matérias")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             /// To-Dos Import/Export
             Section {
@@ -160,7 +160,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Tarefas")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             /// Study Routine Subjects Import/Export
             Section {
@@ -224,7 +224,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Rotina de Estudos")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
         .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
         .scrollContentBackground(.hidden)

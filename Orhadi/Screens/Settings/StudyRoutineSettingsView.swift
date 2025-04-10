@@ -56,15 +56,14 @@ struct StudyRoutineSettingsView: View {
             } header: {
                 Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             Section {
                 NavigationLink("Relatório Semanal") {
-                    weeklyReport()
+                    WeeklyReportView()
                 }
-            } header: {
-                Text("")
             }
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             if settings.sharedSubjects {
                 Section {
@@ -101,7 +100,7 @@ struct StudyRoutineSettingsView: View {
                 } header: {
                     Text("Matérias Ocultas")
                 }
-                .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
         }
         .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
@@ -110,95 +109,49 @@ struct StudyRoutineSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
             OrhadiTheme.getBackgroundColor(for: colorScheme),
-            for: .navigationBar)
+            for: .navigationBar
+        )
     }
 }
 
-struct weeklyReport: View {
+struct WeeklyReportView: View {
     @Environment(\.colorScheme) private var colorScheme
 
-    struct ToyShape: Identifiable {
-        var color: String
-        var day: String
-        var totalStudiedHour: Double
-        var id = UUID()
-    }
-
-    var data: [ToyShape] = [
-        .init(color: "Green", day: "Domingo", totalStudiedHour: 1.5),
-        .init(color: "Yellow", day: "Domingo", totalStudiedHour: 1),
-        .init(color: "Green", day: "Segunda", totalStudiedHour: 0.5),
-        .init(color: "Green", day: "Terça", totalStudiedHour: 2),
-        .init(color: "Green", day: "Quarta", totalStudiedHour: 0.5),
-        .init(color: "Green", day: "Quinta", totalStudiedHour: 3),
-        .init(color: "Green", day: "Sexta", totalStudiedHour: 2.5),
-        .init(color: "Green", day: "Sábado", totalStudiedHour: 1.5),
-    ]
+    @Query private var weeklyReports: [WeeklyReport]
 
     var body: some View {
-        ZStack {
-            Color(OrhadiTheme.getBackgroundColor(for: colorScheme))
-                .ignoresSafeArea()
+        List {
+            ForEach(weeklyReports) { weeklyReport in
+                NavigationLink("7 de Abril de 2025") {
+                    ZStack {
+                        Color(
+                            OrhadiTheme.getBackgroundColor(for: colorScheme)
+                        )
+                        .ignoresSafeArea()
 
-            List {
-                ForEach(0..<4) { item in
-                    NavigationLink("\((1 + item) * 7) de Abril de 2025") {
-                        ZStack {
-                            Color(
-                                OrhadiTheme.getBackgroundColor(for: colorScheme)
-                            )
-                            .ignoresSafeArea()
+                        ScrollView {
+                            VStack {
+                                StudiedHoursChart(data: weeklyReport.studiedHoursChartData)
+                                MostStudiedSubjectsByDayChart(data: weeklyReport.mssByDayChartData)
+                                TotalStudiedSubjectsByDayChart(data: weeklyReport.tssByDayChartData)
 
-                            ScrollView {
-                                VStack {
-                                    ZStack {
-                                        Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05)
-
-                                        VStack {
-                                            Text("Total de Horas Estudadas na Semana")
-                                                .font(.caption)
-                                                .foregroundStyle(Color.secondary)
-                                                .padding(.top)
-
-                                            Chart {
-                                                ForEach(data) { data in
-                                                    BarMark(
-                                                        x: .value(
-                                                            "Weekday",
-                                                            data.day
-                                                        ),
-                                                        y: .value(
-                                                            "Total studied hours",
-                                                            data.totalStudiedHour
-                                                        )
-                                                    )
-                                                    .foregroundStyle(by: .value("Shape Color", data.color))
-                                                }
-                                            }
-                                            .chartForegroundStyleScale([
-                                                "Green": .green, "Purple": .purple, "Pink": .pink, "Yellow": .yellow
-                                            ])
-                                            .padding()
-                                        }
-                                    }
-                                    .frame(height: 300)
-                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                                    .padding()
-                                }
+                                HStack {
+                                    Text("Orhadi © Zyvoxi Industries")
+                                }.padding(.bottom).font(.caption).foregroundStyle(Color.secondary)
                             }
                         }
-                        .navigationTitle("\((1 + item) * 7) de Abril de 2025")
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbarBackground(
-                            OrhadiTheme.getBackgroundColor(for: colorScheme),
-                            for: .navigationBar
-                        )
-                    }.listRowBackground(
-                        Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05)
+                    }
+                    .navigationTitle("7 de Abril de 2025")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbarBackground(
+                        OrhadiTheme.getBackgroundColor(for: colorScheme),
+                        for: .navigationBar
                     )
-                }
-            }.scrollContentBackground(.hidden)
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }
         }
+        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .scrollContentBackground(.hidden)
         .navigationTitle("Relatório Semanal")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
@@ -208,10 +161,162 @@ struct weeklyReport: View {
     }
 }
 
+struct StudiedHoursChart: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var data: [StudiedHoursChartData]
+
+    var body: some View {
+        ZStack {
+            OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+
+            VStack {
+                Text("Total de Horas Estudadas por Dia")
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
+                    .padding(.top)
+
+                Chart {
+                    ForEach(data) { data in
+                        BarMark(
+                            x: .value(
+                                "Weekday",
+                                data.day
+                            ),
+                            y: .value(
+                                "Total studied hours",
+                                data.totalStudiedHour
+                            )
+                        )
+                    }
+                    RuleMark(
+                        y: .value("Meta", 0.5)
+                    ).foregroundStyle(.red)
+                }
+                .chartYScale(domain: [0, 3])
+                .chartForegroundStyleScale([
+                    "Horas estudadas": Color
+                        .accentColor,
+                    "Meta diaria": .red,
+                ])
+                .padding()
+            }
+        }
+        .frame(height: 300)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: 10,
+                style: .continuous
+            )
+        )
+        .padding()
+    }
+}
+
+struct MostStudiedSubjectsByDayChart: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var data: [MSSByDayChartData]
+
+    var body: some View {
+        ZStack {
+            OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+
+            VStack {
+                Text("Matérias mais Estudada por Dia")
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
+                    .padding(.top)
+
+                Chart {
+                    ForEach(data) { data in
+                        BarMark(
+                            x: .value(
+                                "Weekday",
+                                data.day
+                            ),
+                            y: .value(
+                                "Total studied hours",
+                                data.totalStudiedHour
+                            )
+                        )
+                        .annotation(position: .top, alignment: .center, spacing: 5) {
+                            Text(data.subject)
+                                .font(.caption)
+                                .foregroundColor(Color.secondary)
+                                .lineLimit(1)
+                                .frame(width: 43)
+                        }
+                    }
+                }
+                .chartYScale(domain: [0, 3])
+                .chartForegroundStyleScale([
+                    "Horas estudadas": Color.accentColor,
+                ])
+                .padding()
+            }
+        }
+        .frame(height: 300)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: 10,
+                style: .continuous
+            )
+        )
+        .padding()
+    }
+}
+
+struct TotalStudiedSubjectsByDayChart: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var data: [TSSByDayChartData]
+
+    var body: some View {
+        ZStack {
+            OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+            
+            VStack {
+                Text("Total de Matérias Estudadas por Dia")
+                    .font(.footnote)
+                    .foregroundStyle(Color.secondary)
+                    .padding(.top)
+                
+                Chart(data) { data in
+                        BarMark(
+                            x: .value(
+                                "Dia da Semana",
+                                data.day
+                            ),
+                            y: .value(
+                                "Matérias Estudadas",
+                                data.totalSubjectsStudied
+                            )
+                        )
+                    
+                }
+                .chartYScale(domain: [0, 4])
+                .chartForegroundStyleScale([
+                    "Horas estudadas": Color.accentColor
+                ])
+                .padding()
+            }
+        }
+        .frame(height: 300)
+        .clipShape(
+            RoundedRectangle(
+                cornerRadius: 10,
+                style: .continuous
+            )
+        )
+        .padding()
+    }
+}
+
 #Preview("weeklyReport") {
     NavigationStack {
         NavigationLink("Relatório Semanal") {
-            weeklyReport()
+            WeeklyReportView()
         }
     }
 }
