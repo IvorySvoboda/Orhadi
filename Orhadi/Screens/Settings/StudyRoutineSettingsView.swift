@@ -121,7 +121,7 @@ struct WeeklyReportView: View {
 
     var body: some View {
         List {
-            ForEach(weeklyReports) { weeklyReport in
+            ForEach(weeklyReports.filter { $0.end < Date() }) { weeklyReport in
                 NavigationLink("7 de Abril de 2025") {
                     ZStack {
                         Color(
@@ -131,9 +131,9 @@ struct WeeklyReportView: View {
 
                         ScrollView {
                             VStack {
-                                StudiedHoursChart(data: weeklyReport.studiedHoursChartData)
-                                MostStudiedSubjectsByDayChart(data: weeklyReport.mssByDayChartData)
-                                TotalStudiedSubjectsByDayChart(data: weeklyReport.tssByDayChartData)
+                                StudiedHoursChart(data: weeklyReport.studiedHoursChartData.sorted(by: { $0.day < $1.day }))
+                                MostStudiedSubjectsByDayChart(data: weeklyReport.mssByDayChartData.sorted(by: { $0.day < $1.day }))
+                                TotalStudiedSubjectsByDayChart(data: weeklyReport.tssByDayChartData.sorted(by: { $0.day < $1.day }))
 
                                 HStack {
                                     Text("Orhadi © Zyvoxi Industries")
@@ -181,7 +181,7 @@ struct StudiedHoursChart: View {
                         BarMark(
                             x: .value(
                                 "Weekday",
-                                data.day
+                                "\(Calendar.weekdays[data.day]!.prefix(3))."
                             ),
                             y: .value(
                                 "Total studied hours",
@@ -233,7 +233,7 @@ struct MostStudiedSubjectsByDayChart: View {
                         BarMark(
                             x: .value(
                                 "Weekday",
-                                data.day
+                                "\(Calendar.weekdays[data.day]!.prefix(3))."
                             ),
                             y: .value(
                                 "Total studied hours",
@@ -286,7 +286,7 @@ struct TotalStudiedSubjectsByDayChart: View {
                         BarMark(
                             x: .value(
                                 "Dia da Semana",
-                                data.day
+                                "\(Calendar.weekdays[data.day]!.prefix(3))."
                             ),
                             y: .value(
                                 "Matérias Estudadas",

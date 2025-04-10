@@ -153,7 +153,7 @@ struct ToDosListCell: View {
                         .font(.title)
                         .foregroundStyle(isEditing ? Color.red : Color.secondary)
                         .onTapGesture {
-                            guard settings.todosDeleteConfirmation || (isEditing && settings.editButton) else {
+                            guard settings.todosDeleteConfirmation && (isEditing && settings.editButton) else {
                                 return deleteToDo(for: todo)
                             }
                             showConfirmation.toggle()

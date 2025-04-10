@@ -69,11 +69,25 @@ struct SharedStudyRoutineView: View {
                             return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
                         }
 
-                        navigateToStudyingView.toggle()
+                        if !subjectsToStudy.isEmpty {
+                            navigateToStudyingView.toggle()
+                        }
                     }) {
                         Image(systemName: "play.circle.fill")
                             .font(.title2)
                     }
+                    .disabled(subjects.filter({
+                        let todayWeekday = Calendar.current.component(
+                            .weekday,
+                            from: Date()
+                        )
+                        let studyWeekday = Calendar.current.component(
+                            .weekday,
+                            from: $0.studyDay
+                        )
+
+                        return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                    }).isEmpty)
                 }
             }
             .toolbarBackground(

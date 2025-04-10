@@ -155,7 +155,7 @@ struct SubjectListCell: View {
                 .font(.title)
                 .foregroundStyle(isEditing ? Color.red : Color.secondary)
                 .onTapGesture {
-                    guard settings.subjectsDeleteConfirmation || (isEditing && settings.editButton) else {
+                    guard settings.subjectsDeleteConfirmation && (isEditing && settings.editButton) else {
                         return deleteSubject(subject: subject)
                     }
                     showConfirmation.toggle()
