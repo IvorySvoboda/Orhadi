@@ -27,12 +27,12 @@ struct SubjectsSettingsView: View {
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
     }
 }

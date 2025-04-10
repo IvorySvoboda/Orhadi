@@ -54,7 +54,7 @@ struct SubjectsView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Matérias")
             .toolbar {
                 if !settings.editButton {
@@ -90,7 +90,7 @@ struct SubjectsView: View {
                 }
             }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
         }
         .sheet(item: $currentSheet) { sheetType in
@@ -216,6 +216,7 @@ struct SubjectListCell: View {
 }
 
 struct SubjectEditView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
 
     @State private var selectedWeekday: Int
@@ -246,7 +247,7 @@ struct SubjectEditView: View {
                         .autocorrectionDisabled()
                 } header: {
                     Text("\(subject.name)")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Picker(
@@ -275,8 +276,10 @@ struct SubjectEditView: View {
                         displayedComponents: [.hourAndMinute])
                 } header: {
                     Text("Horário")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Editar Matéria")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -291,6 +294,7 @@ struct SubjectEditView: View {
 }
 
 struct SubjectAddView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -318,10 +322,11 @@ struct SubjectAddView: View {
 
         let startTimeDate: Date = {
             var components = Calendar.current.dateComponents(
-                [.year, .month, .day], from: Date())
+                [.year, .month, .day, .hour], from: Date())
             components.year = 0
             components.month = 1
             components.day = 1
+            components.hour = 7
             return Calendar.current.date(from: components)!
         }()
 
@@ -348,7 +353,7 @@ struct SubjectAddView: View {
                         .autocorrectionDisabled()
                 } header: {
                     Text("Nova Matéria")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Picker("Dia:", selection: $selectedWeekday) {
@@ -374,8 +379,10 @@ struct SubjectAddView: View {
                         displayedComponents: [.hourAndMinute])
                 } header: {
                     Text("Horário")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Nova Matéria")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

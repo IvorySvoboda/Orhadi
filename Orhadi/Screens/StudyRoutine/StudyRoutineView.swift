@@ -53,7 +53,7 @@ struct StudyRoutineView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Rotina de Estudos")
             .toolbar {
                 if !settings.editButton {
@@ -126,7 +126,7 @@ struct StudyRoutineView: View {
                 }
             }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar
             )
             .navigationDestination(

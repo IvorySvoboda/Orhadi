@@ -45,12 +45,12 @@ struct ToDosSettingsView: View {
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in

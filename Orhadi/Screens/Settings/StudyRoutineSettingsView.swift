@@ -103,12 +103,12 @@ struct StudyRoutineSettingsView: View {
                 .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Estudos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar
         )
     }
@@ -125,7 +125,7 @@ struct WeeklyReportView: View {
                 NavigationLink("7 de Abril de 2025") {
                     ZStack {
                         Color(
-                            OrhadiTheme.getBackgroundColor(for: colorScheme)
+                            OrhadiTheme.getBGColor(for: colorScheme)
                         )
                         .ignoresSafeArea()
 
@@ -144,18 +144,18 @@ struct WeeklyReportView: View {
                     .navigationTitle("7 de Abril de 2025")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbarBackground(
-                        OrhadiTheme.getBackgroundColor(for: colorScheme),
+                        OrhadiTheme.getBGColor(for: colorScheme),
                         for: .navigationBar
                     )
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Relatório Semanal")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar
         )
     }

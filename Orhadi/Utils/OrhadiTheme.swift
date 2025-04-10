@@ -9,7 +9,7 @@ import SwiftUICore
 
 enum OrhadiTheme {
 
-    static func getBackgroundColor(for theme: ColorScheme) -> Color {
+    static func getBGColor(for theme: ColorScheme) -> Color {
         switch theme {
         case .dark: return Color(red: 0.05, green: 0.05, blue: 0.05)
         case .light: return Color(red: 0.94, green: 0.94, blue: 1)

@@ -156,11 +156,11 @@ struct SettingsView: View {
                     Text("Sobre")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
             .navigationTitle("Ajustes")
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
 
         }.id(id)

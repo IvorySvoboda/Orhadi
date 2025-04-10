@@ -17,26 +17,26 @@ struct ContentView: View {
             Tab("Matérias", systemImage: "book.fill") {
                 SubjectsView()
                     .toolbarBackground(
-                        OrhadiTheme.getBackgroundColor(for: colorScheme),
+                        OrhadiTheme.getBGColor(for: colorScheme),
                         for: .tabBar)
             }
             Tab("Tarefas", systemImage: "list.clipboard.fill") {
                 ToDosView()
                     .toolbarBackground(
-                        OrhadiTheme.getBackgroundColor(for: colorScheme),
+                        OrhadiTheme.getBGColor(for: colorScheme),
                         for: .tabBar)
             }
             Tab("Estudos", systemImage: "graduationcap.fill") {
                 if settings.sharedSubjects {
                     SharedStudyRoutineView()
                         .toolbarBackground(
-                            OrhadiTheme.getBackgroundColor(
+                            OrhadiTheme.getBGColor(
                                 for: colorScheme),
                             for: .tabBar)
                 } else {
                     StudyRoutineView()
                         .toolbarBackground(
-                            OrhadiTheme.getBackgroundColor(
+                            OrhadiTheme.getBGColor(
                                 for: colorScheme),
                             for: .tabBar)
                 }
@@ -44,7 +44,7 @@ struct ContentView: View {
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
                     .toolbarBackground(
-                        OrhadiTheme.getBackgroundColor(
+                        OrhadiTheme.getBGColor(
                             for: colorScheme),
                         for: .tabBar)
             }

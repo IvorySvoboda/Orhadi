@@ -47,7 +47,7 @@ struct ToDosView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Tarefas")
             .toolbar {
                 if !settings.editButton {
@@ -81,7 +81,7 @@ struct ToDosView: View {
                 }
             }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
         }
         .sheet(

@@ -43,7 +43,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
     var body: some View {
         ZStack {
-            Color(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            Color(OrhadiTheme.getBGColor(for: colorScheme))
                 .ignoresSafeArea()
 
             VStack {
@@ -118,7 +118,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 }
                 .listStyle(.plain)
                 .contentMargins(.top, -4)
-                .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+                .background(OrhadiTheme.getBGColor(for: colorScheme))
                 .environment(\.defaultMinListRowHeight, 20)
             }
         }
@@ -140,7 +140,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             }
         }
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar
         )
         .onAppear {
