@@ -9,6 +9,12 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
+typealias Subject = SubjectSchemaV1.Subject
+typealias SRSubject = SRSubjectSchemaV1.SRSubject
+typealias ToDo = ToDoSchemaV1.ToDo
+typealias Settings = SettingsSchemaV1.Settings
+typealias WeeklyReport = WeeklyReportSchemaV1.WeeklyReport
+
 @main
 struct OrhadiApp: App {
     var sharedModelContainer: ModelContainer = {

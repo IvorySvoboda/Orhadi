@@ -33,9 +33,11 @@ struct SubjectsView: View {
     )
     private var subjects: [Subject]
 
+    @State private var showConfirmationDialog: Bool = false
     @State private var subjectToEdit: Subject?
     @State private var currentSheet: SubjectsSheetType? = nil
     @State private var isEditing: Bool = false
+    @State private var isRecess: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -60,7 +62,7 @@ struct SubjectsView: View {
                 if !settings.editButton {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
-                            currentSheet = .add
+                            showConfirmationDialog.toggle()
                         }) {
                             Image(systemName: "plus.circle.fill").font(.title2)
                         }
@@ -70,7 +72,7 @@ struct SubjectsView: View {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
                             if isEditing {
-                                currentSheet = .add
+                                showConfirmationDialog.toggle()
                             }
                         }) {
                             Image(systemName: "plus.circle.fill")
@@ -89,18 +91,32 @@ struct SubjectsView: View {
                     }
                 }
             }
+            .confirmationDialog("Adicionar", isPresented: $showConfirmationDialog ,actions: {
+                Button("Matéria") {
+                    currentSheet = .add
+                }
+                Button("Intervalo") {
+                    isRecess = true
+                    currentSheet = .add
+                }
+                Button("Cancelar", role: .cancel) {}
+            })
             .toolbarBackground(
                 OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
         }
-        .sheet(item: $currentSheet) { sheetType in
-            switch sheetType {
-            case .add:
-                SubjectAddView().interactiveDismissDisabled()
-            case .edit(let subject):
-                SubjectEditView(subject: subject).interactiveDismissDisabled()
+        .sheet(
+            item: $currentSheet,
+            onDismiss: {
+                isRecess = false
+            }) { sheetType in
+                switch sheetType {
+                case .add:
+                    SubjectAddView(isRecess: isRecess).interactiveDismissDisabled()
+                case .edit(let subject):
+                    SubjectEditView(subject: subject).interactiveDismissDisabled()
+                }
             }
-        }
     }
 }
 
@@ -129,19 +145,28 @@ struct SubjectListCell: View {
                 }
 
             VStack(alignment: .leading) {
-                Text("\(subject.name)")
-                    .font(.headline)
-                    .bold()
-                Text("\(subject.teacher)")
+                if subject.isRecess {
+                    Text("Intervalo")
+                        .font(.headline)
+                        .bold()
+                    Text(
+                        "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
+                    )
+                } else {
+                    Text("\(subject.name)")
+                        .font(.headline)
+                        .bold()
+                    Text("\(subject.teacher)")
+                        .font(.caption)
+                    Text("\(subject.email)")
+                        .font(.caption)
+                    Text(
+                        "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
+                    )
                     .font(.caption)
-                Text("\(subject.email)")
-                    .font(.caption)
-                Text(
-                    "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
-                )
-                .font(.caption)
-                Text("\(subject.place)")
-                    .font(.caption)
+                    Text("\(subject.place)")
+                        .font(.caption)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .offset(x: isEditing && settings.editButton ? 50 : 0)
@@ -196,14 +221,14 @@ struct SubjectListCell: View {
                 }.tint(.red)
             }
         }
-        .alert("Excluir matéria?", isPresented: $showConfirmation) {
+        .alert("Excluir \(subject.isRecess ? "intervalo" : "matéria")?", isPresented: $showConfirmation) {
             Button("Cancelar", role: .cancel) {}
             Button("Excluir", role: .destructive) {
                 deleteSubject(subject: subject)
             }
         } message: {
             Text(
-                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria?"
+                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?"
             )
         }
     }
@@ -235,19 +260,21 @@ struct SubjectEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Minha nova matéria", text: $subject.name)
-                        .autocorrectionDisabled()
-                    TextField("Prof. Ivory", text: $subject.teacher)
-                        .autocorrectionDisabled()
-                    TextField("email@exemple.com", text: $subject.email)
-                        .autocorrectionDisabled()
+                if !subject.isRecess {
+                    Section {
+                        TextField("Minha nova matéria", text: $subject.name)
+                            .autocorrectionDisabled()
+                        TextField("Prof. Ivory", text: $subject.teacher)
+                            .autocorrectionDisabled()
+                        TextField("email@exemple.com", text: $subject.email)
+                            .autocorrectionDisabled()
 
-                    TextField("Sala 101", text: $subject.place)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("\(subject.name)")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                        TextField("Sala 101", text: $subject.place)
+                            .autocorrectionDisabled()
+                    } header: {
+                        Text("\(subject.name)")
+                    }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }
 
                 Section {
                     Picker(
@@ -280,7 +307,7 @@ struct SubjectEditView: View {
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
-            .navigationTitle("Editar Matéria")
+            .navigationTitle("Editar \(subject.isRecess ? "Intervalo" : "Matéria")")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -310,7 +337,9 @@ struct SubjectAddView: View {
     @State private var place: String = String(localized: "Sala 101")
     @State private var selectedWeekday: Int
 
-    init() {
+    var isRecess: Bool
+
+    init(isRecess: Bool) {
         let scheduleDate: Date = {
             var components = Calendar.current.dateComponents(
                 [.year, .month, .day], from: Date())
@@ -336,24 +365,27 @@ struct SubjectAddView: View {
         _selectedWeekday = State(
             initialValue: Calendar.current.component(.weekday, from: scheduleDate)
         )
+        self.isRecess = isRecess
     }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Minha nova matéria", text: $name)
-                        .autocorrectionDisabled()
-                    TextField("Prof. Ivory", text: $teacher)
-                        .autocorrectionDisabled()
-                    TextField("email@exemple.com", text: $email)
-                        .autocorrectionDisabled()
+                if !isRecess {
+                    Section {
+                        TextField("Minha nova matéria", text: $name)
+                            .autocorrectionDisabled()
+                        TextField("Prof. Ivory", text: $teacher)
+                            .autocorrectionDisabled()
+                        TextField("email@exemple.com", text: $email)
+                            .autocorrectionDisabled()
 
-                    TextField("Sala 101", text: $place)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("Nova Matéria")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                        TextField("Sala 101", text: $place)
+                            .autocorrectionDisabled()
+                    } header: {
+                        Text("Nova Matéria")
+                    }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }
 
                 Section {
                     Picker("Dia:", selection: $selectedWeekday) {
@@ -383,7 +415,7 @@ struct SubjectAddView: View {
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
-            .navigationTitle("Nova Matéria")
+            .navigationTitle(isRecess ? "Novo Intervalo" : "Nova Matéria")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -408,7 +440,8 @@ struct SubjectAddView: View {
             schedule: schedule,
             startTime: startTime,
             endTime: endTime,
-            place: place
+            place: place,
+            isRecess: isRecess
         )
 
         withAnimation(.bouncy) {

@@ -5,6 +5,8 @@
 //  Created by Zyvoxi . on 24/03/25.
 //
 
+typealias MyInt = Int
+
 import SwiftData
 import SwiftUI
 
@@ -48,6 +50,7 @@ struct ContentView: View {
                             for: colorScheme),
                         for: .tabBar)
             }
+            
         }
         .preferredColorScheme(OrhadiTheme.getTheme(for: settings.theme))
         .tint(OrhadiTheme.getAccentColor(from: settings.accentColor))

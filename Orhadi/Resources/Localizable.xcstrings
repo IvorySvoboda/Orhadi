@@ -2,116 +2,48 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     ":" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : ":"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "%@ - %@" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ - %2$@"
-          }
-        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ - %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
     },
     "5m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "5m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "7 de Abril de 2025" : {
 
     },
     "10m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "10m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "15m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "15m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "20m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "20m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "25m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "25m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "30m" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30m"
-          }
-        }
-      }
+      "shouldTranslate" : false
     },
     "A Fazer" : {
       "localizations" : {
@@ -142,6 +74,9 @@
           }
         }
       }
+    },
+    "Adicionar" : {
+
     },
     "Adicionar Matéria" : {
       "localizations" : {
@@ -464,6 +399,9 @@
         }
       }
     },
+    "Editar %@" : {
+
+    },
     "Editar Estudo" : {
       "localizations" : {
         "en" : {
@@ -475,6 +413,7 @@
       }
     },
     "Editar Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -504,6 +443,9 @@
         }
       }
     },
+    "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir %@?" : {
+
+    },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?" : {
       "localizations" : {
         "en" : {
@@ -515,6 +457,7 @@
       }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -594,6 +537,9 @@
           }
         }
       }
+    },
+    "Excluir %@?" : {
+
     },
     "Excluir matéria?" : {
       "localizations" : {
@@ -775,6 +721,9 @@
         }
       }
     },
+    "Intervalo" : {
+
+    },
     "Isso removerá a matéria da visualização. Você pode reativá-la a qualquer momento nos ajustes." : {
       "localizations" : {
         "en" : {
@@ -794,6 +743,9 @@
           }
         }
       }
+    },
+    "Matéria" : {
+
     },
     "Matérias" : {
       "localizations" : {
@@ -918,6 +870,9 @@
         }
       }
     },
+    "Novo Intervalo" : {
+
+    },
     "Ocultar" : {
       "localizations" : {
         "en" : {
@@ -938,19 +893,8 @@
         }
       }
     },
-    "Orhadi" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orhadi"
-          }
-        }
-      }
-    },
     "Orhadi (Debug)" : {
-
+      "shouldTranslate" : false
     },
     "Orhadi © Zyvoxi Industries" : {
       "shouldTranslate" : false

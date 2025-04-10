@@ -325,9 +325,7 @@ struct DataSettingsView: View {
                     for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
                 let context = ModelContext(container)
 
-                let descriptor = FetchDescriptor(sortBy: [
-                    .init(\Subject.schedule, order: .forward)
-                ])
+                let descriptor = FetchDescriptor<Subject>()
 
                 let existingSubjects = try context.fetch(descriptor)
                 for subject in existingSubjects {
