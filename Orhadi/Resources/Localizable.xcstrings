@@ -939,6 +939,7 @@
       }
     },
     "Orhadi" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -947,6 +948,9 @@
           }
         }
       }
+    },
+    "Orhadi (Debug)" : {
+
     },
     "Orhadi © Zyvoxi Industries" : {
       "shouldTranslate" : false

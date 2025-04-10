@@ -138,8 +138,13 @@ struct SettingsView: View {
                             let version = AppInfoProvider.appVersion()
                             let build = AppInfoProvider.appBuild()
 
+#if DEBUG
+                            Text("Orhadi (Debug)")
+                                .bold()
+#else
                             Text("Orhadi")
                                 .bold()
+#endif
                             Text("Versão: \(version) (\(build))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)

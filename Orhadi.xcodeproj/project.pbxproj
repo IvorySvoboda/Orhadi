@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		28AA05E82DA8074100814D25 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 28AA05E72DA8073300814D25 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2804F4D82D92275700649FD0 /* Orhadi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Orhadi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28AA05E72DA8073300814D25 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +39,7 @@
 			children = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
 				2804F4D92D92275700649FD0 /* Products */,
+				28AA05E72DA8073300814D25 /* README.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,6 +116,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28AA05E82DA8074100814D25 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,7 +265,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Orhadi/Orhadi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1148;
+				CURRENT_PROJECT_VERSION = 1157;
 				DEVELOPMENT_ASSET_PATHS = "\"Orhadi/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -298,7 +305,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Orhadi/Orhadi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1148;
+				CURRENT_PROJECT_VERSION = 1157;
 				DEVELOPMENT_ASSET_PATHS = "\"Orhadi/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
