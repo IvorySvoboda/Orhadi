@@ -149,9 +149,8 @@ struct SubjectListCell: View {
                     Text("Intervalo")
                         .font(.headline)
                         .bold()
-                    Text(
-                        "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
-                    )
+                    Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
+                        .font(.caption)
                 } else {
                     Text("\(subject.name)")
                         .font(.headline)
@@ -160,10 +159,8 @@ struct SubjectListCell: View {
                         .font(.caption)
                     Text("\(subject.email)")
                         .font(.caption)
-                    Text(
-                        "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
-                    )
-                    .font(.caption)
+                    Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
+                        .font(.caption)
                     Text("\(subject.place)")
                         .font(.caption)
                 }
@@ -221,14 +218,14 @@ struct SubjectListCell: View {
                 }.tint(.red)
             }
         }
-        .alert("Excluir \(subject.isRecess ? "intervalo" : "matéria")?", isPresented: $showConfirmation) {
+        .alert("Excluir \(subject.isRecess ? String(localized: "intervalo") : String(localized: "matéria"))?", isPresented: $showConfirmation) {
             Button("Cancelar", role: .cancel) {}
             Button("Excluir", role: .destructive) {
                 deleteSubject(subject: subject)
             }
         } message: {
             Text(
-                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?"
+                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? String(localized: "este intervalo") : String(localized: "esta matéria"))?"
             )
         }
     }
@@ -307,7 +304,7 @@ struct SubjectEditView: View {
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
-            .navigationTitle("Editar \(subject.isRecess ? "Intervalo" : "Matéria")")
+            .navigationTitle("Editar \(subject.isRecess ? String(localized: "Intervalo") : String(localized: "Matéria"))")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -330,25 +327,16 @@ struct SubjectAddView: View {
     @State private var name: String = String(localized: "Minha nova matéria")
     @State private var teacher: String = String(localized: "Prof. Ivory")
     @State private var email: String = String(localized: "email@exemple.com")
-    @State private var schedule: Date
+    @State private var schedule: Date = Date()
     @State private var startTime: Date
     @State private var endTime: Date = Calendar.current.date(
         bySettingHour: 7, minute: 50, second: 0, of: Date())!
     @State private var place: String = String(localized: "Sala 101")
-    @State private var selectedWeekday: Int
+    @State private var selectedWeekday: Int = Calendar.current.component(.weekday, from: Date())
 
     var isRecess: Bool
 
     init(isRecess: Bool) {
-        let scheduleDate: Date = {
-            var components = Calendar.current.dateComponents(
-                [.year, .month, .day], from: Date())
-            components.year = 2024
-            components.month = 9
-            components.day = 1
-            return Calendar.current.date(from: components)!
-        }()
-
         let startTimeDate: Date = {
             var components = Calendar.current.dateComponents(
                 [.year, .month, .day, .hour], from: Date())
@@ -359,12 +347,7 @@ struct SubjectAddView: View {
             return Calendar.current.date(from: components)!
         }()
 
-
-        _schedule = State(initialValue: scheduleDate)
         _startTime = State(initialValue: startTimeDate)
-        _selectedWeekday = State(
-            initialValue: Calendar.current.component(.weekday, from: scheduleDate)
-        )
         self.isRecess = isRecess
     }
 
@@ -415,7 +398,7 @@ struct SubjectAddView: View {
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
-            .navigationTitle(isRecess ? "Novo Intervalo" : "Nova Matéria")
+            .navigationTitle(isRecess ? String(localized: "Novo Intervalo") : String(localized: "Nova Matéria"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

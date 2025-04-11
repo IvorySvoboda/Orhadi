@@ -243,6 +243,7 @@ struct ToDosListCell: View {
 }
 
 struct ToDoAddView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
@@ -288,8 +289,10 @@ struct ToDoAddView: View {
                     }
                 } header: {
                     Text("Nova Tarefa")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Nova Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -333,7 +336,7 @@ struct ToDoAddView: View {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-1h",
                 title: todo.title,
-                body: "Falta 1 hora para a tarefa expirar.",
+                body: String(localized: "Falta 1 hora para a tarefa expirar."),
                 date: oneHourBefore
             )
         }
@@ -344,15 +347,15 @@ struct ToDoAddView: View {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-24h",
                 title: todo.title,
-                body: "Falta 1 dia para a tarefa expirar.",
+                body: String(localized: "Falta 1 dia para a tarefa expirar."),
                 date: twentyFourHoursBefore
             )
         }
 
         NotificationsManager.shared.addNotification(
             identifier: "\(todo.id)-due",
-            title: "A Tarefa Venceu!",
-            body: "A Tarefa: \(todo.title) Venceu!",
+            title: String(localized: "A Tarefa Venceu!"),
+            body: String(localized: "A Tarefa: \(todo.title) Venceu!"),
             date: dueDate
         )
     }

@@ -55,6 +55,12 @@
         }
       }
     },
+    "A Tarefa Venceu!" : {
+
+    },
+    "A Tarefa: %@ Venceu!" : {
+
+    },
     "Ações de arraste" : {
       "localizations" : {
         "en" : {
@@ -497,6 +503,12 @@
         }
       }
     },
+    "esta matéria" : {
+
+    },
+    "este intervalo" : {
+
+    },
     "Estudando" : {
       "localizations" : {
         "en" : {
@@ -590,6 +602,12 @@
           }
         }
       }
+    },
+    "Falta 1 dia para a tarefa expirar." : {
+
+    },
+    "Falta 1 hora para a tarefa expirar." : {
+
     },
     "Fazer o dever de casa" : {
       "localizations" : {
@@ -721,6 +739,9 @@
         }
       }
     },
+    "intervalo" : {
+
+    },
     "Intervalo" : {
 
     },
@@ -743,6 +764,9 @@
           }
         }
       }
+    },
+    "matéria" : {
+
     },
     "Matéria" : {
 

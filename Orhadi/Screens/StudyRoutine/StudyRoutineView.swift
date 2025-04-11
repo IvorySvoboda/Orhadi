@@ -278,6 +278,7 @@ struct StudyRoutineListCell: View {
 }
 
 struct SREditView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: SRSubject
     @State private var selectedWeekday: Int
@@ -321,8 +322,10 @@ struct SREditView: View {
                     )
                 } header: {
                     Text("\(subject.name)")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Editar Estudo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -337,6 +340,7 @@ struct SREditView: View {
 }
 
 struct SRAddView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var name: String = "Minha nova matéria"
@@ -375,8 +379,10 @@ struct SRAddView: View {
                     )
                 } header: {
                     Text("Nova Matéria")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Adicionar Matéria")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

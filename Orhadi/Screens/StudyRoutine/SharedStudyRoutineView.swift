@@ -181,6 +181,7 @@ struct SharedStudyRoutineListCell: View {
 }
 
 struct SharedSREditView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: Subject
     @State private var selectedWeekday: Int
@@ -220,7 +221,7 @@ struct SharedSREditView: View {
                     )
                 } header: {
                     Text("\(subject.name)")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Toggle(
@@ -251,8 +252,10 @@ struct SharedSREditView: View {
                     }
                 } header: {
                     Text("Visualização")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Editar Estudo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
