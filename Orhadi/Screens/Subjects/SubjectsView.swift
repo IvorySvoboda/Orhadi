@@ -360,7 +360,7 @@ struct SubjectAddView: View {
                             .autocorrectionDisabled()
                         TextField("Prof. Ivory", text: $teacher)
                             .autocorrectionDisabled()
-                        TextField("email@exemple.com", text: $email)
+                        TextField("\("email@exemple.com")", text: $email)
                             .autocorrectionDisabled()
 
                         TextField("Sala 101", text: $place)
