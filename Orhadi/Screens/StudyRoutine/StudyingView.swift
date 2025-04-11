@@ -56,7 +56,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                         Text("Estudos completados! 🔥")
                     }
                     Spacer()
-                }.padding(.leading)
+                    Button(action: { skipToNext() }) {
+                        Image(systemName: "forward.fill")
+                    }.padding(.trailing).tint(.white).disabled(studyFinished)
+                }.padding(.leading).offset(y: 2)
 
                 Divider()
 
@@ -81,7 +84,6 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 .frame(height: 200)
 
                 Divider()
-                    .frame(height: 1)
 
                 List {
                     if currentSessionIndex < sessionItems.count {
@@ -229,6 +231,36 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         }
     }
 
+    private func skipToNext() {
+        guard currentSessionIndex < sessionItems.count else { return }
+
+        let currentItem = sessionItems[currentSessionIndex]
+
+        if !currentItem.isBreak, let subject = currentItem.subject {
+            withAnimation {
+                completedSubjects.append(subject)
+            }
+        }
+
+        let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+
+        sessionItems[currentSessionIndex].endTime = Date()
+
+        for index in sessionItems.indices where index > currentSessionIndex {
+            sessionItems[index].endTime -= adjustment
+        }
+
+        currentSessionIndex += 1
+
+        if currentSessionIndex < sessionItems.count {
+            remainingTime = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+        } else {
+            isRunning = false
+            studyFinished = true
+            remainingTime = 0
+        }
+    }
+
     private func updateLastStudied(for subject: Subject) {
         if let index = subjects.firstIndex(of: subject) {
             subjects[index].lastStudied = Date()
@@ -332,11 +364,3 @@ struct RollingDigitView: View {
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-//        StudyingView(subjects: Subject.sampleData)
-    }
-    .environment(Settings())
-}
-

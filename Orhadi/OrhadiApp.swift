@@ -32,7 +32,7 @@ struct OrhadiApp: App {
 
         do {
             return try ModelContainer(
-                for: schema, configurations: [modelConfiguration]
+                for: schema, migrationPlan: MigrationPlan.self, configurations: [modelConfiguration]
             )
         } catch {
             fatalError(

@@ -52,14 +52,12 @@ struct SettingsView: View {
                         "Cor de Destaque", selection: $settings.accentColor
                     ) {
                         Text("Azul (padrão)").tag(0)
-                        Text("Verde").tag(1)
-                        Text("Vermelho").tag(2)
-                        Text("Roxo").tag(3)
-                        Text("Laranja").tag(4)
-                        Text("Índigo").tag(5)
-                        Text("Ciano").tag(6)
-                        Text("Amarelo").tag(7)
-                        Text("Rosa").tag(8)
+                        Text("Roxo").tag(1)
+                        Text("Laranja").tag(2)
+                        Text("Índigo").tag(3)
+                        Text("Ciano").tag(4)
+                        Text("Amarelo").tag(5)
+                        Text("Rosa").tag(6)
                     }
                     .onChange(of: settings.accentColor) {
                         id = UUID()

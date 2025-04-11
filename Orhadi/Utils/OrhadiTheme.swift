@@ -28,14 +28,12 @@ enum OrhadiTheme {
     static func getAccentColor(from accentColor: Int) -> Color {
         switch accentColor {
         case 0: return Color.accentColor
-        case 1: return Color.green
-        case 2: return Color.red
-        case 3: return Color.purple
-        case 4: return Color.orange
-        case 5: return Color.indigo
-        case 6: return Color.cyan
-        case 7: return Color.yellow
-        case 8: return Color.pink
+        case 1: return Color.purple
+        case 2: return Color.orange
+        case 3: return Color.indigo
+        case 4: return Color.cyan
+        case 5: return Color.yellow
+        case 6: return Color.pink
         default: return Color.accentColor
         }
     }

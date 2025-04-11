@@ -24,7 +24,7 @@ struct SharedStudyRoutineView: View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    subjects: subjects.filter { $0.isHidden != true },
+                    subjects: subjects.filter { !$0.isHidden && !$0.isRecess },
                     dateExtractor: { $0.studyDay }
                 ) { subject in
                     AnyView(
@@ -66,7 +66,9 @@ struct SharedStudyRoutineView: View {
                                 from: $0.studyDay
                             )
 
-                            return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                            return studyWeekday == todayWeekday
+                            && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                            && !$0.isRecess
                         }
 
                         if !subjectsToStudy.isEmpty {
@@ -86,7 +88,9 @@ struct SharedStudyRoutineView: View {
                             from: $0.studyDay
                         )
 
-                        return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                        return studyWeekday == todayWeekday
+                        && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                        && !$0.isRecess
                     }).isEmpty)
                 }
             }
