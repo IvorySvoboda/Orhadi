@@ -147,7 +147,7 @@ struct SharedStudyRoutineListCell: View {
                     Image(systemName: "checkmark")
                 }
                 
-                Text(subject.name)
+                Text(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)
                 Spacer()
                 Text(formatHourAndMinute(subject.studyTime))
                     .bold()

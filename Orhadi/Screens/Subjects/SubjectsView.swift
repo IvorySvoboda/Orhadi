@@ -152,16 +152,16 @@ struct SubjectListCell: View {
                     Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
                         .font(.caption)
                 } else {
-                    Text("\(subject.name)")
+                    Text("\(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)")
                         .font(.headline)
                         .bold()
-                    Text("\(subject.teacher)")
+                    Text("\(subject.teacher.isEmpty ? String(localized: "Não informado") : subject.teacher)")
                         .font(.caption)
-                    Text("\(subject.email)")
+                    Text("\(subject.email.isEmpty ? String(localized: "Sem e-mail") : subject.email)")
                         .font(.caption)
                     Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
                         .font(.caption)
-                    Text("\(subject.place)")
+                    Text("\(subject.place.isEmpty ? String(localized: "Não informado") : subject.place)")
                         .font(.caption)
                 }
             }
@@ -324,14 +324,14 @@ struct SubjectAddView: View {
 
     @Query private var subjects: [Subject]
 
-    @State private var name: String = String(localized: "Minha nova matéria")
-    @State private var teacher: String = String(localized: "Prof. Ivory")
-    @State private var email: String = String(localized: "email@exemple.com")
+    @State private var name: String = ""
+    @State private var teacher: String = ""
+    @State private var email: String = ""
     @State private var schedule: Date = Date()
     @State private var startTime: Date
     @State private var endTime: Date = Calendar.current.date(
         bySettingHour: 7, minute: 50, second: 0, of: Date())!
-    @State private var place: String = String(localized: "Sala 101")
+    @State private var place: String = ""
     @State private var selectedWeekday: Int = Calendar.current.component(.weekday, from: Date())
 
     var isRecess: Bool

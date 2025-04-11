@@ -183,7 +183,7 @@ struct StudyRoutineListCell: View {
                 ) {
                     Image(systemName: "checkmark")
                 }
-                Text(subject.name)
+                Text(subject.name.isEmpty ? String(localized: "Não Informado") : subject.name)
                 Spacer()
                 Text(formatHourAndMinute(subject.studyTime))
                     .bold()
@@ -343,7 +343,7 @@ struct SRAddView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var name: String = "Minha nova matéria"
+    @State private var name: String = ""
     @State private var studyDay: Int
     @State private var studyTime: Date = Calendar.current.date(
         bySettingHour: 0,

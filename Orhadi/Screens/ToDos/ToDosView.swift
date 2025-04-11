@@ -136,7 +136,7 @@ struct ToDosListCell: View {
                         }
 
                     VStack(alignment: .leading) {
-                        Text("\(todo.title)")
+                        Text("\(todo.title.isEmpty ? String(localized: "Não Informado") : todo.title)")
                             .font(.headline)
                         Text(formatDueDate(todo.dueDate))
                             .font(.caption)
@@ -248,8 +248,8 @@ struct ToDoAddView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
-    @State private var title: String = String(localized: "Minha nova tarefa")
-    @State private var info: String = String(localized: "Fazer o dever de casa")
+    @State private var title: String = ""
+    @State private var info: String = ""
     @State private var dueDate: Date = Date() + 3600
 
     var body: some View {

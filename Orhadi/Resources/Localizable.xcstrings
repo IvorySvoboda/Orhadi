@@ -832,6 +832,12 @@
         }
       }
     },
+    "Não informado" : {
+
+    },
+    "Não Informado" : {
+
+    },
     "Não informado." : {
       "localizations" : {
         "en" : {
@@ -1035,6 +1041,9 @@
         }
       }
     },
+    "Sem e-mail" : {
+
+    },
     "Sem matérias ocultas." : {
       "localizations" : {
         "en" : {
@@ -1044,6 +1053,9 @@
           }
         }
       }
+    },
+    "Sem Nome" : {
+
     },
     "Sexta-feira" : {
       "extractionState" : "manual",
@@ -1143,28 +1155,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Total Studied Subjects by Day"
-          }
-        }
-      }
-    },
-    "Verde" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Green"
-          }
-        }
-      }
-    },
-    "Vermelho" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Red"
           }
         }
       }

@@ -31,7 +31,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var isReady: Bool = false
     @State private var sessionItems: [SessionItem] = []
     @State private var currentSessionIndex = 0
-    @State private var remainingTime: TimeInterval = 600
+    @State private var remainingTime: TimeInterval = 0
     @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
     @State private var isRunning: Bool = false
@@ -83,7 +83,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 }
                 .frame(height: 200)
 
-                Divider()
+                Divider().offset(y: 2)
 
                 List {
                     if currentSessionIndex < sessionItems.count {
