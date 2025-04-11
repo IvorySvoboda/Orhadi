@@ -263,7 +263,7 @@ struct SubjectEditView: View {
                             .autocorrectionDisabled()
                         TextField("Prof. Ivory", text: $subject.teacher)
                             .autocorrectionDisabled()
-                        TextField("email@exemple.com", text: $subject.email)
+                        TextField("\("email@exemple.com")", text: $subject.email)
                             .autocorrectionDisabled()
 
                         TextField("Sala 101", text: $subject.place)

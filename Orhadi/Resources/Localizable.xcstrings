@@ -419,6 +419,7 @@
       }
     },
     "email@exemple.com" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

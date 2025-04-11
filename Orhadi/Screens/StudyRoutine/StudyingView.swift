@@ -51,7 +51,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
                 HStack {
                     if currentSessionIndex < sessionItems.count {
-                        Text(sessionItems[currentSessionIndex].name)
+                        Text(sessionItems[currentSessionIndex].name.isEmpty ? "Sem Nome" : sessionItems[currentSessionIndex].name)
                     } else {
                         Text("Estudos completados! 🔥")
                     }
@@ -94,7 +94,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                                 ?? nil
                             {
                                 HStack {
-                                    Text(subject.name)
+                                    Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
                                         .bold()
                                     Spacer()
                                     Text(formatHourAndMinute(subject.studyTime))

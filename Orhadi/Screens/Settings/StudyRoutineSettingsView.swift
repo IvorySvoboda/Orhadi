@@ -85,7 +85,7 @@ struct StudyRoutineSettingsView: View {
                                 .font(.title2)
                                 .foregroundStyle(Color.secondary)
                             Toggle(
-                                "\(subject.name)",
+                                "\(subject.name.isEmpty ? "Sem Nome" : subject.name)",
                                 isOn: Binding(
                                     get: { subject.isHidden },
                                     set: { newValue in

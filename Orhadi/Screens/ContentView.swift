@@ -5,8 +5,6 @@
 //  Created by Zyvoxi . on 24/03/25.
 //
 
-typealias MyInt = Int
-
 import SwiftData
 import SwiftUI
 

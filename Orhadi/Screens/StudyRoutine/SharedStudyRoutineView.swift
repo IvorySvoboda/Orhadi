@@ -55,30 +55,7 @@ struct SharedStudyRoutineView: View {
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        subjectsToStudy = subjects.filter {
-                            let todayWeekday = Calendar.current.component(
-                                .weekday,
-                                from: Date()
-                            )
-                            let studyWeekday = Calendar.current.component(
-                                .weekday,
-                                from: $0.studyDay
-                            )
-
-                            return studyWeekday == todayWeekday
-                            && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
-                            && !$0.isRecess
-                        }
-
-                        if !subjectsToStudy.isEmpty {
-                            navigateToStudyingView.toggle()
-                        }
-                    }) {
-                        Image(systemName: "play.circle.fill")
-                            .font(.title2)
-                    }
-                    .disabled(subjects.filter({
+                    let filteredSubjects = subjects.filter {
                         let todayWeekday = Calendar.current.component(
                             .weekday,
                             from: Date()
@@ -90,8 +67,20 @@ struct SharedStudyRoutineView: View {
 
                         return studyWeekday == todayWeekday
                         && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
-                        && !$0.isRecess
-                    }).isEmpty)
+                        && !$0.isRecess && !$0.isHidden
+                    }
+
+                    Button(action: {
+                        guard !filteredSubjects.isEmpty else { return }
+
+                        subjectsToStudy = filteredSubjects
+
+                        navigateToStudyingView.toggle()
+                    }) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.title2)
+                    }
+                    .disabled(filteredSubjects.isEmpty)
                 }
             }
             .toolbarBackground(
