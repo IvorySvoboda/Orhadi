@@ -167,7 +167,7 @@ struct SharedStudyRoutineListCell: View {
                         "Iniciar",
                         systemImage: "play.circle.fill"
                     )
-                }.tint(.gray)
+                }.tint(Color(.darkGray))
             }
         }
     }

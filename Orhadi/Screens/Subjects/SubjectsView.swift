@@ -138,31 +138,75 @@ struct SubjectListCell: View {
                 .blur(radius: isEditing ? 0 : 8)
                 .offset(x: -155)
                 .opacity(isEditing && settings.editButton ? 1 : 0)
-                .foregroundStyle(isEditing ? Color.blue : Color.secondary)
+                .foregroundStyle(isEditing ? .accentColor : Color.secondary)
                 .onTapGesture {
                     guard isEditing && settings.editButton else { return }
                     currentSheet = .edit(subject)
                 }
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 3) {
                 if subject.isRecess {
                     Text("Intervalo")
                         .font(.headline)
-                        .bold()
-                    Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
-                        .font(.caption)
+                        .fontWeight(.semibold)
+                    HStack {
+                        Image(systemName: "clock.fill")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 } else {
-                    Text("\(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)")
+                    Text(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)
                         .font(.headline)
-                        .bold()
-                    Text("\(subject.teacher.isEmpty ? String(localized: "Não informado") : subject.teacher)")
-                        .font(.caption)
-                    Text("\(subject.email.isEmpty ? String(localized: "Sem e-mail") : subject.email)")
-                        .font(.caption)
-                    Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
-                        .font(.caption)
-                    Text("\(subject.place.isEmpty ? String(localized: "Não informado") : subject.place)")
-                        .font(.caption)
+                        .fontWeight(.semibold)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        if !subject.teacher.isEmpty {
+                            HStack {
+                                Image(systemName: "person.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing, 1)
+                                Text(subject.teacher)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+
+                        if !subject.email.isEmpty {
+                            HStack {
+                                Image(systemName: "envelope.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing, -3)
+                                Text(subject.email)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+
+                        HStack {
+                            Image(systemName: "clock.fill")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text("\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        if !subject.place.isEmpty {
+                            HStack {
+                                Image(systemName: "location.circle.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text(subject.place)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -187,8 +231,21 @@ struct SubjectListCell: View {
         .swipeActions(edge: .leading) {
             if settings.swipeActions && (!isEditing || !settings.editButton) {
                 Button(action: { currentSheet = .edit(subject) }) {
-                    Label("Editar", systemImage: "pencil")
-                }.tint(.blue)
+                    Image(systemName: "pencil")
+                }.tint(.accentColor)
+
+                if !subject.email.isEmpty {
+                    Button(action: {
+                        let name = subject.name.isEmpty ? "Sem Nome" : subject.name
+                        let subjectEncoded = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+
+                        if let url = URL(string: "mailto:\(subject.email)?subject=\(subjectEncoded)") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Image(systemName: "envelope.fill")
+                    }.tint(Color(.darkGray))
+                }
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -298,6 +355,11 @@ struct SubjectEditView: View {
                     DatePicker(
                         "Fim:", selection: $subject.endTime,
                         displayedComponents: [.hourAndMinute])
+                    .onChange(of: subject.endTime) { _, newDate in
+                        if newDate <= subject.startTime {
+                            subject.endTime = subject.startTime + 60
+                        }
+                    }
                 } header: {
                     Text("Horário")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
@@ -329,8 +391,7 @@ struct SubjectAddView: View {
     @State private var email: String = ""
     @State private var schedule: Date = Date()
     @State private var startTime: Date
-    @State private var endTime: Date = Calendar.current.date(
-        bySettingHour: 7, minute: 50, second: 0, of: Date())!
+    @State private var endTime: Date
     @State private var place: String = ""
     @State private var selectedWeekday: Int = Calendar.current.component(.weekday, from: Date())
 
@@ -348,6 +409,7 @@ struct SubjectAddView: View {
         }()
 
         _startTime = State(initialValue: startTimeDate)
+        _endTime = State(initialValue: startTimeDate + 3000)
         self.isRecess = isRecess
     }
 
@@ -392,6 +454,12 @@ struct SubjectAddView: View {
                     DatePicker(
                         "Fim:", selection: $endTime,
                         displayedComponents: [.hourAndMinute])
+                    .onChange(of: endTime) { _, newDate in
+                        if newDate <= startTime {
+                            endTime = startTime + 60
+                        }
+                    }
+
                 } header: {
                     Text("Horário")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))

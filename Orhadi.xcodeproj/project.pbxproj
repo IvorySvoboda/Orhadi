@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		28AA05E82DA8074100814D25 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 28AA05E72DA8073300814D25 /* README.md */; };
+		28BD45F42DAAF6BC00B916B1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 28BD45F32DAAF6BC00B916B1 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28BD45F42DAAF6BC00B916B1 /* MarkdownUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +73,7 @@
 			);
 			name = Orhadi;
 			packageProductDependencies = (
+				28BD45F32DAAF6BC00B916B1 /* MarkdownUI */,
 			);
 			productName = Orhadi;
 			productReference = 2804F4D82D92275700649FD0 /* Orhadi.app */;
@@ -101,6 +104,9 @@
 			);
 			mainGroup = 2804F4CF2D92275700649FD0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				28BD45F22DAAF6BC00B916B1 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2804F4D92D92275700649FD0 /* Products */;
 			projectDirPath = "";
@@ -360,6 +366,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		28BD45F22DAAF6BC00B916B1 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		28BD45F32DAAF6BC00B916B1 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 28BD45F22DAAF6BC00B916B1 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2804F4D02D92275700649FD0 /* Project object */;
 }

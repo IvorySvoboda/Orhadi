@@ -228,7 +228,7 @@ struct StudyRoutineListCell: View {
                         systemImage: "play.circle.fill"
                     )
                 }
-                .tint(.gray)
+                .tint(Color(.darkGray))
             }
         }
         .swipeActions(edge: .trailing) {
