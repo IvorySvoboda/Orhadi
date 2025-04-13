@@ -20,14 +20,6 @@ struct ToDosSettingsView: View {
                     "Confirmar para Excluir",
                     isOn: $settings.todosDeleteConfirmation
                 )
-                .tint(.green)
-                Toggle(
-                    "Arraste para Excluir",
-                    isOn: $settings.todosDeleteButton
-                )
-                .tint(.green)
-            } header: {
-                Text("Geral")
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
@@ -35,7 +27,7 @@ struct ToDosSettingsView: View {
                 Toggle(
                     "Agendar Notificações",
                     isOn: $settings.scheduleNotifications
-                ).tint(.green).disabled(!notificationStatus)
+                ).disabled(!notificationStatus)
             } header: {
                 Text("Notificações")
             } footer: {

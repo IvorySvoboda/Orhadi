@@ -77,3 +77,51 @@ enum SettingsSchemaV1: VersionedSchema {
     }
 
 }
+
+enum SettingsSchemaV2: VersionedSchema {
+    static var versionIdentifier: Schema.Version = Schema.Version(2, 0, 0)
+
+    static var models: [any PersistentModel.Type] {
+        [Settings.self]
+    }
+
+    @Model
+    class Settings {
+        /// App
+        var theme: Theme
+
+        /// Study Routine
+        var breakTime: TimeInterval
+        var sharedSubjects: Bool
+        var srsubjectsDeleteConfirmation: Bool
+        var studyGoal: TimeInterval
+
+        /// Subjects
+        var subjectsDeleteConfirmation: Bool
+
+        /// ToDos
+        var scheduleNotifications: Bool
+        var todosDeleteConfirmation: Bool
+
+        init(
+            theme: Theme = .auto,
+            breakTime: TimeInterval = 600,
+            srsubjectsDeleteConfirmation: Bool = true,
+            studyGoal: TimeInterval = 3600,
+            sharedSubjects: Bool = true,
+            subjectsDeleteConfirmation: Bool = true,
+            scheduleNotifications: Bool = true,
+            todosDeleteConfirmation: Bool = true,
+        ) {
+            self.theme = theme
+            self.breakTime = breakTime
+            self.srsubjectsDeleteConfirmation = srsubjectsDeleteConfirmation
+            self.studyGoal = studyGoal
+            self.sharedSubjects = sharedSubjects
+            self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
+            self.scheduleNotifications = scheduleNotifications
+            self.todosDeleteConfirmation = todosDeleteConfirmation
+        }
+    }
+
+}

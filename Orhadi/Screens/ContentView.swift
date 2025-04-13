@@ -51,7 +51,6 @@ struct ContentView: View {
             
         }
         .preferredColorScheme(OrhadiTheme.getTheme(for: settings.theme))
-        .tint(OrhadiTheme.getAccentColor(from: settings.accentColor))
     }
 }
 

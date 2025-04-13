@@ -33,18 +33,24 @@ struct StudyRoutineView: View {
     @State private var currentSheet: StudyRoutineSheetType? = nil
     @State private var subjectsToStudy: [SRSubject] = []
     @State private var navigateToStudyingView: Bool = false
+    @State private var selectedDay: Int = Calendar.current.component(
+        .weekday,
+        from: Date()
+    )
+    @State private var minY: Int = 151
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
+                    minY: $minY,
+                    selectedDay: $selectedDay,
                     subjects: subjects,
                     dateExtractor: { $0.studyDay }
                 ) { subject in
                     AnyView(
                         StudyRoutineListCell(
                             subject: subject,
-                            isEditing: isEditing,
                             currentSheet: $currentSheet,
                             navigateToStudyingView: $navigateToStudyingView,
                             subjectsToStudy: $subjectsToStudy
@@ -56,36 +62,29 @@ struct StudyRoutineView: View {
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Rotina de Estudos")
             .toolbar {
-                if !settings.editButton {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            currentSheet = .add
-                        }) {
-                            Image(systemName: "plus.circle.fill").font(.title2)
-                        }
+                ToolbarItem(placement: .principal) {
+                    ZStack {
+                        Text("Rotina de Estudos")
+                            .font(.headline)
+                            .opacity(minY < 115 ? 1 : 0)
+                            .offset(y: minY <= 70 ? -10 : 0)
+
+                        Text(
+                            Calendar.current.weekdaySymbols[selectedDay - 1]
+                                .uppercased()
+                        )
+                        .foregroundStyle(Color.indigo)
+                        .font(.caption)
+                        .opacity(minY <= 70 ? 1 : 0)
+                        .offset(y: 8)
                     }
                 }
 
-                if settings.editButton {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            if isEditing {
-                                currentSheet = .add
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                                .blur(radius: isEditing ? 0 : 4)
-                        }.opacity(isEditing ? 1 : 0)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            withAnimation(.bouncy(duration: 0.6)) {
-                                isEditing.toggle()
-                            }
-                        }) {
-                            Text("\(isEditing ? "OK" : "Editar")")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        currentSheet = .add
+                    }) {
+                        Image(systemName: "plus.circle.fill").font(.title2)
                     }
                 }
 
@@ -156,98 +155,47 @@ struct StudyRoutineListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: SRSubject
-    var isEditing: Bool
     @Binding var currentSheet: StudyRoutineSheetType?
     @Binding var navigateToStudyingView: Bool
     @Binding var subjectsToStudy: [SRSubject]
 
     var body: some View {
-        ZStack {
-            Image(systemName: "pencil.circle.fill")
-                .resizable()
-                .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                .blur(radius: isEditing ? 0 : 8)
-                .offset(x: -155)
-                .opacity(isEditing && settings.editButton ? 1 : 0)
-                .foregroundStyle(isEditing ? Color.blue : Color.secondary)
-                .onTapGesture {
-                    guard isEditing && settings.editButton else { return }
-                    currentSheet = .edit(subject)
-                }
-
-            HStack {
-                if Calendar.current.isDate(
-                    subject.lastStudied,
-                    equalTo: Date(),
-                    toGranularity: .weekOfYear
-                ) {
-                    Image(systemName: "checkmark")
-                }
-                Text(subject.name.isEmpty ? String(localized: "Não Informado") : subject.name)
-                Spacer()
-                Text(formatHourAndMinute(subject.studyTime))
-                    .bold()
-                    .blur(radius: !isEditing || !settings.editButton ? 0 : 8)
-                    .opacity(!isEditing || !settings.editButton ? 1 : 0)
-                    .scaleEffect(!isEditing || !settings.editButton ? 1 : 0.2)
+        HStack {
+            if Calendar.current.isDate(
+                subject.lastStudied,
+                equalTo: Date(),
+                toGranularity: .weekOfYear
+            ) {
+                Image(systemName: "checkmark")
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .offset(x: isEditing && settings.editButton ? 45 : 0)
-
-            Image(systemName: "minus.circle.fill")
-                .resizable()
-                .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                .blur(radius: isEditing ? 0 : 8)
-                .offset(x: 165)
-                .opacity(isEditing && settings.editButton ? 1 : 0)
-                .font(.title)
-                .foregroundStyle(isEditing ? Color.red : Color.secondary)
-                .onTapGesture {
-                    guard settings.srsubjectsDeleteConfirmation || (isEditing && settings.editButton) else {
-                        return deleteSubject(subject: subject)
-                    }
-                    showConfirmation.toggle()
-                }
+            Text(subject.name.isEmpty ? String(localized: "Não Informado") : subject.name)
+            Spacer()
+            Text(formatHourAndMinute(subject.studyTime))
+                .bold()
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            if settings.swipeActions && (!isEditing || !settings.editButton) {
-                Button(action: { currentSheet = .edit(subject) }
-                ) {
-                    Label("Editar", systemImage: "pencil")
-                }
-                .tint(.blue)
+            Button(action: {
+                subjectsToStudy = [subject]
 
-                Button(action: {
-                    subjectsToStudy = [subject]
-
-                    navigateToStudyingView.toggle()
-                }) {
-                    Label(
-                        "Iniciar",
-                        systemImage: "play.circle.fill"
-                    )
-                }
-                .tint(Color(.darkGray))
+                navigateToStudyingView.toggle()
+            }) {
+                Label(
+                    "Iniciar",
+                    systemImage: "play.circle.fill"
+                )
             }
+            .tint(.accentColor)
         }
         .swipeActions(edge: .trailing) {
-            if settings.srsubjectsDeleteConfirmation
-                && settings.swipeActions
-                && settings.srsubjectsDeleteButton
-                && (!isEditing || !settings.editButton)
-            {
+            if settings.srsubjectsDeleteConfirmation {
                 Button(action: {
                     showConfirmation.toggle()
                 }) {
                     Label("Excluir", systemImage: "trash.fill")
                 }.tint(.red)
             }
-            if !settings.srsubjectsDeleteConfirmation
-                && settings.swipeActions
-                && settings.srsubjectsDeleteButton
-                && (!isEditing || !settings.editButton)
-            {
+            if !settings.srsubjectsDeleteConfirmation {
                 Button(
                     role: .destructive,
                     action: {
@@ -255,8 +203,13 @@ struct StudyRoutineListCell: View {
                     }
                 ) {
                     Label("Excluir", systemImage: "trash.fill")
-                }.tint(.red)
+                }
             }
+            Button(action: { currentSheet = .edit(subject) }
+            ) {
+                Label("Editar", systemImage: "pencil")
+            }
+            .tint(.accentColor)
         }
         .alert("Excluir matéria?", isPresented: $showConfirmation) {
             Button("Cancelar", role: .cancel) {}

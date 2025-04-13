@@ -17,7 +17,6 @@ struct ToDosView: View {
     private var todos: [ToDo]
 
     @State private var isAdding: Bool = false
-    @State private var isEditing: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -26,7 +25,7 @@ struct ToDosView: View {
                     Section {
                         ForEach(todos.filter { $0.dueDate > Date() && !$0.isCompleted })
                         { todo in
-                            ToDosListCell(todo: todo, isEditing: isEditing)
+                            ToDosListCell(todo: todo)
                         }
                     } header: {
                         SectionHeader(text: String(localized: "A Fazer"))
@@ -40,7 +39,7 @@ struct ToDosView: View {
                                 $0.dueDate < Date() || $0.isCompleted
                             }
                         ) { todo in
-                            ToDosListCell(todo: todo, isEditing: isEditing)
+                            ToDosListCell(todo: todo)
                         }
                     } header: {
                         SectionHeader(text: String(localized: "Completados ou Vencidos"))
@@ -51,33 +50,9 @@ struct ToDosView: View {
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Tarefas")
             .toolbar {
-                if !settings.editButton {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: { isAdding = true }) {
-                            Image(systemName: "plus.circle.fill").font(.title2)
-                        }
-                    }
-                }
-                if settings.editButton {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            if isEditing {
-                                isAdding = true
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                                .blur(radius: isEditing ? 0 : 4)
-                        }.opacity(isEditing ? 1 : 0)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            withAnimation(.bouncy) {
-                                isEditing.toggle()
-                            }
-                        }) {
-                            Text("\(isEditing ? "OK" : "Editar")")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { isAdding = true }) {
+                        Image(systemName: "plus.circle.fill").font(.title2)
                     }
                 }
             }
@@ -101,7 +76,6 @@ struct ToDosListCell: View {
     @State private var showConfirmation: Bool = false
 
     var todo: ToDo
-    var isEditing: Bool
 
     var body: some View {
         DisclosureGroup(
@@ -141,14 +115,12 @@ struct ToDosListCell: View {
                         .markdownTextStyle(\.code) {
                             FontFamilyVariant(.normal)
                             ForegroundColor(Color.accentColor)
-                            BackgroundColor(Color.accentColor.opacity(0.1))
+                            BackgroundColor(Color.accentColor.opacity(0.25))
                         }
                         .markdownBlockStyle(\.blockquote) { configuration in
                           configuration.label
                             .padding()
                             .markdownTextStyle {
-                              FontCapsVariant(.lowercaseSmallCaps)
-                              FontWeight(.semibold)
                               BackgroundColor(nil)
                             }
                             .overlay(alignment: .leading) {
@@ -171,86 +143,40 @@ struct ToDosListCell: View {
                     Image(systemName: "xmark")
                 }
 
-                ZStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .resizable()
-                        .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                        .blur(radius: isEditing ? 0 : 8)
-                        .offset(x: -155)
-                        .opacity(isEditing && settings.editButton
-                                 && (todo.dueDate > Date() && !todo.isCompleted) ? 1 : 0)
-                        .font(.title)
-                        .foregroundStyle(isEditing ? Color.blue : Color.secondary)
-                        .onTapGesture {
-                            guard isEditing && settings.editButton else { return }
-                            completeToDo(for: todo)
-                        }
-
-                    VStack(alignment: .leading) {
-                        Text("\(todo.title.isEmpty ? String(localized: "Não Informado") : todo.title)")
-                            .font(.headline)
-                        HStack {
-                            Image(systemName: "calendar")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text(formatDueDate(todo.dueDate))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                VStack(alignment: .leading) {
+                    Text("\(todo.title.isEmpty ? String(localized: "Não Informado") : todo.title)")
+                        .font(.headline)
+                    HStack {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text(formatDueDate(todo.dueDate))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .offset(x: (isEditing && settings.editButton) && todo.dueDate > Date() && !todo.isCompleted ? 45 : 0)
-
-                    Image(systemName: "minus.circle.fill")
-                        .resizable()
-                        .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                        .blur(radius: isEditing ? 0 : 8)
-                        .offset(x: todo.dueDate < Date() || todo.isCompleted ? 160 : 170)
-                        .opacity(isEditing && settings.editButton ? 1 : 0)
-                        .font(.title)
-                        .foregroundStyle(isEditing ? Color.red : Color.secondary)
-                        .onTapGesture {
-                            guard settings.todosDeleteConfirmation && (isEditing && settings.editButton) else {
-                                return deleteToDo(for: todo)
-                            }
-                            showConfirmation.toggle()
-                        }
                 }
                 .swipeActions(edge: .leading) {
-                    if !todo.isCompleted && todo.dueDate > Date()
-                        && (!isEditing || !settings.editButton)
-                        && settings.swipeActions
-                    {
+                    if !todo.isCompleted && todo.dueDate > Date() {
                         Button(role: .destructive, action: { completeToDo(for: todo) }) {
                             Label("Completar", systemImage: "checkmark")
-                        }.tint(.blue)
+                        }.tint(.accentColor)
                     }
                 }
                 .swipeActions(edge: .trailing) {
-                    if settings.todosDeleteConfirmation
-                        && settings.swipeActions
-                        && settings.todosDeleteButton
-                        && (!isEditing || !settings.editButton)
-                    {
+                    if settings.todosDeleteConfirmation {
                         Button(action: {
-                                showConfirmation.toggle()
-                            }
-                        ) {
+                            showConfirmation.toggle()
+                        }) {
                             Label("Excluir", systemImage: "trash.fill")
-                        }.tint(.red)
+                        }
+                        .tint(.red)
                     }
-                    if !settings.todosDeleteConfirmation
-                        && settings.swipeActions
-                        && settings.todosDeleteButton
-                        && (!isEditing || !settings.editButton)
-                    {
+                    if !settings.todosDeleteConfirmation {
                         Button(role: .destructive, action: {
                             deleteToDo(for: todo)
-                            }
-                        ) {
+                        }) {
                             Label("Excluir", systemImage: "trash.fill")
-                        }.tint(.red)
-
+                        }
                     }
                 }
                 .alert("Excluir tarefa?", isPresented: $showConfirmation) {

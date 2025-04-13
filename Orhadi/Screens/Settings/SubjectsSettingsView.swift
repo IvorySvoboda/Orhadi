@@ -16,14 +16,6 @@ struct SubjectsSettingsView: View {
         Form {
             Section {
                 Toggle("Confirmar para Excluir", isOn: $settings.subjectsDeleteConfirmation)
-                    .tint(.green)
-                Toggle(
-                    "Arraste para Excluir",
-                    isOn: $settings.subjectsDeleteButton
-                )
-                .tint(.green)
-            } header: {
-                Text("Geral")
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }

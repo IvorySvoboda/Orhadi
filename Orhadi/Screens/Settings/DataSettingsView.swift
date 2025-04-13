@@ -321,8 +321,16 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration
+                )
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor<Subject>()
@@ -357,8 +365,15 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration)
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor<ToDo>()
@@ -437,8 +452,15 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration)
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor(sortBy: [

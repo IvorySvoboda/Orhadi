@@ -35,7 +35,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
     @State private var isRunning: Bool = false
-    @State private var completedSubjects: [Subject] = []
+    @State private var completedItems: [SessionItem] = []
     @State private var studyFinished: Bool = false
     @State private var pauseDate: Date?
 
@@ -88,23 +88,12 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 List {
                     if currentSessionIndex < sessionItems.count {
                         ForEach(
-                            subjects.filter { !completedSubjects.contains($0) }
-                        ) { subject in
-                            if subject != sessionItems[currentSessionIndex].subject
-                                ?? nil
-                            {
-                                HStack {
-                                    Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
-                                        .bold()
-                                    Spacer()
-                                    Text(formatHourAndMinute(subject.studyTime))
-                                        .bold()
-                                }
-                                .frame(height: 35)
-                                .modifier(ListRow())
+                            sessionItems.filter { item in
+                                item.id != sessionItems[currentSessionIndex].id &&
+                                !completedItems.contains(where: { $0.id == item.id })
                             }
-
-                            if subject != subjects[subjects.count - 1] {
+                        ) { sessionItem in
+                            if sessionItem.isBreak {
                                 HStack {
                                     Text("Descanso").font(.system(size: 14))
                                     Spacer()
@@ -113,6 +102,16 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                                     )
                                     .font(.system(size: 14))
                                 }
+                                .modifier(ListRow())
+                            } else if let subject = sessionItem.subject {
+                                HStack {
+                                    Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
+                                        .bold()
+                                    Spacer()
+                                    Text(formatHourAndMinute(subject.studyTime))
+                                        .bold()
+                                }
+                                .frame(height: 35)
                                 .modifier(ListRow())
                             }
                         }
@@ -216,9 +215,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
         if !currentItem.isBreak, let subject = currentItem.subject {
             updateLastStudied(for: subject)
-            withAnimation {
-                completedSubjects.append(subject)
-            }
+        }
+
+        withAnimation {
+            completedItems.append(currentItem)
         }
 
         currentSessionIndex += 1
@@ -236,10 +236,8 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
         let currentItem = sessionItems[currentSessionIndex]
 
-        if !currentItem.isBreak, let subject = currentItem.subject {
-            withAnimation {
-                completedSubjects.append(subject)
-            }
+        withAnimation {
+            completedItems.append(currentItem)
         }
 
         let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow

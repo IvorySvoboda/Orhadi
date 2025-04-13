@@ -12,7 +12,6 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
 
-    @State private var id: UUID = UUID()
     @State private var isErasing: Bool = false
     @State private var showEraseDataAlert: Bool = false
 
@@ -21,6 +20,30 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    HStack {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 45, height: 45)
+                            .foregroundStyle(Color.secondary)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Sem Nome")
+                                .font(.headline)
+                            Text("Level: 1")
+                                .font(.caption)
+                                .foregroundStyle(Color.secondary)
+                        }
+                    }
+                    .frame(height: 50)
+                    .alignmentGuide(.listRowSeparatorLeading) {
+                        viewDimensions in
+                        return 0
+                    }
+                    NavigationLink("Conquistas") {
+                        Text("OIOIOI")
+                    }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
                 Section {
                     NavigationLink {
                         SubjectsSettingsView(settings: settings)
@@ -47,53 +70,8 @@ struct SettingsView: View {
                         Text("Claro").tag(Theme.light)
                         Text("Escuro").tag(Theme.dark)
                     }
-
-                    Picker(
-                        "Cor de Destaque", selection: $settings.accentColor
-                    ) {
-                        Text("Azul (padrão)").tag(0)
-                        Text("Roxo").tag(1)
-                        Text("Laranja").tag(2)
-                        Text("Índigo").tag(3)
-                        Text("Ciano").tag(4)
-                        Text("Amarelo").tag(5)
-                        Text("Rosa").tag(6)
-                    }
-                    .onChange(of: settings.accentColor) {
-                        id = UUID()
-                    }
                 } header: {
                     Text("Aparência")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-
-                Section {
-                    Toggle(isOn: $settings.swipeActions) {
-                        Label("Ações de arraste", systemImage: "hand.draw.fill")
-                    }
-                    .help("Deslize itens para a esquerda ou direita para executar ações rapidamente.")
-                    .tint(.green)
-                    .onChange(of: settings.swipeActions) { _, newValue in
-                        guard !newValue && !settings.editButton else {
-                            return
-                        }
-                        settings.editButton = true
-                    }
-
-                    Toggle(isOn: $settings.editButton) {
-                        Label("Botão de Editar", systemImage: "pencil")
-                    }
-                    .help("Adiciona um botão de edição na barra de ferramentas.")
-                    .tint(.green)
-                    .onChange(of: settings.editButton) { _, newValue in
-                        guard !newValue && !settings.swipeActions else {
-                            return
-                        }
-                        settings.swipeActions = true
-                    }
-                } header: {
-                    Text("Interação")
-                } footer: {
-                    Text("Essas configurações alteram a forma de interagir com os itens da interface.")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
@@ -133,9 +111,6 @@ struct SettingsView: View {
                                     cornerRadius: 15, style: .continuous))
 
                         VStack(alignment: .leading, spacing: 2) {
-                            let version = AppInfoProvider.appVersion()
-                            let build = AppInfoProvider.appBuild()
-
 #if DEBUG
                             Text("Orhadi (Debug)")
                                 .bold()
@@ -143,7 +118,7 @@ struct SettingsView: View {
                             Text("Orhadi")
                                 .bold()
 #endif
-                            Text("Versão: \(version) (\(build))")
+                            Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Text("© Zyvoxi Industries")
@@ -166,7 +141,7 @@ struct SettingsView: View {
                 OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
 
-        }.id(id)
+        }
     }
 
     @MainActor

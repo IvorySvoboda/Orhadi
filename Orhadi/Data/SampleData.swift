@@ -55,9 +55,6 @@ class SampleData {
         for subject in SRSubject.sampleData {
             context.insert(subject)
         }
-        for report in WeeklyReport.sampleData {
-            context.insert(report)
-        }
         context.insert(Settings())
     }
 }
