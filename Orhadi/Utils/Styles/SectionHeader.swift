@@ -25,7 +25,7 @@ struct SectionHeader: View {
 
             Spacer()
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .listRowInsets(
             EdgeInsets(
                 top: 0,

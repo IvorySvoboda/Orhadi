@@ -5,6 +5,7 @@
 //  Created by Zyvoxi . on 26/03/25.
 //
 
+import MarkdownUI
 import SwiftData
 import SwiftUI
 
@@ -16,7 +17,6 @@ struct ToDosView: View {
     private var todos: [ToDo]
 
     @State private var isAdding: Bool = false
-    @State private var isEditing: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -25,11 +25,11 @@ struct ToDosView: View {
                     Section {
                         ForEach(todos.filter { $0.dueDate > Date() && !$0.isCompleted })
                         { todo in
-                            ToDosListCell(todo: todo, isEditing: isEditing)
+                            ToDosListCell(todo: todo)
                         }
                     } header: {
                         SectionHeader(text: String(localized: "A Fazer"))
-                    }
+                    }.listRowBackground(OrhadiTheme.getBGColor(for: colorScheme))
                 }
 
                 if !todos.filter({$0.dueDate < Date() || $0.isCompleted}).isEmpty {
@@ -39,49 +39,25 @@ struct ToDosView: View {
                                 $0.dueDate < Date() || $0.isCompleted
                             }
                         ) { todo in
-                            ToDosListCell(todo: todo, isEditing: isEditing)
+                            ToDosListCell(todo: todo)
                         }
                     } header: {
                         SectionHeader(text: String(localized: "Completados ou Vencidos"))
-                    }
+                    }.listRowBackground(OrhadiTheme.getBGColor(for: colorScheme))
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Tarefas")
             .toolbar {
-                if !settings.editButton {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: { isAdding = true }) {
-                            Image(systemName: "plus.circle.fill").font(.title2)
-                        }
-                    }
-                }
-                if settings.editButton {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            if isEditing {
-                                isAdding = true
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                                .blur(radius: isEditing ? 0 : 4)
-                        }.opacity(isEditing ? 1 : 0)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            withAnimation(.bouncy) {
-                                isEditing.toggle()
-                            }
-                        }) {
-                            Text("\(isEditing ? "OK" : "Editar")")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: { isAdding = true }) {
+                        Image(systemName: "plus.circle.fill").font(.title2)
                     }
                 }
             }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
         }
         .sheet(
@@ -100,13 +76,60 @@ struct ToDosListCell: View {
     @State private var showConfirmation: Bool = false
 
     var todo: ToDo
-    var isEditing: Bool
 
     var body: some View {
         DisclosureGroup(
             content: {
                 if !todo.info.isEmpty {
-                    Text(.init("\(todo.info)"))
+                    Markdown(todo.info)
+                        .markdownBlockStyle(\.heading1) { configuration in
+                            VStack(alignment: .leading, spacing: 0) {
+                                configuration.label
+                                    .relativePadding(.bottom, length: .em(0.1))
+                                    .markdownMargin(bottom: .em(0.5))
+                                    .markdownTextStyle {
+                                        FontWeight(.semibold)
+                                        FontSize(.em(1.5))
+                                    }
+                                Divider()
+                            }
+                        }
+                        .markdownBlockStyle(\.heading2) { configuration in
+                            configuration.label
+                                .relativePadding(.bottom, length: .em(0.1))
+                                .markdownMargin(bottom: .em(0.5))
+                                .markdownTextStyle {
+                                    FontWeight(.semibold)
+                                    FontSize(.em(1.3))
+                                }
+                        }
+                        .markdownBlockStyle(\.heading3) { configuration in
+                            configuration.label
+                                .relativePadding(.bottom, length: .em(0.1))
+                                .markdownMargin(bottom: .em(0.5))
+                                .markdownTextStyle {
+                                    FontWeight(.semibold)
+                                    FontSize(.em(1.1))
+                                }
+                        }
+                        .markdownTextStyle(\.code) {
+                            FontFamilyVariant(.normal)
+                            ForegroundColor(Color.accentColor)
+                            BackgroundColor(Color.accentColor.opacity(0.25))
+                        }
+                        .markdownBlockStyle(\.blockquote) { configuration in
+                          configuration.label
+                            .padding(5)
+                            .markdownTextStyle {
+                              BackgroundColor(nil)
+                            }
+                            .overlay(alignment: .leading) {
+                              Rectangle()
+                                .fill(Color.accentColor)
+                                .frame(width: 4)
+                            }
+                            .background(Color.accentColor.opacity(0.25))
+                        }
                 } else {
                     Text("Não informado.").opacity(0.5)
                 }
@@ -120,79 +143,40 @@ struct ToDosListCell: View {
                     Image(systemName: "xmark")
                 }
 
-                ZStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .resizable()
-                        .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                        .blur(radius: isEditing ? 0 : 8)
-                        .offset(x: -155)
-                        .opacity(isEditing && settings.editButton
-                                 && (todo.dueDate > Date() && !todo.isCompleted) ? 1 : 0)
-                        .font(.title)
-                        .foregroundStyle(isEditing ? Color.blue : Color.secondary)
-                        .onTapGesture {
-                            guard isEditing && settings.editButton else { return }
-                            completeToDo(for: todo)
-                        }
-
-                    VStack(alignment: .leading) {
-                        Text("\(todo.title)")
-                            .font(.headline)
+                VStack(alignment: .leading) {
+                    Text("\(todo.title.isEmpty ? String(localized: "Não Informado") : todo.title)")
+                        .font(.headline)
+                    HStack {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                         Text(formatDueDate(todo.dueDate))
                             .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .offset(x: (isEditing && settings.editButton) && todo.dueDate > Date() && !todo.isCompleted ? 45 : 0)
-
-                    Image(systemName: "minus.circle.fill")
-                        .resizable()
-                        .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                        .blur(radius: isEditing ? 0 : 8)
-                        .offset(x: todo.dueDate < Date() || todo.isCompleted ? 160 : 170)
-                        .opacity(isEditing && settings.editButton ? 1 : 0)
-                        .font(.title)
-                        .foregroundStyle(isEditing ? Color.red : Color.secondary)
-                        .onTapGesture {
-                            guard settings.todosDeleteConfirmation || (isEditing && settings.editButton) else {
-                                return deleteToDo(for: todo)
-                            }
-                            showConfirmation.toggle()
-                        }
                 }
                 .swipeActions(edge: .leading) {
-                    if !todo.isCompleted && todo.dueDate > Date()
-                        && (!isEditing || !settings.editButton)
-                    {
+                    if !todo.isCompleted && todo.dueDate > Date() {
                         Button(role: .destructive, action: { completeToDo(for: todo) }) {
                             Label("Completar", systemImage: "checkmark")
-                        }.tint(.blue)
+                        }.tint(.accentColor)
                     }
                 }
                 .swipeActions(edge: .trailing) {
-                    if settings.todosDeleteConfirmation
-                        && settings.swipeActions
-                        && settings.todosDeleteButton
-                        && (!isEditing || !settings.editButton)
-                    {
+                    if settings.todosDeleteConfirmation {
                         Button(action: {
-                                showConfirmation.toggle()
-                            }
-                        ) {
+                            showConfirmation.toggle()
+                        }) {
                             Label("Excluir", systemImage: "trash.fill")
-                        }.tint(.red)
+                        }
+                        .tint(.red)
                     }
-                    if !settings.todosDeleteConfirmation
-                        && settings.swipeActions
-                        && settings.todosDeleteButton
-                        && (!isEditing || !settings.editButton)
-                    {
+                    if !settings.todosDeleteConfirmation {
                         Button(role: .destructive, action: {
                             deleteToDo(for: todo)
-                            }
-                        ) {
+                        }) {
                             Label("Excluir", systemImage: "trash.fill")
-                        }.tint(.red)
-
+                        }
                     }
                 }
                 .alert("Excluir tarefa?", isPresented: $showConfirmation) {
@@ -208,7 +192,6 @@ struct ToDosListCell: View {
             }
         )
         .disclosureGroupStyle(CustomDisclosureGroupStyle())
-        .listRowBackground(Color.clear)
     }
 
     private func completeToDo(for todo: ToDo) {
@@ -243,12 +226,13 @@ struct ToDosListCell: View {
 }
 
 struct ToDoAddView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
-    @State private var title: String = String(localized: "Minha nova tarefa")
-    @State private var info: String = String(localized: "Fazer o dever de casa")
+    @State private var title: String = ""
+    @State private var info: String = ""
     @State private var dueDate: Date = Date() + 3600
 
     var body: some View {
@@ -270,7 +254,6 @@ struct ToDoAddView: View {
                         .padding(.top, -68)
 
                         MarkdownTextField(text: $info)
-                            .autocorrectionDisabled()
                             .frame(height: 150)
                             .padding(.leading, -5)
                     }
@@ -288,8 +271,10 @@ struct ToDoAddView: View {
                     }
                 } header: {
                     Text("Nova Tarefa")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Nova Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -333,7 +318,7 @@ struct ToDoAddView: View {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-1h",
                 title: todo.title,
-                body: "Falta 1 hora para a tarefa expirar.",
+                body: String(localized: "Falta 1 hora para a tarefa expirar."),
                 date: oneHourBefore
             )
         }
@@ -344,15 +329,15 @@ struct ToDoAddView: View {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-24h",
                 title: todo.title,
-                body: "Falta 1 dia para a tarefa expirar.",
+                body: String(localized: "Falta 1 dia para a tarefa expirar."),
                 date: twentyFourHoursBefore
             )
         }
 
         NotificationsManager.shared.addNotification(
             identifier: "\(todo.id)-due",
-            title: "A Tarefa Venceu!",
-            body: "A Tarefa: \(todo.title) Venceu!",
+            title: String(localized: "A Tarefa Venceu!"),
+            body: String(localized: "A Tarefa: \(todo.title) Venceu!"),
             date: dueDate
         )
     }

@@ -5,8 +5,9 @@
 //  Created by Zyvoxi . on 01/04/25.
 //
 
-import SwiftUI
+import Charts
 import SwiftData
+import SwiftUI
 
 struct StudyRoutineSettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -28,7 +29,7 @@ struct StudyRoutineSettingsView: View {
                             }
                         }
                     )
-                ).tint(.green)
+                )
                 Picker(
                     "Tempo de Descanso",
                     selection: $settings.breakTime
@@ -41,63 +42,70 @@ struct StudyRoutineSettingsView: View {
                     Text("30m").tag(TimeInterval(1800))
                 }
                 if !settings.sharedSubjects {
-                    Toggle("Confirmar para Excluir", isOn: $settings.srsubjectsDeleteConfirmation)
-                        .tint(.green)
                     Toggle(
-                        "Arraste para Excluir",
-                        isOn: $settings.srsubjectsDeleteButton
+                        "Confirmar para Excluir",
+                        isOn: $settings.srsubjectsDeleteConfirmation
                     )
-                    .tint(.green)
                 }
-            } header: {
-                Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             if settings.sharedSubjects {
                 Section {
-                    let hiddenSubjects = subjects.filter {
-                        $0.isHidden == true
-                    }
+                    NavigationLink("Matérias Ocultas") {
+                        Form {
+                            let hiddenSubjects = subjects.filter {
+                                $0.isHidden == true
+                            }
 
-                    if hiddenSubjects.isEmpty {
-                        VStack {
-                            Text("Sem matérias ocultas.")
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
-                        }.animation(.smooth, value: subjects)
-                    }
+                            if hiddenSubjects.isEmpty {
+                                VStack {
+                                    Text("Sem matérias ocultas.")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }.animation(.smooth, value: subjects)
+                            }
 
-                    ForEach(hiddenSubjects) { subject in
-                        HStack {
-                            Image(systemName: "eye.slash.fill")
-                                .font(.title2)
-                                .foregroundStyle(Color.secondary)
-                            Toggle(
-                                "\(subject.name)",
-                                isOn: Binding(
-                                    get: { subject.isHidden },
-                                    set: { newValue in
-                                        withAnimation {
-                                            subject.isHidden = newValue
-                                        }
-                                    }
-                                )
-                            ).tint(.green)
+                            ForEach(hiddenSubjects) { subject in
+                                HStack {
+                                    Image(systemName: "eye.slash.fill")
+                                        .font(.title2)
+                                        .foregroundStyle(Color.secondary)
+                                    Toggle(
+                                        "\(subject.name.isEmpty ? "Sem Nome" : subject.name)",
+                                        isOn: Binding(
+                                            get: { subject.isHidden },
+                                            set: { newValue in
+                                                withAnimation {
+                                                    subject.isHidden = newValue
+                                                }
+                                            }
+                                        )
+                                    )
+                                }
+                                .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                            }
                         }
+                        .navigationTitle("Matérias Ocultas")
+                        .navigationBarTitleDisplayMode(.inline)
+                        .background(OrhadiTheme.getBGColor(for: colorScheme))
+                        .scrollContentBackground(.hidden)
+                        .toolbarBackground(
+                            OrhadiTheme.getBGColor(for: colorScheme),
+                            for: .navigationBar
+                        )
                     }
-                } header: {
-                    Text("Matérias Ocultas")
                 }
-                .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
-        .navigationTitle("Estudos")
+        .navigationTitle("Rotina de Estudos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
-            for: .navigationBar)
+            OrhadiTheme.getBGColor(for: colorScheme),
+            for: .navigationBar
+        )
     }
 }

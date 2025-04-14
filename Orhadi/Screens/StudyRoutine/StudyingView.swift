@@ -31,11 +31,11 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var isReady: Bool = false
     @State private var sessionItems: [SessionItem] = []
     @State private var currentSessionIndex = 0
-    @State private var remainingTime: TimeInterval = 600
+    @State private var remainingTime: TimeInterval = 0
     @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common)
         .autoconnect()
     @State private var isRunning: Bool = false
-    @State private var completedSubjects: [Subject] = []
+    @State private var completedItems: [SessionItem] = []
     @State private var studyFinished: Bool = false
     @State private var pauseDate: Date?
 
@@ -43,7 +43,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
     var body: some View {
         ZStack {
-            Color(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            Color(OrhadiTheme.getBGColor(for: colorScheme))
                 .ignoresSafeArea()
 
             VStack {
@@ -51,12 +51,15 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
                 HStack {
                     if currentSessionIndex < sessionItems.count {
-                        Text(sessionItems[currentSessionIndex].name)
+                        Text(sessionItems[currentSessionIndex].name.isEmpty ? "Sem Nome" : sessionItems[currentSessionIndex].name)
                     } else {
                         Text("Estudos completados! 🔥")
                     }
                     Spacer()
-                }.padding(.leading)
+                    Button(action: { skipToNext() }) {
+                        Image(systemName: "forward.fill")
+                    }.padding(.trailing).tint(.white).disabled(studyFinished)
+                }.padding(.leading).offset(y: 2)
 
                 Divider()
 
@@ -80,29 +83,17 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 }
                 .frame(height: 200)
 
-                Divider()
-                    .frame(height: 1)
+                Divider().offset(y: 2)
 
                 List {
                     if currentSessionIndex < sessionItems.count {
                         ForEach(
-                            subjects.filter { !completedSubjects.contains($0) }
-                        ) { subject in
-                            if subject != sessionItems[currentSessionIndex].subject
-                                ?? nil
-                            {
-                                HStack {
-                                    Text(subject.name)
-                                        .bold()
-                                    Spacer()
-                                    Text(formatHourAndMinute(subject.studyTime))
-                                        .bold()
-                                }
-                                .frame(height: 35)
-                                .modifier(ListRow())
+                            sessionItems.filter { item in
+                                item.id != sessionItems[currentSessionIndex].id &&
+                                !completedItems.contains(where: { $0.id == item.id })
                             }
-
-                            if subject != subjects[subjects.count - 1] {
+                        ) { sessionItem in
+                            if sessionItem.isBreak {
                                 HStack {
                                     Text("Descanso").font(.system(size: 14))
                                     Spacer()
@@ -112,13 +103,23 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                                     .font(.system(size: 14))
                                 }
                                 .modifier(ListRow())
+                            } else if let subject = sessionItem.subject {
+                                HStack {
+                                    Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
+                                        .bold()
+                                    Spacer()
+                                    Text(formatHourAndMinute(subject.studyTime))
+                                        .bold()
+                                }
+                                .frame(height: 35)
+                                .modifier(ListRow())
                             }
                         }
                     }
                 }
                 .listStyle(.plain)
                 .contentMargins(.top, -4)
-                .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+                .background(OrhadiTheme.getBGColor(for: colorScheme))
                 .environment(\.defaultMinListRowHeight, 20)
             }
         }
@@ -140,7 +141,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             }
         }
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar
         )
         .onAppear {
@@ -214,9 +215,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
         if !currentItem.isBreak, let subject = currentItem.subject {
             updateLastStudied(for: subject)
-            withAnimation {
-                completedSubjects.append(subject)
-            }
+        }
+
+        withAnimation {
+            completedItems.append(currentItem)
         }
 
         currentSessionIndex += 1
@@ -226,6 +228,34 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         } else {
             isRunning = false
             studyFinished = true
+        }
+    }
+
+    private func skipToNext() {
+        guard currentSessionIndex < sessionItems.count else { return }
+
+        let currentItem = sessionItems[currentSessionIndex]
+
+        withAnimation {
+            completedItems.append(currentItem)
+        }
+
+        let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+
+        sessionItems[currentSessionIndex].endTime = Date()
+
+        for index in sessionItems.indices where index > currentSessionIndex {
+            sessionItems[index].endTime -= adjustment
+        }
+
+        currentSessionIndex += 1
+
+        if currentSessionIndex < sessionItems.count {
+            remainingTime = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+        } else {
+            isRunning = false
+            studyFinished = true
+            remainingTime = 0
         }
     }
 
@@ -332,11 +362,3 @@ struct RollingDigitView: View {
         }
     }
 }
-
-#Preview {
-    NavigationStack {
-//        StudyingView(subjects: Subject.sampleData)
-    }
-    .environment(Settings())
-}
-

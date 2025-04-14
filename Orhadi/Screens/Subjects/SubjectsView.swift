@@ -33,70 +33,89 @@ struct SubjectsView: View {
     )
     private var subjects: [Subject]
 
+    @State private var showConfirmationDialog: Bool = false
     @State private var subjectToEdit: Subject?
     @State private var currentSheet: SubjectsSheetType? = nil
-    @State private var isEditing: Bool = false
+    @State private var isRecess: Bool = false
+    @State private var selectedDay: Int = Calendar.current.component(
+        .weekday,
+        from: Date()
+    )
+    @State private var minY: Int = 151
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
+                    minY: $minY,
+                    selectedDay: $selectedDay,
                     subjects: subjects,
                     dateExtractor: { $0.schedule }
                 ) { subject in
                     AnyView(
                         SubjectListCell(
                             subject: subject,
-                            isEditing: isEditing,
-                            currentSheet: $currentSheet
-                        )
+                            currentSheet: $currentSheet)
                     )
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Matérias")
             .toolbar {
-                if !settings.editButton {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            currentSheet = .add
-                        }) {
-                            Image(systemName: "plus.circle.fill").font(.title2)
-                        }
+                ToolbarItem(placement: .principal) {
+                    ZStack {
+                        Text("Matérias")
+                            .font(.headline)
+                            .opacity(minY < 115 ? 1 : 0)
+                            .offset(y: minY <= 70 ? -8 : 0)
+
+                        Text(
+                            Calendar.current.weekdaySymbols[selectedDay - 1]
+                                .uppercased()
+                        )
+                        .foregroundStyle(Color.indigo)
+                        .font(.caption)
+                        .opacity(minY <= 70 ? 1 : 0)
+                        .offset(y: minY <= 70 ? 8 : 14)
                     }
                 }
-                if settings.editButton {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            if isEditing {
-                                currentSheet = .add
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                                .blur(radius: isEditing ? 0 : 4)
-                        }.opacity(isEditing ? 1 : 0)
-                    }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            withAnimation(.bouncy(duration: 0.6)) {
-                                isEditing.toggle()
-                            }
-                        }) {
-                            Text("\(isEditing ? "OK" : "Editar")")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
+                        showConfirmationDialog.toggle()
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
                     }
                 }
             }
+            .confirmationDialog(
+                "Adicionar",
+                isPresented: $showConfirmationDialog
+            ) {
+                Button("Matéria") {
+                    currentSheet = .add
+                }
+                Button("Intervalo") {
+                    isRecess = true
+                    currentSheet = .add
+                }
+                Button("Cancelar", role: .cancel) {}
+            }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
-                for: .navigationBar)
+                OrhadiTheme.getBGColor(for: colorScheme),
+                for: .navigationBar
+            )
         }
-        .sheet(item: $currentSheet) { sheetType in
+        .sheet(
+            item: $currentSheet,
+            onDismiss: {
+                isRecess = false
+            }
+        ) { sheetType in
             switch sheetType {
             case .add:
-                SubjectAddView().interactiveDismissDisabled()
+                SubjectAddView(isRecess: isRecess).interactiveDismissDisabled()
             case .edit(let subject):
                 SubjectEditView(subject: subject).interactiveDismissDisabled()
             }
@@ -111,81 +130,115 @@ struct SubjectListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: Subject
-    var isEditing: Bool
     @Binding var currentSheet: SubjectsSheetType?
 
     var body: some View {
-        ZStack {
-            Image(systemName: "pencil.circle.fill")
-                .resizable()
-                .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                .blur(radius: isEditing ? 0 : 8)
-                .offset(x: -155)
-                .opacity(isEditing && settings.editButton ? 1 : 0)
-                .foregroundStyle(isEditing ? Color.blue : Color.secondary)
-                .onTapGesture {
-                    guard isEditing && settings.editButton else { return }
-                    currentSheet = .edit(subject)
+        VStack(alignment: .leading, spacing: 3) {
+            if subject.isRecess {
+                HStack {
+                    Text("INTERVALO")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .fontWeight(.semibold)
+                    Image(systemName: "clock.fill")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Text(
+                        "\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))"
+                    )
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .fontWeight(.semibold)
                 }
-
-            VStack(alignment: .leading) {
-                Text("\(subject.name)")
-                    .font(.headline)
-                    .bold()
-                Text("\(subject.teacher)")
-                    .font(.caption)
-                Text("\(subject.email)")
-                    .font(.caption)
+            } else {
                 Text(
-                    "\(formatTime(subject.startTime)) - \(formatTime(subject.endTime))"
+                    subject.name.isEmpty
+                        ? String(localized: "Sem Nome") : subject.name
                 )
-                .font(.caption)
-                Text("\(subject.place)")
-                    .font(.caption)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .offset(x: isEditing && settings.editButton ? 50 : 0)
+                .font(.headline)
+                .fontWeight(.semibold)
 
-            Image(systemName: "minus.circle.fill")
-                .resizable()
-                .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                .blur(radius: isEditing ? 0 : 8)
-                .offset(x: 165)
-                .opacity(isEditing && settings.editButton ? 1 : 0)
-                .font(.title)
-                .foregroundStyle(isEditing ? Color.red : Color.secondary)
-                .onTapGesture {
-                    guard settings.subjectsDeleteConfirmation || (isEditing && settings.editButton) else {
-                        return deleteSubject(subject: subject)
+                VStack(alignment: .leading, spacing: 2) {
+                    if !subject.teacher.isEmpty {
+                        HStack {
+                            Image(systemName: "person.fill")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.trailing, 1)
+                            Text(subject.teacher)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
-                    showConfirmation.toggle()
+
+                    if !subject.email.isEmpty {
+                        HStack {
+                            Image(systemName: "envelope.fill")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.trailing, -3)
+                            Text(subject.email)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                                .frame(maxWidth: 125, alignment: .leading)
+                        }
+                    }
+
+                    HStack {
+                        Image(systemName: "clock.fill")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Text(
+                            "\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))"
+                        )
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    }
+
+                    if !subject.place.isEmpty {
+                        HStack {
+                            Image(systemName: "location.circle.fill")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(subject.place)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
+            }
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            if settings.swipeActions && (!isEditing || !settings.editButton) {
-                Button(action: { currentSheet = .edit(subject) }) {
-                    Label("Editar", systemImage: "pencil")
-                }.tint(.blue)
+            if !subject.email.isEmpty {
+                Button(action: {
+                    let name = subject.name.isEmpty ? "Sem Nome" : subject.name
+                    let subjectEncoded =
+                        name.addingPercentEncoding(
+                            withAllowedCharacters: .urlQueryAllowed
+                        ) ?? ""
+
+                    if let url = URL(
+                        string:
+                            "mailto:\(subject.email)?subject=\(subjectEncoded)"
+                    ) {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    Image(systemName: "envelope.fill")
+                }.tint(.accentColor)
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            if settings.subjectsDeleteConfirmation
-                && settings.swipeActions
-                && settings.subjectsDeleteButton
-                && (!isEditing || !settings.editButton)
-            {
+            if settings.subjectsDeleteConfirmation {
                 Button(action: {
                     showConfirmation.toggle()
                 }) {
                     Label("Excluir", systemImage: "trash.fill")
                 }.tint(.red)
             }
-            if !settings.subjectsDeleteConfirmation
-                && settings.swipeActions
-                && settings.subjectsDeleteButton
-                && (!isEditing || !settings.editButton)
-            {
+            if !settings.subjectsDeleteConfirmation {
                 Button(
                     role: .destructive,
                     action: {
@@ -193,17 +246,24 @@ struct SubjectListCell: View {
                     }
                 ) {
                     Label("Excluir", systemImage: "trash.fill")
-                }.tint(.red)
+                }
             }
+
+            Button(action: { currentSheet = .edit(subject) }) {
+                Image(systemName: "pencil")
+            }.tint(.accentColor)
         }
-        .alert("Excluir matéria?", isPresented: $showConfirmation) {
+        .alert(
+            "Excluir \(subject.isRecess ? String(localized: "intervalo") : String(localized: "matéria"))?",
+            isPresented: $showConfirmation
+        ) {
             Button("Cancelar", role: .cancel) {}
             Button("Excluir", role: .destructive) {
                 deleteSubject(subject: subject)
             }
         } message: {
             Text(
-                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria?"
+                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? String(localized: "este intervalo") : String(localized: "esta matéria"))?"
             )
         }
     }
@@ -216,6 +276,7 @@ struct SubjectListCell: View {
 }
 
 struct SubjectEditView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
 
     @State private var selectedWeekday: Int
@@ -226,7 +287,8 @@ struct SubjectEditView: View {
         self.subject = subject
         _selectedWeekday = State(
             initialValue: Calendar.current.component(
-                .weekday, from: subject.schedule
+                .weekday,
+                from: subject.schedule
             )
         )
     }
@@ -234,18 +296,25 @@ struct SubjectEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Minha nova matéria", text: $subject.name)
-                        .autocorrectionDisabled()
-                    TextField("Prof. Ivory", text: $subject.teacher)
-                        .autocorrectionDisabled()
-                    TextField("email@exemple.com", text: $subject.email)
+                if !subject.isRecess {
+                    Section {
+                        TextField("Minha nova matéria", text: $subject.name)
+                            .autocorrectionDisabled()
+                        TextField("Prof. Ivory", text: $subject.teacher)
+                            .autocorrectionDisabled()
+                        TextField(
+                            "\("email@exemple.com")",
+                            text: $subject.email
+                        )
                         .autocorrectionDisabled()
 
-                    TextField("Sala 101", text: $subject.place)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("\(subject.name)")
+                        TextField("Sala 101", text: $subject.place)
+                            .autocorrectionDisabled()
+                    } header: {
+                        Text("\(subject.name)")
+                    }.listRowBackground(
+                        OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+                    )
                 }
 
                 Section {
@@ -264,20 +333,36 @@ struct SubjectEditView: View {
                         subject.schedule = Calendar.current.date(
                             byAdding: .day,
                             value: newWeekday - oldWeekday,
-                            to: subject.schedule)!
+                            to: subject.schedule
+                        )!
                     }
 
                     DatePicker(
-                        "Início:", selection: $subject.startTime,
-                        displayedComponents: [.hourAndMinute])
+                        "Início:",
+                        selection: $subject.startTime,
+                        displayedComponents: [.hourAndMinute]
+                    )
                     DatePicker(
-                        "Fim:", selection: $subject.endTime,
-                        displayedComponents: [.hourAndMinute])
+                        "Fim:",
+                        selection: $subject.endTime,
+                        displayedComponents: [.hourAndMinute]
+                    )
+                    .onChange(of: subject.endTime) { _, newDate in
+                        if newDate <= subject.startTime {
+                            subject.endTime = subject.startTime + 60
+                        }
+                    }
                 } header: {
                     Text("Horário")
-                }
+                }.listRowBackground(
+                    OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+                )
             }
-            .navigationTitle("Editar Matéria")
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
+            .navigationTitle(
+                "Editar \(subject.isRecess ? String(localized: "Intervalo") : String(localized: "Matéria"))"
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -291,53 +376,63 @@ struct SubjectEditView: View {
 }
 
 struct SubjectAddView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @Query private var subjects: [Subject]
 
-    @State private var name: String = String(localized: "Minha nova matéria")
-    @State private var teacher: String = String(localized: "Prof. Ivory")
-    @State private var email: String = String(localized: "email@exemple.com")
-    @State private var schedule: Date
-    @State private var startTime: Date = Calendar.current.date(
-        bySettingHour: 7, minute: 0, second: 0, of: Date())!
-    @State private var endTime: Date = Calendar.current.date(
-        bySettingHour: 7, minute: 50, second: 0, of: Date())!
-    @State private var place: String = String(localized: "Sala 101")
-    @State private var selectedWeekday: Int
+    @State private var name: String = ""
+    @State private var teacher: String = ""
+    @State private var email: String = ""
+    @State private var schedule: Date = Date()
+    @State private var startTime: Date
+    @State private var endTime: Date
+    @State private var place: String = ""
+    @State private var selectedWeekday: Int = Calendar.current.component(
+        .weekday,
+        from: Date()
+    )
 
-    init() {
-        let date: Date = {
+    var isRecess: Bool
+
+    init(isRecess: Bool) {
+        let startTimeDate: Date = {
             var components = Calendar.current.dateComponents(
-                [.year, .month, .day], from: Date())
-            components.year = 2024
-            components.month = 9
+                [.year, .month, .day, .hour],
+                from: Date()
+            )
+            components.year = 0
+            components.month = 1
             components.day = 1
+            components.hour = 7
             return Calendar.current.date(from: components)!
         }()
 
-        _schedule = State(initialValue: date)
-        _selectedWeekday = State(
-            initialValue: Calendar.current.component(.weekday, from: date)
-        )
+        _startTime = State(initialValue: startTimeDate)
+        _endTime = State(initialValue: startTimeDate + 3000)
+        self.isRecess = isRecess
     }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    TextField("Minha nova matéria", text: $name)
-                        .autocorrectionDisabled()
-                    TextField("Prof. Ivory", text: $teacher)
-                        .autocorrectionDisabled()
-                    TextField("email@exemple.com", text: $email)
-                        .autocorrectionDisabled()
+                if !isRecess {
+                    Section {
+                        TextField("Minha nova matéria", text: $name)
+                            .autocorrectionDisabled()
+                        TextField("Prof. Ivory", text: $teacher)
+                            .autocorrectionDisabled()
+                        TextField("\("email@exemple.com")", text: $email)
+                            .autocorrectionDisabled()
 
-                    TextField("Sala 101", text: $place)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("Nova Matéria")
+                        TextField("Sala 101", text: $place)
+                            .autocorrectionDisabled()
+                    } header: {
+                        Text("Nova Matéria")
+                    }.listRowBackground(
+                        OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+                    )
                 }
 
                 Section {
@@ -353,20 +448,39 @@ struct SubjectAddView: View {
                         schedule = Calendar.current.date(
                             byAdding: .day,
                             value: newWeekday - oldWeekday,
-                            to: schedule)!
+                            to: schedule
+                        )!
                     }
 
                     DatePicker(
-                        "Início:", selection: $startTime,
-                        displayedComponents: [.hourAndMinute])
+                        "Início:",
+                        selection: $startTime,
+                        displayedComponents: [.hourAndMinute]
+                    )
                     DatePicker(
-                        "Fim:", selection: $endTime,
-                        displayedComponents: [.hourAndMinute])
+                        "Fim:",
+                        selection: $endTime,
+                        displayedComponents: [.hourAndMinute]
+                    )
+                    .onChange(of: endTime) { _, newDate in
+                        if newDate <= startTime {
+                            endTime = startTime + 60
+                        }
+                    }
+
                 } header: {
                     Text("Horário")
-                }
+                }.listRowBackground(
+                    OrhadiTheme.getSecondaryBGColor(for: colorScheme)
+                )
             }
-            .navigationTitle("Nova Matéria")
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
+            .navigationTitle(
+                isRecess
+                    ? String(localized: "Novo Intervalo")
+                    : String(localized: "Nova Matéria")
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -391,7 +505,8 @@ struct SubjectAddView: View {
             schedule: schedule,
             startTime: startTime,
             endTime: endTime,
-            place: place
+            place: place,
+            isRecess: isRecess
         )
 
         withAnimation(.bouncy) {

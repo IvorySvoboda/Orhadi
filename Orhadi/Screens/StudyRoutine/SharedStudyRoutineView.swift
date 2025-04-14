@@ -15,22 +15,27 @@ struct SharedStudyRoutineView: View {
     @Query(sort: [SortDescriptor(\Subject.name)], animation: .smooth)
     private var subjects: [Subject]
 
-    @State private var isEditing: Bool = false
     @State private var subjectToEdit: Subject?
     @State private var subjectsToStudy: [Subject] = []
     @State private var navigateToStudyingView: Bool = false
+    @State private var selectedDay: Int = Calendar.current.component(
+        .weekday,
+        from: Date()
+    )
+    @State private var minY: Int = 151
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    subjects: subjects.filter { $0.isHidden != true },
+                    minY: $minY,
+                    selectedDay: $selectedDay,
+                    subjects: subjects.filter { !$0.isHidden && !$0.isRecess },
                     dateExtractor: { $0.studyDay }
                 ) { subject in
                     AnyView(
                         SharedStudyRoutineListCell(
                             subject: subject,
-                            isEditing: isEditing,
                             subjectToEdit: $subjectToEdit,
                             navigateToStudyingView: $navigateToStudyingView,
                             subjectsToStudy: $subjectsToStudy
@@ -39,45 +44,57 @@ struct SharedStudyRoutineView: View {
                 }
             }
             .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Rotina de Estudos")
             .toolbar {
-                if settings.editButton {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button(action: {
-                            withAnimation(.bouncy(duration: 0.6)) {
-                                isEditing.toggle()
-                            }
-                        }) {
-                            Text("\(isEditing ? "OK" : "Editar")")
-                        }
+                ToolbarItem(placement: .principal) {
+                    ZStack {
+                        Text("Rotina de Estudos")
+                            .font(.headline)
+                            .opacity(minY < 115 ? 1 : 0)
+                            .offset(y: minY <= 70 ? -8 : 0)
+
+                        Text(
+                            Calendar.current.weekdaySymbols[selectedDay - 1]
+                                .uppercased()
+                        )
+                        .foregroundStyle(Color.indigo)
+                        .font(.caption)
+                        .opacity(minY <= 70 ? 1 : 0)
+                        .offset(y: minY <= 70 ? 8 : 14)
                     }
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        subjectsToStudy = subjects.filter {
-                            let todayWeekday = Calendar.current.component(
-                                .weekday,
-                                from: Date()
-                            )
-                            let studyWeekday = Calendar.current.component(
-                                .weekday,
-                                from: $0.studyDay
-                            )
+                    let filteredSubjects = subjects.filter {
+                        let todayWeekday = Calendar.current.component(
+                            .weekday,
+                            from: Date()
+                        )
+                        let studyWeekday = Calendar.current.component(
+                            .weekday,
+                            from: $0.studyDay
+                        )
 
-                            return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
-                        }
+                        return studyWeekday == todayWeekday
+                        && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                        && !$0.isRecess && !$0.isHidden
+                    }
+
+                    Button(action: {
+                        guard !filteredSubjects.isEmpty else { return }
+
+                        subjectsToStudy = filteredSubjects
 
                         navigateToStudyingView.toggle()
                     }) {
                         Image(systemName: "play.circle.fill")
                             .font(.title2)
                     }
+                    .disabled(filteredSubjects.isEmpty)
                 }
             }
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme), for: .navigationBar)
+                OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
             .navigationDestination(
                 isPresented: $navigateToStudyingView,
                 destination: {
@@ -86,7 +103,6 @@ struct SharedStudyRoutineView: View {
                     )
                 }
             )
-
         }
         .sheet(
             item: $subjectToEdit,
@@ -101,72 +117,47 @@ struct SharedStudyRoutineListCell: View {
     @Environment(Settings.self) private var settings
 
     var subject: Subject
-    var isEditing: Bool
     @Binding var subjectToEdit: Subject?
     @Binding var navigateToStudyingView: Bool
     @Binding var subjectsToStudy: [Subject]
 
     var body: some View {
-        ZStack {
-            Image(systemName: "pencil.circle.fill")
-                .resizable()
-                .frame(width: isEditing ? 28 : 18, height: isEditing ? 28 : 18)
-                .blur(radius: isEditing ? 0 : 8)
-                .offset(x: -155)
-                .opacity(isEditing && settings.editButton ? 1 : 0)
-                .foregroundStyle(isEditing ? Color.blue : Color.secondary)
-                .onTapGesture {
-                    guard isEditing && settings.editButton else { return }
-                    subjectToEdit = subject
-                }
-
-            HStack {
-                if Calendar.current.isDate(
-                    subject.lastStudied,
-                    equalTo: Date(),
-                    toGranularity: .weekOfYear)
-                {
-                    Image(systemName: "checkmark")
-                }
-                
-                Text(subject.name)
-                Spacer()
-                Text(formatHourAndMinute(subject.studyTime))
-                    .bold()
-                    .blur(radius: !isEditing || !settings.editButton ? 0 : 8)
-                    .opacity(!isEditing || !settings.editButton ? 1 : 0)
-                    .scaleEffect(!isEditing || !settings.editButton ? 1 : 0.2)
+        HStack {
+            if Calendar.current.isDate(
+                subject.lastStudied,
+                equalTo: Date(),
+                toGranularity: .weekOfYear)
+            {
+                Image(systemName: "checkmark")
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .offset(x: isEditing && settings.editButton ? 45 : 0)
+
+            Text(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)
+            Spacer()
+            Text(formatHourAndMinute(subject.studyTime))
+                .bold()
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            if settings.swipeActions && (!isEditing || !settings.editButton) {
-                Button(action: { subjectToEdit = subject }
-                ) {
-                    Label(
-                        "Editar",
-                        systemImage: "pencil"
-                    )
-                }.tint(.blue)
-
-                Button(action: {
-                    subjectsToStudy = [subject]
-
-                    navigateToStudyingView.toggle()
-                }) {
-                    Label(
-                        "Iniciar",
-                        systemImage: "play.circle.fill"
-                    )
-                }.tint(.gray)
+            Button(action: {
+                subjectsToStudy = [subject]
+                navigateToStudyingView.toggle()
+            }) {
+                Label("Iniciar", systemImage: "play.circle.fill")
+            }.tint(.accentColor)
+        }
+        .swipeActions(edge: .trailing) {
+            Button(
+                action: { subjectToEdit = subject }
+            ) {
+                Label("Editar", systemImage: "pencil")
             }
+            .tint(.accentColor)
         }
     }
 }
 
 struct SharedSREditView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: Subject
     @State private var selectedWeekday: Int
@@ -206,7 +197,7 @@ struct SharedSREditView: View {
                     )
                 } header: {
                     Text("\(subject.name)")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Toggle(
@@ -237,8 +228,10 @@ struct SharedSREditView: View {
                     }
                 } header: {
                     Text("Visualização")
-                }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
             .navigationTitle("Editar Estudo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

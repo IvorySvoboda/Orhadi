@@ -12,7 +12,6 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
 
-    @State private var id: UUID = UUID()
     @State private var isErasing: Bool = false
     @State private var showEraseDataAlert: Bool = false
 
@@ -21,6 +20,30 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+//                Section {
+//                    HStack {
+//                        Image(systemName: "person.circle.fill")
+//                            .resizable()
+//                            .frame(width: 45, height: 45)
+//                            .foregroundStyle(Color.secondary)
+//                        VStack(alignment: .leading, spacing: 3) {
+//                            Text("Sem Nome")
+//                                .font(.headline)
+//                            Text("Level: 1")
+//                                .font(.caption)
+//                                .foregroundStyle(Color.secondary)
+//                        }
+//                    }
+//                    .frame(height: 50)
+//                    .alignmentGuide(.listRowSeparatorLeading) {
+//                        viewDimensions in
+//                        return 0
+//                    }
+//                    NavigationLink("Conquistas") {
+//                        Text("OIOIOI")
+//                    }
+//                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
                 Section {
                     NavigationLink {
                         SubjectsSettingsView(settings: settings)
@@ -39,7 +62,7 @@ struct SettingsView: View {
                             "Rotina de Estudos",
                             systemImage: "graduationcap.fill")
                     }
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     Picker("Tema", selection: $settings.theme) {
@@ -47,56 +70,9 @@ struct SettingsView: View {
                         Text("Claro").tag(Theme.light)
                         Text("Escuro").tag(Theme.dark)
                     }
-
-                    Picker(
-                        "Cor de Destaque", selection: $settings.accentColor
-                    ) {
-                        Text("Azul (padrão)").tag(0)
-                        Text("Verde").tag(1)
-                        Text("Vermelho").tag(2)
-                        Text("Roxo").tag(3)
-                        Text("Laranja").tag(4)
-                        Text("Índigo").tag(5)
-                        Text("Ciano").tag(6)
-                        Text("Amarelo").tag(7)
-                        Text("Rosa").tag(8)
-                    }
-                    .onChange(of: settings.accentColor) {
-                        id = UUID()
-                    }
                 } header: {
                     Text("Aparência")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
-
-                Section {
-                    Toggle(isOn: $settings.swipeActions) {
-                        Label("Ações de arraste", systemImage: "hand.draw.fill")
-                    }
-                    .help("Deslize itens para a esquerda ou direita para executar ações rapidamente.")
-                    .tint(.green)
-                    .onChange(of: settings.swipeActions) { _, newValue in
-                        guard !newValue && !settings.editButton else {
-                            return
-                        }
-                        settings.editButton = true
-                    }
-
-                    Toggle(isOn: $settings.editButton) {
-                        Label("Botão de Editar", systemImage: "pencil")
-                    }
-                    .help("Adiciona um botão de edição na barra de ferramentas.")
-                    .tint(.green)
-                    .onChange(of: settings.editButton) { _, newValue in
-                        guard !newValue && !settings.swipeActions else {
-                            return
-                        }
-                        settings.swipeActions = true
-                    }
-                } header: {
-                    Text("Interação")
-                } footer: {
-                    Text("Essas configurações alteram a forma de interagir com os itens da interface.")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     NavigationLink("Dados") {
@@ -123,7 +99,7 @@ struct SettingsView: View {
 
                 } header: {
                     Text("Dados")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     HStack {
@@ -135,12 +111,14 @@ struct SettingsView: View {
                                     cornerRadius: 15, style: .continuous))
 
                         VStack(alignment: .leading, spacing: 2) {
-                            let version = AppInfoProvider.appVersion()
-                            let build = AppInfoProvider.appBuild()
-
+#if DEBUG
+                            Text("Orhadi (Debug)")
+                                .bold()
+#else
                             Text("Orhadi")
                                 .bold()
-                            Text("Versão: \(version) (\(build))")
+#endif
+                            Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Text("© Zyvoxi Industries")
@@ -154,16 +132,16 @@ struct SettingsView: View {
                             top: 10, leading: 10, bottom: 10, trailing: 10))
                 } header: {
                     Text("Sobre")
-                }.listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
-            .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
             .navigationTitle("Ajustes")
             .toolbarBackground(
-                OrhadiTheme.getBackgroundColor(for: colorScheme),
+                OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
 
-        }.id(id)
+        }
     }
 
     @MainActor
