@@ -29,6 +29,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                 let hasTeacher = !subject.teacher.isEmpty || !subject.email.isEmpty
 
                 let teacher: OrhadiSchemaV2.Teacher? = hasTeacher ? OrhadiSchemaV2.Teacher(
+                    id: UUID().uuidString,
                     name: subject.teacher.isEmpty ? "" : subject.teacher,
                     email: subject.email.isEmpty ? "" : subject.email
                 ) : nil
