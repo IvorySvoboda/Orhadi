@@ -23,9 +23,12 @@ enum MigrationPlan: SchemaMigrationPlan {
     static let orhadiV1toV2 = MigrationStage.custom(
         fromVersion: OrhadiSchemaV1.self,
         toVersion: OrhadiSchemaV2.self) { context in
+            print("migrating...")
+
             let subjectsV1 = try context.fetch(FetchDescriptor<OrhadiSchemaV1.Subject>())
 
             for subject in subjectsV1 {
+                print("migrating...")
                 context.insert(OrhadiSchemaV2.Subject(
                     name: subject.name,
                     teacher: nil,
@@ -37,6 +40,7 @@ enum MigrationPlan: SchemaMigrationPlan {
                 ))
                 if !subject.teacher.isEmpty || !subject.email.isEmpty {
                     teachersV1toV2.append(MigratingTeacherFromV1toV2(teacher: subject.teacher.isEmpty ? "" : subject.teacher, email: subject.email.isEmpty ? "" : subject.email))
+                    print("migrating2...")
                 }
             }
 
