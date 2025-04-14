@@ -119,7 +119,7 @@ struct ToDosListCell: View {
                         }
                         .markdownBlockStyle(\.blockquote) { configuration in
                           configuration.label
-                            .padding()
+                            .padding(5)
                             .markdownTextStyle {
                               BackgroundColor(nil)
                             }
@@ -128,7 +128,7 @@ struct ToDosListCell: View {
                                 .fill(Color.accentColor)
                                 .frame(width: 4)
                             }
-                            .background(Color.accentColor.opacity(0.5))
+                            .background(Color.accentColor.opacity(0.25))
                         }
                 } else {
                     Text("Não informado.").opacity(0.5)

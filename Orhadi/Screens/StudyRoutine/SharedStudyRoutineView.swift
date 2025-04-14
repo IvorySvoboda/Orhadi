@@ -52,7 +52,7 @@ struct SharedStudyRoutineView: View {
                         Text("Rotina de Estudos")
                             .font(.headline)
                             .opacity(minY < 115 ? 1 : 0)
-                            .offset(y: minY <= 70 ? -10 : 0)
+                            .offset(y: minY <= 70 ? -8 : 0)
 
                         Text(
                             Calendar.current.weekdaySymbols[selectedDay - 1]
@@ -61,7 +61,7 @@ struct SharedStudyRoutineView: View {
                         .foregroundStyle(Color.indigo)
                         .font(.caption)
                         .opacity(minY <= 70 ? 1 : 0)
-                        .offset(y: 8)
+                        .offset(y: minY <= 70 ? 8 : 14)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {

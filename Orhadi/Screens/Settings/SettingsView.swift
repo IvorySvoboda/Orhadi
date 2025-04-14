@@ -20,29 +20,29 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    HStack {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 45, height: 45)
-                            .foregroundStyle(Color.secondary)
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("Sem Nome")
-                                .font(.headline)
-                            Text("Level: 1")
-                                .font(.caption)
-                                .foregroundStyle(Color.secondary)
-                        }
-                    }
-                    .frame(height: 50)
-                    .alignmentGuide(.listRowSeparatorLeading) {
-                        viewDimensions in
-                        return 0
-                    }
-                    NavigationLink("Conquistas") {
-                        Text("OIOIOI")
-                    }
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+//                Section {
+//                    HStack {
+//                        Image(systemName: "person.circle.fill")
+//                            .resizable()
+//                            .frame(width: 45, height: 45)
+//                            .foregroundStyle(Color.secondary)
+//                        VStack(alignment: .leading, spacing: 3) {
+//                            Text("Sem Nome")
+//                                .font(.headline)
+//                            Text("Level: 1")
+//                                .font(.caption)
+//                                .foregroundStyle(Color.secondary)
+//                        }
+//                    }
+//                    .frame(height: 50)
+//                    .alignmentGuide(.listRowSeparatorLeading) {
+//                        viewDimensions in
+//                        return 0
+//                    }
+//                    NavigationLink("Conquistas") {
+//                        Text("OIOIOI")
+//                    }
+//                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
                     NavigationLink {

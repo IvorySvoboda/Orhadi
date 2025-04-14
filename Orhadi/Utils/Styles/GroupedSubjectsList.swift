@@ -17,6 +17,8 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
     let dateExtractor: (Subject) -> Date
     let cell: (Subject) -> AnyView
 
+    @State private var isPressed: Int = 0
+
     var body: some View {
         GeometryReader { geo in
             let currentMinY = geo.frame(in: .global).minY
@@ -53,6 +55,7 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                                         for: colorScheme
                                     ) : .primary
                             )
+                            .scaleEffect(isPressed == index ? 1.05 : 1)
                             .onTapGesture {
                                 withAnimation(
                                     .interactiveSpring(
@@ -67,6 +70,29 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                                     )
                                 }
                             }
+                            .simultaneousGesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onChanged { _ in
+                                        withAnimation(
+                                            .interactiveSpring(
+                                                response: 0.5,
+                                                dampingFraction: 0.8
+                                            )
+                                        ) {
+                                            isPressed = index
+                                        }
+                                    }
+                                    .onEnded { _ in
+                                        withAnimation(
+                                            .interactiveSpring(
+                                                response: 0.5,
+                                                dampingFraction: 0.8
+                                            )
+                                        ) {
+                                            isPressed = 0
+                                        }
+                                    }
+                            )
                             .id(index)
                         }
                     }
@@ -90,7 +116,7 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
             }
         }
         .listRowInsets(
-            EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+            EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0)
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
