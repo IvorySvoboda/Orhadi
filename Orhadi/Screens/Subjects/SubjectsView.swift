@@ -235,7 +235,7 @@ struct SubjectListCell: View {
                 Button(action: {
                     showConfirmation.toggle()
                 }) {
-                    Label("Excluir", systemImage: "trash.fill")
+                    Image(systemName: "trash.fill")
                 }.tint(.red)
             }
             if !settings.subjectsDeleteConfirmation {
@@ -245,7 +245,7 @@ struct SubjectListCell: View {
                         deleteSubject(subject: subject)
                     }
                 ) {
-                    Label("Excluir", systemImage: "trash.fill")
+                    Image(systemName: "trash.fill")
                 }
             }
 

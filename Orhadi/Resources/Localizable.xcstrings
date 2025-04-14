@@ -15,7 +15,8 @@
             "value" : "%1$@ – %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lld" : {
       "shouldTranslate" : false
@@ -52,35 +53,34 @@
       }
     },
     "A Tarefa Venceu!" : {
-
-    },
-    "A Tarefa: %@ Venceu!" : {
-
-    },
-    "Ações de arraste" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Swipe actions"
+            "value" : "The Task Expired!"
           }
         }
       }
     },
-    "Adiciona um botão de edição na barra de ferramentas." : {
-      "extractionState" : "stale",
+    "A Tarefa: %@ Venceu!" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add an edit button to the toolbar."
+            "value" : "The Task: %@ Expired!"
           }
         }
       }
     },
     "Adicionar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
     },
     "Adicionar Matéria" : {
       "localizations" : {
@@ -108,17 +108,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Settings"
-          }
-        }
-      }
-    },
-    "Amarelo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yellow"
           }
         }
       }
@@ -193,17 +182,6 @@
         }
       }
     },
-    "Arraste para Excluir" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe to Delete"
-          }
-        }
-      }
-    },
     "Auto" : {
       "localizations" : {
         "en" : {
@@ -214,45 +192,12 @@
         }
       }
     },
-    "Azul (padrão)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blue (default)"
-          }
-        }
-      }
-    },
-    "Botão de Editar" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Button"
-          }
-        }
-      }
-    },
     "Cancelar" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
-          }
-        }
-      }
-    },
-    "Ciano" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cyan"
           }
         }
       }
@@ -297,26 +242,12 @@
         }
       }
     },
-    "Conquistas" : {
-
-    },
     "Continuar" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Continue"
-          }
-        }
-      }
-    },
-    "Cor de Destaque" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accent Color"
           }
         }
       }
@@ -347,28 +278,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Break"
-          }
-        }
-      }
-    },
-    "Deslize itens para a esquerda ou direita para executar ações rapidamente." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Swipe items left or right to quickly perform actions."
-          }
-        }
-      }
-    },
-    "Dia da Semana" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weekday"
           }
         }
       }
@@ -415,7 +324,14 @@
       }
     },
     "Editar %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit %@"
+          }
+        }
+      }
     },
     "Editar Estudo" : {
       "localizations" : {
@@ -423,17 +339,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Study"
-          }
-        }
-      }
-    },
-    "email@exemple.com" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "email@exemple.com"
           }
         }
       }
@@ -449,7 +354,14 @@
       }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir %@?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action is permanent and cannot be undone. Are you sure you want to delete %@?"
+          }
+        }
+      }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?" : {
       "localizations" : {
@@ -471,17 +383,6 @@
         }
       }
     },
-    "Essas configurações alteram a forma de interagir com os itens da interface." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "These settings change how you interact with the interface items."
-          }
-        }
-      }
-    },
     "Esta ação é permanente e não pode ser desfeita. Tem certeza que deseja continuar?" : {
       "localizations" : {
         "en" : {
@@ -493,10 +394,24 @@
       }
     },
     "esta matéria" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this subject"
+          }
+        }
+      }
     },
     "este intervalo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "this recess"
+          }
+        }
+      }
     },
     "Estudando" : {
       "localizations" : {
@@ -540,7 +455,14 @@
       }
     },
     "Excluir %@?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete %@?"
+          }
+        }
+      }
     },
     "Excluir matéria?" : {
       "localizations" : {
@@ -593,10 +515,24 @@
       }
     },
     "Falta 1 dia para a tarefa expirar." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The task will expire in 1 day."
+          }
+        }
+      }
     },
     "Falta 1 hora para a tarefa expirar." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The task will expire in 1 hour."
+          }
+        }
+      }
     },
     "Fazer o dever de casa" : {
       "localizations" : {
@@ -618,17 +554,6 @@
         }
       }
     },
-    "Geral" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
-          }
-        }
-      }
-    },
     "HH:mm" : {
       "localizations" : {
         "en" : {
@@ -645,17 +570,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Schedule"
-          }
-        }
-      }
-    },
-    "Horas Estudadas" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Studied Hours"
           }
         }
       }
@@ -690,17 +604,6 @@
         }
       }
     },
-    "Índigo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indigo"
-          }
-        }
-      }
-    },
     "Iniciar" : {
       "localizations" : {
         "en" : {
@@ -721,25 +624,35 @@
         }
       }
     },
-    "Interação" : {
-      "extractionState" : "stale",
+    "intervalo" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Interaction"
+            "value" : "recess"
           }
         }
       }
     },
-    "intervalo" : {
-
-    },
     "Intervalo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recess"
+          }
+        }
+      }
     },
     "INTERVALO" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RECESS"
+          }
+        }
+      }
     },
     "Isso removerá a matéria da visualização. Você pode reativá-la a qualquer momento nos ajustes." : {
       "localizations" : {
@@ -751,25 +664,25 @@
         }
       }
     },
-    "Laranja" : {
-      "extractionState" : "stale",
+    "matéria" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Orange"
+            "value" : "subject"
           }
         }
       }
     },
-    "Level: 1" : {
-
-    },
-    "matéria" : {
-
-    },
     "Matéria" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subject"
+          }
+        }
+      }
     },
     "Matérias" : {
       "localizations" : {
@@ -787,28 +700,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Shared Subjects"
-          }
-        }
-      }
-    },
-    "Matérias Estudadas" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Studied Subjects"
-          }
-        }
-      }
-    },
-    "Matérias mais Estudada por Dia" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Most Studied Subjects by Day"
           }
         }
       }
@@ -854,7 +745,14 @@
       }
     },
     "Não Informado" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Informed"
+          }
+        }
+      }
     },
     "Não informado." : {
       "localizations" : {
@@ -897,7 +795,14 @@
       }
     },
     "Novo Intervalo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Recess"
+          }
+        }
+      }
     },
     "Ocultar" : {
       "localizations" : {
@@ -919,10 +824,7 @@
         }
       }
     },
-    "OIOIOI" : {
-
-    },
-    "Orhadi (Debug)" : {
+    "Orhadi" : {
       "shouldTranslate" : false
     },
     "Prazo:" : {
@@ -977,45 +879,12 @@
         }
       }
     },
-    "Relatório Semanal" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weekly Report"
-          }
-        }
-      }
-    },
-    "Rosa" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pink"
-          }
-        }
-      }
-    },
     "Rotina de Estudos" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Study Routine"
-          }
-        }
-      }
-    },
-    "Roxo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purple"
           }
         }
       }
@@ -1073,7 +942,14 @@
       }
     },
     "Sem Nome" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Name"
+          }
+        }
+      }
     },
     "Sexta-feira" : {
       "extractionState" : "manual",
@@ -1153,28 +1029,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tuesday"
-          }
-        }
-      }
-    },
-    "Total de Horas Estudadas por Dia" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total Studied Hours by Day"
-          }
-        }
-      }
-    },
-    "Total de Matérias Estudadas por Dia" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Total Studied Subjects by Day"
           }
         }
       }
