@@ -8,29 +8,30 @@
 import SwiftData
 import SwiftUI
 
-enum StudyRoutineSheetType: Identifiable {
-    case add
-    case edit(SRSubject)
-
-    var id: String {
-        switch self {
-        case .add:
-            return "add"
-        case .edit(let subject):
-            return subject.id
-        }
-    }
-}
-
 struct StudyRoutineView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+
+    enum SheetType: Identifiable {
+        case add
+        case edit(SRSubject)
+
+        var id: String {
+            switch self {
+            case .add:
+                return "add"
+            case .edit(let subject):
+                return subject.id
+            }
+        }
+    }
+
 
     @Query(sort: [SortDescriptor(\SRSubject.name)], animation: .smooth)
     private var subjects: [SRSubject]
 
     @State private var isEditing: Bool = false
-    @State private var currentSheet: StudyRoutineSheetType? = nil
+    @State private var currentSheet: SheetType? = nil
     @State private var subjectsToStudy: [SRSubject] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(
@@ -155,7 +156,7 @@ struct StudyRoutineListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: SRSubject
-    @Binding var currentSheet: StudyRoutineSheetType?
+    @Binding var currentSheet: StudyRoutineView.SheetType?
     @Binding var navigateToStudyingView: Bool
     @Binding var subjectsToStudy: [SRSubject]
 

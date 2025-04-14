@@ -239,8 +239,16 @@ struct DataSettingsView: View {
     private func exportSubjects() {
         Task.detached(priority: .background) {
             do {
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration
+                )
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor(sortBy: [
@@ -265,8 +273,16 @@ struct DataSettingsView: View {
     private func exportToDos() {
         Task.detached(priority: .background) {
             do {
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration
+                )
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor(sortBy: [
@@ -291,8 +307,16 @@ struct DataSettingsView: View {
     private func exportSRSubjects() {
         Task.detached(priority: .background) {
             do {
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration
+                )
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor(sortBy: [
@@ -326,7 +350,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -370,9 +394,10 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
                     migrationPlan: MigrationPlan.self,
-                    configurations: configuration)
+                    configurations: configuration
+                )
 
                 let context = ModelContext(container)
 
@@ -457,9 +482,10 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
                     migrationPlan: MigrationPlan.self,
-                    configurations: configuration)
+                    configurations: configuration
+                )
 
                 let context = ModelContext(container)
 
