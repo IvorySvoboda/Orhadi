@@ -26,26 +26,29 @@ enum MigrationPlan: SchemaMigrationPlan {
             let subjectsV1 = try context.fetch(FetchDescriptor<OrhadiSchemaV1.Subject>())
 
             for subject in subjectsV1 {
+                let hasTeacher = !subject.teacher.isEmpty || !subject.email.isEmpty
+
+                let teacher: OrhadiSchemaV2.Teacher? = hasTeacher ? OrhadiSchemaV2.Teacher(
+                    name: subject.teacher.isEmpty ? "" : subject.teacher,
+                    email: subject.email.isEmpty ? "" : subject.email
+                ) : nil
+
                 print("migrating...")
+
                 context.insert(OrhadiSchemaV2.Subject(
+                    id: UUID().uuidString,
                     name: subject.name,
-                    teacher: nil,
+                    teacher: teacher,
                     schedule: subject.schedule,
                     startTime: subject.startTime,
                     endTime: subject.endTime,
                     place: subject.place,
                     isRecess: subject.isRecess
                 ))
-//                if !subject.teacher.isEmpty || !subject.email.isEmpty {
-//                    context.insert(OrhadiSchemaV2.Teacher(
-//                        name: subject.teacher,
-//                        email: subject.email
-//                    ))
-//                }
             }
 
             try context.delete(model: OrhadiSchemaV1.Subject.self)
-
+            print("modelo antigo deletado")
             try context.save()
         } didMigrate: { _ in
             print("Migrated from Orhadi Schema Version 1 to Version 2")
