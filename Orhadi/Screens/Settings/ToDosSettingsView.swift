@@ -20,22 +20,14 @@ struct ToDosSettingsView: View {
                     "Confirmar para Excluir",
                     isOn: $settings.todosDeleteConfirmation
                 )
-                .tint(.green)
-                Toggle(
-                    "Arraste para Excluir",
-                    isOn: $settings.todosDeleteButton
-                )
-                .tint(.green)
-            } header: {
-                Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             Section {
                 Toggle(
                     "Agendar Notificações",
                     isOn: $settings.scheduleNotifications
-                ).tint(.green).disabled(!notificationStatus)
+                ).disabled(!notificationStatus)
             } header: {
                 Text("Notificações")
             } footer: {
@@ -43,14 +35,14 @@ struct ToDosSettingsView: View {
                     "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
                 )
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in

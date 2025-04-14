@@ -95,7 +95,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Matérias")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             /// To-Dos Import/Export
             Section {
@@ -160,7 +160,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Tarefas")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
             /// Study Routine Subjects Import/Export
             Section {
@@ -224,14 +224,14 @@ struct DataSettingsView: View {
             } header: {
                 Text("Rotina de Estudos")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Dados")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
     }
 
@@ -321,13 +321,19 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration
+                )
+
                 let context = ModelContext(container)
 
-                let descriptor = FetchDescriptor(sortBy: [
-                    .init(\Subject.schedule, order: .forward)
-                ])
+                let descriptor = FetchDescriptor<Subject>()
 
                 let existingSubjects = try context.fetch(descriptor)
                 for subject in existingSubjects {
@@ -359,8 +365,15 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration)
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor<ToDo>()
@@ -439,8 +452,15 @@ struct DataSettingsView: View {
             do {
                 guard url.startAccessingSecurityScopedResource() else { return }
 
-                let container = try ModelContainer(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self)
+                let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+                let configuration = ModelConfiguration(url: databasePath)
+
+                let container = try ModelContainer.init(
+                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                    migrationPlan: MigrationPlan.self,
+                    configurations: configuration)
+
                 let context = ModelContext(container)
 
                 let descriptor = FetchDescriptor(sortBy: [

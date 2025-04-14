@@ -16,23 +16,15 @@ struct SubjectsSettingsView: View {
         Form {
             Section {
                 Toggle("Confirmar para Excluir", isOn: $settings.subjectsDeleteConfirmation)
-                    .tint(.green)
-                Toggle(
-                    "Arraste para Excluir",
-                    isOn: $settings.subjectsDeleteButton
-                )
-                .tint(.green)
-            } header: {
-                Text("Geral")
             }
-            .listRowBackground(Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.05))
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
-        .background(OrhadiTheme.getBackgroundColor(for: colorScheme))
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .scrollContentBackground(.hidden)
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBackgroundColor(for: colorScheme),
+            OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
     }
 }

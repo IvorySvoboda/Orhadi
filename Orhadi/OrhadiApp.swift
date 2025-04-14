@@ -9,24 +9,26 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
+typealias Subject = SubjectSchemaV1.Subject
+typealias SRSubject = SRSubjectSchemaV1.SRSubject
+typealias ToDo = ToDoSchemaV1.ToDo
+typealias Settings = SettingsSchemaV2.Settings
+
 @main
 struct OrhadiApp: App {
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Subject.self,
-            SRSubject.self,
-            ToDo.self,
-            Settings.self,
-        ])
-
-        let modelConfiguration = ModelConfiguration(
-            schema: schema, isStoredInMemoryOnly: false
-        )
-
         do {
-            return try ModelContainer(
-                for: schema, configurations: [modelConfiguration]
+            let databasePath = URL.documentsDirectory.appending(path: "database.store")
+
+            let configuration = ModelConfiguration(url: databasePath)
+
+            let container = try ModelContainer.init(
+                for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                migrationPlan: MigrationPlan.self,
+                configurations: configuration
             )
+
+            return container
         } catch {
             fatalError(
                 "Could not create ModelContainer: \(error.localizedDescription)"

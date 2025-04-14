@@ -15,7 +15,7 @@ struct CustomDisclosureGroupStyle: DisclosureGroupStyle {
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            withAnimation {
+            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8)) {
                 configuration.isExpanded.toggle()
             }
         }

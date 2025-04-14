@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MarkdownTextField: UIViewRepresentable {
+    @Environment(\.colorScheme) private var colorScheme
+
     @Binding var text: String
 
     func makeUIView(context: Context) -> UITextView {
@@ -17,6 +19,39 @@ struct MarkdownTextField: UIViewRepresentable {
         textView.isEditable = true
         textView.delegate = context.coordinator
         textView.backgroundColor = .clear
+        textView.autocorrectionType = .no
+
+        // MARK: - Toolbar
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        toolbar.backgroundColor = UIColor(OrhadiTheme.getBGColor(for: colorScheme))
+
+        let accentColor = UIColor(.indigo)
+
+        let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: context.coordinator, action: #selector(Coordinator.boldTapped))
+        bold.tintColor = accentColor
+
+        let italic = UIBarButtonItem(image: UIImage(systemName: "italic"), style: .plain, target: context.coordinator, action: #selector(Coordinator.italicTapped))
+        italic.tintColor = accentColor
+
+        let strikethrough = UIBarButtonItem(image: UIImage(systemName: "strikethrough"), style: .plain, target: context.coordinator, action: #selector(Coordinator.strikethroughTapped))
+        strikethrough.tintColor = accentColor
+
+        let title = UIBarButtonItem(image: UIImage(systemName: "textformat.size"), style: .plain, target: context.coordinator, action: #selector(Coordinator.titleTapped))
+        title.tintColor = accentColor
+
+        let list = UIBarButtonItem(image: UIImage(systemName: "list.bullet"), style: .plain, target: context.coordinator, action: #selector(Coordinator.listTapped))
+        list.tintColor = accentColor
+
+        let code = UIBarButtonItem(image: UIImage(systemName: "highlighter"), style: .plain, target: context.coordinator, action: #selector(Coordinator.codeTapped))
+        code.tintColor = accentColor
+
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.items = [bold, space, italic, space, strikethrough, space, title, space, list, space, code]
+
+        textView.inputAccessoryView = toolbar
+
+        context.coordinator.textView = textView
         return textView
     }
 
@@ -32,6 +67,7 @@ struct MarkdownTextField: UIViewRepresentable {
 
     class Coordinator: NSObject, UITextViewDelegate {
         var parent: MarkdownTextField
+        weak var textView: UITextView?
 
         init(_ parent: MarkdownTextField) {
             self.parent = parent
@@ -41,45 +77,59 @@ struct MarkdownTextField: UIViewRepresentable {
             parent.text = textView.text
         }
 
-        func textView(
-            _ textView: UITextView,
-            editMenuForTextIn range: NSRange,
-            suggestedActions: [UIMenuElement]
-        ) -> UIMenu? {
+        // MARK: - Ações da Toolbar
 
-            let boldAction = UIAction(title: "Negrito") { _ in
-                self.applyMarkdown("**", to: textView, range: range)
-            }
+        @objc func boldTapped()             { applyWrapping("**") }
+        @objc func italicTapped()           { applyWrapping("*") }
+        @objc func strikethroughTapped()    { applyWrapping("~~") }
+        @objc func codeTapped()             { applyWrapping("`") }
+        @objc func titleTapped()            { applyPrefix("# ") }
+        @objc func listTapped()             { applyPrefix("- ") }
 
-            let italicAction = UIAction(title: "Itálico") { _ in
-                self.applyMarkdown("*", to: textView, range: range)
-            }
+        // MARK: - Aplicar Markdown
 
-            let strikethroughAction = UIAction(title: "Tachado") { _ in
-                self.applyMarkdown("~~", to: textView, range: range)
-            }
+        private func applyWrapping(_ marker: String) {
+            guard let textView = textView else { return }
+            let selectedRange = textView.selectedRange
+            guard let range = selectedRange.toRange(in: parent.text) else { return }
 
-            return UIMenu(
-                title: "Formatar",
-                children: [
-                    boldAction,
-                    italicAction,
-                    strikethroughAction,
-                ] + suggestedActions
-            )
+            let selectedText = parent.text[range]
+            let wrapped = "\(marker)\(selectedText)\(marker)"
+            parent.text.replaceSubrange(range, with: wrapped)
+
+            textView.text = parent.text
+            let cursor = selectedRange.location + marker.count
+            textView.selectedRange = NSRange(location: cursor + selectedText.count, length: 0)
         }
 
-        private func applyMarkdown(
-            _ marker: String,
-            to textView: UITextView,
-            range: NSRange
-        ) {
+        private func applyPrefix(_ prefix: String) {
+            guard let textView = textView else { return }
+
+            let selectedRange = textView.selectedRange
+
+            let nsText = parent.text as NSString
+
+            let currentLineRange = nsText.lineRange(for: selectedRange)
+            let currentLine = nsText.substring(with: currentLineRange)
+
+            if currentLine.trimmingCharacters(in: .whitespaces).hasPrefix(prefix) {
+                return
+            }
+
+            let newLine = prefix + currentLine
+            parent.text.replaceSubrange(currentLineRange.toRange(in: parent.text)!, with: newLine)
+
+            textView.text = parent.text
+
+            let offset = prefix.count
+            textView.selectedRange = NSRange(location: selectedRange.location + offset, length: 0)
+        }
+
+        private func applyMarkdown(_ marker: String, to textView: UITextView, range: NSRange) {
             guard let textRange = range.toRange(in: parent.text) else { return }
             let selectedText = parent.text[textRange]
-
-            let formattedText = "\(marker)\(selectedText)\(marker)"
-            parent.text.replaceSubrange(textRange, with: formattedText)
-
+            let formatted = "\(marker)\(selectedText)\(marker)"
+            parent.text.replaceSubrange(textRange, with: formatted)
             textView.text = parent.text
         }
     }
