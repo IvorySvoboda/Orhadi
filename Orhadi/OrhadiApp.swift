@@ -9,10 +9,11 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
-typealias Subject = SubjectSchemaV1.Subject
-typealias SRSubject = SRSubjectSchemaV1.SRSubject
-typealias ToDo = ToDoSchemaV1.ToDo
-typealias Settings = SettingsSchemaV2.Settings
+typealias Subject = OrhadiSchemaV2.Subject
+typealias SRSubject = OrhadiSchemaV2.SRSubject
+typealias ToDo = OrhadiSchemaV2.ToDo
+typealias Settings = OrhadiSchemaV2.Settings
+typealias Teacher = OrhadiSchemaV2.Teacher
 
 @main
 struct OrhadiApp: App {

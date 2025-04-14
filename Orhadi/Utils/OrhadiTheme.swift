@@ -7,6 +7,10 @@
 
 import SwiftUICore
 
+enum Theme: Int, Codable {
+    case auto, light, dark
+}
+
 enum OrhadiTheme {
 
     static func getBGColor(for theme: ColorScheme) -> Color {

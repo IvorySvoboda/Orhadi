@@ -8,24 +8,24 @@
 import SwiftData
 import SwiftUI
 
-enum SubjectsSheetType: Identifiable {
-    case add
-    case edit(Subject)
-
-    var id: String {
-        switch self {
-        case .add:
-            return "add"
-        case .edit(let subject):
-            return subject.id
-        }
-    }
-}
-
 struct SubjectsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
+
+    enum SheetType: Identifiable {
+        case add
+        case edit(Subject)
+
+        var id: String {
+            switch self {
+            case .add:
+                return "add"
+            case .edit(let subject):
+                return subject.id
+            }
+        }
+    }
 
     @Query(
         sort: [.init(\Subject.startTime, order: .forward)],
@@ -35,7 +35,7 @@ struct SubjectsView: View {
 
     @State private var showConfirmationDialog: Bool = false
     @State private var subjectToEdit: Subject?
-    @State private var currentSheet: SubjectsSheetType? = nil
+    @State private var currentSheet: SheetType?
     @State private var isRecess: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(
         .weekday,
@@ -130,7 +130,7 @@ struct SubjectListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: Subject
-    @Binding var currentSheet: SubjectsSheetType?
+    @Binding var currentSheet: SubjectsView.SheetType?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -159,29 +159,31 @@ struct SubjectListCell: View {
                 .fontWeight(.semibold)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    if !subject.teacher.isEmpty {
-                        HStack {
-                            Image(systemName: "person.fill")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.trailing, 1)
-                            Text(subject.teacher)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                    if let teacher = subject.teacher {
+                        if !teacher.name.isEmpty {
+                            HStack {
+                                Image(systemName: "person.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing, 1)
+                                Text(teacher.name)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
-                    }
 
-                    if !subject.email.isEmpty {
-                        HStack {
-                            Image(systemName: "envelope.fill")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .padding(.trailing, -3)
-                            Text(subject.email)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .lineLimit(1)
-                                .frame(maxWidth: 125, alignment: .leading)
+                        if !teacher.email.isEmpty {
+                            HStack {
+                                Image(systemName: "envelope.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.trailing, -3)
+                                Text(teacher.email)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .lineLimit(1)
+                                    .frame(maxWidth: 125, alignment: .leading)
+                            }
                         }
                     }
 
@@ -211,23 +213,25 @@ struct SubjectListCell: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            if !subject.email.isEmpty {
-                Button(action: {
-                    let name = subject.name.isEmpty ? "Sem Nome" : subject.name
-                    let subjectEncoded =
+            if let teacher = subject.teacher {
+                if !teacher.email.isEmpty {
+                    Button(action: {
+                        let name = subject.name.isEmpty ? "Sem Nome" : subject.name
+                        let subjectEncoded =
                         name.addingPercentEncoding(
                             withAllowedCharacters: .urlQueryAllowed
                         ) ?? ""
 
-                    if let url = URL(
-                        string:
-                            "mailto:\(subject.email)?subject=\(subjectEncoded)"
-                    ) {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Image(systemName: "envelope.fill")
-                }.tint(.accentColor)
+                        if let url = URL(
+                            string:
+                                "mailto:\(teacher.email)?subject=\(subjectEncoded)"
+                        ) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Image(systemName: "envelope.fill")
+                    }.tint(.accentColor)
+                }
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -279,6 +283,8 @@ struct SubjectEditView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
 
+    @Query private var teachers: [Teacher]
+
     @State private var selectedWeekday: Int
 
     @Bindable var subject: Subject
@@ -300,13 +306,60 @@ struct SubjectEditView: View {
                     Section {
                         TextField("Minha nova matéria", text: $subject.name)
                             .autocorrectionDisabled()
-                        TextField("Prof. Ivory", text: $subject.teacher)
-                            .autocorrectionDisabled()
-                        TextField(
-                            "\("email@exemple.com")",
-                            text: $subject.email
-                        )
-                        .autocorrectionDisabled()
+
+                        NavigationLink {
+                            List {
+                                Section {
+                                    ForEach(teachers) { teacher in
+                                        Button {
+                                            withAnimation {
+                                                subject.teacher = teacher
+                                            }
+                                        } label: {
+                                            HStack {
+                                                VStack(alignment: .leading) {
+                                                    Text(teacher.name)
+                                                        .fontWeight(.semibold)
+                                                }
+                                                Spacer()
+                                                if subject.teacher == teacher {
+                                                    Image(systemName: "checkmark")
+                                                        .foregroundColor(.accentColor)
+                                                }
+                                            }
+                                        }.tint(.white)
+                                    }
+                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+                                Section {
+                                    Button {
+                                        withAnimation {
+                                            subject.teacher = nil
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Text("Nenhum")
+                                            Spacer()
+                                            if subject.teacher == nil {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.accentColor)
+                                            }
+                                        }
+                                    }.tint(.white)
+                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                            }
+                            .navigationTitle("Professor")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .scrollContentBackground(.hidden)
+                            .background(OrhadiTheme.getBGColor(for: colorScheme))
+                        } label: {
+                            HStack {
+                                Text("Professor")
+                                Spacer()
+                                Text(subject.teacher?.name ?? "Nenhum")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
 
                         TextField("Sala 101", text: $subject.place)
                             .autocorrectionDisabled()
@@ -500,8 +553,7 @@ struct SubjectAddView: View {
     private func addItem() {
         let newSubject = Subject(
             name: name,
-            teacher: teacher,
-            email: email,
+            teacher: Teacher(name: teacher, email: email),
             schedule: schedule,
             startTime: startTime,
             endTime: endTime,

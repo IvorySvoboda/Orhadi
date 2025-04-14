@@ -764,6 +764,9 @@
         }
       }
     },
+    "Nenhum" : {
+
+    },
     "Notificações" : {
       "localizations" : {
         "en" : {
@@ -846,6 +849,12 @@
           }
         }
       }
+    },
+    "Professor" : {
+
+    },
+    "Professores" : {
+
     },
     "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas." : {
       "localizations" : {
