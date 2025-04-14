@@ -22,7 +22,7 @@ struct SubjectsView: View {
             case .add:
                 return "add"
             case .edit(let subject):
-                return subject.id
+                return subject.name
             }
         }
     }

@@ -36,12 +36,12 @@ enum MigrationPlan: SchemaMigrationPlan {
                 print("migrating...")
 
                 context.insert(OrhadiSchemaV2.Subject(
-                    name: subject.name,
+                    name: subject.name.isEmpty ? "" : subject.name,
                     teacher: teacher,
                     schedule: subject.schedule,
                     startTime: subject.startTime,
                     endTime: subject.endTime,
-                    place: subject.place,
+                    place: subject.place.isEmpty ? "" : subject.place,
                     isRecess: subject.isRecess
                 ))
             }
