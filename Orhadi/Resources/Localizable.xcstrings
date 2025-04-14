@@ -827,8 +827,8 @@
         }
       }
     },
-    "Orhadi" : {
-      "shouldTranslate" : false
+    "Orhadi (Debug)" : {
+
     },
     "Prazo:" : {
       "localizations" : {
