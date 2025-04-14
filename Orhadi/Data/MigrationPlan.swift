@@ -15,10 +15,8 @@ enum MigrationPlan: SchemaMigrationPlan {
     }
 
     static var stages: [MigrationStage] {
-        []
+        [orhadiV1toV2]
     }
-
-    private static var teachersV1toV2 = [MigratingTeacherFromV1toV2]()
 
     static let orhadiV1toV2 = MigrationStage.custom(
         fromVersion: OrhadiSchemaV1.self,
@@ -38,24 +36,19 @@ enum MigrationPlan: SchemaMigrationPlan {
                     place: subject.place,
                     isRecess: subject.isRecess
                 ))
-                if !subject.teacher.isEmpty || !subject.email.isEmpty {
-                    teachersV1toV2.append(MigratingTeacherFromV1toV2(teacher: subject.teacher.isEmpty ? "" : subject.teacher, email: subject.email.isEmpty ? "" : subject.email))
-                    print("migrating2...")
-                }
+//                if !subject.teacher.isEmpty || !subject.email.isEmpty {
+//                    context.insert(OrhadiSchemaV2.Teacher(
+//                        name: subject.teacher,
+//                        email: subject.email
+//                    ))
+//                }
             }
 
             try context.delete(model: OrhadiSchemaV1.Subject.self)
 
             try context.save()
-        } didMigrate: { context in
-            for teacher in teachersV1toV2 {
-                print(teacher)
-            }
+        } didMigrate: { _ in
+            print("Migrated from Orhadi Schema Version 1 to Version 2")
         }
 
-}
-
-struct MigratingTeacherFromV1toV2 {
-    var teacher: String
-    var email: String
 }
