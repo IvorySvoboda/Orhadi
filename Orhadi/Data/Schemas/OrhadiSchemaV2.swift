@@ -206,7 +206,6 @@ enum OrhadiSchemaV2: VersionedSchema {
 
     @Model
     class Subject: Codable {
-        @Attribute(.unique) var id: String
         var name: String
         var teacher: Teacher?
         var schedule: Date
@@ -222,7 +221,6 @@ enum OrhadiSchemaV2: VersionedSchema {
         var isHidden: Bool
 
         init(
-            id: String = UUID().uuidString,
             name: String,
             teacher: Teacher?,
             schedule: Date,
@@ -240,7 +238,6 @@ enum OrhadiSchemaV2: VersionedSchema {
             lastStudied: Date = Date() - 604800,
             isHidden: Bool = false
         ) {
-            self.id = id
             self.name = name
             self.teacher = teacher
             self.schedule = schedule
@@ -285,7 +282,6 @@ enum OrhadiSchemaV2: VersionedSchema {
         ]
 
         enum CodingKeys: CodingKey {
-            case id
             case name
             case teacher
             case schedule
@@ -301,7 +297,6 @@ enum OrhadiSchemaV2: VersionedSchema {
 
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = try container.decode(String.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
             teacher = try container.decode(Teacher.self, forKey: .teacher)
             schedule = try container.decode(Date.self, forKey: .schedule)
@@ -317,7 +312,6 @@ enum OrhadiSchemaV2: VersionedSchema {
 
         func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(id, forKey: .id)
             try container.encode(name, forKey: .name)
             try container.encode(teacher, forKey: .teacher)
             try container.encode(schedule, forKey: .schedule)
@@ -334,36 +328,30 @@ enum OrhadiSchemaV2: VersionedSchema {
 
     @Model
     class Teacher: Codable {
-        @Attribute(.unique) var id: String
         var name: String
         var email: String
 
         init(
-            id: String = UUID().uuidString,
             name: String,
             email: String
         ) {
-            self.id = id
             self.name = name
             self.email = email
         }
 
         enum CodingKeys: CodingKey {
-            case id
             case name
             case email
         }
 
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = try container.decode(String.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
             email = try container.decode(String.self, forKey: .email)
         }
 
         func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(id, forKey: .id)
             try container.encode(name, forKey: .name)
             try container.encode(email, forKey: .email)
         }
