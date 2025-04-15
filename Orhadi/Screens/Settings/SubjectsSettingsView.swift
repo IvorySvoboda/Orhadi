@@ -67,9 +67,19 @@ struct TeachersView: View {
             VStack(alignment: .leading) {
                 Text(teacher.name)
                     .font(.headline)
-                Text(teacher.email)
-                    .font(.caption)
-                    .foregroundStyle(Color.secondary)
+                if !teacher.email.isEmpty {
+                    HStack {
+                        Image(systemName: "envelope.fill")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.trailing, -3)
+                        Text(teacher.email)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                            .frame(maxWidth: 150, alignment: .leading)
+                    }
+                }
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -110,7 +120,7 @@ struct TeachersView: View {
             case .add:
                 TeacherAddView().interactiveDismissDisabled()
             case .edit(let teacher):
-                TeacherEditView(teacher: teacher)
+                TeacherEditView(teacher: teacher).interactiveDismissDisabled()
             }
         }
     }
@@ -140,23 +150,27 @@ struct TeacherAddView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Prof. Ivory", text: $name)
-                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                    .onChange(of: name) { _, newName in
-                        let existingTeacher = try? context.fetch(
-                            FetchDescriptor<Teacher>(
-                                predicate: #Predicate { $0.name == newName }
-                            )
-                        ).first
+                Section {
+                    TextField("Prof. Ivory", text: $name)
+                        .autocorrectionDisabled()
+                        .onChange(of: name) { _, newName in
+                            let existingTeacher = try? context.fetch(
+                                FetchDescriptor<Teacher>(
+                                    predicate: #Predicate { $0.name == newName }
+                                )
+                            ).first
 
-                        if existingTeacher != nil {
-                            preventSave = true
-                        } else {
-                            preventSave = false
+                            if existingTeacher != nil {
+                                preventSave = true
+                            } else {
+                                preventSave = false
+                            }
                         }
-                    }
-                TextField("\(String(localized: "email@exemple.com"))", text: $email)
-                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                    TextField("\(String(localized: "email@exemple.com"))", text: $email)
+                        .autocorrectionDisabled()
+                } header: {
+                    Text("Novo Professor")
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)
@@ -206,23 +220,27 @@ struct TeacherEditView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Prof. Ivory", text: $name)
-                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                    .onChange(of: name) { _, newName in
-                        let existingTeacher = try? context.fetch(
-                            FetchDescriptor<Teacher>(
-                                predicate: #Predicate { $0.name == newName }
-                            )
-                        ).first
+                Section {
+                    TextField("Prof. Ivory", text: $name)
+                        .autocorrectionDisabled()
+                        .onChange(of: name) { _, newName in
+                            let existingTeacher = try? context.fetch(
+                                FetchDescriptor<Teacher>(
+                                    predicate: #Predicate { $0.name == newName }
+                                )
+                            ).first
 
-                        if let foundTeacher = existingTeacher, foundTeacher != teacher {
-                            preventSave = true
-                        } else {
-                            preventSave = false
+                            if let foundTeacher = existingTeacher, foundTeacher != teacher {
+                                preventSave = true
+                            } else {
+                                preventSave = false
+                            }
                         }
-                    }
-                TextField("\(String(localized: "email@exemple.com"))", text: $email)
-                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                    TextField("\(String(localized: "email@exemple.com"))", text: $email)
+                        .autocorrectionDisabled()
+                } header: {
+                    Text("Editar Professor")
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .scrollContentBackground(.hidden)

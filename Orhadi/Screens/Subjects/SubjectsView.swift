@@ -310,14 +310,14 @@ struct SubjectEditView: View {
                                 Section {
                                     ForEach(teachers) { teacher in
                                         Button {
-                                            withAnimation {
+                                            withAnimation(.smooth(duration: 0.1)) {
                                                 subject.teacher = teacher
                                             }
                                         } label: {
                                             HStack {
                                                 VStack(alignment: .leading) {
                                                     Text(teacher.name)
-                                                        .fontWeight(.semibold)
+                                                        .font(.headline)
                                                 }
                                                 Spacer()
                                                 if subject.teacher == teacher {
@@ -331,12 +331,13 @@ struct SubjectEditView: View {
 
                                 Section {
                                     Button {
-                                        withAnimation {
+                                        withAnimation(.smooth(duration: 0.1)) {
                                             subject.teacher = nil
                                         }
                                     } label: {
                                         HStack {
                                             Text("Nenhum")
+                                                .foregroundStyle(Color.secondary)
                                             Spacer()
                                             if subject.teacher == nil {
                                                 Image(systemName: "checkmark")
@@ -431,11 +432,10 @@ struct SubjectAddView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @Query private var subjects: [Subject]
+    @Query private var teachers: [Teacher]
 
     @State private var name: String = ""
-    @State private var teacher: String = ""
-    @State private var email: String = ""
+    @State private var teacher: Teacher?
     @State private var schedule: Date = Date()
     @State private var startTime: Date
     @State private var endTime: Date
@@ -472,10 +472,61 @@ struct SubjectAddView: View {
                     Section {
                         TextField("Minha nova matéria", text: $name)
                             .autocorrectionDisabled()
-                        TextField("Prof. Ivory", text: $teacher)
-                            .autocorrectionDisabled()
-                        TextField("\("email@exemple.com")", text: $email)
-                            .autocorrectionDisabled()
+
+                        NavigationLink {
+                            List {
+                                Section {
+                                    ForEach(teachers) { teacher in
+                                        Button {
+                                            withAnimation(.smooth(duration: 0.1)) {
+                                                self.teacher = teacher
+                                            }
+                                        } label: {
+                                            HStack {
+                                                VStack(alignment: .leading) {
+                                                    Text(teacher.name)
+                                                        .font(.headline)
+                                                }
+                                                Spacer()
+                                                if self.teacher == teacher {
+                                                    Image(systemName: "checkmark")
+                                                        .foregroundColor(.accentColor)
+                                                }
+                                            }
+                                        }.tint(.white)
+                                    }
+                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+                                Section {
+                                    Button {
+                                        withAnimation(.smooth(duration: 0.1)) {
+                                            self.teacher = nil
+                                        }
+                                    } label: {
+                                        HStack {
+                                            Text("Nenhum")
+                                                .foregroundStyle(Color.secondary)
+                                            Spacer()
+                                            if self.teacher == nil {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.accentColor)
+                                            }
+                                        }
+                                    }.tint(.white)
+                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                            }
+                            .navigationTitle("Professor")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .scrollContentBackground(.hidden)
+                            .background(OrhadiTheme.getBGColor(for: colorScheme))
+                        } label: {
+                            HStack {
+                                Text("Professor")
+                                Spacer()
+                                Text(self.teacher?.name ?? "Nenhum")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
 
                         TextField("Sala 101", text: $place)
                             .autocorrectionDisabled()
@@ -551,7 +602,7 @@ struct SubjectAddView: View {
     private func addItem() {
         let newSubject = Subject(
             name: name,
-            teacher: Teacher(name: teacher, email: email),
+            teacher: teacher,
             schedule: schedule,
             startTime: startTime,
             endTime: endTime,
