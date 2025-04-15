@@ -82,6 +82,20 @@ struct TeachersView: View {
                 }
             }
             .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .swipeActions(edge: .leading) {
+                if !teacher.email.isEmpty {
+                    Button(action: {
+                        if let url = URL(
+                            string:
+                                "mailto:\(teacher.email)"
+                        ) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Image(systemName: "envelope.fill")
+                    }.tint(.accentColor)
+                }
+            }
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 Button(role: .destructive) {
                     deleteTeacher(teacher: teacher)
