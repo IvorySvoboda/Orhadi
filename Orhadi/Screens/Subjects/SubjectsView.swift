@@ -363,7 +363,7 @@ struct SubjectEditView: View {
                         TextField("Sala 101", text: $subject.place)
                             .autocorrectionDisabled()
                     } header: {
-                        Text("\(subject.name)")
+                        Text("Editar Matéria")
                     }.listRowBackground(
                         OrhadiTheme.getSecondaryBGColor(for: colorScheme)
                     )
