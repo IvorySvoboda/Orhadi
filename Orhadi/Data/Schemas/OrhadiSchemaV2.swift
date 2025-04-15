@@ -207,7 +207,7 @@ enum OrhadiSchemaV2: VersionedSchema {
     @Model
     class Subject: Codable {
         var name: String
-        var teacher: Teacher?
+        @Relationship(deleteRule: .nullify) var teacher: Teacher?
         var schedule: Date
         var startTime: Date
         var endTime: Date

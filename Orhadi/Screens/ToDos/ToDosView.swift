@@ -137,10 +137,12 @@ struct ToDosListCell: View {
             label: {
                 if todo.isCompleted {
                     Image(systemName: "checkmark")
+                        .foregroundStyle(Color.accentColor)
                 }
 
                 if todo.dueDate < Date() && !todo.isCompleted {
                     Image(systemName: "xmark")
+                        .foregroundStyle(Color.accentColor)
                 }
 
                 VStack(alignment: .leading) {
