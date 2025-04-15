@@ -41,6 +41,8 @@ struct TeachersView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
 
+    @Query private var subjects: [Subject]
+
     enum SheetType: Identifiable {
         case add
         case edit(Teacher)
@@ -69,6 +71,7 @@ struct TeachersView: View {
                     .font(.caption)
                     .foregroundStyle(Color.secondary)
             }
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 Button(role: .destructive) {
                     deleteTeacher(teacher: teacher)
@@ -113,6 +116,12 @@ struct TeachersView: View {
     }
 
     private func deleteTeacher(teacher: Teacher) {
+        for subject in subjects {
+            if subject.teacher == teacher {
+                subject.teacher = nil
+            }
+        }
+
         withAnimation {
             context.delete(teacher)
         }
@@ -184,27 +193,35 @@ struct TeacherEditView: View {
 
     @Bindable var teacher: Teacher
 
+    @State private var name: String
+    @State private var email: String
     @State private var preventSave: Bool = false
+
+    init(teacher: Teacher) {
+        self.teacher = teacher
+        _name = State(initialValue: teacher.name)
+        _email = State(initialValue: teacher.email)
+    }
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Prof. Ivory", text: $teacher.name)
+                TextField("Prof. Ivory", text: $name)
                     .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                    .onChange(of: teacher.name) { _, newName in
+                    .onChange(of: name) { _, newName in
                         let existingTeacher = try? context.fetch(
                             FetchDescriptor<Teacher>(
                                 predicate: #Predicate { $0.name == newName }
                             )
                         ).first
 
-                        if existingTeacher != nil {
+                        if let foundTeacher = existingTeacher, foundTeacher != teacher {
                             preventSave = true
                         } else {
                             preventSave = false
                         }
                     }
-                TextField("\(String(localized: "email@exemple.com"))", text: $teacher.email)
+                TextField("\(String(localized: "email@exemple.com"))", text: $email)
                     .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -214,6 +231,10 @@ struct TeacherEditView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
+                        withAnimation {
+                            teacher.name = name
+                            teacher.email = email
+                        }
                         dismiss()
                     }.disabled(preventSave)
                 }

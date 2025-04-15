@@ -213,25 +213,23 @@ struct SubjectListCell: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            if let teacher = subject.teacher {
-                if !teacher.email.isEmpty {
-                    Button(action: {
-                        let name = subject.name.isEmpty ? "Sem Nome" : subject.name
-                        let subjectEncoded =
-                        name.addingPercentEncoding(
-                            withAllowedCharacters: .urlQueryAllowed
-                        ) ?? ""
-
-                        if let url = URL(
-                            string:
-                                "mailto:\(teacher.email)?subject=\(subjectEncoded)"
-                        ) {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Image(systemName: "envelope.fill")
-                    }.tint(.accentColor)
-                }
+            if let teacher = subject.teacher, !teacher.email.isEmpty {
+                Button(action: {
+                    let name = subject.name.isEmpty ? "Sem Nome" : subject.name
+                    let subjectEncoded =
+                    name.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed
+                    ) ?? ""
+                    
+                    if let url = URL(
+                        string:
+                            "mailto:\(teacher.email)?subject=\(subjectEncoded)"
+                    ) {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    Image(systemName: "envelope.fill")
+                }.tint(.accentColor)
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {

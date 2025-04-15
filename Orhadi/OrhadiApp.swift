@@ -24,7 +24,7 @@ struct OrhadiApp: App {
             let configuration = ModelConfiguration(url: databasePath)
 
             let container = try ModelContainer.init(
-                for: Subject.self, SRSubject.self, ToDo.self, Settings.self,
+                for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
                 migrationPlan: MigrationPlan.self,
                 configurations: configuration
             )
