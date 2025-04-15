@@ -328,7 +328,7 @@ enum OrhadiSchemaV2: VersionedSchema {
 
     @Model
     class Teacher: Codable {
-        var name: String
+        @Attribute(.unique) var name: String
         var email: String
 
         init(
