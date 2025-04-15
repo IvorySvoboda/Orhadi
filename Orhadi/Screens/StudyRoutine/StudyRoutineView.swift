@@ -275,7 +275,7 @@ struct SREditView: View {
                         displayedComponents: [.hourAndMinute]
                     )
                 } header: {
-                    Text("\(subject.name)")
+                    Text("Editar Estudo")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))

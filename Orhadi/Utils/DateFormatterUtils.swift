@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Formata um `Date` em uma `String` no formato "hh:mm - EEEE".
+/// Formata um `Date` em uma `String` no formato "hh:mm".
 func formatTime(_ date: Date) -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = String(localized: "HH:mm")
@@ -15,10 +15,10 @@ func formatTime(_ date: Date) -> String {
     return dateFormatter.string(from: date).capitalized
 }
 
-/// Formata um `Date` em uma `String` no formato "dd/MM/yyyy - hh:mm".
+/// Formata um `Date` em uma `String` no formato "dd/MM/yyyy – hh:mm".
 func formatDueDate(_ date: Date) -> String {
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = String(localized: "dd/MM/yyyy - HH:mm")
+    dateFormatter.dateFormat = String(localized: "dd/MM/yyyy – HH:mm")
 
     return dateFormatter.string(from: date)
 }

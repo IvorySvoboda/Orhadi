@@ -304,12 +304,12 @@
         }
       }
     },
-    "dd/MM/yyyy - HH:mm" : {
+    "dd/MM/yyyy – HH:mm" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MM/dd/yyyy - hh:mm"
+            "value" : "MM/dd/yyyy – hh:mm"
           }
         }
       }
@@ -381,6 +381,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edit Study"
+          }
+        }
+      }
+    },
+    "Editar Matéria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Subject"
           }
         }
       }

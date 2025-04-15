@@ -196,7 +196,7 @@ struct SharedSREditView: View {
                         displayedComponents: [.hourAndMinute]
                     )
                 } header: {
-                    Text("\(subject.name)")
+                    Text("Editar Estudo")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
