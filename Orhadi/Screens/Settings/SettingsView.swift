@@ -111,13 +111,8 @@ struct SettingsView: View {
                                     cornerRadius: 15, style: .continuous))
 
                         VStack(alignment: .leading, spacing: 2) {
-#if DEBUG
-                            Text("Orhadi (Debug)")
-                                .bold()
-#else
                             Text("Orhadi")
                                 .bold()
-#endif
                             Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
