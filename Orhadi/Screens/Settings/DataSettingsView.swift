@@ -251,9 +251,7 @@ struct DataSettingsView: View {
 
                 let context = ModelContext(container)
 
-                let descriptor = FetchDescriptor(sortBy: [
-                    .init(\Subject.startTime, order: .forward)
-                ])
+                let descriptor = FetchDescriptor<Subject>()
 
                 let allObjects = try context.fetch(descriptor)
                 let exportItem = SubjectTransferable(subjects: allObjects)
@@ -357,19 +355,48 @@ struct DataSettingsView: View {
 
                 let context = ModelContext(container)
 
-                let descriptor = FetchDescriptor<Subject>()
-
-                let existingSubjects = try context.fetch(descriptor)
-                for subject in existingSubjects {
-                    context.delete(subject)
-                }
+                try context.delete(model: Subject.self)
 
                 let data = try Data(contentsOf: url)
                 let allSubjects = try JSONDecoder().decode(
                     [Subject].self, from: data)
 
                 for subject in allSubjects {
-                    context.insert(subject)
+                    var teacher: OrhadiSchemaV2.Teacher? = nil
+
+                    if let name = subject.teacher?.name, let email = subject.teacher?.email, !name.isEmpty || !email.isEmpty {
+                        let existingTeacher = try? context.fetch(
+                            FetchDescriptor<OrhadiSchemaV2.Teacher>(
+                                predicate: #Predicate { $0.name == name }
+                            )
+                        ).first
+
+                        if let foundTeacher = existingTeacher {
+                            teacher = foundTeacher
+                        } else {
+                            teacher = OrhadiSchemaV2.Teacher(
+                                name: name,
+                                email: email
+                            )
+                            context.insert(teacher!)
+                        }
+                    }
+
+                    context.insert(
+                        OrhadiSchemaV2.Subject(
+                            name: subject.name,
+                            teacher: teacher,
+                            schedule: subject.schedule,
+                            startTime: subject.startTime,
+                            endTime: subject.endTime,
+                            place: subject.place,
+                            isRecess: subject.isRecess,
+                            studyDay: subject.studyDay,
+                            studyTime: subject.studyTime,
+                            lastStudied: subject.lastStudied,
+                            isHidden: subject.isHidden
+                        )
+                    )
                 }
 
                 try context.save()

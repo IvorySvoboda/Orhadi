@@ -298,7 +298,7 @@ enum OrhadiSchemaV2: VersionedSchema {
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             name = try container.decode(String.self, forKey: .name)
-            teacher = try container.decode(Teacher.self, forKey: .teacher)
+            teacher = try container.decodeIfPresent(Teacher.self, forKey: .teacher)
             schedule = try container.decode(Date.self, forKey: .schedule)
             startTime = try container.decode(Date.self, forKey: .startTime)
             endTime = try container.decode(Date.self, forKey: .endTime)

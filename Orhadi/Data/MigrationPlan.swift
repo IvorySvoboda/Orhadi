@@ -36,7 +36,11 @@ enum MigrationPlan: SchemaMigrationPlan {
                     startTime: $0.startTime,
                     endTime: $0.endTime,
                     place: $0.place,
-                    isRecess: $0.isRecess
+                    isRecess: $0.isRecess,
+                    studyDay: $0.studyDay,
+                    studyTime: $0.studyTime,
+                    lastStudied: $0.lastStudied,
+                    isHidden: $0.isHidden
                 )
             }
 
@@ -76,7 +80,11 @@ enum MigrationPlan: SchemaMigrationPlan {
                         startTime: subject.startTime,
                         endTime: subject.endTime,
                         place: subject.place,
-                        isRecess: subject.isRecess
+                        isRecess: subject.isRecess,
+                        studyDay: subject.studyDay,
+                        studyTime: subject.studyTime,
+                        lastStudied: subject.lastStudied,
+                        isHidden: subject.isHidden
                     )
                 )
             }
@@ -95,4 +103,8 @@ struct V1SubjectData {
     var endTime: Date
     var place: String
     var isRecess: Bool
+    var studyDay: Date
+    var studyTime: Date
+    var lastStudied: Date
+    var isHidden: Bool
 }
