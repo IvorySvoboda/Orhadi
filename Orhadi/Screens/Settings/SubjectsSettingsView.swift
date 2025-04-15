@@ -69,12 +69,18 @@ struct TeachersView: View {
                     .font(.caption)
                     .foregroundStyle(Color.secondary)
             }
-            .swipeActions(edge: .trailing) {
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 Button(role: .destructive) {
                     deleteTeacher(teacher: teacher)
                 } label: {
                     Label("Excluir", systemImage: "trash.fill")
                 }
+                Button {
+                    currentSheet = .edit(teacher)
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                }
+                .tint(.accentColor)
             }
         }
         .toolbar {
@@ -172,12 +178,46 @@ struct TeacherAddView: View {
 }
 
 struct TeacherEditView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.modelContext) private var context
 
     @Bindable var teacher: Teacher
 
-    var body: some View {
-        List {
+    @State private var preventSave: Bool = false
 
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField("Prof. Ivory", text: $teacher.name)
+                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                    .onChange(of: teacher.name) { _, newName in
+                        let existingTeacher = try? context.fetch(
+                            FetchDescriptor<Teacher>(
+                                predicate: #Predicate { $0.name == newName }
+                            )
+                        ).first
+
+                        if existingTeacher != nil {
+                            preventSave = true
+                        } else {
+                            preventSave = false
+                        }
+                    }
+                TextField("\(String(localized: "email@exemple.com"))", text: $teacher.email)
+                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Editar Professor")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Salvar") {
+                        dismiss()
+                    }.disabled(preventSave)
+                }
+            }
         }
     }
 }
