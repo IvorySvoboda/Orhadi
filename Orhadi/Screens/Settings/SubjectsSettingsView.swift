@@ -41,9 +41,24 @@ struct TeachersView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
 
+    enum SheetType: Identifiable {
+        case add
+        case edit(Teacher)
+
+        var id: String {
+            switch self {
+            case .add:
+                return "add"
+            case .edit(let teacher):
+                return teacher.name
+            }
+        }
+    }
+
     @Query private var teachers: [Teacher]
 
     @State private var isAdding: Bool = false
+    @State private var currentSheet: SheetType?
 
     var body: some View {
         List(teachers) { teacher in
@@ -54,11 +69,18 @@ struct TeachersView: View {
                     .font(.caption)
                     .foregroundStyle(Color.secondary)
             }
+            .swipeActions(edge: .trailing) {
+                Button(role: .destructive) {
+                    deleteTeacher(teacher: teacher)
+                } label: {
+                    Label("Excluir", systemImage: "trash.fill")
+                }
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    context.insert(Teacher(name: "Teacher", email: "email@exemple.com"))
+                    currentSheet = .add
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
@@ -72,5 +94,90 @@ struct TeachersView: View {
         .toolbarBackground(
             OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
+        .sheet(
+            item: $currentSheet,
+        ) { sheetType in
+            switch sheetType {
+            case .add:
+                TeacherAddView().interactiveDismissDisabled()
+            case .edit(let teacher):
+                TeacherEditView(teacher: teacher)
+            }
+        }
+    }
+
+    private func deleteTeacher(teacher: Teacher) {
+        withAnimation {
+            context.delete(teacher)
+        }
+    }
+}
+
+struct TeacherAddView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.modelContext) private var context
+
+    @State private var name: String = ""
+    @State private var email: String = ""
+    @State private var preventSave: Bool = false
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                TextField("Prof. Ivory", text: $name)
+                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                    .onChange(of: name) { _, newName in
+                        let existingTeacher = try? context.fetch(
+                            FetchDescriptor<Teacher>(
+                                predicate: #Predicate { $0.name == newName }
+                            )
+                        ).first
+
+                        if existingTeacher != nil {
+                            preventSave = true
+                        } else {
+                            preventSave = false
+                        }
+                    }
+                TextField("\(String(localized: "email@exemple.com"))", text: $email)
+                    .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Novo Professor")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Salvar") {
+                        addTeacher()
+                    }.disabled(preventSave)
+                }
+
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar", role: .cancel) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+
+    private func addTeacher() {
+        withAnimation {
+            context.insert(Teacher(name: name, email: email))
+        }
+        dismiss()
+    }
+}
+
+struct TeacherEditView: View {
+
+    @Bindable var teacher: Teacher
+
+    var body: some View {
+        List {
+
+        }
     }
 }

@@ -343,6 +343,9 @@
         }
       }
     },
+    "email@exemple.com" : {
+
+    },
     "Escuro" : {
       "localizations" : {
         "en" : {
@@ -806,6 +809,9 @@
           }
         }
       }
+    },
+    "Novo Professor" : {
+
     },
     "Ocultar" : {
       "localizations" : {

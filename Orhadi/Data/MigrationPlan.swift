@@ -15,42 +15,84 @@ enum MigrationPlan: SchemaMigrationPlan {
     }
 
     static var stages: [MigrationStage] {
-        [orhadiV1toV2]
+        [migrateOrhadiV1toV2]
     }
 
-    static let orhadiV1toV2 = MigrationStage.custom(
+    private static var V1Subjects = [V1SubjectData]()
+
+    static let migrateOrhadiV1toV2 = MigrationStage.custom(
         fromVersion: OrhadiSchemaV1.self,
-        toVersion: OrhadiSchemaV2.self) { context in
-            print("migrating...")
+        toVersion: OrhadiSchemaV2.self,
 
-            let subjectsV1 = try context.fetch(FetchDescriptor<OrhadiSchemaV1.Subject>())
+        willMigrate: { context in
+            let oldSubjects = try context.fetch(FetchDescriptor<OrhadiSchemaV1.Subject>())
 
-            for subject in subjectsV1 {
-                let hasTeacher = !subject.teacher.isEmpty || !subject.email.isEmpty
-
-                let teacher: OrhadiSchemaV2.Teacher? = hasTeacher ? OrhadiSchemaV2.Teacher(
-                    name: subject.teacher.isEmpty ? "" : subject.teacher,
-                    email: subject.email.isEmpty ? "" : subject.email
-                ) : nil
-
-                print("migrating...")
-
-                context.insert(OrhadiSchemaV2.Subject(
-                    name: subject.name.isEmpty ? "" : subject.name,
-                    teacher: teacher,
-                    schedule: subject.schedule,
-                    startTime: subject.startTime,
-                    endTime: subject.endTime,
-                    place: subject.place.isEmpty ? "" : subject.place,
-                    isRecess: subject.isRecess
-                ))
+            V1Subjects = oldSubjects.map {
+                V1SubjectData(
+                    name: $0.name,
+                    teacherName: $0.teacher,
+                    teacherEmail: $0.email,
+                    schedule: $0.schedule,
+                    startTime: $0.startTime,
+                    endTime: $0.endTime,
+                    place: $0.place,
+                    isRecess: $0.isRecess
+                )
             }
 
             try context.delete(model: OrhadiSchemaV1.Subject.self)
-            print("modelo antigo deletado")
             try context.save()
-        } didMigrate: { _ in
-            print("Migrated from Orhadi Schema Version 1 to Version 2")
-        }
+        },
 
+        didMigrate: { context in
+            for subject in V1Subjects {
+                var teacher: OrhadiSchemaV2.Teacher? = nil
+
+                if !subject.teacherName.isEmpty || !subject.teacherEmail.isEmpty {
+                    let teacherName = subject.teacherName
+
+                    let existingTeacher = try? context.fetch(
+                        FetchDescriptor<OrhadiSchemaV2.Teacher>(
+                            predicate: #Predicate { $0.name == teacherName }
+                        )
+                    ).first
+
+                    if let foundTeacher = existingTeacher {
+                        teacher = foundTeacher
+                    } else {
+                        teacher = OrhadiSchemaV2.Teacher(
+                            name: subject.teacherName,
+                            email: subject.teacherEmail
+                        )
+                        context.insert(teacher!)
+                    }
+                }
+
+                context.insert(
+                    OrhadiSchemaV2.Subject(
+                        name: subject.name,
+                        teacher: teacher,
+                        schedule: subject.schedule,
+                        startTime: subject.startTime,
+                        endTime: subject.endTime,
+                        place: subject.place,
+                        isRecess: subject.isRecess
+                    )
+                )
+            }
+
+            try context.save()
+        }
+    )
+}
+
+struct V1SubjectData {
+    var name: String
+    var teacherName: String
+    var teacherEmail: String
+    var schedule: Date
+    var startTime: Date
+    var endTime: Date
+    var place: String
+    var isRecess: Bool
 }
