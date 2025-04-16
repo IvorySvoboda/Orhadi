@@ -277,6 +277,71 @@ struct SubjectListCell: View {
     }
 }
 
+struct SubjectTeacherPicker: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    @Query private var teachers: [Teacher]
+
+    @Bindable var subject: Subject
+
+    var body: some View {
+        NavigationLink {
+            List {
+                Section {
+                    ForEach(teachers) { teacher in
+                        Button {
+                            withAnimation(.smooth(duration: 0.1)) {
+                                subject.teacher = teacher
+                            }
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(teacher.name)
+                                        .font(.headline)
+                                }
+                                Spacer()
+                                if subject.teacher == teacher {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.accentColor)
+                                }
+                            }
+                        }.tint(colorScheme == .dark ? .white : .black)
+                    }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+                Section {
+                    Button {
+                        withAnimation(.smooth(duration: 0.1)) {
+                            subject.teacher = nil
+                        }
+                    } label: {
+                        HStack {
+                            Text("Nenhum")
+                                .foregroundStyle(Color.secondary)
+                            Spacer()
+                            if subject.teacher == nil {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                    }.tint(colorScheme == .dark ? .white : .black)
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }
+            .navigationTitle("Professor")
+            .navigationBarTitleDisplayMode(.inline)
+            .scrollContentBackground(.hidden)
+            .background(OrhadiTheme.getBGColor(for: colorScheme))
+        } label: {
+            HStack {
+                Text("Professor")
+                Spacer()
+                Text(subject.teacher?.name ?? "Nenhum")
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+}
+
 struct SubjectEditView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
@@ -305,60 +370,7 @@ struct SubjectEditView: View {
                         TextField("Minha nova matéria", text: $subject.name)
                             .autocorrectionDisabled()
 
-                        NavigationLink {
-                            List {
-                                Section {
-                                    ForEach(teachers) { teacher in
-                                        Button {
-                                            withAnimation(.smooth(duration: 0.1)) {
-                                                subject.teacher = teacher
-                                            }
-                                        } label: {
-                                            HStack {
-                                                VStack(alignment: .leading) {
-                                                    Text(teacher.name)
-                                                        .font(.headline)
-                                                }
-                                                Spacer()
-                                                if subject.teacher == teacher {
-                                                    Image(systemName: "checkmark")
-                                                        .foregroundColor(.accentColor)
-                                                }
-                                            }
-                                        }.tint(.white)
-                                    }
-                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-
-                                Section {
-                                    Button {
-                                        withAnimation(.smooth(duration: 0.1)) {
-                                            subject.teacher = nil
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Text("Nenhum")
-                                                .foregroundStyle(Color.secondary)
-                                            Spacer()
-                                            if subject.teacher == nil {
-                                                Image(systemName: "checkmark")
-                                                    .foregroundColor(.accentColor)
-                                            }
-                                        }
-                                    }.tint(.white)
-                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                            }
-                            .navigationTitle("Professor")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .scrollContentBackground(.hidden)
-                            .background(OrhadiTheme.getBGColor(for: colorScheme))
-                        } label: {
-                            HStack {
-                                Text("Professor")
-                                Spacer()
-                                Text(subject.teacher?.name ?? "Nenhum")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
+                        SubjectTeacherPicker(subject: subject)
 
                         TextField("Sala 101", text: $subject.place)
                             .autocorrectionDisabled()
@@ -374,11 +386,9 @@ struct SubjectEditView: View {
                         "Dia:",
                         selection: $selectedWeekday
                     ) {
-                        ForEach(
-                            Calendar.weekdays.sorted(by: { $0.key < $1.key }),
-                            id: \.key
-                        ) { key, weekday in
-                            Text("\(weekday)").tag(key)
+                        ForEach(1...7, id: \.self) { index in
+                            let weekday = Calendar.current.weekdaySymbols[index - 1]
+                            Text("\(weekday)").tag(index)
                         }
                     }
                     .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
@@ -434,35 +444,46 @@ struct SubjectAddView: View {
 
     @Query private var teachers: [Teacher]
 
-    @State private var name: String = ""
-    @State private var teacher: Teacher?
-    @State private var schedule: Date = Date()
-    @State private var startTime: Date
-    @State private var endTime: Date
-    @State private var place: String = ""
-    @State private var selectedWeekday: Int = Calendar.current.component(
-        .weekday,
-        from: Date()
-    )
+    let startTimeDate: Date = {
+        var components = Calendar.current.dateComponents(
+            [.year, .month, .day, .hour],
+            from: Date()
+        )
+        components.year = 0
+        components.month = 1
+        components.day = 1
+        components.hour = 7
+        return Calendar.current.date(from: components)!
+    }()
+
+    let scheduleDate: Date = {
+        var components = Calendar.current.dateComponents(
+            [.year, .month, .weekday],
+            from: Date()
+        )
+        components.year = 0
+        components.month = 1
+        components.weekday = components.weekday
+        return Calendar.current.date(from: components)!
+    }()
 
     var isRecess: Bool
 
-    init(isRecess: Bool) {
-        let startTimeDate: Date = {
-            var components = Calendar.current.dateComponents(
-                [.year, .month, .day, .hour],
-                from: Date()
-            )
-            components.year = 0
-            components.month = 1
-            components.day = 1
-            components.hour = 7
-            return Calendar.current.date(from: components)!
-        }()
+    @State private var subject: Subject
+    @State private var selectedWeekday: Int
 
-        _startTime = State(initialValue: startTimeDate)
-        _endTime = State(initialValue: startTimeDate + 3000)
+    init(isRecess: Bool) {
         self.isRecess = isRecess
+        _subject = State(initialValue: Subject(
+            name: "",
+            teacher: nil,
+            schedule: scheduleDate,
+            startTime: startTimeDate,
+            endTime: startTimeDate + 3000,
+            place: "",
+            isRecess: self.isRecess
+        ))
+        _selectedWeekday = State(initialValue: Calendar.current.component(.weekday, from: scheduleDate))
     }
 
     var body: some View {
@@ -470,65 +491,12 @@ struct SubjectAddView: View {
             Form {
                 if !isRecess {
                     Section {
-                        TextField("Minha nova matéria", text: $name)
+                        TextField("Minha nova matéria", text: $subject.name)
                             .autocorrectionDisabled()
 
-                        NavigationLink {
-                            List {
-                                Section {
-                                    ForEach(teachers) { teacher in
-                                        Button {
-                                            withAnimation(.smooth(duration: 0.1)) {
-                                                self.teacher = teacher
-                                            }
-                                        } label: {
-                                            HStack {
-                                                VStack(alignment: .leading) {
-                                                    Text(teacher.name)
-                                                        .font(.headline)
-                                                }
-                                                Spacer()
-                                                if self.teacher == teacher {
-                                                    Image(systemName: "checkmark")
-                                                        .foregroundColor(.accentColor)
-                                                }
-                                            }
-                                        }.tint(.white)
-                                    }
-                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                        SubjectTeacherPicker(subject: subject)
 
-                                Section {
-                                    Button {
-                                        withAnimation(.smooth(duration: 0.1)) {
-                                            self.teacher = nil
-                                        }
-                                    } label: {
-                                        HStack {
-                                            Text("Nenhum")
-                                                .foregroundStyle(Color.secondary)
-                                            Spacer()
-                                            if self.teacher == nil {
-                                                Image(systemName: "checkmark")
-                                                    .foregroundColor(.accentColor)
-                                            }
-                                        }
-                                    }.tint(.white)
-                                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                            }
-                            .navigationTitle("Professor")
-                            .navigationBarTitleDisplayMode(.inline)
-                            .scrollContentBackground(.hidden)
-                            .background(OrhadiTheme.getBGColor(for: colorScheme))
-                        } label: {
-                            HStack {
-                                Text("Professor")
-                                Spacer()
-                                Text(self.teacher?.name ?? "Nenhum")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-
-                        TextField("Sala 101", text: $place)
+                        TextField("Sala 101", text: $subject.place)
                             .autocorrectionDisabled()
                     } header: {
                         Text("Nova Matéria")
@@ -539,34 +507,32 @@ struct SubjectAddView: View {
 
                 Section {
                     Picker("Dia:", selection: $selectedWeekday) {
-                        ForEach(
-                            Calendar.weekdays.sorted(by: { $0.key < $1.key }),
-                            id: \.key
-                        ) { key, weekday in
-                            Text("\(weekday)").tag(key)
+                        ForEach(1...7, id: \.self) { index in
+                            let weekday = Calendar.current.weekdaySymbols[index - 1]
+                            Text("\(weekday)").tag(index)
                         }
                     }
                     .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                        schedule = Calendar.current.date(
+                        subject.schedule = Calendar.current.date(
                             byAdding: .day,
                             value: newWeekday - oldWeekday,
-                            to: schedule
+                            to: subject.schedule
                         )!
                     }
 
                     DatePicker(
                         "Início:",
-                        selection: $startTime,
+                        selection: $subject.startTime,
                         displayedComponents: [.hourAndMinute]
                     )
                     DatePicker(
                         "Fim:",
-                        selection: $endTime,
+                        selection: $subject.endTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                    .onChange(of: endTime) { _, newDate in
-                        if newDate <= startTime {
-                            endTime = startTime + 60
+                    .onChange(of: subject.endTime) { _, newDate in
+                        if newDate <= subject.startTime {
+                            subject.endTime = subject.startTime + 60
                         }
                     }
 
@@ -588,6 +554,7 @@ struct SubjectAddView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         addItem()
+                        dismiss()
                     }
                 }
                 ToolbarItem(placement: .cancellationAction) {
@@ -600,21 +567,9 @@ struct SubjectAddView: View {
     }
 
     private func addItem() {
-        let newSubject = Subject(
-            name: name,
-            teacher: teacher,
-            schedule: schedule,
-            startTime: startTime,
-            endTime: endTime,
-            place: place,
-            isRecess: isRecess
-        )
-
-        withAnimation(.bouncy) {
-            modelContext.insert(newSubject)
+        withAnimation {
+            modelContext.insert(subject)
         }
-
-        dismiss()
     }
 }
 

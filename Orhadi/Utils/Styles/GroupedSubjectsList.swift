@@ -59,8 +59,8 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                             .onTapGesture {
                                 withAnimation(
                                     .interactiveSpring(
-                                        response: 0.5,
-                                        dampingFraction: 0.8
+                                        response: 0.8,
+                                        dampingFraction: 0.75
                                     )
                                 ) {
                                     selectedDay = index
@@ -75,8 +75,8 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                                     .onChanged { _ in
                                         withAnimation(
                                             .interactiveSpring(
-                                                response: 0.5,
-                                                dampingFraction: 0.8
+                                                response: 0.6,
+                                                dampingFraction: 0.6
                                             )
                                         ) {
                                             isPressed = index
@@ -96,12 +96,14 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                             .id(index)
                         }
                     }
+                    .frame(height: 40)
                     .padding(.horizontal)
+                    .scrollTargetLayout()
                     .onAppear {
                         withAnimation(
                             .interactiveSpring(
-                                response: 0.5,
-                                dampingFraction: 0.8
+                                response: 0.8,
+                                dampingFraction: 0.75
                             )
                         ) {
                             proxy.scrollTo(selectedDay, anchor: .center)
@@ -116,12 +118,10 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
             }
         }
         .listRowInsets(
-            EdgeInsets(top: 5, leading: 0, bottom: 5, trailing: 0)
+            EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0)
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
-        .scrollTargetLayout()
-        .padding(.vertical, 8)
 
         let filteredSubjects = filteredSubjects(for: selectedDay)
 

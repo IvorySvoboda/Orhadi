@@ -254,11 +254,9 @@ struct SREditView: View {
                     TextField("Minha matéria", text: $subject.name)
 
                     Picker("Dia:", selection: $selectedWeekday) {
-                        ForEach(
-                            Calendar.weekdays.sorted(by: { $0.key < $1.key }),
-                            id: \.key
-                        ) { key, weekday in
-                            Text("\(weekday)").tag(key)
+                        ForEach(1...7, id: \.self) { index in
+                            let weekday = Calendar.current.weekdaySymbols[index - 1]
+                            Text("\(weekday)").tag(index)
                         }
                     }
                     .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
@@ -318,11 +316,9 @@ struct SRAddView: View {
                 Section {
                     TextField("Minha nova matéria", text: $name)
                     Picker("Dia:", selection: $studyDay) {
-                        ForEach(
-                            Calendar.weekdays.sorted(by: { $0.key < $1.key }),
-                            id: \.key
-                        ) { key, weekday in
-                            Text("\(weekday)").tag(key)
+                        ForEach(1...7, id: \.self) { index in
+                            let weekday = Calendar.current.weekdaySymbols[index - 1]
+                            Text("\(weekday)").tag(index)
                         }
                     }
 
