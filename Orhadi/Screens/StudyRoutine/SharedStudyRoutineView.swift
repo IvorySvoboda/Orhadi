@@ -177,10 +177,9 @@ struct SharedSREditView: View {
             Form {
                 Section {
                     Picker("Dia de Estudo:", selection: $selectedWeekday) {
-                        ForEach(
-                            Calendar.weekdays.sorted(by: { $0.key < $1.key }), id: \.key
-                        ) { key, weekday in
-                            Text("\(weekday)").tag(key)
+                        ForEach(1...7, id: \.self) { index in
+                            let weekday = Calendar.current.weekdaySymbols[index - 1]
+                            Text("\(weekday)").tag(index)
                         }
                     }
                     .onChange(of: selectedWeekday) { oldWeekday, newWeekday in

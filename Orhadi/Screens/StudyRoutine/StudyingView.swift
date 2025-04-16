@@ -58,7 +58,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                     Spacer()
                     Button(action: { skipToNext() }) {
                         Image(systemName: "forward.fill")
-                    }.padding(.trailing).tint(.white).disabled(studyFinished)
+                    }
+                    .padding(.trailing)
+                    .tint(colorScheme == .dark ? .white : .black)
+                    .disabled(studyFinished)
                 }.padding(.leading).offset(y: 2)
 
                 Divider()
@@ -83,7 +86,9 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 }
                 .frame(height: 200)
 
-                Divider().offset(y: 2)
+                Divider()
+                    .offset(y: 2)
+                    .background(Color.clear)
 
                 List {
                     if currentSessionIndex < sessionItems.count {
