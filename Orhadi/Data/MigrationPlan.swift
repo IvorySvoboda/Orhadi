@@ -11,11 +11,11 @@ import SwiftData
 enum MigrationPlan: SchemaMigrationPlan {
 
     static var schemas: [any VersionedSchema.Type] {
-        [OrhadiSchemaV1.self, OrhadiSchemaV2.self]
+        [OrhadiSchemaV1.self, OrhadiSchemaV2.self, OrhadiSchemaV3.self]
     }
 
     static var stages: [MigrationStage] {
-        [migrateOrhadiV1toV2]
+        [migrateOrhadiV1toV2, migrateOrhadiV2toV3]
     }
 
     private static var V1Subjects = [V1SubjectData]()
@@ -91,6 +91,12 @@ enum MigrationPlan: SchemaMigrationPlan {
 
             try context.save()
         }
+    )
+
+    static let migrateOrhadiV2toV3 = MigrationStage.custom(
+        fromVersion: OrhadiSchemaV2.self,
+        toVersion: OrhadiSchemaV3.self,
+        willMigrate: nil, didMigrate: nil
     )
 }
 

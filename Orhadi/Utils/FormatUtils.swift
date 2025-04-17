@@ -1,5 +1,5 @@
 //
-//  TimeUtils.swift
+//  FormatUtils.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 30/03/25.
@@ -41,4 +41,27 @@ func formatHourAndMinute(_ time: TimeInterval) -> String {
     }
 
     return "\(dateHour > 0 ? "\(dateHour)h " : "")\(dateMinute)m"
+}
+
+func formatTime(_ int: Int) -> String {
+    let hour = int / 3600
+    let minutes = (int % 3600) / 60
+
+    return "\(hour < 10 ? "0\(hour)" : "\(hour)"):\(minutes < 10 ? "0\(minutes)" : "\(minutes)")"
+}
+
+/// Formata um `Date` em uma `String` no formato "hh:mm".
+func formatTime(_ date: Date) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = String(localized: "HH:mm")
+
+    return dateFormatter.string(from: date).capitalized
+}
+
+/// Formata um `Date` em uma `String` no formato "dd/MM/yyyy – hh:mm".
+func formatDueDate(_ date: Date) -> String {
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = String(localized: "dd/MM/yyyy – HH:mm")
+
+    return dateFormatter.string(from: date)
 }
