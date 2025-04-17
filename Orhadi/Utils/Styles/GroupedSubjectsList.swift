@@ -111,9 +111,9 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                     }
                 }
             }
-            .onChange(of: currentMinY) { _, newValue in
+            .onChange(of: currentMinY) { _, _ in
                 withAnimation(.smooth(duration: 0.25)) {
-                    minY = Int(newValue)
+                    minY = Int(currentMinY)
                 }
             }
         }

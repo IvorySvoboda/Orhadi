@@ -1,18 +1,148 @@
 //
-//  OrhadiSchemaV2.swift
+//  OrhadiSchemaV2 2.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 14/04/25.
+//  Created by Zyvoxi . on 16/04/25.
 //
 
 import Foundation
 import SwiftData
 
-enum OrhadiSchemaV2: VersionedSchema {
-    static var versionIdentifier: Schema.Version = Schema.Version(2, 0, 0)
+enum OrhadiSchemaV3: VersionedSchema {
+    static var versionIdentifier: Schema.Version = Schema.Version(3, 0, 0)
 
     static var models: [any PersistentModel.Type] {
-        [Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self]
+        [
+            Subject.self,
+            SRSubject.self,
+            ToDo.self,
+            Settings.self,
+            Teacher.self,
+            UserProfile.self,
+            Achievement.self
+        ]
+    }
+
+    @Model
+    class Subject: Codable {
+        var name: String
+        @Relationship(deleteRule: .nullify) var teacher: Teacher?
+        var schedule: Date
+        var startTime: Date
+        var endTime: Date
+        var place: String
+        var isRecess: Bool
+
+        /// Variáveis para o StudyRoutine.
+        var studyDay: Date
+        var studyTime: Date
+        var lastStudied: Date
+        var isHidden: Bool
+
+        init(
+            name: String,
+            teacher: Teacher?,
+            schedule: Date,
+            startTime: Date,
+            endTime: Date,
+            place: String,
+            isRecess: Bool,
+            studyDay: Date = Date(),
+            studyTime: Date = Calendar.current.date(
+                bySettingHour: 0,
+                minute: 30,
+                second: 0,
+                of: Date()
+            )!,
+            lastStudied: Date = Date() - 604800,
+            isHidden: Bool = false
+        ) {
+            self.name = name
+            self.teacher = teacher
+            self.schedule = schedule
+            self.startTime = startTime
+            self.endTime = endTime
+            self.place = place
+            self.isRecess = isRecess
+            self.studyDay = studyDay
+            self.studyTime = studyTime
+            self.lastStudied = lastStudied
+            self.isHidden = isHidden
+        }
+
+        static let sampleData = [
+            Subject(
+                name: "Português",
+                teacher: Teacher(name: "Teste", email: "email@exemple.com"),
+                schedule: Date(),
+                startTime: Date(),
+                endTime: Date(),
+                place: "Sala 109",
+                isRecess: false
+            ),
+            Subject(
+                name: "Biologia",
+                teacher: Teacher(name: "Teste2", email: "email@exemple.com"),
+                schedule: Date(),
+                startTime: Date(),
+                endTime: Date(),
+                place: "Sala 109",
+                isRecess: false
+            ),
+            Subject(
+                name: "Química",
+                teacher: Teacher(name: "Teste3", email: "email@exemple.com"),
+                schedule: Date(),
+                startTime: Date(),
+                endTime: Date(),
+                place: "Sala 109",
+                isRecess: false
+            ),
+        ]
+
+        enum CodingKeys: CodingKey {
+            case name
+            case teacher
+            case schedule
+            case startTime
+            case endTime
+            case place
+            case isRecess
+            case studyDay
+            case studyTime
+            case lastStudied
+            case isHidden
+        }
+
+        required init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            name = try container.decode(String.self, forKey: .name)
+            teacher = try container.decodeIfPresent(Teacher.self, forKey: .teacher)
+            schedule = try container.decode(Date.self, forKey: .schedule)
+            startTime = try container.decode(Date.self, forKey: .startTime)
+            endTime = try container.decode(Date.self, forKey: .endTime)
+            place = try container.decode(String.self, forKey: .place)
+            isRecess = try container.decode(Bool.self, forKey: .isRecess)
+            studyDay = try container.decode(Date.self, forKey: .studyDay)
+            studyTime = try container.decode(Date.self, forKey: .studyTime)
+            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
+            isHidden = try container.decode(Bool.self, forKey: .isHidden)
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(name, forKey: .name)
+            try container.encode(teacher, forKey: .teacher)
+            try container.encode(schedule, forKey: .schedule)
+            try container.encode(startTime, forKey: .startTime)
+            try container.encode(endTime, forKey: .endTime)
+            try container.encode(place, forKey: .place)
+            try container.encode(isRecess, forKey: .isRecess)
+            try container.encode(studyDay, forKey: .studyDay)
+            try container.encode(studyTime, forKey: .studyTime)
+            try container.encode(lastStudied, forKey: .lastStudied)
+            try container.encode(isHidden, forKey: .isHidden)
+        }
     }
 
     @Model
@@ -205,128 +335,6 @@ enum OrhadiSchemaV2: VersionedSchema {
     }
 
     @Model
-    class Subject: Codable {
-        var name: String
-        @Relationship(deleteRule: .nullify) var teacher: Teacher?
-        var schedule: Date
-        var startTime: Date
-        var endTime: Date
-        var place: String
-        var isRecess: Bool
-
-        /// Variáveis para o StudyRoutine.
-        var studyDay: Date
-        var studyTime: Date
-        var lastStudied: Date
-        var isHidden: Bool
-
-        init(
-            name: String,
-            teacher: Teacher?,
-            schedule: Date,
-            startTime: Date,
-            endTime: Date,
-            place: String,
-            isRecess: Bool,
-            studyDay: Date = Date(),
-            studyTime: Date = Calendar.current.date(
-                bySettingHour: 0,
-                minute: 30,
-                second: 0,
-                of: Date()
-            )!,
-            lastStudied: Date = Date() - 604800,
-            isHidden: Bool = false
-        ) {
-            self.name = name
-            self.teacher = teacher
-            self.schedule = schedule
-            self.startTime = startTime
-            self.endTime = endTime
-            self.place = place
-            self.isRecess = isRecess
-            self.studyDay = studyDay
-            self.studyTime = studyTime
-            self.lastStudied = lastStudied
-            self.isHidden = isHidden
-        }
-
-        static let sampleData = [
-            Subject(
-                name: "Português",
-                teacher: Teacher(name: "Teste", email: "email@exemple.com"),
-                schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
-                place: "Sala 109",
-                isRecess: false
-            ),
-            Subject(
-                name: "Biologia",
-                teacher: Teacher(name: "Teste2", email: "email@exemple.com"),
-                schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
-                place: "Sala 109",
-                isRecess: false
-            ),
-            Subject(
-                name: "Química",
-                teacher: Teacher(name: "Teste3", email: "email@exemple.com"),
-                schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
-                place: "Sala 109",
-                isRecess: false
-            ),
-        ]
-
-        enum CodingKeys: CodingKey {
-            case name
-            case teacher
-            case schedule
-            case startTime
-            case endTime
-            case place
-            case isRecess
-            case studyDay
-            case studyTime
-            case lastStudied
-            case isHidden
-        }
-
-        required init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            name = try container.decode(String.self, forKey: .name)
-            teacher = try container.decodeIfPresent(Teacher.self, forKey: .teacher)
-            schedule = try container.decode(Date.self, forKey: .schedule)
-            startTime = try container.decode(Date.self, forKey: .startTime)
-            endTime = try container.decode(Date.self, forKey: .endTime)
-            place = try container.decode(String.self, forKey: .place)
-            isRecess = try container.decode(Bool.self, forKey: .isRecess)
-            studyDay = try container.decode(Date.self, forKey: .studyDay)
-            studyTime = try container.decode(Date.self, forKey: .studyTime)
-            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
-            isHidden = try container.decode(Bool.self, forKey: .isHidden)
-        }
-
-        func encode(to encoder: any Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(name, forKey: .name)
-            try container.encode(teacher, forKey: .teacher)
-            try container.encode(schedule, forKey: .schedule)
-            try container.encode(startTime, forKey: .startTime)
-            try container.encode(endTime, forKey: .endTime)
-            try container.encode(place, forKey: .place)
-            try container.encode(isRecess, forKey: .isRecess)
-            try container.encode(studyDay, forKey: .studyDay)
-            try container.encode(studyTime, forKey: .studyTime)
-            try container.encode(lastStudied, forKey: .lastStudied)
-            try container.encode(isHidden, forKey: .isHidden)
-        }
-    }
-
-    @Model
     class Teacher: Codable {
         @Attribute(.unique) var name: String
         var email: String
@@ -356,4 +364,51 @@ enum OrhadiSchemaV2: VersionedSchema {
             try container.encode(email, forKey: .email)
         }
     }
+
+    @Model
+    class UserProfile {
+        @Attribute(.unique) var name: String
+        var level: Int
+        var xp: Int
+        var timeStudied: Int
+
+        init(
+            name: String = "Orhadi",
+            level: Int = 1,
+            xp: Int = 0,
+            timeStudied: Int = 0
+        ) {
+            self.name = name
+            self.level = level
+            self.xp = xp
+            self.timeStudied = timeStudied
+        }
+    }
+
+    @Model
+    class Achievement {
+        @Attribute(.unique) var id: String
+        var name: String
+        var imageName: String
+        var descriptionText: String
+        var isUnlocked: Bool
+        var unlockedAt: Date?
+
+        init(
+            id: String,
+            name: String,
+            imageName: String,
+            descriptionText: String,
+            isUnlocked: Bool = false,
+            unlockedAt: Date? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.imageName = imageName
+            self.descriptionText = descriptionText
+            self.isUnlocked = isUnlocked
+            self.unlockedAt = unlockedAt
+        }
+    }
 }
+
