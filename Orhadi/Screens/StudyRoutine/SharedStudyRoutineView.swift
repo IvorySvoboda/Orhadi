@@ -113,6 +113,12 @@ struct SharedStudyRoutineView: View {
     }
 }
 
+#Preview("SharedStudyRoutineView") {
+    SharedStudyRoutineView()
+        .modelContainer(SampleData.shared.container)
+        .environment(Settings())
+}
+
 struct SharedStudyRoutineListCell: View {
     @Environment(Settings.self) private var settings
 
@@ -242,10 +248,4 @@ struct SharedSREditView: View {
             }
         }
     }
-}
-
-#Preview("SharedStudyRoutineView") {
-    SharedStudyRoutineView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
 }

@@ -13,25 +13,10 @@ struct TeachersView: View {
     @Environment(\.modelContext) private var context
 
     @Query private var subjects: [Subject]
+    @Query(sort: \Teacher.name) private var teachers: [Teacher]
 
-    enum SheetType: Identifiable {
-        case add
-        case edit(Teacher)
-
-        var id: String {
-            switch self {
-            case .add:
-                return "add"
-            case .edit(let teacher):
-                return teacher.name
-            }
-        }
-    }
-
-    @Query private var teachers: [Teacher]
-
-    @State private var isAdding: Bool = false
-    @State private var currentSheet: SheetType?
+    @State private var showAddSheet: Bool = false
+    @State private var teacherToEdit: Teacher?
 
     var body: some View {
         List(teachers) { teacher in
@@ -74,7 +59,7 @@ struct TeachersView: View {
                     Label("Excluir", systemImage: "trash.fill")
                 }
                 Button {
-                    currentSheet = .edit(teacher)
+                    teacherToEdit = teacher
                 } label: {
                     Label("Editar", systemImage: "pencil")
                 }
@@ -84,7 +69,7 @@ struct TeachersView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    currentSheet = .add
+                    showAddSheet.toggle()
                 }) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
@@ -98,15 +83,12 @@ struct TeachersView: View {
         .toolbarBackground(
             OrhadiTheme.getBGColor(for: colorScheme),
             for: .navigationBar)
-        .sheet(
-            item: $currentSheet,
-        ) { sheetType in
-            switch sheetType {
-            case .add:
-                TeacherAddView().interactiveDismissDisabled()
-            case .edit(let teacher):
-                TeacherEditView(teacher: teacher).interactiveDismissDisabled()
-            }
+        .sheet(isPresented: $showAddSheet) {
+            TeacherAddView()
+                .interactiveDismissDisabled()
+        }
+        .sheet(item: $teacherToEdit) { teacher in
+            TeacherEditView(teacher: teacher)
         }
     }
 
@@ -120,6 +102,13 @@ struct TeachersView: View {
         withAnimation {
             context.delete(teacher)
         }
+    }
+}
+
+#Preview("TeachersView") {
+    NavigationStack {
+        TeachersView()
+            .modelContainer(SampleData.shared.container)
     }
 }
 
