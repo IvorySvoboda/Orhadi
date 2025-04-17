@@ -27,6 +27,8 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+    @Environment(UserProfile.self) private var user
+    @Environment(GameManager.self) private var game
 
     @State private var isReady: Bool = false
     @State private var sessionItems: [SessionItem] = []
@@ -51,7 +53,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
                 HStack {
                     if currentSessionIndex < sessionItems.count {
-                        Text(sessionItems[currentSessionIndex].name.isEmpty ? "Sem Nome" : sessionItems[currentSessionIndex].name)
+                        Text(sessionItems[currentSessionIndex].name.isEmpty ? "Não Informado" : sessionItems[currentSessionIndex].name)
                     } else {
                         Text("Estudos completados! 🔥")
                     }
@@ -210,6 +212,11 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         let currentItem = sessionItems[currentSessionIndex]
         remainingTime = currentItem.endTime.timeIntervalSinceNow
 
+        if !currentItem.isBreak {
+            user.timeStudied += 1
+            game.checkAchievements(for: user)
+        }
+
         if remainingTime <= 0 {
             advanceSession()
         }
@@ -220,6 +227,8 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
         if !currentItem.isBreak, let subject = currentItem.subject {
             updateLastStudied(for: subject)
+            let components = Calendar.current.dateComponents([.hour, .minute], from: subject.studyTime)
+            game.addXP(50 * (((components.hour ?? 0) * 60) + (components.minute ?? 0)), to: user)
         }
 
         withAnimation {

@@ -21,6 +21,16 @@
     "%lld" : {
       "shouldTranslate" : false
     },
+    "%lld/%lld" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
     },
@@ -283,6 +293,9 @@
           }
         }
       }
+    },
+    "Conquistas" : {
+
     },
     "Continuar" : {
       "localizations" : {
@@ -736,6 +749,12 @@
         }
       }
     },
+    "Level: %lld" : {
+
+    },
+    "Level: 1" : {
+
+    },
     "matéria" : {
       "localizations" : {
         "en" : {
@@ -1131,6 +1150,9 @@
         }
       }
     },
+    "Tempo estudado:" : {
+
+    },
     "Tempo:" : {
       "localizations" : {
         "en" : {
@@ -1151,6 +1173,9 @@
           }
         }
       }
+    },
+    "Usuario" : {
+
     },
     "Versão: %@ (%@)" : {
       "localizations" : {
@@ -1177,6 +1202,9 @@
           }
         }
       }
+    },
+    "XP:" : {
+
     }
   },
   "version" : "1.0"

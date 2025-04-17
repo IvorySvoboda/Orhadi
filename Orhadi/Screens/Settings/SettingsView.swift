@@ -22,6 +22,26 @@ struct SettingsView: View {
             Form {
                 Section {
                     NavigationLink {
+                        ProfileView()
+                    } label: {
+                        HStack {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .foregroundStyle(Color.secondary)
+                            VStack(alignment: .leading , spacing: 5) {
+                                Text("Usuario")
+                                    .font(.headline)
+                                Text("Level: 1")
+                                    .font(.caption)
+                                    .foregroundStyle(Color.secondary)
+                            }
+                        }.frame(height: 50)
+                    }
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+                Section {
+                    NavigationLink {
                         SubjectsSettingsView(settings: settings)
                     } label: {
                         Label("Matérias", systemImage: "book.fill")
@@ -145,6 +165,132 @@ struct SettingsView: View {
         } catch {
             print(error.localizedDescription)
         }
+    }
+}
+
+struct ProfileView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(GameManager.self) private var game
+    @Environment(UserProfile.self) private var user
+
+    @State private var minY: Int = 150
+
+    var body: some View {
+        List {
+            Section {
+                GeometryReader { geo in
+                    let currentMinY = geo.frame(in: .global).minY
+
+                    HStack() {
+                        Spacer()
+                        VStack(spacing: 10) {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 80, height: 80)
+                                .foregroundStyle(Color.secondary)
+                            Text(user.name)
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            Text("Level: \(user.level)")
+                                .font(.footnote)
+                                .foregroundStyle(Color.secondary)
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                    .onChange(of: currentMinY) { _, _ in
+                        withAnimation(.smooth(duration: 0.25)) {
+                            minY = Int(currentMinY)
+                        }
+                    }
+                }.frame(height: 140)
+            }
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+            .listRowBackground(Color.clear)
+
+            NavigationLink("Conquistas") {
+                AchievementView()
+            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+            Section {
+                HStack {
+                    Text("XP:")
+                    Spacer()
+                    Text("\(user.xp)/\(game.xpRequired(for: user.level))")
+                }
+                HStack {
+                    Text("Tempo estudado:")
+                    Spacer()
+                    Text(formatTime(user.timeStudied))
+                }
+            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .scrollContentBackground(.hidden)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(user.name)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .opacity(minY < -10 ? 1 : 0)
+            }
+        }
+        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
+    }
+}
+
+struct AchievementView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(GameManager.self) private var game
+
+    @Query private var achievements: [Achievement]
+
+    let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+
+    @State private var selectedAchievement: Int? = nil
+
+    var body: some View {
+        ZStack {
+            OrhadiTheme.getBGColor(for: colorScheme)
+                .ignoresSafeArea()
+
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 20) {
+                    ForEach(achievements) { achievement in
+                        VStack(spacing: 15) {
+                            ZStack {
+                                Image(systemName: achievement.imageName)
+                                    .font(.system(size: 60))
+                                    .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                                    .background(
+                                        Circle()
+                                            .fill(Color.accentColor)
+                                            .frame(width: 80, height: 80)
+                                            .opacity(achievement.isUnlocked ? 1 : 0.4)
+                                    )
+                                if !achievement.isUnlocked {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 50))
+                                        .foregroundStyle(Color.gray)
+                                        .shadow(radius: 15)
+                                }
+                            }
+                            Text(achievement.isUnlocked ? achievement.name : "…")
+                                .font(.subheadline)
+                                .opacity(achievement.isUnlocked ? 1 : 0.5)
+                        }
+                    }
+                }.padding()
+            }
+        }
+        .navigationTitle("Conquistas")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
     }
 }
 
