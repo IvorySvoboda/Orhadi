@@ -14,7 +14,7 @@ struct SubjectListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: Subject
-    @Binding var currentSheet: SubjectsView.SheetType?
+    @Binding var subjectToEdit: Subject?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -104,7 +104,7 @@ struct SubjectListCell: View {
                     name.addingPercentEncoding(
                         withAllowedCharacters: .urlQueryAllowed
                     ) ?? ""
-                    
+
                     if let url = URL(
                         string:
                             "mailto:\(teacher.email)?subject=\(subjectEncoded)"
@@ -135,7 +135,7 @@ struct SubjectListCell: View {
                 }
             }
 
-            Button(action: { currentSheet = .edit(subject) }) {
+            Button(action: { subjectToEdit = subject }) {
                 Image(systemName: "pencil")
             }.tint(.accentColor)
         }
