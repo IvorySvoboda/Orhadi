@@ -69,6 +69,12 @@ struct ToDosView: View {
     }
 }
 
+#Preview("ToDoView") {
+    ToDosView()
+        .modelContainer(SampleData.shared.container)
+        .environment(Settings())
+}
+
 struct ToDosListCell: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
@@ -343,10 +349,4 @@ struct ToDoAddView: View {
             date: dueDate
         )
     }
-}
-
-#Preview("ToDoView") {
-    ToDosView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
 }

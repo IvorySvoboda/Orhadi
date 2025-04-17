@@ -13,20 +13,6 @@ struct SubjectsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
 
-    enum SheetType: Identifiable {
-        case add
-        case edit(Subject)
-
-        var id: String {
-            switch self {
-            case .add:
-                return "add"
-            case .edit(let subject):
-                return subject.name
-            }
-        }
-    }
-
     @Query(
         sort: [.init(\Subject.startTime, order: .forward)],
         animation: .bouncy
@@ -34,8 +20,8 @@ struct SubjectsView: View {
     private var subjects: [Subject]
 
     @State private var showConfirmationDialog: Bool = false
+    @State private var showAddSheet: Bool = false
     @State private var subjectToEdit: Subject?
-    @State private var currentSheet: SheetType?
     @State private var isRecess: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(
         .weekday,
@@ -55,7 +41,8 @@ struct SubjectsView: View {
                     AnyView(
                         SubjectListCell(
                             subject: subject,
-                            currentSheet: $currentSheet)
+                            subjectToEdit: $subjectToEdit
+                        )
                     )
                 }
             }
@@ -89,38 +76,41 @@ struct SubjectsView: View {
                     }
                 }
             }
+            .toolbarBackground(
+                OrhadiTheme.getBGColor(for: colorScheme),
+                for: .navigationBar
+            )
             .confirmationDialog(
                 "Adicionar",
                 isPresented: $showConfirmationDialog
             ) {
                 Button("Matéria") {
-                    currentSheet = .add
+                    showAddSheet.toggle()
                 }
                 Button("Intervalo") {
                     isRecess = true
-                    currentSheet = .add
+                    showAddSheet.toggle()
                 }
                 Button("Cancelar", role: .cancel) {}
             }
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme),
-                for: .navigationBar
-            )
-        }
-        .sheet(
-            item: $currentSheet,
-            onDismiss: {
+            .sheet(isPresented: $showAddSheet, onDismiss: {
                 isRecess = false
+            }) {
+                SubjectAddView(isRecess: isRecess)
+                    .interactiveDismissDisabled()
             }
-        ) { sheetType in
-            switch sheetType {
-            case .add:
-                SubjectAddView(isRecess: isRecess).interactiveDismissDisabled()
-            case .edit(let subject):
-                SubjectEditView(subject: subject).interactiveDismissDisabled()
+            .sheet(item: $subjectToEdit) { subject in
+                SubjectEditView(subject: subject)
+                    .interactiveDismissDisabled()
             }
         }
     }
+}
+
+#Preview("SubjectsView") {
+    SubjectsView()
+        .modelContainer(SampleData.shared.container)
+        .environment(Settings())
 }
 
 struct SubjectListCell: View {
@@ -130,7 +120,7 @@ struct SubjectListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: Subject
-    @Binding var currentSheet: SubjectsView.SheetType?
+    @Binding var subjectToEdit: Subject?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -251,7 +241,7 @@ struct SubjectListCell: View {
                 }
             }
 
-            Button(action: { currentSheet = .edit(subject) }) {
+            Button(action: { subjectToEdit = subject }) {
                 Image(systemName: "pencil")
             }.tint(.accentColor)
         }
@@ -571,10 +561,4 @@ struct SubjectAddView: View {
             modelContext.insert(subject)
         }
     }
-}
-
-#Preview("SubjectsView") {
-    SubjectsView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
 }

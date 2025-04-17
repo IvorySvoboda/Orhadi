@@ -12,26 +12,11 @@ struct StudyRoutineView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
-    enum SheetType: Identifiable {
-        case add
-        case edit(SRSubject)
-
-        var id: String {
-            switch self {
-            case .add:
-                return "add"
-            case .edit(let subject):
-                return subject.id
-            }
-        }
-    }
-
-
     @Query(sort: [SortDescriptor(\SRSubject.name)], animation: .smooth)
     private var subjects: [SRSubject]
 
-    @State private var isEditing: Bool = false
-    @State private var currentSheet: SheetType? = nil
+    @State private var showAddSheet: Bool = false
+    @State private var subjectToEdit: SRSubject?
     @State private var subjectsToStudy: [SRSubject] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(
@@ -52,7 +37,7 @@ struct StudyRoutineView: View {
                     AnyView(
                         StudyRoutineListCell(
                             subject: subject,
-                            currentSheet: $currentSheet,
+                            subjectToEdit: $subjectToEdit,
                             navigateToStudyingView: $navigateToStudyingView,
                             subjectsToStudy: $subjectsToStudy
                         )
@@ -83,7 +68,7 @@ struct StudyRoutineView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        currentSheet = .add
+                        showAddSheet.toggle()
                     }) {
                         Image(systemName: "plus.circle.fill").font(.title2)
                     }
@@ -137,16 +122,22 @@ struct StudyRoutineView: View {
                     )
                 }
             )
-        }
-        .sheet(item: $currentSheet) { sheetType in
-            switch sheetType {
-            case .add:
-                SRAddView().interactiveDismissDisabled()
-            case .edit(let subject):
-                SREditView(subject: subject).interactiveDismissDisabled()
+            .sheet(isPresented: $showAddSheet) {
+                SRAddView()
+                    .interactiveDismissDisabled()
+            }
+            .sheet(item: $subjectToEdit) { subject in
+                SREditView(subject: subject)
+                    .interactiveDismissDisabled()
             }
         }
     }
+}
+
+#Preview("StudyRoutineView") {
+    StudyRoutineView()
+        .modelContainer(SampleData.shared.container)
+        .environment(Settings())
 }
 
 struct StudyRoutineListCell: View {
@@ -156,7 +147,7 @@ struct StudyRoutineListCell: View {
     @State private var showConfirmation: Bool = false
 
     var subject: SRSubject
-    @Binding var currentSheet: StudyRoutineView.SheetType?
+    @Binding var subjectToEdit: SRSubject?
     @Binding var navigateToStudyingView: Bool
     @Binding var subjectsToStudy: [SRSubject]
 
@@ -206,7 +197,7 @@ struct StudyRoutineListCell: View {
                     Label("Excluir", systemImage: "trash.fill")
                 }
             }
-            Button(action: { currentSheet = .edit(subject) }
+            Button(action: { subjectToEdit = subject }
             ) {
                 Label("Editar", systemImage: "pencil")
             }
@@ -368,10 +359,4 @@ struct SRAddView: View {
 
         dismiss()
     }
-}
-
-#Preview("StudyRoutineView") {
-    StudyRoutineView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
 }
