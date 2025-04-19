@@ -15,9 +15,9 @@ enum OrhadiTheme {
 
     static func getBGColor(for theme: ColorScheme) -> Color {
         switch theme {
-        case .dark: return Color(red: 0.05, green: 0.05, blue: 0.05)
+        case .dark: return Color(red: 0.02, green: 0.02, blue: 0.02)
         case .light: return Color(red: 0.94, green: 0.94, blue: 1)
-        default: return Color(red: 0.05, green: 0.05, blue: 0.05)
+        default: return Color(red: 0.02, green: 0.02, blue: 0.02)
         }
     }
 
@@ -26,7 +26,7 @@ enum OrhadiTheme {
         case .dark:
             return Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.08)
         case .light:
-            return Color(red: 0.56, green: 0.56, blue: 1, opacity: 0.08)
+            return Color(red: 0.56, green: 0.56, blue: 1, opacity: 0.085)
         default:
             return Color(red: 0.56, green: 0.56, blue: 0.56, opacity: 0.08)
         }

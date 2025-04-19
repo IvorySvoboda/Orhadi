@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
+typealias CurrentSchema = OrhadiSchemaV3
 typealias Subject = OrhadiSchemaV3.Subject
 typealias SRSubject = OrhadiSchemaV3.SRSubject
 typealias ToDo = OrhadiSchemaV3.ToDo
@@ -26,7 +27,7 @@ struct OrhadiApp: App {
             let configuration = ModelConfiguration(url: databasePath)
 
             let container = try ModelContainer.init(
-                for: Schema(versionedSchema: OrhadiSchemaV3.self),
+                for: Schema(versionedSchema: CurrentSchema.self),
                 migrationPlan: MigrationPlan.self,
                 configurations: configuration
             )

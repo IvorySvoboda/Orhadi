@@ -11,6 +11,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
+    @Environment(UserProfile.self) private var user
 
     @State private var isErasing: Bool = false
     @State private var showEraseDataAlert: Bool = false
@@ -25,18 +26,27 @@ struct SettingsView: View {
                         ProfileView()
                     } label: {
                         HStack {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 48, height: 48)
-                                .foregroundStyle(Color.secondary)
-                            VStack(alignment: .leading , spacing: 5) {
-                                Text("Usuario")
+                            if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 48, height: 48)
+                                    .clipped(antialiased: true)
+                                    .clipShape(Circle())
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .frame(width: 48, height: 48)
+                                    .foregroundStyle(.tint)
+                            }
+                            VStack(alignment: .leading) {
+                                Text(user.name)
                                     .font(.headline)
-                                Text("Level: 1")
+                                Text("Level: \(user.level)")
                                     .font(.caption)
                                     .foregroundStyle(Color.secondary)
                             }
-                        }.frame(height: 50)
+                        }.frame(height: 40)
                     }
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
@@ -102,9 +112,7 @@ struct SettingsView: View {
                         Image("Logo")
                             .resizable()
                             .frame(width: 70, height: 70)
-                            .clipShape(
-                                RoundedRectangle(
-                                    cornerRadius: 15, style: .continuous))
+                            .opacity(0.5)
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Orhadi")
@@ -115,12 +123,12 @@ struct SettingsView: View {
                             Text("© Zyvoxi Industries")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
-                        }.padding(.vertical, 5)
+                        }
                         Spacer()
                     }
                     .listRowInsets(
                         EdgeInsets(
-                            top: 10, leading: 10, bottom: 10, trailing: 10))
+                            top: 5, leading: 10, bottom: 5, trailing: 10))
                 } header: {
                     Text("Sobre")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
@@ -140,10 +148,18 @@ struct SettingsView: View {
         do {
             let subjects = try modelContext.fetch(FetchDescriptor<Subject>())
             let todos = try modelContext.fetch(FetchDescriptor<ToDo>())
-            let srsubjects = try modelContext.fetch(
-                FetchDescriptor<SRSubject>())
+            let srsubjects = try modelContext.fetch(FetchDescriptor<SRSubject>())
+            let teachers = try modelContext.fetch(FetchDescriptor<Teacher>())
+            let achievements = try modelContext.fetch(FetchDescriptor<Achievement>())
 
-            for subject in subjects { modelContext.delete(subject) }
+            for subject in subjects {
+
+                subject.teacher = nil
+
+                try! modelContext.save()
+
+                modelContext.delete(subject)
+            }
             for todo in todos {
                 let todoID = todo.id
                 let identifiers = [
@@ -159,142 +175,23 @@ struct SettingsView: View {
                 modelContext.delete(todo)
             }
             for subject in srsubjects { modelContext.delete(subject) }
+            for teacher in teachers { modelContext.delete(teacher) }
+            for achievement in achievements { modelContext.delete(achievement) }
 
             try modelContext.delete(model: Settings.self)
+            try modelContext.delete(model: UserProfile.self)
+
             modelContext.insert(Settings())
+            modelContext.insert(UserProfile())
         } catch {
             print(error.localizedDescription)
         }
     }
 }
 
-struct ProfileView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(GameManager.self) private var game
-    @Environment(UserProfile.self) private var user
-
-    @State private var minY: Int = 150
-
-    var body: some View {
-        List {
-            Section {
-                GeometryReader { geo in
-                    let currentMinY = geo.frame(in: .global).minY
-
-                    HStack() {
-                        Spacer()
-                        VStack(spacing: 10) {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 80, height: 80)
-                                .foregroundStyle(Color.secondary)
-                            Text(user.name)
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                            Text("Level: \(user.level)")
-                                .font(.footnote)
-                                .foregroundStyle(Color.secondary)
-                            Spacer()
-                        }
-                        Spacer()
-                    }
-                    .onChange(of: currentMinY) { _, _ in
-                        withAnimation(.smooth(duration: 0.25)) {
-                            minY = Int(currentMinY)
-                        }
-                    }
-                }.frame(height: 140)
-            }
-            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-            .listRowBackground(Color.clear)
-
-            NavigationLink("Conquistas") {
-                AchievementView()
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-
-            Section {
-                HStack {
-                    Text("XP:")
-                    Spacer()
-                    Text("\(user.xp)/\(game.xpRequired(for: user.level))")
-                }
-                HStack {
-                    Text("Tempo estudado:")
-                    Spacer()
-                    Text(formatTime(user.timeStudied))
-                }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-        }
-        .navigationBarTitleDisplayMode(.inline)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(user.name)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .opacity(minY < -10 ? 1 : 0)
-            }
-        }
-        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
-    }
-}
-
-struct AchievementView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(GameManager.self) private var game
-
-    @Query private var achievements: [Achievement]
-
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-
-    @State private var selectedAchievement: Int? = nil
-
-    var body: some View {
-        ZStack {
-            OrhadiTheme.getBGColor(for: colorScheme)
-                .ignoresSafeArea()
-
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(achievements) { achievement in
-                        VStack(spacing: 15) {
-                            ZStack {
-                                Image(systemName: achievement.imageName)
-                                    .font(.system(size: 60))
-                                    .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
-                                    .background(
-                                        Circle()
-                                            .fill(Color.accentColor)
-                                            .frame(width: 80, height: 80)
-                                            .opacity(achievement.isUnlocked ? 1 : 0.4)
-                                    )
-                                if !achievement.isUnlocked {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 50))
-                                        .foregroundStyle(Color.gray)
-                                        .shadow(radius: 15)
-                                }
-                            }
-                            Text(achievement.isUnlocked ? achievement.name : "…")
-                                .font(.subheadline)
-                                .opacity(achievement.isUnlocked ? 1 : 0.5)
-                        }
-                    }
-                }.padding()
-            }
-        }
-        .navigationTitle("Conquistas")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
-    }
-}
-
 #Preview {
     SettingsView(settings: Settings())
         .modelContainer(SampleData.shared.container)
+        .environment(UserProfile())
+        .environment(GameManager(context: SampleData.shared.context))
 }

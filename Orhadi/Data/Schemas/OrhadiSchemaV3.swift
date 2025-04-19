@@ -1,5 +1,5 @@
 //
-//  OrhadiSchemaV2 2.swift
+//  OrhadiSchemaV3.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 16/04/25.
@@ -368,20 +368,26 @@ enum OrhadiSchemaV3: VersionedSchema {
     @Model
     class UserProfile {
         @Attribute(.unique) var name: String
+        var photo: Data?
         var level: Int
         var xp: Int
         var timeStudied: Int
+        var completedToDos: Int
 
         init(
             name: String = "Orhadi",
+            photo: Data? = nil,
             level: Int = 1,
             xp: Int = 0,
-            timeStudied: Int = 0
+            timeStudied: Int = 0,
+            completedToDos: Int = 0
         ) {
             self.name = name
+            self.photo = photo
             self.level = level
             self.xp = xp
             self.timeStudied = timeStudied
+            self.completedToDos = completedToDos
         }
     }
 
@@ -393,6 +399,7 @@ enum OrhadiSchemaV3: VersionedSchema {
         var descriptionText: String
         var isUnlocked: Bool
         var unlockedAt: Date?
+        var difficultLevel: Int
 
         init(
             id: String,
@@ -400,7 +407,8 @@ enum OrhadiSchemaV3: VersionedSchema {
             imageName: String,
             descriptionText: String,
             isUnlocked: Bool = false,
-            unlockedAt: Date? = nil
+            unlockedAt: Date? = nil,
+            difficultLevel: Int
         ) {
             self.id = id
             self.name = name
@@ -408,6 +416,7 @@ enum OrhadiSchemaV3: VersionedSchema {
             self.descriptionText = descriptionText
             self.isUnlocked = isUnlocked
             self.unlockedAt = unlockedAt
+            self.difficultLevel = difficultLevel
         }
     }
 }

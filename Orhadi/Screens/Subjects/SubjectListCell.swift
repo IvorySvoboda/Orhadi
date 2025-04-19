@@ -11,10 +11,12 @@ struct SubjectListCell: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
 
+    var subject: Subject
+    @Binding var subjectToEdit: Subject?
+
     @State private var showConfirmation: Bool = false
 
-    var subject: Subject
-    @Binding var currentSheet: SubjectsView.SheetType?
+    // MARK: - Views
 
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -22,25 +24,20 @@ struct SubjectListCell: View {
                 HStack {
                     Text("INTERVALO")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                         .fontWeight(.semibold)
                     Image(systemName: "clock.fill")
                         .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(
-                        "\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))"
-                    )
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                    Text("\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fontWeight(.semibold)
                 }
             } else {
-                Text(
-                    subject.name.isEmpty
-                        ? String(localized: "Sem Nome") : subject.name
-                )
-                .font(.headline)
-                .fontWeight(.semibold)
+                Text(subject.name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                    .font(.headline)
+                    .fontWeight(.semibold)
 
                 VStack(alignment: .leading, spacing: 2) {
                     if let teacher = subject.teacher {
@@ -48,11 +45,11 @@ struct SubjectListCell: View {
                             HStack {
                                 Image(systemName: "person.fill")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                                     .padding(.trailing, 1)
                                 Text(teacher.name)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                             }
                         }
 
@@ -60,11 +57,11 @@ struct SubjectListCell: View {
                             HStack {
                                 Image(systemName: "envelope.fill")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                                     .padding(.trailing, -3)
                                 Text(teacher.email)
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                                     .lineLimit(1)
                                     .frame(maxWidth: 125, alignment: .leading)
                             }
@@ -74,22 +71,20 @@ struct SubjectListCell: View {
                     HStack {
                         Image(systemName: "clock.fill")
                             .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(
-                            "\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))"
-                        )
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                            .foregroundStyle(.secondary)
+                        Text("\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
 
                     if !subject.place.isEmpty {
                         HStack {
-                            Image(systemName: "location.circle.fill")
+                            Image(systemName: "building.2.fill")
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                             Text(subject.place)
                                 .font(.caption)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -97,64 +92,63 @@ struct SubjectListCell: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
+            sendEmailSwipeAction
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            deleteSwipeAction
+            editSwipeAction
+        }
+        .alert("Excluir \(subject.isRecess ? String(localized: "intervalo") : String(localized: "matéria"))?",
+               isPresented: $showConfirmation
+        ) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Excluir", role: .destructive) {
+                deleteSubject()
+            }
+        } message: {
+            Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? String(localized: "este intervalo") : String(localized: "esta matéria"))?")
+        }
+    }
+
+    private var deleteSwipeAction: some View {
+        Group {
+            if settings.subjectsDeleteConfirmation {
+                Button(action: { showConfirmation.toggle() }) {
+                    Image(systemName: "trash.fill")
+                }.tint(.red)
+            } else {
+                Button(role: .destructive, action: deleteSubject) {
+                    Image(systemName: "trash.fill")
+                }
+            }
+        }
+    }
+
+    private var sendEmailSwipeAction: some View {
+        Group {
             if let teacher = subject.teacher, !teacher.email.isEmpty {
-                Button(action: {
-                    let name = subject.name.isEmpty ? "Sem Nome" : subject.name
-                    let subjectEncoded =
-                    name.addingPercentEncoding(
-                        withAllowedCharacters: .urlQueryAllowed
-                    ) ?? ""
-                    
-                    if let url = URL(
-                        string:
-                            "mailto:\(teacher.email)?subject=\(subjectEncoded)"
-                    ) {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
+                Button(action: { openMail(to: teacher.email) }) {
                     Image(systemName: "envelope.fill")
                 }.tint(.accentColor)
             }
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            if settings.subjectsDeleteConfirmation {
-                Button(action: {
-                    showConfirmation.toggle()
-                }) {
-                    Image(systemName: "trash.fill")
-                }.tint(.red)
-            }
-            if !settings.subjectsDeleteConfirmation {
-                Button(
-                    role: .destructive,
-                    action: {
-                        deleteSubject(subject: subject)
-                    }
-                ) {
-                    Image(systemName: "trash.fill")
-                }
-            }
-
-            Button(action: { currentSheet = .edit(subject) }) {
-                Image(systemName: "pencil")
-            }.tint(.accentColor)
-        }
-        .alert(
-            "Excluir \(subject.isRecess ? String(localized: "intervalo") : String(localized: "matéria"))?",
-            isPresented: $showConfirmation
-        ) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Excluir", role: .destructive) {
-                deleteSubject(subject: subject)
-            }
-        } message: {
-            Text(
-                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? String(localized: "este intervalo") : String(localized: "esta matéria"))?"
-            )
-        }
     }
 
-    private func deleteSubject(subject: Subject) {
+    private var editSwipeAction: some View {
+        Button(action: { subjectToEdit = subject }) {
+            Image(systemName: "pencil")
+        }.tint(.accentColor)
+    }
+
+    // MARK: - Functions
+
+    private func openMail(to email: String) {
+        guard let encoded = subject.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: "mailto:\(email)?subject=\(encoded)") else { return }
+        UIApplication.shared.open(url)
+    }
+
+    private func deleteSubject() {
         withAnimation(.bouncy) {
             modelContext.delete(subject)
         }

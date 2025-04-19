@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "" : {
+
+    },
+    " – " : {
+
+    },
     ":" : {
       "shouldTranslate" : false
     },
@@ -124,6 +130,9 @@
         }
       }
     },
+    "Acumulador" : {
+
+    },
     "Adicionar" : {
       "localizations" : {
         "en" : {
@@ -143,6 +152,12 @@
           }
         }
       }
+    },
+    "Adicionar Tarefa" : {
+
+    },
+    "Adicione novas tarefas para começar a se organizar." : {
+
     },
     "Agendar Notificações" : {
       "localizations" : {
@@ -234,6 +249,15 @@
         }
       }
     },
+    "Aprendiz" : {
+
+    },
+    "Aquecendo" : {
+
+    },
+    "Ascendido" : {
+
+    },
     "Auto" : {
       "localizations" : {
         "en" : {
@@ -254,6 +278,66 @@
         }
       }
     },
+    "Chegue ao nível 3" : {
+
+    },
+    "Chegue ao nível 5" : {
+
+    },
+    "Chegue ao nível 8" : {
+
+    },
+    "Chegue ao nível 10" : {
+
+    },
+    "Chegue ao nível 12" : {
+
+    },
+    "Chegue ao nível 15" : {
+
+    },
+    "Chegue ao nível 20" : {
+
+    },
+    "Chegue ao nível 25" : {
+
+    },
+    "Chegue ao nível 30" : {
+
+    },
+    "Chegue ao nível 40" : {
+
+    },
+    "Chegue ao nível 50" : {
+
+    },
+    "Chegue ao nível 60" : {
+
+    },
+    "Chegue ao nível 75" : {
+
+    },
+    "Chegue ao nível 100" : {
+
+    },
+    "Chegue ao nível 150" : {
+
+    },
+    "Chegue ao nível 200" : {
+
+    },
+    "Chegue ao nível 300" : {
+
+    },
+    "Chegue ao nível 500" : {
+
+    },
+    "Chegue ao nível 750" : {
+
+    },
+    "Chegue ao nível 1000" : {
+
+    },
     "Claro" : {
       "localizations" : {
         "en" : {
@@ -263,6 +347,15 @@
           }
         }
       }
+    },
+    "Colecionador de XP" : {
+
+    },
+    "Começando a Organização" : {
+
+    },
+    "Começo Brilhante" : {
+
     },
     "Completados ou Vencidos" : {
       "localizations" : {
@@ -284,6 +377,39 @@
         }
       }
     },
+    "Complete 1.000 tarefas" : {
+
+    },
+    "Complete 2.000 tarefas" : {
+
+    },
+    "Complete 3.000 tarefas" : {
+
+    },
+    "Complete 5 tarefas" : {
+
+    },
+    "Complete 5.000 tarefas" : {
+
+    },
+    "Complete 10.000 tarefas" : {
+
+    },
+    "Complete 25 tarefas" : {
+
+    },
+    "Complete 75 tarefas" : {
+
+    },
+    "Complete 200 tarefas" : {
+
+    },
+    "Complete 500 tarefas" : {
+
+    },
+    "Concluído" : {
+
+    },
     "Confirmar para Excluir" : {
       "localizations" : {
         "en" : {
@@ -294,7 +420,19 @@
         }
       }
     },
+    "Conquista bloqueada" : {
+
+    },
+    "Conquista desbloqueada" : {
+
+    },
     "Conquistas" : {
+
+    },
+    "Consistente" : {
+
+    },
+    "Constante" : {
 
     },
     "Continuar" : {
@@ -317,6 +455,9 @@
         }
       }
     },
+    "Das" : {
+
+    },
     "dd/MM/yyyy – HH:mm" : {
       "localizations" : {
         "en" : {
@@ -327,6 +468,12 @@
         }
       }
     },
+    "Dedicado" : {
+
+    },
+    "Desbloqueada em %@" : {
+
+    },
     "Descanso" : {
       "localizations" : {
         "en" : {
@@ -336,6 +483,12 @@
           }
         }
       }
+    },
+    "Deus do Estudo" : {
+
+    },
+    "Dia" : {
+
     },
     "Dia de Estudo:" : {
       "localizations" : {
@@ -357,6 +510,12 @@
         }
       }
     },
+    "Divindade do XP" : {
+
+    },
+    "Divino" : {
+
+    },
     "Domingo" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -367,6 +526,9 @@
           }
         }
       }
+    },
+    "Duração" : {
+
     },
     "Editar" : {
       "localizations" : {
@@ -399,6 +561,7 @@
       }
     },
     "Editar Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -427,6 +590,9 @@
           }
         }
       }
+    },
+    "Energizado" : {
+
     },
     "Escuro" : {
       "localizations" : {
@@ -488,6 +654,9 @@
         }
       }
     },
+    "Estatísticas" : {
+
+    },
     "este intervalo" : {
       "localizations" : {
         "en" : {
@@ -507,6 +676,63 @@
           }
         }
       }
+    },
+    "Estudante Supremo" : {
+
+    },
+    "Estude por 1 hora no total" : {
+
+    },
+    "Estude por 1.000 horas no total" : {
+
+    },
+    "Estude por 1.500 horas no total" : {
+
+    },
+    "Estude por 2.000 horas no total" : {
+
+    },
+    "Estude por 5 horas no total" : {
+
+    },
+    "Estude por 5.000 horas no total" : {
+
+    },
+    "Estude por 10 horas no total" : {
+
+    },
+    "Estude por 10.000 horas no total" : {
+
+    },
+    "Estude por 25 horas no total" : {
+
+    },
+    "Estude por 30 minutos no total" : {
+
+    },
+    "Estude por 50 horas no total" : {
+
+    },
+    "Estude por 100 horas no total" : {
+
+    },
+    "Estude por 200 horas no total" : {
+
+    },
+    "Estude por 300 horas no total" : {
+
+    },
+    "Estude por 500 horas no total" : {
+
+    },
+    "Estude por 750 horas no total" : {
+
+    },
+    "Estudioso" : {
+
+    },
+    "Estudioso Eterno" : {
+
     },
     "Estudos" : {
       "localizations" : {
@@ -569,6 +795,18 @@
         }
       }
     },
+    "Executor de Missões" : {
+
+    },
+    "Executor Supremo" : {
+
+    },
+    "Experiente" : {
+
+    },
+    "Expert" : {
+
+    },
     "Exportar Matérias" : {
       "localizations" : {
         "en" : {
@@ -630,6 +868,7 @@
       }
     },
     "Fim:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -638,6 +877,60 @@
           }
         }
       }
+    },
+    "Focado" : {
+
+    },
+    "Ganhe 1.000 XP acumulados" : {
+
+    },
+    "Ganhe 1.000.000 XP acumulados" : {
+
+    },
+    "Ganhe 1.500 XP acumulados" : {
+
+    },
+    "Ganhe 2.000 XP acumulados" : {
+
+    },
+    "Ganhe 3.000 XP acumulados" : {
+
+    },
+    "Ganhe 5.000 XP acumulados" : {
+
+    },
+    "Ganhe 10.000 XP acumulados" : {
+
+    },
+    "Ganhe 25.000 XP acumulados" : {
+
+    },
+    "Ganhe 50.000 XP acumulados" : {
+
+    },
+    "Ganhe 100.000 XP acumulados" : {
+
+    },
+    "Ganhe 250 XP acumulados" : {
+
+    },
+    "Ganhe 250.000 XP acumulados" : {
+
+    },
+    "Ganhe 500 XP" : {
+
+    },
+    "Ganhe 500.000 XP acumulados" : {
+
+    },
+    "Ganhe 750 XP acumulados" : {
+
+    },
+    "Ganhe XP pela primeira vez" : {
+
+    },
+    "General da Rotina" : {
+
     },
     "HH:mm" : {
       "localizations" : {
@@ -658,6 +951,18 @@
           }
         }
       }
+    },
+    "Iluminado" : {
+
+    },
+    "Imbatível" : {
+
+    },
+    "Imortal" : {
+
+    },
+    "Imortal do Conhecimento" : {
+
     },
     "Importar Matérias" : {
       "localizations" : {
@@ -689,6 +994,12 @@
         }
       }
     },
+    "Incansável" : {
+
+    },
+    "Informações pessoais" : {
+
+    },
     "Iniciar" : {
       "localizations" : {
         "en" : {
@@ -700,6 +1011,7 @@
       }
     },
     "Início:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -749,10 +1061,28 @@
         }
       }
     },
+    "Lenda da Organização" : {
+
+    },
+    "Lenda da Produtividade" : {
+
+    },
+    "Lenda dos Estudos" : {
+
+    },
+    "Lenda Viva" : {
+
+    },
+    "Lendário" : {
+
+    },
+    "Level" : {
+
+    },
     "Level: %lld" : {
 
     },
-    "Level: 1" : {
+    "Maratonista de XP" : {
 
     },
     "matéria" : {
@@ -805,6 +1135,15 @@
         }
       }
     },
+    "Mente Brilhante" : {
+
+    },
+    "Mestre" : {
+
+    },
+    "Mestre do Tempo" : {
+
+    },
     "Minha matéria" : {
       "localizations" : {
         "en" : {
@@ -835,6 +1174,9 @@
         }
       }
     },
+    "Mítico" : {
+
+    },
     "Não Informado" : {
       "localizations" : {
         "en" : {
@@ -864,6 +1206,15 @@
           }
         }
       }
+    },
+    "Nenhuma Matéria" : {
+
+    },
+    "Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?" : {
+
+    },
+    "Nome" : {
+
     },
     "Notificações" : {
       "localizations" : {
@@ -915,6 +1266,12 @@
         }
       }
     },
+    "O Escolhido" : {
+
+    },
+    "Obrigatório" : {
+
+    },
     "Ocultar" : {
       "localizations" : {
         "en" : {
@@ -935,6 +1292,12 @@
         }
       }
     },
+    "Oráculo Acadêmico" : {
+
+    },
+    "Organização em Dia" : {
+
+    },
     "Orhadi" : {
       "localizations" : {
         "en" : {
@@ -945,7 +1308,14 @@
         }
       }
     },
+    "Persistente" : {
+
+    },
+    "Prazo" : {
+
+    },
     "Prazo:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -954,6 +1324,12 @@
           }
         }
       }
+    },
+    "Primeiros Passos" : {
+
+    },
+    "Produtividade Total" : {
+
     },
     "Prof. Ivory" : {
       "localizations" : {
@@ -1038,6 +1414,12 @@
         }
       }
     },
+    "Sábio" : {
+
+    },
+    "Sábio Moderno" : {
+
+    },
     "Sala 101" : {
       "localizations" : {
         "en" : {
@@ -1089,6 +1471,9 @@
         }
       }
     },
+    "Sem Tarefas" : {
+
+    },
     "Sexta-feira" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1110,6 +1495,15 @@
         }
       }
     },
+    "Sobrecarga" : {
+
+    },
+    "Subindo na Vida" : {
+
+    },
+    "Supremo" : {
+
+    },
     "Tarefas" : {
       "localizations" : {
         "en" : {
@@ -1119,6 +1513,9 @@
           }
         }
       }
+    },
+    "Tarefas completadas" : {
+
     },
     "Tema" : {
       "localizations" : {
@@ -1150,7 +1547,7 @@
         }
       }
     },
-    "Tempo estudado:" : {
+    "Tempo estudado" : {
 
     },
     "Tempo:" : {
@@ -1174,7 +1571,13 @@
         }
       }
     },
-    "Usuario" : {
+    "To-Do Terminator" : {
+
+    },
+    "Transcendente" : {
+
+    },
+    "Universo XP" : {
 
     },
     "Versão: %@ (%@)" : {
@@ -1193,6 +1596,15 @@
         }
       }
     },
+    "Veterano" : {
+
+    },
+    "Veterano de Estudos" : {
+
+    },
+    "Viciado em Conhecimento" : {
+
+    },
     "Visualização" : {
       "localizations" : {
         "en" : {
@@ -1203,7 +1615,28 @@
         }
       }
     },
-    "XP:" : {
+    "Workaholic" : {
+
+    },
+    "XP" : {
+
+    },
+    "XP Deus" : {
+
+    },
+    "XP Explorer" : {
+
+    },
+    "XP Hunter" : {
+
+    },
+    "XP Lord" : {
+
+    },
+    "XP Master" : {
+
+    },
+    "XP Slayer" : {
 
     }
   },

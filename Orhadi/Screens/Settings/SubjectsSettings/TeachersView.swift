@@ -117,17 +117,16 @@ struct TeacherAddView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
 
-    @State private var name: String = ""
-    @State private var email: String = ""
+    @State private var teacher: Teacher = Teacher(name: "", email: "")
     @State private var preventSave: Bool = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Prof. Ivory", text: $name)
+                    TextField("Prof. Ivory", text: $teacher.name)
                         .autocorrectionDisabled()
-                        .onChange(of: name) { _, newName in
+                        .onChange(of: teacher.name) { _, newName in
                             let existingTeacher = try? context.fetch(
                                 FetchDescriptor<Teacher>(
                                     predicate: #Predicate { $0.name == newName }
@@ -140,7 +139,7 @@ struct TeacherAddView: View {
                                 preventSave = false
                             }
                         }
-                    TextField("\(String(localized: "email@exemple.com"))", text: $email)
+                    TextField("\(String(localized: "email@exemple.com"))", text: $teacher.email)
                         .autocorrectionDisabled()
                 } header: {
                     Text("Novo Professor")
@@ -154,6 +153,7 @@ struct TeacherAddView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         addTeacher()
+                        dismiss()
                     }.disabled(preventSave)
                 }
 
@@ -168,9 +168,8 @@ struct TeacherAddView: View {
 
     private func addTeacher() {
         withAnimation {
-            context.insert(Teacher(name: name, email: email))
+            context.insert(teacher)
         }
-        dismiss()
     }
 }
 
