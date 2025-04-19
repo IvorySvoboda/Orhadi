@@ -15,7 +15,7 @@ struct ToDosView: View {
     @Query(sort: [.init(\ToDo.dueDate, order: .forward)], animation: .bouncy)
     private var todos: [ToDo]
 
-    @State private var isAdding: Bool = false
+    @State private var showAddSheet: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -45,12 +45,27 @@ struct ToDosView: View {
                     }.listRowBackground(OrhadiTheme.getBGColor(for: colorScheme))
                 }
             }
+            .overlay {
+                if todos.isEmpty {
+                    ContentUnavailableView {
+                        Label("Sem Tarefas", systemImage: "list.bullet.clipboard")
+                    } description: {
+                        Text("Adicione novas tarefas para começar a se organizar.")
+                    } actions: {
+                        Button("Adicionar Tarefa") {
+                            showAddSheet.toggle()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                    }
+                }
+            }
             .listStyle(PlainListStyle())
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Tarefas")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: { isAdding = true }) {
+                    Button(action: { showAddSheet.toggle() }) {
                         Image(systemName: "plus.circle.fill").font(.title2)
                     }
                 }
@@ -59,12 +74,10 @@ struct ToDosView: View {
                 OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
         }
-        .sheet(
-            isPresented: $isAdding,
-            onDismiss: { isAdding = false },
-            content: {
-                ToDoAddView().interactiveDismissDisabled()
-            })
+        .sheet(isPresented: $showAddSheet) {
+            ToDoAddView()
+                .interactiveDismissDisabled()
+        }
     }
 }
 

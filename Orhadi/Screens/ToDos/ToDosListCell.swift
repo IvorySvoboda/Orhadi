@@ -11,6 +11,8 @@ import SwiftUI
 struct ToDosListCell: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
+    @Environment(UserProfile.self) private var user
+    @Environment(GameManager.self) private var game
 
     @State private var showConfirmation: Bool = false
 
@@ -144,6 +146,9 @@ struct ToDosListCell: View {
         ]
 
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        user.completedToDos += 1
+        game.addXP(100, to: user)
 
         withAnimation(.bouncy) {
             todo.isCompleted = true

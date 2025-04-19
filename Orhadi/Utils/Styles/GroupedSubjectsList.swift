@@ -63,6 +63,7 @@ struct GroupedSubjectsList<Subject: Identifiable>: View {
                                         dampingFraction: 0.75
                                     )
                                 ) {
+                                    UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                                     selectedDay = index
                                     proxy.scrollTo(
                                         index,

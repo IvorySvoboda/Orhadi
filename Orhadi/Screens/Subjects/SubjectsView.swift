@@ -46,6 +46,15 @@ struct SubjectsView: View {
                     )
                 }
             }
+            .overlay {
+                if subjects.filter({ Calendar.current.component(.weekday, from: $0.schedule) == selectedDay }).isEmpty && minY < 300 {
+                    ContentUnavailableView {
+                        Label("Nenhuma Matéria", systemImage: "book")
+                    } description: {
+                        Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
+                    }
+                }
+            }
             .listStyle(PlainListStyle())
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Matérias")

@@ -44,6 +44,15 @@ struct StudyRoutineView: View {
                     )
                 }
             }
+            .overlay {
+                if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && minY < 300 {
+                    ContentUnavailableView {
+                        Label("Nenhuma Matéria", systemImage: "graduationcap")
+                    } description: {
+                        Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
+                    }
+                }
+            }
             .listStyle(PlainListStyle())
             .background(OrhadiTheme.getBGColor(for: colorScheme))
             .navigationTitle("Rotina de Estudos")

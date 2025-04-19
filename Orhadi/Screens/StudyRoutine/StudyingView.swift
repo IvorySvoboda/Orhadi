@@ -40,6 +40,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var completedItems: [SessionItem] = []
     @State private var studyFinished: Bool = false
     @State private var pauseDate: Date?
+    @State private var breakTime: TimeInterval = 0
 
     @Binding var subjects: [Subject]
 
@@ -102,12 +103,15 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                         ) { sessionItem in
                             if sessionItem.isBreak {
                                 HStack {
-                                    Text("Descanso").font(.system(size: 14))
+                                    Text("Descanso")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(Color.secondary)
                                     Spacer()
                                     Text(
-                                        formatHourAndMinute(settings.breakTime)
+                                        formatHourAndMinute(breakTime)
                                     )
                                     .font(.system(size: 14))
+                                    .foregroundStyle(Color.secondary)
                                 }
                                 .modifier(ListRow())
                             } else if let subject = sessionItem.subject {
@@ -155,6 +159,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             if !isReady {
                 prepareSession()
             }
+            UIApplication.shared.isIdleTimerDisabled = true
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
         }
     }
 
@@ -204,6 +212,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         currentSessionIndex = 0
         remainingTime = sessionSequence.first?.endTime.timeIntervalSinceNow ?? 0
         isRunning = true
+        breakTime = settings.breakTime
     }
 
     private func tick() {
@@ -263,6 +272,8 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         }
 
         currentSessionIndex += 1
+
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
 
         if currentSessionIndex < sessionItems.count {
             remainingTime = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow

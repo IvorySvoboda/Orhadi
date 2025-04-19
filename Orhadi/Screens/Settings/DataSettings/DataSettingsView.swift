@@ -244,7 +244,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -258,12 +258,15 @@ struct DataSettingsView: View {
 
                 debugPrint("Exportado com sucesso!")
 
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+
                 await MainActor.run {
                     self.subjectsExportItem = exportItem
                     showSubjectsFileExporter = true
                 }
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
@@ -276,7 +279,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -292,12 +295,15 @@ struct DataSettingsView: View {
 
                 debugPrint("Exportado com sucesso!")
 
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+
                 await MainActor.run {
                     self.todosExportItem = exportItem
                     showToDosFileExporter = true
                 }
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
@@ -310,7 +316,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -326,12 +332,15 @@ struct DataSettingsView: View {
 
                 debugPrint("Exportado com sucesso!")
 
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+
                 await MainActor.run {
                     self.srSubjecsExportItem = exportItem
                     showSRSubjectsFileExporter = true
                 }
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
@@ -348,7 +357,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -362,11 +371,11 @@ struct DataSettingsView: View {
                     [Subject].self, from: data)
 
                 for subject in allSubjects {
-                    var teacher: OrhadiSchemaV2.Teacher? = nil
+                    var teacher: Teacher? = nil
 
                     if let name = subject.teacher?.name, let email = subject.teacher?.email, !name.isEmpty || !email.isEmpty {
                         let existingTeacher = try? context.fetch(
-                            FetchDescriptor<OrhadiSchemaV2.Teacher>(
+                            FetchDescriptor<Teacher>(
                                 predicate: #Predicate { $0.name == name }
                             )
                         ).first
@@ -374,7 +383,7 @@ struct DataSettingsView: View {
                         if let foundTeacher = existingTeacher {
                             teacher = foundTeacher
                         } else {
-                            teacher = OrhadiSchemaV2.Teacher(
+                            teacher = Teacher(
                                 name: name,
                                 email: email
                             )
@@ -383,7 +392,7 @@ struct DataSettingsView: View {
                     }
 
                     context.insert(
-                        OrhadiSchemaV2.Subject(
+                        Subject(
                             name: subject.name,
                             teacher: teacher,
                             schedule: subject.schedule,
@@ -404,8 +413,11 @@ struct DataSettingsView: View {
                 debugPrint("Importado com sucesso!")
 
                 url.stopAccessingSecurityScopedResource()
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
@@ -421,7 +433,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -449,7 +461,7 @@ struct DataSettingsView: View {
                     [ToDo].self, from: data)
 
                 for todo in allToDos {
-                    scheduleNotification(for: todo)
+                    await scheduleNotification(for: todo)
                     context.insert(todo)
                 }
 
@@ -458,8 +470,11 @@ struct DataSettingsView: View {
                 debugPrint("Importado com sucesso!")
 
                 url.stopAccessingSecurityScopedResource()
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
 
@@ -509,7 +524,7 @@ struct DataSettingsView: View {
                 let configuration = ModelConfiguration(url: databasePath)
 
                 let container = try ModelContainer.init(
-                    for: Subject.self, SRSubject.self, ToDo.self, Settings.self, Teacher.self,
+                    for: Schema(versionedSchema: CurrentSchema.self),
                     migrationPlan: MigrationPlan.self,
                     configurations: configuration
                 )
@@ -540,8 +555,11 @@ struct DataSettingsView: View {
                 debugPrint("Importado com sucesso!")
 
                 url.stopAccessingSecurityScopedResource()
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
                 print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }
