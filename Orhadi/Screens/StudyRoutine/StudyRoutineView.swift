@@ -23,29 +23,27 @@ struct StudyRoutineView: View {
         .weekday,
         from: Date()
     )
-    @State private var minY: Int = 151
+    @State private var scrollOffsetY: Int = 151
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    minY: $minY,
+                    scrollOffsetY: $scrollOffsetY,
                     selectedDay: $selectedDay,
                     subjects: subjects,
                     dateExtractor: { $0.studyDay }
                 ) { subject in
-                    AnyView(
-                        StudyRoutineListCell(
-                            subject: subject,
-                            subjectToEdit: $subjectToEdit,
-                            navigateToStudyingView: $navigateToStudyingView,
-                            subjectsToStudy: $subjectsToStudy
-                        )
+                    StudyRoutineListCell(
+                        subject: subject,
+                        subjectToEdit: $subjectToEdit,
+                        navigateToStudyingView: $navigateToStudyingView,
+                        subjectsToStudy: $subjectsToStudy
                     )
                 }
             }
             .overlay {
-                if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && minY < 300 {
+                if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
                     ContentUnavailableView {
                         Label("Nenhuma Matéria", systemImage: "graduationcap")
                     } description: {
@@ -61,8 +59,8 @@ struct StudyRoutineView: View {
                     ZStack {
                         Text("Rotina de Estudos")
                             .font(.headline)
-                            .opacity(minY < 115 ? 1 : 0)
-                            .offset(y: minY <= 70 ? -8 : 0)
+                            .opacity(scrollOffsetY < 115 ? 1 : 0)
+                            .offset(y: scrollOffsetY <= 70 ? -8 : 0)
 
                         Text(
                             Calendar.current.weekdaySymbols[selectedDay - 1]
@@ -70,8 +68,8 @@ struct StudyRoutineView: View {
                         )
                         .foregroundStyle(Color.indigo)
                         .font(.caption)
-                        .opacity(minY <= 70 ? 1 : 0)
-                        .offset(y: minY <= 70 ? 8 : 14)
+                        .opacity(scrollOffsetY <= 70 ? 1 : 0)
+                        .offset(y: scrollOffsetY <= 70 ? 8 : 14)
                     }
                 }
 
@@ -295,18 +293,26 @@ struct SRAddView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @State private var name: String = ""
-    @State private var studyDay: Int
-    @State private var studyTime: Date = Calendar.current.date(
-        bySettingHour: 0,
-        minute: 30,
-        second: 0,
-        of: Date()
-    )!
+
+    @State private var selectedWeekday: Int
+    @State private var subject: SRSubject
 
     init() {
-        _studyDay = State(
-            initialValue: Calendar.current.component(.weekday, from: Date())
+        _subject = State(initialValue: SRSubject(
+            name: "",
+            studyDay: Subject.defaultSchedule(),
+            studyTime: Calendar.current.date(
+                bySettingHour: 0,
+                minute: 30,
+                second: 0,
+                of: Date()
+            )!
+        ))
+        _selectedWeekday = State(
+            initialValue: Calendar.current.component(
+                .weekday,
+                from: Subject.defaultSchedule()
+            )
         )
     }
 
@@ -314,21 +320,31 @@ struct SRAddView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Minha nova matéria", text: $name)
-                    Picker("Dia:", selection: $studyDay) {
+                    TextField("Minha nova matéria", text: $subject.name)
+                } header: {
+                    Text("Nova Matéria")
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+                Section {
+                    Picker("Dia", selection: $selectedWeekday) {
                         ForEach(1...7, id: \.self) { index in
                             let weekday = Calendar.current.weekdaySymbols[index - 1]
                             Text("\(weekday)").tag(index)
                         }
                     }
+                    .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
+                        subject.studyDay = Calendar.current.date(
+                            byAdding: .day,
+                            value: newWeekday - oldWeekday,
+                            to: subject.studyDay
+                        )!
+                    }
 
                     DatePicker(
-                        "Tempo:",
-                        selection: $studyTime,
+                        "Duração",
+                        selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                } header: {
-                    Text("Nova Matéria")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -344,28 +360,16 @@ struct SRAddView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         addSRSubject()
-                    }.bold()
+                        dismiss()
+                    }.disabled(subject.name.isEmpty)
                 }
             }
         }
     }
 
     private func addSRSubject() {
-        let currentWeekday = Calendar.current.component(.weekday, from: Date())
-        let newSRSubject = SRSubject(
-            name: name,
-            studyDay: Calendar.current.date(
-                byAdding: .weekday,
-                value: studyDay - currentWeekday,
-                to: Date()
-            )!,
-            studyTime: studyTime
-        )
-
         withAnimation {
-            modelContext.insert(newSRSubject)
+            modelContext.insert(subject)
         }
-
-        dismiss()
     }
 }

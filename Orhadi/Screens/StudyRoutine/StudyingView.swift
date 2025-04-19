@@ -34,8 +34,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var sessionItems: [SessionItem] = []
     @State private var currentSessionIndex = 0
     @State private var remainingTime: TimeInterval = 0
-    @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common)
-        .autoconnect()
+    @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var isRunning: Bool = false
     @State private var completedItems: [SessionItem] = []
     @State private var studyFinished: Bool = false
@@ -43,6 +42,8 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var breakTime: TimeInterval = 0
 
     @Binding var subjects: [Subject]
+
+    // MARK: - Views
 
     var body: some View {
         ZStack {
@@ -52,86 +53,17 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             VStack {
                 Divider()
 
-                HStack {
-                    if currentSessionIndex < sessionItems.count {
-                        Text(sessionItems[currentSessionIndex].name.isEmpty ? "Não Informado" : sessionItems[currentSessionIndex].name)
-                    } else {
-                        Text("Estudos completados! 🔥")
-                    }
-                    Spacer()
-                    Button(action: { skipToNext() }) {
-                        Image(systemName: "forward.fill")
-                    }
-                    .padding(.trailing)
-                    .tint(colorScheme == .dark ? .white : .black)
-                    .disabled(studyFinished)
-                }.padding(.leading).offset(y: 2)
+                currentSubject
 
                 Divider()
 
-                VStack {
-                    TimerView(remainingTime: remainingTime)
-                        .onReceive(countdownTimer) { _ in
-                            tick()
-                        }
-                        .onChange(of: isRunning) { _, newValue in
-                            if newValue {
-                                if let pauseDate = pauseDate {
-                                    let pauseDuration = Date().timeIntervalSince(pauseDate)
-                                    sessionItems[currentSessionIndex].endTime += pauseDuration
-                                }
-                                countdownTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-                            } else {
-                                pauseDate = Date()
-                                countdownTimer.upstream.connect().cancel()
-                            }
-                        }
-                }
-                .frame(height: 200)
+                timer
 
                 Divider()
                     .offset(y: 2)
                     .background(Color.clear)
 
-                List {
-                    if currentSessionIndex < sessionItems.count {
-                        ForEach(
-                            sessionItems.filter { item in
-                                item.id != sessionItems[currentSessionIndex].id &&
-                                !completedItems.contains(where: { $0.id == item.id })
-                            }
-                        ) { sessionItem in
-                            if sessionItem.isBreak {
-                                HStack {
-                                    Text("Descanso")
-                                        .font(.system(size: 14))
-                                        .foregroundStyle(Color.secondary)
-                                    Spacer()
-                                    Text(
-                                        formatHourAndMinute(breakTime)
-                                    )
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(Color.secondary)
-                                }
-                                .modifier(ListRow())
-                            } else if let subject = sessionItem.subject {
-                                HStack {
-                                    Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
-                                        .bold()
-                                    Spacer()
-                                    Text(formatHourAndMinute(subject.studyTime))
-                                        .bold()
-                                }
-                                .frame(height: 35)
-                                .modifier(ListRow())
-                            }
-                        }
-                    }
-                }
-                .listStyle(.plain)
-                .contentMargins(.top, -4)
-                .background(OrhadiTheme.getBGColor(for: colorScheme))
-                .environment(\.defaultMinListRowHeight, 20)
+                nextSubjectsList
             }
         }
         .navigationTitle("Estudando")
@@ -165,6 +97,89 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             UIApplication.shared.isIdleTimerDisabled = false
         }
     }
+
+    private var currentSubject: some View {
+        HStack {
+            if currentSessionIndex < sessionItems.count {
+                Text(sessionItems[currentSessionIndex].name.isEmpty ? "Não Informado" : sessionItems[currentSessionIndex].name)
+            } else {
+                Text("Estudos completados! 🔥")
+            }
+            Spacer()
+            Button(action: { skipToNext() }) {
+                Image(systemName: "forward.fill")
+            }
+            .padding(.trailing)
+            .tint(colorScheme == .dark ? .white : .black)
+            .disabled(studyFinished)
+        }.padding(.leading).offset(y: 2)
+    }
+
+    private var timer: some View {
+        VStack {
+            TimerView(remainingTime: remainingTime)
+                .onReceive(countdownTimer) { _ in
+                    tick()
+                }
+                .onChange(of: isRunning) { _, newValue in
+                    if newValue {
+                        if let pauseDate = pauseDate {
+                            let pauseDuration = Date().timeIntervalSince(pauseDate)
+                            sessionItems[currentSessionIndex].endTime += pauseDuration
+                        }
+                        countdownTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+                    } else {
+                        pauseDate = Date()
+                        countdownTimer.upstream.connect().cancel()
+                    }
+                }
+        }
+        .frame(height: 200)
+    }
+
+    private var nextSubjectsList: some View {
+        List {
+            if currentSessionIndex < sessionItems.count {
+                ForEach(
+                    sessionItems.filter { item in
+                        item.id != sessionItems[currentSessionIndex].id &&
+                        !completedItems.contains(where: { $0.id == item.id })
+                    }
+                ) { sessionItem in
+                    if sessionItem.isBreak {
+                        HStack {
+                            Text("Descanso")
+                                .font(.system(size: 14))
+                                .foregroundStyle(Color.secondary)
+                            Spacer()
+                            Text(
+                                formatHourAndMinute(breakTime)
+                            )
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.secondary)
+                        }
+                        .modifier(ListRow())
+                    } else if let subject = sessionItem.subject {
+                        HStack {
+                            Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
+                                .bold()
+                            Spacer()
+                            Text(formatHourAndMinute(subject.studyTime))
+                                .bold()
+                        }
+                        .frame(height: 35)
+                        .modifier(ListRow())
+                    }
+                }
+            }
+        }
+        .listStyle(.plain)
+        .contentMargins(.top, -4)
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .environment(\.defaultMinListRowHeight, 20)
+    }
+
+    // MARK: - Functions
 
     private func prepareSession() {
         var sessionSequence: [SessionItem] = []

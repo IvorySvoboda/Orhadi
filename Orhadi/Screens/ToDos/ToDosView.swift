@@ -46,19 +46,7 @@ struct ToDosView: View {
                 }
             }
             .overlay {
-                if todos.isEmpty {
-                    ContentUnavailableView {
-                        Label("Sem Tarefas", systemImage: "list.bullet.clipboard")
-                    } description: {
-                        Text("Adicione novas tarefas para começar a se organizar.")
-                    } actions: {
-                        Button("Adicionar Tarefa") {
-                            showAddSheet.toggle()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
-                    }
-                }
+                overlay
             }
             .listStyle(PlainListStyle())
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -73,10 +61,28 @@ struct ToDosView: View {
             .toolbarBackground(
                 OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar)
+            .sheet(isPresented: $showAddSheet) {
+                ToDoAddView()
+                    .interactiveDismissDisabled()
+            }
         }
-        .sheet(isPresented: $showAddSheet) {
-            ToDoAddView()
-                .interactiveDismissDisabled()
+    }
+
+    private var overlay: some View {
+        Group {
+            if todos.isEmpty {
+                ContentUnavailableView {
+                    Label("Sem Tarefas", systemImage: "list.bullet.clipboard")
+                } description: {
+                    Text("Adicione novas tarefas para começar a se organizar.")
+                } actions: {
+                    Button("Adicionar Tarefa") {
+                        showAddSheet.toggle()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                }
+            }
         }
     }
 }

@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "" : {
+
+    },
+    " – " : {
+
+    },
     ":" : {
       "shouldTranslate" : false
     },
@@ -449,6 +455,9 @@
         }
       }
     },
+    "Das" : {
+
+    },
     "dd/MM/yyyy – HH:mm" : {
       "localizations" : {
         "en" : {
@@ -476,6 +485,9 @@
       }
     },
     "Deus do Estudo" : {
+
+    },
+    "Dia" : {
 
     },
     "Dia de Estudo:" : {
@@ -515,6 +527,9 @@
         }
       }
     },
+    "Duração" : {
+
+    },
     "Editar" : {
       "localizations" : {
         "en" : {
@@ -546,6 +561,7 @@
       }
     },
     "Editar Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -852,6 +868,7 @@
       }
     },
     "Fim:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -994,6 +1011,7 @@
       }
     },
     "Início:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1058,7 +1076,7 @@
     "Lendário" : {
 
     },
-    "Level:" : {
+    "Level" : {
 
     },
     "Level: %lld" : {
@@ -1293,7 +1311,11 @@
     "Persistente" : {
 
     },
+    "Prazo" : {
+
+    },
     "Prazo:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1492,7 +1514,7 @@
         }
       }
     },
-    "Tarefas completadas:" : {
+    "Tarefas completadas" : {
 
     },
     "Tema" : {
@@ -1525,7 +1547,7 @@
         }
       }
     },
-    "Tempo estudado:" : {
+    "Tempo estudado" : {
 
     },
     "Tempo:" : {
@@ -1596,6 +1618,9 @@
     "Workaholic" : {
 
     },
+    "XP" : {
+
+    },
     "XP Deus" : {
 
     },
@@ -1612,9 +1637,6 @@
 
     },
     "XP Slayer" : {
-
-    },
-    "XP:" : {
 
     }
   },

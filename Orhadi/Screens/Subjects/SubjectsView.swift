@@ -27,33 +27,27 @@ struct SubjectsView: View {
         .weekday,
         from: Date()
     )
-    @State private var minY: Int = 151
+    @State private var scrollOffsetY: Int = 151
+
+    // MARK: - Views
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    minY: $minY,
+                    scrollOffsetY: $scrollOffsetY,
                     selectedDay: $selectedDay,
                     subjects: subjects,
                     dateExtractor: { $0.schedule }
                 ) { subject in
-                    AnyView(
-                        SubjectListCell(
-                            subject: subject,
-                            subjectToEdit: $subjectToEdit
-                        )
+                    SubjectListCell(
+                        subject: subject,
+                        subjectToEdit: $subjectToEdit
                     )
                 }
             }
             .overlay {
-                if subjects.filter({ Calendar.current.component(.weekday, from: $0.schedule) == selectedDay }).isEmpty && minY < 300 {
-                    ContentUnavailableView {
-                        Label("Nenhuma Matéria", systemImage: "book")
-                    } description: {
-                        Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
-                    }
-                }
+                overlay
             }
             .listStyle(PlainListStyle())
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -63,8 +57,8 @@ struct SubjectsView: View {
                     ZStack {
                         Text("Matérias")
                             .font(.headline)
-                            .opacity(minY < 115 ? 1 : 0)
-                            .offset(y: minY <= 70 ? -8 : 0)
+                            .opacity(scrollOffsetY < 115 ? 1 : 0)
+                            .offset(y: scrollOffsetY <= 70 ? -8 : 0)
 
                         Text(
                             Calendar.current.weekdaySymbols[selectedDay - 1]
@@ -72,8 +66,8 @@ struct SubjectsView: View {
                         )
                         .foregroundStyle(Color.indigo)
                         .font(.caption)
-                        .opacity(minY <= 70 ? 1 : 0)
-                        .offset(y: minY <= 70 ? 8 : 14)
+                        .opacity(scrollOffsetY <= 70 ? 1 : 0)
+                        .offset(y: scrollOffsetY <= 70 ? 8 : 14)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -111,6 +105,18 @@ struct SubjectsView: View {
             .sheet(item: $subjectToEdit) { subject in
                 SubjectEditView(subject: subject)
                     .interactiveDismissDisabled()
+            }
+        }
+    }
+
+    private var overlay: some View {
+        Group {
+            if subjects.filter({ Calendar.current.component(.weekday, from: $0.schedule) == selectedDay }).isEmpty && scrollOffsetY < 300 {
+                ContentUnavailableView {
+                    Label("Nenhuma Matéria", systemImage: "book")
+                } description: {
+                    Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
+                }
             }
         }
     }

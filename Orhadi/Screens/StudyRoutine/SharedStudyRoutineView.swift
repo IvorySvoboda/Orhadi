@@ -22,29 +22,27 @@ struct SharedStudyRoutineView: View {
         .weekday,
         from: Date()
     )
-    @State private var minY: Int = 151
+    @State private var scrollOffsetY: Int = 151
 
     var body: some View {
         NavigationStack {
             List {
                 GroupedSubjectsList(
-                    minY: $minY,
+                    scrollOffsetY: $scrollOffsetY,
                     selectedDay: $selectedDay,
                     subjects: subjects.filter { !$0.isHidden && !$0.isRecess },
                     dateExtractor: { $0.studyDay }
                 ) { subject in
-                    AnyView(
-                        SharedStudyRoutineListCell(
-                            subject: subject,
-                            subjectToEdit: $subjectToEdit,
-                            navigateToStudyingView: $navigateToStudyingView,
-                            subjectsToStudy: $subjectsToStudy
-                        )
+                    SharedStudyRoutineListCell(
+                        subject: subject,
+                        subjectToEdit: $subjectToEdit,
+                        navigateToStudyingView: $navigateToStudyingView,
+                        subjectsToStudy: $subjectsToStudy
                     )
                 }
             }
             .overlay {
-                if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && minY < 300 {
+                if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
                     ContentUnavailableView {
                         Label("Nenhuma Matéria", systemImage: "graduationcap")
                     } description: {
@@ -60,8 +58,8 @@ struct SharedStudyRoutineView: View {
                     ZStack {
                         Text("Rotina de Estudos")
                             .font(.headline)
-                            .opacity(minY < 115 ? 1 : 0)
-                            .offset(y: minY <= 70 ? -8 : 0)
+                            .opacity(scrollOffsetY < 115 ? 1 : 0)
+                            .offset(y: scrollOffsetY <= 70 ? -8 : 0)
 
                         Text(
                             Calendar.current.weekdaySymbols[selectedDay - 1]
@@ -69,8 +67,8 @@ struct SharedStudyRoutineView: View {
                         )
                         .foregroundStyle(Color.indigo)
                         .font(.caption)
-                        .opacity(minY <= 70 ? 1 : 0)
-                        .offset(y: minY <= 70 ? 8 : 14)
+                        .opacity(scrollOffsetY <= 70 ? 1 : 0)
+                        .offset(y: scrollOffsetY <= 70 ? 8 : 14)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {

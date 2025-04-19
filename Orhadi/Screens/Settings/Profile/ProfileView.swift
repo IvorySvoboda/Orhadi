@@ -73,7 +73,7 @@ struct ProfileView: View {
 
             Section {
                 NavigationLink("Informações pessoais") {
-                    UserInfoView(user: user)
+                    UserInfoView()
                 }
                 NavigationLink("Estatísticas") {
                     StatisticsView()
@@ -108,6 +108,14 @@ struct ProfileView: View {
     }
 }
 
+#Preview("ProfileView") {
+    NavigationStack {
+        ProfileView()
+            .environment(UserProfile())
+            .environment(GameManager(context: SampleData.shared.context))
+    }
+}
+
 struct StatisticsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(GameManager.self) private var game
@@ -117,25 +125,25 @@ struct StatisticsView: View {
         List {
             Section {
                 HStack {
-                    Text("Level:")
+                    Text("Level")
                     Spacer()
                     Text("\(user.level)")
                         .foregroundStyle(Color.secondary)
                 }
                 HStack {
-                    Text("XP:")
+                    Text("XP")
                     Spacer()
                     Text("\(user.xp)/\(game.xpRequired(for: user.level))")
                         .foregroundStyle(Color.secondary)
                 }
                 HStack {
-                    Text("Tempo estudado:")
+                    Text("Tempo estudado")
                     Spacer()
                     Text(formatTime(user.timeStudied))
                         .foregroundStyle(Color.secondary)
                 }
                 HStack {
-                    Text("Tarefas completadas:")
+                    Text("Tarefas completadas")
                     Spacer()
                     Text("\(user.completedToDos)")
                         .foregroundStyle(Color.secondary)
@@ -152,40 +160,13 @@ struct StatisticsView: View {
 struct UserInfoView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-
-    @Bindable var user: UserProfile
-
-    @State private var userName: String
-
-    init(user: UserProfile) {
-        self.user = user
-        _userName = State(initialValue: user.name)
-    }
+    @Environment(UserProfile.self) private var user
 
     var body: some View {
         List {
             Section {
                 NavigationLink {
-                    Form {
-                        Section {
-                            HStack(spacing: 5) {
-                                Text("Nome")
-                                Spacer()
-                                TextField("Obrigatório", text: $userName)
-                            }
-                        }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-                    }
-                    .navigationTitle("Nome")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .scrollContentBackground(.hidden)
-                    .background(OrhadiTheme.getBGColor(for: colorScheme))
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("Concluído") {
-                                user.name = userName
-                            }.disabled(userName == user.name || userName.isEmpty)
-                        }
-                    }
+                    UserNameEditView(user: user)
                 } label: {
                     HStack {
                         Text("Nome")
@@ -200,5 +181,44 @@ struct UserInfoView: View {
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
         .background(OrhadiTheme.getBGColor(for: colorScheme))
+    }
+}
+
+struct UserNameEditView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+
+    @Bindable var user: UserProfile
+
+    @State private var userName: String
+
+    init(user: UserProfile) {
+        self.user = user
+        _userName = State(initialValue: user.name)
+    }
+
+    var body: some View {
+        Form {
+            Section {
+                HStack(spacing: 5) {
+                    Text("Nome")
+                    Spacer()
+                    TextField("Obrigatório", text: $userName)
+                        .autocorrectionDisabled()
+                }
+            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+        }
+        .navigationTitle("Nome")
+        .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Concluído") {
+                    user.name = userName
+                    dismiss()
+                }.disabled(userName == user.name || userName.isEmpty)
+            }
+        }
     }
 }
