@@ -20,7 +20,7 @@ struct ContentView: View {
                         OrhadiTheme.getBGColor(for: colorScheme),
                         for: .tabBar)
             }
-            Tab("Tarefas", systemImage: "list.clipboard.fill") {
+            Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
                 ToDosView()
                     .toolbarBackground(
                         OrhadiTheme.getBGColor(for: colorScheme),

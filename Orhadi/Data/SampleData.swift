@@ -56,5 +56,8 @@ class SampleData {
             context.insert(subject)
         }
         context.insert(Settings())
+        context.insert(UserProfile())
+
+        _ = GameManager(context: context)
     }
 }

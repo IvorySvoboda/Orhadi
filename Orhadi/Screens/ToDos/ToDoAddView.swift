@@ -37,9 +37,13 @@ struct ToDoAddView: View {
                             .frame(height: 150)
                             .padding(.leading, -5)
                     }
+                } header: {
+                    Text("Nova Tarefa")
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
+                Section {
                     DatePicker(
-                        "Prazo:",
+                        "Prazo",
                         selection: $todo.dueDate,
                         displayedComponents: [.hourAndMinute, .date]
                     )
@@ -48,8 +52,6 @@ struct ToDoAddView: View {
                             return todo.dueDate = Date() + 3600
                         }
                     }
-                } header: {
-                    Text("Nova Tarefa")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -60,6 +62,7 @@ struct ToDoAddView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         addItem()
+                        dismiss()
                     }
                     .disabled(todo.dueDate <= Date())
                 }
@@ -80,8 +83,6 @@ struct ToDoAddView: View {
         withAnimation(.bouncy) {
             modelContext.insert(todo)
         }
-
-        dismiss()
     }
 
     private func scheduleNotification(for todo: ToDo) {
