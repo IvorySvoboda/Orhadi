@@ -83,18 +83,59 @@ struct SubjectsView: View {
                 OrhadiTheme.getBGColor(for: colorScheme),
                 for: .navigationBar
             )
-            .confirmationDialog(
-                "Adicionar",
-                isPresented: $showConfirmationDialog
-            ) {
-                Button("Matéria") {
-                    showAddSheet.toggle()
+            .sheet(isPresented: $showConfirmationDialog) {
+                ZStack {
+                    OrhadiTheme.getBGColor(for: colorScheme)
+                        .ignoresSafeArea()
+
+                    VStack {
+                        Button {
+                            showConfirmationDialog = false
+                            showAddSheet = true
+                        } label: {
+                            Text("Adicionar Matéria".uppercased())
+                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                                .fontWeight(.semibold)
+                                .frame(width: 370, height: 45)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Color.accentColor)
+                                )
+                        }.buttonStyle(PlainButtonStyle())
+
+                        Button {
+                            showConfirmationDialog = false
+                            isRecess = true
+                            showAddSheet = true
+                        } label: {
+                            Text("Adicionar Intervalo".uppercased())
+                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                                .fontWeight(.semibold)
+                                .frame(width: 370, height: 45)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Color.accentColor)
+                                )
+                        }.buttonStyle(PlainButtonStyle())
+
+                        Button {
+                            showConfirmationDialog = false
+                        } label: {
+                            Text("Cancelar".uppercased())
+                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                                .frame(width: 370, height: 45)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Color.accentColor)
+                                        .opacity(0.9)
+                                )
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.vertical, 5)
+                    }.offset(y: 18)
                 }
-                Button("Intervalo") {
-                    isRecess = true
-                    showAddSheet.toggle()
-                }
-                Button("Cancelar", role: .cancel) {}
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.height(160)])
             }
             .sheet(isPresented: $showAddSheet, onDismiss: {
                 isRecess = false

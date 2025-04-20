@@ -47,6 +47,7 @@ struct SubjectAddView: View {
                     Button("Salvar") {
                         addItem()
                         dismiss()
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }.disabled(subject.name.isEmpty && !isRecess)
                 }
                 ToolbarItem(placement: .cancellationAction) {
@@ -60,10 +61,18 @@ struct SubjectAddView: View {
 
     private var subjectInfoSection: some View {
         Section {
-            TextField("Minha nova matéria", text: $subject.name)
-                .autocorrectionDisabled()
-            TextField("Sala 101", text: $subject.place)
-                .autocorrectionDisabled()
+            HStack() {
+                Text("Nome")
+                    .frame(width: 50, alignment: .leading)
+                TextField("Minha nova matéria", text: $subject.name)
+                    .autocorrectionDisabled()
+            }
+            HStack() {
+                Text("Local")
+                    .frame(width: 50, alignment: .leading)
+                TextField("Sala 101", text: $subject.place)
+                    .autocorrectionDisabled()
+            }
         } header: {
             Text("Nova Matéria")
         }.listRowBackground(
@@ -90,19 +99,14 @@ struct SubjectAddView: View {
 
     private var timeSelectionSection: some View {
         Section {
-            Picker("Dia", selection: $selectedWeekday) {
-                ForEach(1...7, id: \.self) { index in
-                    let weekday = Calendar.current.weekdaySymbols[index - 1]
-                    Text(weekday).tag(index)
-                }
-            }
-            .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                if let newDate = Calendar.current.date(
-                    byAdding: .day,
-                    value: newWeekday - oldWeekday,
-                    to: subject.schedule
-                ) {
-                    subject.schedule = newDate
+            NavigationLink {
+                SubjectDayPickerView(selectedWeekday: $selectedWeekday, subject: subject)
+            } label: {
+                HStack {
+                    Text("Dia")
+                    Spacer()
+                    Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
+                        .foregroundStyle(.secondary)
                 }
             }
 

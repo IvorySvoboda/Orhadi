@@ -23,10 +23,9 @@ struct GroupedSubjectsList<Subject: Identifiable, Content: View>: View {
                 selectedDay: $selectedDay
             )
             .frame(height: 40)
-            .padding(.horizontal)
         }
         .listRowInsets(
-            EdgeInsets(top: 15, leading: 0, bottom: 15, trailing: 0)
+            EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
         )
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
@@ -74,12 +73,8 @@ struct WeekdayPickerBar: View {
                                 Capsule()
                                     .fill(
                                         isSelected
-                                        ? LinearGradient(colors: [.accentColor, .accentColor.opacity(0.85)], startPoint: .top, endPoint: .bottom)
-                                        : LinearGradient(colors: [OrhadiTheme.getSecondaryBGColor(for: colorScheme), OrhadiTheme.getSecondaryBGColor(for: colorScheme)], startPoint: .top, endPoint: .bottom)
-                                    )
-                                    .background(
-                                        Capsule()
-                                            .fill(isSelected ? OrhadiTheme.getBGColor(for: .dark) : Color.clear)
+                                        ? Color.accentColor
+                                        : OrhadiTheme.getSecondaryBGColor(for: colorScheme)
                                     )
                             )
                             .foregroundColor(
@@ -111,6 +106,8 @@ struct WeekdayPickerBar: View {
                             .id(index)
                     }
                 }
+                .padding(.horizontal)
+                .frame(height: 40)
                 .onAppear {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
                         proxy.scrollTo(selectedDay, anchor: .center)

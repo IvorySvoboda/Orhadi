@@ -133,16 +133,6 @@
     "Acumulador" : {
 
     },
-    "Adicionar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add"
-          }
-        }
-      }
-    },
     "Adicionar Matéria" : {
       "localizations" : {
         "en" : {
@@ -490,26 +480,6 @@
     "Dia" : {
 
     },
-    "Dia de Estudo:" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Study Day"
-          }
-        }
-      }
-    },
-    "Dia:" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Day"
-          }
-        }
-      }
-    },
     "Divindade do XP" : {
 
     },
@@ -527,7 +497,7 @@
         }
       }
     },
-    "Duração" : {
+    "Duração do Estudo" : {
 
     },
     "Editar" : {
@@ -561,7 +531,6 @@
       }
     },
     "Editar Matéria" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -867,17 +836,6 @@
         }
       }
     },
-    "Fim:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "End:"
-          }
-        }
-      }
-    },
     "Focado" : {
 
     },
@@ -1010,17 +968,6 @@
         }
       }
     },
-    "Início:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start:"
-          }
-        }
-      }
-    },
     "intervalo" : {
       "localizations" : {
         "en" : {
@@ -1080,6 +1027,9 @@
 
     },
     "Level: %lld" : {
+
+    },
+    "Local" : {
 
     },
     "Maratonista de XP" : {
@@ -1314,17 +1264,6 @@
     "Prazo" : {
 
     },
-    "Prazo:" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Due"
-          }
-        }
-      }
-    },
     "Primeiros Passos" : {
 
     },
@@ -1537,28 +1476,8 @@
         }
       }
     },
-    "Tempo de Estudo:" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Study Time"
-          }
-        }
-      }
-    },
     "Tempo estudado" : {
 
-    },
-    "Tempo:" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time:"
-          }
-        }
-      }
     },
     "Terça-feira" : {
       "extractionState" : "manual",
