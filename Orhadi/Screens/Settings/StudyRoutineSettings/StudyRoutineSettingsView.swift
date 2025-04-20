@@ -11,6 +11,8 @@ import SwiftUI
 
 struct StudyRoutineSettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
+
     @Query(sort: [SortDescriptor(\Subject.name)], animation: .smooth)
     private var subjects: [Subject]
 
@@ -48,7 +50,7 @@ struct StudyRoutineSettingsView: View {
                     )
                 }
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
 
             if settings.sharedSubjects {
                 Section {
@@ -83,29 +85,21 @@ struct StudyRoutineSettingsView: View {
                                         )
                                     )
                                 }
-                                .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                                .listRowBackground(theme.secondaryBGColor())
                             }
                         }
                         .navigationTitle("Matérias Ocultas")
                         .navigationBarTitleDisplayMode(.inline)
-                        .background(OrhadiTheme.getBGColor(for: colorScheme))
+                        .background(theme.bgColor())
                         .scrollContentBackground(.hidden)
-                        .toolbarBackground(
-                            OrhadiTheme.getBGColor(for: colorScheme),
-                            for: .navigationBar
-                        )
+                        .toolbarBackground(theme.bgColor(), for: .navigationBar)
                     }
                 }
-                .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                .listRowBackground(theme.secondaryBGColor())
             }
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
+        .defaultList(theme)
         .navigationTitle("Rotina de Estudos")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
-            for: .navigationBar
-        )
     }
 }

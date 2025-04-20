@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SectionHeader: View {
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
 
     var text: String
 
@@ -25,7 +25,7 @@ struct SectionHeader: View {
 
             Spacer()
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .background(theme.bgColor())
         .listRowInsets(
             EdgeInsets(
                 top: 0,

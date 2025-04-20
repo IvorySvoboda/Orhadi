@@ -26,6 +26,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     }
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
@@ -47,7 +48,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
 
     var body: some View {
         ZStack {
-            Color(OrhadiTheme.getBGColor(for: colorScheme))
+            Color(theme.bgColor())
                 .ignoresSafeArea()
 
             VStack {
@@ -83,10 +84,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 }.disabled(studyFinished)
             }
         }
-        .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
-            for: .navigationBar
-        )
+        .toolbarBackground(theme.bgColor(), for: .navigationBar)
         .onAppear {
             if !isReady {
                 prepareSession()
@@ -101,7 +99,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     private var currentSubject: some View {
         HStack {
             if currentSessionIndex < sessionItems.count {
-                Text(sessionItems[currentSessionIndex].name.isEmpty ? "Não Informado" : sessionItems[currentSessionIndex].name)
+                Text(sessionItems[currentSessionIndex].name.isEmpty ? "Sem Nome" : sessionItems[currentSessionIndex].name)
             } else {
                 Text("Estudos completados! 🔥")
             }
@@ -158,7 +156,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                             .font(.system(size: 14))
                             .foregroundStyle(Color.secondary)
                         }
-                        .modifier(ListRow())
+                        .modifier(ListRowModifier())
                     } else if let subject = sessionItem.subject {
                         HStack {
                             Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
@@ -168,14 +166,14 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                                 .bold()
                         }
                         .frame(height: 35)
-                        .modifier(ListRow())
+                        .modifier(ListRowModifier())
                     }
                 }
             }
         }
         .listStyle(.plain)
         .contentMargins(.top, -4)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .background(theme.bgColor())
         .environment(\.defaultMinListRowHeight, 20)
     }
 
@@ -306,7 +304,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     }
 }
 
-struct ListRow: ViewModifier {
+struct ListRowModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(.horizontal)

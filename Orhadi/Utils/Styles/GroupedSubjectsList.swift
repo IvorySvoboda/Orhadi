@@ -51,7 +51,7 @@ struct GroupedSubjectsList<Subject: Identifiable, Content: View>: View {
 }
 
 struct WeekdayPickerBar: View {
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
 
     @Binding var selectedDay: Int
 
@@ -71,17 +71,9 @@ struct WeekdayPickerBar: View {
                             .padding(.horizontal, 16)
                             .background(
                                 Capsule()
-                                    .fill(
-                                        isSelected
-                                        ? Color.accentColor
-                                        : OrhadiTheme.getSecondaryBGColor(for: colorScheme)
-                                    )
+                                    .fill(isSelected ? Color.accentColor : theme.secondaryBGColor())
                             )
-                            .foregroundColor(
-                                isSelected
-                                    ? OrhadiTheme.getBGColor(for: colorScheme)
-                                    : .primary
-                            )
+                            .foregroundColor(isSelected ? theme.bgColor() : .primary)
                             .scaleEffect(isPressed == index ? 1.05 : 1)
                             .onTapGesture {
                                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {

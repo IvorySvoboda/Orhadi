@@ -11,46 +11,34 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+    @Environment(OrhadiTheme.self) private var theme
 
     var body: some View {
         TabView {
             Tab("Matérias", systemImage: "book.fill") {
                 SubjectsView()
-                    .toolbarBackground(
-                        OrhadiTheme.getBGColor(for: colorScheme),
-                        for: .tabBar)
+                    .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
                 ToDosView()
-                    .toolbarBackground(
-                        OrhadiTheme.getBGColor(for: colorScheme),
-                        for: .tabBar)
+                    .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             Tab("Estudos", systemImage: "graduationcap.fill") {
                 if settings.sharedSubjects {
                     SharedStudyRoutineView()
-                        .toolbarBackground(
-                            OrhadiTheme.getBGColor(
-                                for: colorScheme),
-                            for: .tabBar)
+                        .toolbarBackground(theme.bgColor(), for: .tabBar)
                 } else {
                     StudyRoutineView()
-                        .toolbarBackground(
-                            OrhadiTheme.getBGColor(
-                                for: colorScheme),
-                            for: .tabBar)
+                        .toolbarBackground(theme.bgColor(), for: .tabBar)
                 }
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
-                    .toolbarBackground(
-                        OrhadiTheme.getBGColor(
-                            for: colorScheme),
-                        for: .tabBar)
+                    .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             
         }
-        .preferredColorScheme(OrhadiTheme.getTheme(for: settings.theme))
+        .preferredColorScheme(theme.getTheme(for: settings.theme))
     }
 }
 

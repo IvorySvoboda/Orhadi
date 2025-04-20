@@ -9,6 +9,8 @@ import SwiftUI
 
 struct ToDosSettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
+
     @State private var notificationStatus: Bool = false
 
     @Bindable var settings: Settings
@@ -21,7 +23,7 @@ struct ToDosSettingsView: View {
                     isOn: $settings.todosDeleteConfirmation
                 )
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
 
             Section {
                 Toggle(
@@ -35,15 +37,11 @@ struct ToDosSettingsView: View {
                     "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
                 )
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
+        .defaultList(theme)
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
-            for: .navigationBar)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in
                 notificationStatus = authorizedStatus

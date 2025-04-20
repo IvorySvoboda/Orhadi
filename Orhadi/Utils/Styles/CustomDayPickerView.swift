@@ -1,20 +1,43 @@
 //
-//  SubjectDayPickerView.swift
+//  CustomDayPickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 19/04/25.
+//  Created by Zyvoxi . on 20/04/25.
 //
 
 import SwiftUI
 
-struct SubjectDayPickerView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
-
-    @Binding var selectedWeekday: Int
-    @Bindable var subject: Subject
+struct CustomDayPickerView: View {
+    @Binding var date: Date
 
     // MARK: - Views
+
+    var body: some View {
+        NavigationLink {
+            CustomDayPicker(date: $date)
+        } label: {
+            HStack {
+                Text("Dia")
+                Spacer()
+                Text(Calendar.current.weekdaySymbols[Calendar.current.component(.weekday, from: date) - 1].capitalized)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+struct CustomDayPicker: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
+
+    @State private var selectedWeekday: Int
+    @Binding var date: Date
+
+    init(date: Binding<Date>) {
+        _date = date
+        _selectedWeekday = State(initialValue: Calendar.current.component(.weekday, from: date.wrappedValue))
+    }
 
     var body: some View {
         List {
@@ -38,21 +61,20 @@ struct SubjectDayPickerView: View {
                     }.tint(colorScheme == .dark ? .white : .black)
                 }
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
             .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
                 if let newDate = Calendar.current.date(
                     byAdding: .day,
                     value: newWeekday - oldWeekday,
-                    to: subject.schedule
+                    to: date
                 ) {
-                    subject.schedule = newDate
+                    date = newDate
                 }
             }
         }
         .navigationTitle("Dia")
         .navigationBarTitleDisplayMode(.inline)
         .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .background(theme.bgColor())
     }
 }
-

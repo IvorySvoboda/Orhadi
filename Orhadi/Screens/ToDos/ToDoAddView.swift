@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ToDoAddView: View {
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
@@ -39,7 +39,7 @@ struct ToDoAddView: View {
                     }
                 } header: {
                     Text("Nova Tarefa")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     DatePicker(
@@ -52,10 +52,9 @@ struct ToDoAddView: View {
                             return todo.dueDate = Date() + 3600
                         }
                     }
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .scrollContentBackground(.hidden)
+            .defaultList(theme)
             .navigationTitle("Nova Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

@@ -9,8 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct AchievementView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(GameManager.self) private var game
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: [
         SortDescriptor(\Achievement.isUnlocked, order: .reverse),
@@ -28,7 +28,7 @@ struct AchievementView: View {
 
     var body: some View {
         ZStack {
-            OrhadiTheme.getBGColor(for: colorScheme)
+            theme.bgColor()
                 .ignoresSafeArea()
 
             ScrollView {
@@ -63,11 +63,11 @@ struct AchievementView: View {
         }
         .navigationTitle("Conquistas")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
+        .toolbarBackground(theme.bgColor(), for: .navigationBar)
         .sheet(item: $selectedAchievement, onDismiss: { selectedAchievement = nil }) { achievement in
             NavigationStack {
                 ZStack {
-                    OrhadiTheme.getBGColor(for: colorScheme)
+                    theme.bgColor()
                         .ignoresSafeArea()
 
                     VStack {
