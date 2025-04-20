@@ -12,9 +12,11 @@ struct SubjectTeacherPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
 
-    @Query private var teachers: [Teacher]
+    @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
 
     @Bindable var subject: Subject
+
+    @State private var showAddSheet: Bool = false
 
     // MARK: - Views
 
@@ -60,6 +62,24 @@ struct SubjectTeacherPickerView: View {
                         }
                     }
                 }.tint(colorScheme == .dark ? .white : .black)
+            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+
+            Section {
+                Button {
+                    showAddSheet.toggle()
+                } label: {
+                    HStack {
+                        Image(systemName: "plus")
+                            .foregroundStyle(.secondary)
+                        Text("Novo Professor")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .tint(.secondary)
+                .sheet(isPresented: $showAddSheet) {
+                    TeacherAddView()
+                        .interactiveDismissDisabled()
+                }
             }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
         }
         .navigationTitle("Professor")
