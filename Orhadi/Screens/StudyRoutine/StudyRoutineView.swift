@@ -11,6 +11,7 @@ import SwiftUI
 struct StudyRoutineView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: [SortDescriptor(\SRSubject.name)], animation: .smooth)
     private var subjects: [SRSubject]
@@ -19,10 +20,7 @@ struct StudyRoutineView: View {
     @State private var subjectToEdit: SRSubject?
     @State private var subjectsToStudy: [SRSubject] = []
     @State private var navigateToStudyingView: Bool = false
-    @State private var selectedDay: Int = Calendar.current.component(
-        .weekday,
-        from: Date()
-    )
+    @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
     @State private var scrollOffsetY: Int = 151
 
     var body: some View {
@@ -42,6 +40,8 @@ struct StudyRoutineView: View {
                     )
                 }
             }
+            .defaultPlainList(theme)
+            .navigationTitle("Rotina de Estudos")
             .overlay {
                 if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
                     ContentUnavailableView {
@@ -51,9 +51,6 @@ struct StudyRoutineView: View {
                     }
                 }
             }
-            .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .navigationTitle("Rotina de Estudos")
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
@@ -117,10 +114,6 @@ struct StudyRoutineView: View {
                     }).isEmpty)
                 }
             }
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme),
-                for: .navigationBar
-            )
             .navigationDestination(
                 isPresented: $navigateToStudyingView,
                 destination: {
@@ -161,13 +154,12 @@ struct StudyRoutineListCell: View {
     var body: some View {
         HStack {
             if Calendar.current.isDate(
-                subject.lastStudied,
-                equalTo: Date(),
-                toGranularity: .weekOfYear
-            ) {
+                subject.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+            {
                 Image(systemName: "checkmark")
             }
-            Text(subject.name.isEmpty ? String(localized: "Não Informado") : subject.name)
+
+            Text(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)
             Spacer()
             Text(formatHourAndMinute(subject.studyTime))
                 .bold()
@@ -231,6 +223,7 @@ struct StudyRoutineListCell: View {
 
 struct SREditView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: SRSubject
     @State private var selectedWeekday: Int
@@ -252,31 +245,19 @@ struct SREditView: View {
                     TextField("Minha matéria", text: $subject.name)
                 } header: {
                     Text("Editar Estudo")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
-                    NavigationLink {
-                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: Binding(
-                            get: { subject },
-                            set: { _ = $0 }
-                        ))
-                    } label: {
-                        HStack {
-                            Text("Dia")
-                            Spacer()
-                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    CustomDayPickerView(date: $subject.studyDay)
 
                     DatePicker(
                         "Duração do Estudo",
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .background(theme.bgColor())
             .scrollContentBackground(.hidden)
             .navigationTitle("Editar Estudo")
             .navigationBarTitleDisplayMode(.inline)
@@ -293,6 +274,7 @@ struct SREditView: View {
 
 struct SRAddView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
@@ -302,7 +284,7 @@ struct SRAddView: View {
     init() {
         _subject = State(initialValue: SRSubject(
             name: "",
-            studyDay: Subject.defaultSchedule(),
+            studyDay: defaultSchedule(),
             studyTime: Calendar.current.date(
                 bySettingHour: 0,
                 minute: 30,
@@ -313,7 +295,7 @@ struct SRAddView: View {
         _selectedWeekday = State(
             initialValue: Calendar.current.component(
                 .weekday,
-                from: Subject.defaultSchedule()
+                from: defaultSchedule()
             )
         )
     }
@@ -325,28 +307,19 @@ struct SRAddView: View {
                     TextField("Minha nova matéria", text: $subject.name)
                 } header: {
                     Text("Nova Matéria")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
-                    NavigationLink {
-                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: $subject)
-                    } label: {
-                        HStack {
-                            Text("Dia")
-                            Spacer()
-                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    CustomDayPickerView(date: $subject.studyDay)
 
                     DatePicker(
                         "Duração do Estudo",
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .background(theme.bgColor())
             .scrollContentBackground(.hidden)
             .navigationTitle("Adicionar Matéria")
             .navigationBarTitleDisplayMode(.inline)

@@ -10,6 +10,7 @@ import SwiftData
 
 struct SubjectsSettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
 
     @Bindable var settings: Settings
 
@@ -18,21 +19,17 @@ struct SubjectsSettingsView: View {
             Section {
                 Toggle("Confirmar para Excluir", isOn: $settings.subjectsDeleteConfirmation)
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
 
             Section {
                 NavigationLink("Professores") {
                     TeachersView()
                 }
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
+        .defaultList(theme)
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
-            for: .navigationBar)
     }
 }

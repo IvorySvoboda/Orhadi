@@ -12,6 +12,7 @@ struct ProfileView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(GameManager.self) private var game
     @Environment(UserProfile.self) private var user
+    @Environment(OrhadiTheme.self) private var theme
 
     @State private var isPhotoPickerPresented = false
     @State private var selectedItem: PhotosPickerItem?
@@ -68,8 +69,8 @@ struct ProfileView: View {
             Section {
                 NavigationLink("Conquistas") {
                     AchievementView()
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-            }
+                }
+            }.listRowBackground(theme.secondaryBGColor())
 
             Section {
                 NavigationLink("Informações pessoais") {
@@ -78,11 +79,9 @@ struct ProfileView: View {
                 NavigationLink("Estatísticas") {
                     StatisticsView()
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
+        .defaultList(theme)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(user.name)
@@ -91,7 +90,6 @@ struct ProfileView: View {
                     .opacity(minY < -50 ? 1 : 0)
             }
         }
-        .toolbarBackground(OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
         .photosPicker(isPresented: $isPhotoPickerPresented, selection: $selectedItem, matching: .images, photoLibrary: .shared())
         .onChange(of: selectedItem) { _, newItem in
             Task {
@@ -120,6 +118,7 @@ struct StatisticsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(GameManager.self) private var game
     @Environment(UserProfile.self) private var user
+    @Environment(OrhadiTheme.self) private var theme
 
     var body: some View {
         List {
@@ -148,12 +147,11 @@ struct StatisticsView: View {
                     Text("\(user.completedToDos)")
                         .foregroundStyle(Color.secondary)
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
         }
+        .defaultList(theme)
         .navigationTitle("Estatísticas")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
     }
 }
 
@@ -161,6 +159,7 @@ struct UserInfoView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(UserProfile.self) private var user
+    @Environment(OrhadiTheme.self) private var theme
 
     var body: some View {
         List {
@@ -175,18 +174,18 @@ struct UserInfoView: View {
                             .foregroundStyle(Color.secondary)
                     }
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
         }
+        .defaultList(theme)
         .navigationTitle("Informações pessoais")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
     }
 }
 
 struct UserNameEditView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
 
     @Bindable var user: UserProfile
 
@@ -206,12 +205,11 @@ struct UserNameEditView: View {
                     TextField("Obrigatório", text: $userName)
                         .autocorrectionDisabled()
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
         }
+        .defaultList(theme)
         .navigationTitle("Nome")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Concluído") {

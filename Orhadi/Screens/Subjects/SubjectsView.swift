@@ -10,6 +10,7 @@ import SwiftUI
 
 struct SubjectsView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
 
@@ -20,9 +21,8 @@ struct SubjectsView: View {
     private var subjects: [Subject]
 
     @State private var showConfirmationDialog: Bool = false
-    @State private var showAddSheet: Bool = false
+    @State private var subjectToAdd: Subject?
     @State private var subjectToEdit: Subject?
-    @State private var isRecess: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(
         .weekday,
         from: Date()
@@ -46,29 +46,11 @@ struct SubjectsView: View {
                     )
                 }
             }
-            .overlay {
-                overlay
-            }
-            .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .defaultPlainList(theme)
             .navigationTitle("Matérias")
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    ZStack {
-                        Text("Matérias")
-                            .font(.headline)
-                            .opacity(scrollOffsetY < 115 ? 1 : 0)
-                            .offset(y: scrollOffsetY <= 70 ? -8 : 0)
-
-                        Text(
-                            Calendar.current.weekdaySymbols[selectedDay - 1]
-                                .uppercased()
-                        )
-                        .foregroundStyle(Color.indigo)
-                        .font(.caption)
-                        .opacity(scrollOffsetY <= 70 ? 1 : 0)
-                        .offset(y: scrollOffsetY <= 70 ? 8 : 14)
-                    }
+                    principalToolbar
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
@@ -79,72 +61,18 @@ struct SubjectsView: View {
                     }
                 }
             }
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme),
-                for: .navigationBar
-            )
-            .sheet(isPresented: $showConfirmationDialog) {
-                ZStack {
-                    OrhadiTheme.getBGColor(for: colorScheme)
-                        .ignoresSafeArea()
-
-                    VStack {
-                        Button {
-                            showConfirmationDialog = false
-                            showAddSheet = true
-                        } label: {
-                            Text("Adicionar Matéria".uppercased())
-                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
-                                .fontWeight(.semibold)
-                                .frame(width: 370, height: 45)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(Color.accentColor)
-                                )
-                        }.buttonStyle(PlainButtonStyle())
-
-                        Button {
-                            showConfirmationDialog = false
-                            isRecess = true
-                            showAddSheet = true
-                        } label: {
-                            Text("Adicionar Intervalo".uppercased())
-                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
-                                .fontWeight(.semibold)
-                                .frame(width: 370, height: 45)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(Color.accentColor)
-                                )
-                        }.buttonStyle(PlainButtonStyle())
-
-                        Button {
-                            showConfirmationDialog = false
-                        } label: {
-                            Text("Cancelar".uppercased())
-                                .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
-                                .frame(width: 370, height: 45)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(Color.accentColor)
-                                        .opacity(0.9)
-                                )
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .padding(.vertical, 5)
-                    }.offset(y: 18)
-                }
-                .presentationDragIndicator(.visible)
-                .presentationDetents([.height(160)])
+            .overlay {
+                overlay
             }
-            .sheet(isPresented: $showAddSheet, onDismiss: {
-                isRecess = false
-            }) {
-                SubjectAddView(isRecess: isRecess)
+            .sheet(isPresented: $showConfirmationDialog) {
+                confirmationSheet
+            }
+            .sheet(item: $subjectToAdd) { subject in
+                SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $subjectToEdit) { subject in
-                SubjectEditView(subject: subject)
+                SubjectSheetView(subject: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
         }
@@ -160,6 +88,78 @@ struct SubjectsView: View {
                 }
             }
         }
+    }
+
+    private var principalToolbar: some View {
+        ZStack {
+            Text("Matérias")
+                .font(.headline)
+                .opacity(scrollOffsetY < 115 ? 1 : 0)
+                .offset(y: scrollOffsetY <= 70 ? -8 : 0)
+
+            Text(
+                Calendar.current.weekdaySymbols[selectedDay - 1]
+                    .uppercased()
+            )
+            .foregroundStyle(Color.indigo)
+            .font(.caption)
+            .opacity(scrollOffsetY <= 70 ? 1 : 0)
+            .offset(y: scrollOffsetY <= 70 ? 8 : 14)
+        }
+    }
+
+    private var confirmationSheet: some View {
+        ZStack {
+            theme.bgColor()
+                .ignoresSafeArea()
+
+            VStack {
+                Button {
+                    showConfirmationDialog = false
+                    subjectToAdd = Subject(isRecess: false)
+                } label: {
+                    Text("Adicionar Matéria".uppercased())
+                        .foregroundStyle(theme.bgColor())
+                        .fontWeight(.semibold)
+                        .frame(width: 370, height: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(Color.accentColor)
+                        )
+                }.buttonStyle(PlainButtonStyle())
+
+                Button {
+                    showConfirmationDialog = false
+                    subjectToAdd = Subject(isRecess: true)
+                } label: {
+                    Text("Adicionar Intervalo".uppercased())
+                        .foregroundStyle(theme.bgColor())
+                        .fontWeight(.semibold)
+                        .frame(width: 370, height: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(Color.accentColor)
+                        )
+                }.buttonStyle(PlainButtonStyle())
+
+                Button {
+                    showConfirmationDialog = false
+                } label: {
+                    Text("Cancelar".uppercased())
+                        .foregroundStyle(theme.bgColor())
+                        .frame(width: 370, height: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(Color.accentColor)
+                                .opacity(0.9)
+                        )
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(.vertical, 5)
+            }.offset(y: 18)
+        }
+        .presentationDragIndicator(.visible)
+        .presentationDetents([.height(160)])
     }
 }
 

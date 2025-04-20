@@ -11,6 +11,7 @@ import SwiftUI
 struct SharedStudyRoutineView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: [SortDescriptor(\Subject.name)], animation: .smooth)
     private var subjects: [Subject]
@@ -18,10 +19,7 @@ struct SharedStudyRoutineView: View {
     @State private var subjectToEdit: Subject?
     @State private var subjectsToStudy: [Subject] = []
     @State private var navigateToStudyingView: Bool = false
-    @State private var selectedDay: Int = Calendar.current.component(
-        .weekday,
-        from: Date()
-    )
+    @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
     @State private var scrollOffsetY: Int = 151
 
     var body: some View {
@@ -41,6 +39,8 @@ struct SharedStudyRoutineView: View {
                     )
                 }
             }
+            .defaultPlainList(theme)
+            .navigationTitle("Rotina de Estudos")
             .overlay {
                 if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
                     ContentUnavailableView {
@@ -50,9 +50,6 @@ struct SharedStudyRoutineView: View {
                     }
                 }
             }
-            .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .navigationTitle("Rotina de Estudos")
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
@@ -100,8 +97,6 @@ struct SharedStudyRoutineView: View {
                     .disabled(filteredSubjects.isEmpty)
                 }
             }
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme), for: .navigationBar)
             .navigationDestination(
                 isPresented: $navigateToStudyingView,
                 destination: {
@@ -110,12 +105,12 @@ struct SharedStudyRoutineView: View {
                     )
                 }
             )
-        }
-        .sheet(
-            item: $subjectToEdit,
-            onDismiss: { subjectToEdit = nil }
-        ) { subject in
-            SharedSREditView(subject: subject).interactiveDismissDisabled()
+            .sheet(
+                item: $subjectToEdit,
+                onDismiss: { subjectToEdit = nil }
+            ) { subject in
+                SharedSREditView(subject: subject).interactiveDismissDisabled()
+            }
         }
     }
 }
@@ -137,9 +132,7 @@ struct SharedStudyRoutineListCell: View {
     var body: some View {
         HStack {
             if Calendar.current.isDate(
-                subject.lastStudied,
-                equalTo: Date(),
-                toGranularity: .weekOfYear)
+                subject.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
             {
                 Image(systemName: "checkmark")
             }
@@ -151,26 +144,35 @@ struct SharedStudyRoutineListCell: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            Button(action: {
-                subjectsToStudy = [subject]
-                navigateToStudyingView.toggle()
-            }) {
-                Label("Iniciar", systemImage: "play.circle.fill")
-            }.tint(.accentColor)
+            startStudySwipeAction
         }
         .swipeActions(edge: .trailing) {
-            Button(
-                action: { subjectToEdit = subject }
-            ) {
-                Label("Editar", systemImage: "pencil")
-            }
-            .tint(.accentColor)
+            editStudySwipeAction
         }
+    }
+
+    private var startStudySwipeAction: some View {
+        Button(action: {
+            subjectsToStudy = [subject]
+            navigateToStudyingView.toggle()
+        }) {
+            Label("Iniciar", systemImage: "play.circle.fill")
+        }.tint(.accentColor)
+    }
+
+    private var editStudySwipeAction: some View {
+        Button(
+            action: { subjectToEdit = subject }
+        ) {
+            Label("Editar", systemImage: "pencil")
+        }
+        .tint(.accentColor)
     }
 }
 
 struct SharedSREditView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: Subject
     @State private var selectedWeekday: Int
@@ -189,19 +191,7 @@ struct SharedSREditView: View {
         NavigationStack {
             Form {
                 Section {
-                    NavigationLink {
-                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: Binding(
-                            get: { subject },
-                            set: { _ = $0 }
-                        ))
-                    } label: {
-                        HStack {
-                            Text("Dia")
-                            Spacer()
-                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    CustomDayPickerView(date: $subject.studyDay)
 
                     DatePicker(
                         "Duração do Estudo",
@@ -210,7 +200,7 @@ struct SharedSREditView: View {
                     )
                 } header: {
                     Text("Editar Estudo")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     Toggle(
@@ -241,9 +231,9 @@ struct SharedSREditView: View {
                     }
                 } header: {
                     Text("Visualização")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
+            .background(theme.bgColor())
             .scrollContentBackground(.hidden)
             .navigationTitle("Editar Estudo")
             .navigationBarTitleDisplayMode(.inline)
@@ -255,54 +245,5 @@ struct SharedSREditView: View {
                 }
             }
         }
-    }
-}
-
-struct SharedSRDayPickerView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
-
-    @Binding var selectedWeekday: Int
-    @Bindable var subject: Subject
-
-    // MARK: - Views
-
-    var body: some View {
-        List {
-            Section {
-                ForEach(1...7, id: \.self) { index in
-                    let name = Calendar.current.weekdaySymbols[index - 1].capitalized
-
-                    Button {
-                        selectedWeekday = index
-                        dismiss()
-                    } label: {
-                        HStack {
-                            Text(name)
-                                .font(.headline)
-                            Spacer()
-                            if selectedWeekday == index {
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.accentColor)
-                            }
-                        }
-                    }.tint(colorScheme == .dark ? .white : .black)
-                }
-            }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
-            .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                if let newDate = Calendar.current.date(
-                    byAdding: .day,
-                    value: newWeekday - oldWeekday,
-                    to: subject.studyDay
-                ) {
-                    subject.studyDay = newDate
-                }
-            }
-        }
-        .navigationTitle("Dia")
-        .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
     }
 }

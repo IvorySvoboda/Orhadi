@@ -11,6 +11,7 @@ import SwiftUI
 struct TeachersView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query private var subjects: [Subject]
     @Query(sort: \Teacher.name) private var teachers: [Teacher]
@@ -37,7 +38,7 @@ struct TeachersView: View {
                     }
                 }
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
                     Button(action: {
@@ -76,12 +77,12 @@ struct TeachersView: View {
                 }
             }
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
+        .background(theme.bgColor())
         .scrollContentBackground(.hidden)
         .navigationTitle("Professores")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
+            theme.bgColor(),
             for: .navigationBar)
         .sheet(isPresented: $showAddSheet) {
             TeacherAddView()
@@ -116,6 +117,7 @@ struct TeacherAddView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
+    @Environment(OrhadiTheme.self) private var theme
 
     @State private var teacher: Teacher = Teacher(name: "", email: "")
     @State private var preventSave: Bool = false
@@ -143,10 +145,9 @@ struct TeacherAddView: View {
                         .autocorrectionDisabled()
                 } header: {
                     Text("Novo Professor")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .scrollContentBackground(.hidden)
+            .defaultList(theme)
             .navigationTitle("Novo Professor")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -177,6 +178,7 @@ struct TeacherEditView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
+    @Environment(OrhadiTheme.self) private var theme
 
     @Bindable var teacher: Teacher
 
@@ -213,10 +215,9 @@ struct TeacherEditView: View {
                         .autocorrectionDisabled()
                 } header: {
                     Text("Editar Professor")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .scrollContentBackground(.hidden)
+            .defaultList(theme)
             .navigationTitle("Editar Professor")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

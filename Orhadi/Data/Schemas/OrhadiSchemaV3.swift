@@ -40,12 +40,12 @@ enum OrhadiSchemaV3: VersionedSchema {
         var isHidden: Bool
 
         init(
-            name: String,
-            teacher: Teacher?,
-            schedule: Date,
-            startTime: Date,
-            endTime: Date,
-            place: String,
+            name: String = "",
+            teacher: Teacher? = nil,
+            schedule: Date = defaultSchedule(),
+            startTime: Date = defaultStartTime(),
+            endTime: Date = defaultStartTime() + TimeInterval(50 * 60),
+            place: String = "",
             isRecess: Bool,
             studyDay: Date = Date(),
             studyTime: Date = Calendar.current.date(

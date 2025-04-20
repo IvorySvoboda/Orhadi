@@ -10,45 +10,32 @@ import SwiftUI
 import UserNotifications
 
 typealias CurrentSchema = OrhadiSchemaV3
-typealias Subject = OrhadiSchemaV3.Subject
-typealias SRSubject = OrhadiSchemaV3.SRSubject
-typealias ToDo = OrhadiSchemaV3.ToDo
-typealias Settings = OrhadiSchemaV3.Settings
-typealias Teacher = OrhadiSchemaV3.Teacher
-typealias UserProfile = OrhadiSchemaV3.UserProfile
-typealias Achievement = OrhadiSchemaV3.Achievement
+typealias Subject = CurrentSchema.Subject
+typealias SRSubject = CurrentSchema.SRSubject
+typealias ToDo = CurrentSchema.ToDo
+typealias Settings = CurrentSchema.Settings
+typealias Teacher = CurrentSchema.Teacher
+typealias UserProfile = CurrentSchema.UserProfile
+typealias Achievement = CurrentSchema.Achievement
 
 @main
 struct OrhadiApp: App {
-    var sharedModelContainer: ModelContainer = {
-        do {
-            let databasePath = URL.documentsDirectory.appending(path: "database.store")
-
-            let configuration = ModelConfiguration(url: databasePath)
-
-            let container = try ModelContainer.init(
-                for: Schema(versionedSchema: CurrentSchema.self),
-                migrationPlan: MigrationPlan.self,
-                configurations: configuration
-            )
-
-            return container
-        } catch {
-            fatalError(
-                "Could not create ModelContainer: \(error.localizedDescription)"
-            )
-        }
-    }()
+    let container = try! ModelContainer.init(
+        for: Schema(versionedSchema: CurrentSchema.self),
+        migrationPlan: MigrationPlan.self,
+        configurations: ModelConfiguration(url: URL.documentsDirectory.appending(path: "database.store"))
+    )
 
     var body: some Scene {
         WindowGroup {
             RootView()
         }
-        .modelContainer(sharedModelContainer)
+        .modelContainer(container)
     }
 }
 
 struct RootView: View {
+    @Environment(\.colorScheme) private var scheme
     @Environment(\.modelContext) private var modelContext
     @Query private var settings: [Settings]
     @Query private var userProfile: [UserProfile]
@@ -67,5 +54,6 @@ struct RootView: View {
             .environment(settings.first ?? Settings())
             .environment(userProfile.first ?? UserProfile())
             .environment(GameManager(context: modelContext))
+            .environment(OrhadiTheme(colorScheme: scheme))
     }
 }

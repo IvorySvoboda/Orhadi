@@ -11,6 +11,7 @@ import SwiftUI
 struct DataSettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query(animation: .smooth) private var subjects: [Subject]
     @Query(animation: .smooth) private var todos: [ToDo]
@@ -23,6 +24,7 @@ struct DataSettingsView: View {
     @State private var showSubjectsFileExporter: Bool = false
     @State private var showToDosFileExporter: Bool = false
     @State private var showSRSubjectsFileExporter: Bool = false
+
     /// Importer
     @State private var showSubjectsImportAlert: Bool = false
     @State private var showToDosImportAlert: Bool = false
@@ -95,7 +97,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Matérias")
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
 
             /// To-Dos Import/Export
             Section {
@@ -160,7 +162,7 @@ struct DataSettingsView: View {
             } header: {
                 Text("Tarefas")
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
 
             /// Study Routine Subjects Import/Export
             Section {
@@ -224,15 +226,11 @@ struct DataSettingsView: View {
             } header: {
                 Text("Rotina de Estudos")
             }
-            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .listRowBackground(theme.secondaryBGColor())
         }
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
-        .scrollContentBackground(.hidden)
+        .defaultList(theme)
         .navigationTitle("Dados")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(
-            OrhadiTheme.getBGColor(for: colorScheme),
-            for: .navigationBar)
     }
 
     /// Exporter

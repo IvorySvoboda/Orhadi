@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct MarkdownTextField: UIViewRepresentable {
-    @Environment(\.colorScheme) private var colorScheme
 
     @Binding var text: String
 
@@ -24,7 +23,6 @@ struct MarkdownTextField: UIViewRepresentable {
         // MARK: - Toolbar
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        toolbar.backgroundColor = UIColor(OrhadiTheme.getBGColor(for: colorScheme))
 
         let accentColor = UIColor(.indigo)
 

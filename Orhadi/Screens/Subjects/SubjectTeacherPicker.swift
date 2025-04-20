@@ -11,6 +11,7 @@ import SwiftUI
 struct SubjectTeacherPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
 
@@ -43,7 +44,7 @@ struct SubjectTeacherPickerView: View {
                         }
                     }.tint(colorScheme == .dark ? .white : .black)
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
 
             Section {
                 Button {
@@ -62,7 +63,7 @@ struct SubjectTeacherPickerView: View {
                         }
                     }
                 }.tint(colorScheme == .dark ? .white : .black)
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
 
             Section {
                 Button {
@@ -80,11 +81,10 @@ struct SubjectTeacherPickerView: View {
                     TeacherAddView()
                         .interactiveDismissDisabled()
                 }
-            }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            }.listRowBackground(theme.secondaryBGColor())
         }
+        .defaultList(theme)
         .navigationTitle("Professor")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(OrhadiTheme.getBGColor(for: colorScheme))
     }
 }

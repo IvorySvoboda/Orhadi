@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct ToDosView: View {
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(OrhadiTheme.self) private var theme
     @Environment(Settings.self) private var settings
 
     @Query(sort: [.init(\ToDo.dueDate, order: .forward)], animation: .bouncy)
@@ -28,7 +28,7 @@ struct ToDosView: View {
                         }
                     } header: {
                         SectionHeader(text: String(localized: "A Fazer"))
-                    }.listRowBackground(OrhadiTheme.getBGColor(for: colorScheme))
+                    }.listRowBackground(theme.bgColor())
                 }
 
                 if !todos.filter({$0.dueDate < Date() || $0.isCompleted}).isEmpty {
@@ -42,15 +42,14 @@ struct ToDosView: View {
                         }
                     } header: {
                         SectionHeader(text: String(localized: "Completados ou Vencidos"))
-                    }.listRowBackground(OrhadiTheme.getBGColor(for: colorScheme))
+                    }.listRowBackground(theme.bgColor())
                 }
             }
+            .defaultPlainList(theme)
+            .navigationTitle("Tarefas")
             .overlay {
                 overlay
             }
-            .listStyle(PlainListStyle())
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .navigationTitle("Tarefas")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { showAddSheet.toggle() }) {
@@ -58,9 +57,6 @@ struct ToDosView: View {
                     }
                 }
             }
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme),
-                for: .navigationBar)
             .sheet(isPresented: $showAddSheet) {
                 ToDoAddView()
                     .interactiveDismissDisabled()
@@ -80,7 +76,7 @@ struct ToDosView: View {
                         showAddSheet.toggle()
                     }
                     .buttonStyle(.borderedProminent)
-                    .foregroundStyle(OrhadiTheme.getBGColor(for: colorScheme))
+                    .foregroundStyle(theme.bgColor())
                 }
             }
         }

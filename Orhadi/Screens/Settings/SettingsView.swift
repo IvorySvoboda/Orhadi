@@ -12,6 +12,7 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
     @Environment(UserProfile.self) private var user
+    @Environment(OrhadiTheme.self) private var theme
 
     @State private var isErasing: Bool = false
     @State private var showEraseDataAlert: Bool = false
@@ -48,7 +49,7 @@ struct SettingsView: View {
                             }
                         }.frame(height: 40)
                     }
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     NavigationLink {
@@ -68,7 +69,7 @@ struct SettingsView: View {
                             "Rotina de Estudos",
                             systemImage: "graduationcap.fill")
                     }
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     Picker("Tema", selection: $settings.theme) {
@@ -78,7 +79,7 @@ struct SettingsView: View {
                     }
                 } header: {
                     Text("Aparência")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     NavigationLink("Dados") {
@@ -105,7 +106,7 @@ struct SettingsView: View {
 
                 } header: {
                     Text("Dados")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
                     HStack {
@@ -131,15 +132,10 @@ struct SettingsView: View {
                             top: 5, leading: 10, bottom: 5, trailing: 10))
                 } header: {
                     Text("Sobre")
-                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+                }.listRowBackground(theme.secondaryBGColor())
             }
-            .background(OrhadiTheme.getBGColor(for: colorScheme))
-            .scrollContentBackground(.hidden)
+            .defaultList(theme)
             .navigationTitle("Ajustes")
-            .toolbarBackground(
-                OrhadiTheme.getBGColor(for: colorScheme),
-                for: .navigationBar)
-
         }
     }
 
