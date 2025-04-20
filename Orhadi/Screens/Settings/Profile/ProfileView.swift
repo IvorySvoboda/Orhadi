@@ -200,9 +200,9 @@ struct UserNameEditView: View {
     var body: some View {
         Form {
             Section {
-                HStack(spacing: 5) {
+                HStack {
                     Text("Nome")
-                    Spacer()
+                        .frame(width: 50, alignment: .leading)
                     TextField("Obrigatório", text: $userName)
                         .autocorrectionDisabled()
                 }

@@ -29,9 +29,8 @@ struct SubjectEditView: View {
             Form {
                 if !subject.isRecess {
                     subjectInfoSection
+                    teacherSelectionSection
                 }
-
-                teacherSelectionSection
 
                 timeSelectionSection
             }
@@ -45,6 +44,7 @@ struct SubjectEditView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         dismiss()
+                        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                     }.disabled(subject.name.isEmpty && !subject.isRecess)
                 }
             }
@@ -53,12 +53,20 @@ struct SubjectEditView: View {
 
     private var subjectInfoSection: some View {
         Section {
-            TextField("Minha nova matéria", text: $subject.name)
-                .autocorrectionDisabled()
-            TextField("Sala 101", text: $subject.place)
-                .autocorrectionDisabled()
+            HStack() {
+                Text("Nome")
+                    .frame(width: 50, alignment: .leading)
+                TextField("Minha nova matéria", text: $subject.name)
+                    .autocorrectionDisabled()
+            }
+            HStack() {
+                Text("Local")
+                    .frame(width: 50, alignment: .leading)
+                TextField("Sala 101", text: $subject.place)
+                    .autocorrectionDisabled()
+            }
         } header: {
-            Text("Nova Matéria")
+            Text("Editar Matéria")
         }.listRowBackground(
             OrhadiTheme.getSecondaryBGColor(for: colorScheme)
         )

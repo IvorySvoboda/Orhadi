@@ -63,6 +63,7 @@ struct ToDoAddView: View {
                     Button("Salvar") {
                         addItem()
                         dismiss()
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }
                     .disabled(todo.dueDate <= Date())
                 }

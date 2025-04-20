@@ -250,28 +250,30 @@ struct SREditView: View {
             Form {
                 Section {
                     TextField("Minha matéria", text: $subject.name)
+                } header: {
+                    Text("Editar Estudo")
+                }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
-                    Picker("Dia:", selection: $selectedWeekday) {
-                        ForEach(1...7, id: \.self) { index in
-                            let weekday = Calendar.current.weekdaySymbols[index - 1]
-                            Text("\(weekday)").tag(index)
+                Section {
+                    NavigationLink {
+                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: Binding(
+                            get: { subject },
+                            set: { _ = $0 }
+                        ))
+                    } label: {
+                        HStack {
+                            Text("Dia")
+                            Spacer()
+                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
+                                .foregroundStyle(.secondary)
                         }
-                    }
-                    .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                        subject.studyDay = Calendar.current.date(
-                            byAdding: .day,
-                            value: newWeekday - oldWeekday,
-                            to: subject.studyDay
-                        )!
                     }
 
                     DatePicker(
-                        "Tempo:",
+                        "Duração do Estudo",
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                } header: {
-                    Text("Editar Estudo")
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
             }
             .background(OrhadiTheme.getBGColor(for: colorScheme))
@@ -326,22 +328,19 @@ struct SRAddView: View {
                 }.listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
 
                 Section {
-                    Picker("Dia", selection: $selectedWeekday) {
-                        ForEach(1...7, id: \.self) { index in
-                            let weekday = Calendar.current.weekdaySymbols[index - 1]
-                            Text("\(weekday)").tag(index)
+                    NavigationLink {
+                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: $subject)
+                    } label: {
+                        HStack {
+                            Text("Dia")
+                            Spacer()
+                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
+                                .foregroundStyle(.secondary)
                         }
-                    }
-                    .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                        subject.studyDay = Calendar.current.date(
-                            byAdding: .day,
-                            value: newWeekday - oldWeekday,
-                            to: subject.studyDay
-                        )!
                     }
 
                     DatePicker(
-                        "Duração",
+                        "Duração do Estudo",
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )

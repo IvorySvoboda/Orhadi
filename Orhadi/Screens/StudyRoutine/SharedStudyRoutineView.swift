@@ -189,21 +189,22 @@ struct SharedSREditView: View {
         NavigationStack {
             Form {
                 Section {
-                    Picker("Dia de Estudo:", selection: $selectedWeekday) {
-                        ForEach(1...7, id: \.self) { index in
-                            let weekday = Calendar.current.weekdaySymbols[index - 1]
-                            Text("\(weekday)").tag(index)
+                    NavigationLink {
+                        SRDayPickerView(selectedWeekday: $selectedWeekday, subject: Binding(
+                            get: { subject },
+                            set: { _ = $0 }
+                        ))
+                    } label: {
+                        HStack {
+                            Text("Dia")
+                            Spacer()
+                            Text(Calendar.current.weekdaySymbols[selectedWeekday - 1].capitalized)
+                                .foregroundStyle(.secondary)
                         }
-                    }
-                    .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
-                        subject.studyDay = Calendar.current.date(
-                            byAdding: .day,
-                            value: newWeekday - oldWeekday,
-                            to: subject.studyDay)!
                     }
 
                     DatePicker(
-                        "Tempo de Estudo:",
+                        "Duração do Estudo",
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
@@ -254,5 +255,54 @@ struct SharedSREditView: View {
                 }
             }
         }
+    }
+}
+
+struct SharedSRDayPickerView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+
+    @Binding var selectedWeekday: Int
+    @Bindable var subject: Subject
+
+    // MARK: - Views
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(1...7, id: \.self) { index in
+                    let name = Calendar.current.weekdaySymbols[index - 1].capitalized
+
+                    Button {
+                        selectedWeekday = index
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Text(name)
+                                .font(.headline)
+                            Spacer()
+                            if selectedWeekday == index {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                    }.tint(colorScheme == .dark ? .white : .black)
+                }
+            }
+            .listRowBackground(OrhadiTheme.getSecondaryBGColor(for: colorScheme))
+            .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
+                if let newDate = Calendar.current.date(
+                    byAdding: .day,
+                    value: newWeekday - oldWeekday,
+                    to: subject.studyDay
+                ) {
+                    subject.studyDay = newDate
+                }
+            }
+        }
+        .navigationTitle("Dia")
+        .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(OrhadiTheme.getBGColor(for: colorScheme))
     }
 }
