@@ -72,9 +72,8 @@ struct CustomDayPicker: View {
                 }
             }
         }
+        .modifier(DefaultList())
         .navigationTitle("Dia")
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .background(theme.bgColor())
     }
 }

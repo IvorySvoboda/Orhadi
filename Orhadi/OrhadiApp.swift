@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
-typealias CurrentSchema = OrhadiSchemaV3
+typealias CurrentSchema = OrhadiSchemaV2
 typealias Subject = CurrentSchema.Subject
 typealias SRSubject = CurrentSchema.SRSubject
 typealias ToDo = CurrentSchema.ToDo

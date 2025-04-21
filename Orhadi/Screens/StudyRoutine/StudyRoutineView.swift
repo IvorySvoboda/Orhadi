@@ -1,22 +1,21 @@
 //
-//  StudyView.swift
+//  SharedStudyRoutineView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 27/03/25.
+//  Created by Zyvoxi . on 31/03/25.
 //
 
 import SwiftData
 import SwiftUI
 
-struct StudyRoutineView: View {
+struct SharedStudyRoutineView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
     @Environment(OrhadiTheme.self) private var theme
 
-    @Query(sort: [SortDescriptor(\SRSubject.name)], animation: .smooth)
+    @Query(sort: \SRSubject.name, animation: .smooth)
     private var subjects: [SRSubject]
 
-    @State private var showAddSheet: Bool = false
     @State private var subjectToEdit: SRSubject?
     @State private var subjectsToStudy: [SRSubject] = []
     @State private var navigateToStudyingView: Bool = false
@@ -32,7 +31,7 @@ struct StudyRoutineView: View {
                     subjects: subjects,
                     dateExtractor: { $0.studyDay }
                 ) { subject in
-                    StudyRoutineListCell(
+                    SharedStudyRoutineListCell(
                         subject: subject,
                         subjectToEdit: $subjectToEdit,
                         navigateToStudyingView: $navigateToStudyingView,
@@ -40,7 +39,7 @@ struct StudyRoutineView: View {
                     )
                 }
             }
-            .defaultPlainList(theme)
+            .modifier(DefaultPlainList())
             .navigationTitle("Rotina de Estudos")
             .overlay {
                 if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
@@ -63,44 +62,14 @@ struct StudyRoutineView: View {
                             Calendar.current.weekdaySymbols[selectedDay - 1]
                                 .uppercased()
                         )
-                        .foregroundStyle(Color.indigo)
+                        .foregroundStyle(.tint)
                         .font(.caption)
                         .opacity(scrollOffsetY <= 70 ? 1 : 0)
                         .offset(y: scrollOffsetY <= 70 ? 8 : 14)
                     }
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        showAddSheet.toggle()
-                    }) {
-                        Image(systemName: "plus.circle.fill").font(.title2)
-                    }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        subjectsToStudy = subjects.filter {
-                            let todayWeekday = Calendar.current.component(
-                                .weekday,
-                                from: Date()
-                            )
-                            let studyWeekday = Calendar.current.component(
-                                .weekday,
-                                from: $0.studyDay
-                            )
-
-                            return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
-                        }
-
-                        if !subjectsToStudy.isEmpty {
-                            navigateToStudyingView.toggle()
-                        }
-                    }) {
-                        Image(systemName: "play.circle.fill")
-                            .font(.title2)
-                    }
-                    .disabled(subjects.filter({
+                    let filteredSubjects = subjects.filter {
                         let todayWeekday = Calendar.current.component(
                             .weekday,
                             from: Date()
@@ -110,41 +79,39 @@ struct StudyRoutineView: View {
                             from: $0.studyDay
                         )
 
-                        return studyWeekday == todayWeekday && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
-                    }).isEmpty)
+                        return studyWeekday == todayWeekday
+                        && !Calendar.current.isDate($0.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
+                    }
+
+                    Button(action: {
+                        guard !filteredSubjects.isEmpty else { return }
+                        subjectsToStudy = filteredSubjects
+                        navigateToStudyingView.toggle()
+                    }) {
+                        Image(systemName: "play.circle.fill")
+                            .font(.title2)
+                    }
+                    .disabled(filteredSubjects.isEmpty)
                 }
             }
-            .navigationDestination(
-                isPresented: $navigateToStudyingView,
-                destination: {
-                    StudyingView(
-                        subjects: $subjectsToStudy
-                    )
-                }
-            )
-            .sheet(isPresented: $showAddSheet) {
-                SRAddView()
-                    .interactiveDismissDisabled()
+            .navigationDestination(isPresented: $navigateToStudyingView) {
+                StudyingView(subjects: $subjectsToStudy)
             }
-            .sheet(item: $subjectToEdit) { subject in
-                SREditView(subject: subject)
-                    .interactiveDismissDisabled()
+            .sheet(item: $subjectToEdit, onDismiss: { subjectToEdit = nil }) { subject in
+                SharedSREditView(subject: subject).interactiveDismissDisabled()
             }
         }
     }
 }
 
-#Preview("StudyRoutineView") {
-    StudyRoutineView()
+#Preview("SharedStudyRoutineView") {
+    SharedStudyRoutineView()
         .modelContainer(SampleData.shared.container)
         .environment(Settings())
 }
 
-struct StudyRoutineListCell: View {
-    @Environment(\.modelContext) private var modelContext
+struct SharedStudyRoutineListCell: View {
     @Environment(Settings.self) private var settings
-
-    @State private var showConfirmation: Bool = false
 
     var subject: SRSubject
     @Binding var subjectToEdit: SRSubject?
@@ -157,6 +124,7 @@ struct StudyRoutineListCell: View {
                 subject.lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
             {
                 Image(systemName: "checkmark")
+                    .foregroundStyle(.tint)
             }
 
             Text(subject.name.isEmpty ? String(localized: "Sem Nome") : subject.name)
@@ -166,74 +134,45 @@ struct StudyRoutineListCell: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            Button(action: {
-                subjectsToStudy = [subject]
-
-                navigateToStudyingView.toggle()
-            }) {
-                Label(
-                    "Iniciar",
-                    systemImage: "play.circle.fill"
-                )
-            }
-            .tint(.accentColor)
+            startStudySwipeAction
         }
         .swipeActions(edge: .trailing) {
-            if settings.srsubjectsDeleteConfirmation {
-                Button(action: {
-                    showConfirmation.toggle()
-                }) {
-                    Label("Excluir", systemImage: "trash.fill")
-                }.tint(.red)
-            }
-            if !settings.srsubjectsDeleteConfirmation {
-                Button(
-                    role: .destructive,
-                    action: {
-                        deleteSubject(subject: subject)
-                    }
-                ) {
-                    Label("Excluir", systemImage: "trash.fill")
-                }
-            }
-            Button(action: { subjectToEdit = subject }
-            ) {
-                Label("Editar", systemImage: "pencil")
-            }
-            .tint(.accentColor)
-        }
-        .alert("Excluir matéria?", isPresented: $showConfirmation) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Excluir", role: .destructive) {
-                deleteSubject(subject: subject)
-            }
-        } message: {
-            Text(
-                "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?"
-            )
+            editStudySwipeAction
         }
     }
 
-    private func deleteSubject(subject: SRSubject) {
-        withAnimation {
-            modelContext.delete(subject)
+    private var startStudySwipeAction: some View {
+        Button(action: {
+            subjectsToStudy = [subject]
+            navigateToStudyingView.toggle()
+        }) {
+            Label("Iniciar", systemImage: "play.circle.fill")
+        }.tint(.accentColor)
+    }
+
+    private var editStudySwipeAction: some View {
+        Button(
+            action: { subjectToEdit = subject }
+        ) {
+            Label("Editar", systemImage: "pencil")
         }
+        .tint(.accentColor)
     }
 }
 
-struct SREditView: View {
+struct SharedSREditView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(OrhadiTheme.self) private var theme
     @Environment(\.dismiss) private var dismiss
     @Bindable var subject: SRSubject
     @State private var selectedWeekday: Int
+    @State private var showConfirmation = false
 
     init(subject: SRSubject) {
         self.subject = subject
         _selectedWeekday = State(
             initialValue: Calendar.current.component(
-                .weekday,
-                from: subject.studyDay
+                .weekday, from: subject.studyDay
             )
         )
     }
@@ -242,12 +181,6 @@ struct SREditView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Minha matéria", text: $subject.name)
-                } header: {
-                    Text("Editar Estudo")
-                }.listRowBackground(theme.secondaryBGColor())
-
-                Section {
                     CustomDayPickerView(date: $subject.studyDay)
 
                     DatePicker(
@@ -255,6 +188,8 @@ struct SREditView: View {
                         selection: $subject.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
+                } header: {
+                    Text("Editar Estudo")
                 }.listRowBackground(theme.secondaryBGColor())
             }
             .background(theme.bgColor())
@@ -268,80 +203,6 @@ struct SREditView: View {
                     }
                 }
             }
-        }
-    }
-}
-
-struct SRAddView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-
-    @State private var selectedWeekday: Int
-    @State private var subject: SRSubject
-
-    init() {
-        _subject = State(initialValue: SRSubject(
-            name: "",
-            studyDay: defaultSchedule(),
-            studyTime: Calendar.current.date(
-                bySettingHour: 0,
-                minute: 30,
-                second: 0,
-                of: Date()
-            )!
-        ))
-        _selectedWeekday = State(
-            initialValue: Calendar.current.component(
-                .weekday,
-                from: defaultSchedule()
-            )
-        )
-    }
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField("Minha nova matéria", text: $subject.name)
-                } header: {
-                    Text("Nova Matéria")
-                }.listRowBackground(theme.secondaryBGColor())
-
-                Section {
-                    CustomDayPickerView(date: $subject.studyDay)
-
-                    DatePicker(
-                        "Duração do Estudo",
-                        selection: $subject.studyTime,
-                        displayedComponents: [.hourAndMinute]
-                    )
-                }.listRowBackground(theme.secondaryBGColor())
-            }
-            .background(theme.bgColor())
-            .scrollContentBackground(.hidden)
-            .navigationTitle("Adicionar Matéria")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvar") {
-                        addSRSubject()
-                        dismiss()
-                    }.disabled(subject.name.isEmpty)
-                }
-            }
-        }
-    }
-
-    private func addSRSubject() {
-        withAnimation {
-            modelContext.insert(subject)
         }
     }
 }

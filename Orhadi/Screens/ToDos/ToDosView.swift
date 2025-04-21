@@ -45,7 +45,7 @@ struct ToDosView: View {
                     }.listRowBackground(theme.bgColor())
                 }
             }
-            .defaultPlainList(theme)
+            .modifier(DefaultPlainList())
             .navigationTitle("Tarefas")
             .overlay {
                 overlay

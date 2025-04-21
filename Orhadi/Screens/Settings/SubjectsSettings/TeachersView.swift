@@ -147,7 +147,7 @@ struct TeacherAddView: View {
                     Text("Novo Professor")
                 }.listRowBackground(theme.secondaryBGColor())
             }
-            .defaultList(theme)
+            .modifier(DefaultList())
             .navigationTitle("Novo Professor")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -217,7 +217,7 @@ struct TeacherEditView: View {
                     Text("Editar Professor")
                 }.listRowBackground(theme.secondaryBGColor())
             }
-            .defaultList(theme)
+            .modifier(DefaultList())
             .navigationTitle("Editar Professor")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

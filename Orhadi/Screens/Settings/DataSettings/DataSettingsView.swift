@@ -15,23 +15,18 @@ struct DataSettingsView: View {
 
     @Query(animation: .smooth) private var subjects: [Subject]
     @Query(animation: .smooth) private var todos: [ToDo]
-    @Query(animation: .smooth) private var srsubjects: [SRSubject]
 
     /// Exporter
     @State private var subjectsExportItem: SubjectTransferable?
     @State private var todosExportItem: ToDoTransferable?
-    @State private var srSubjecsExportItem: SRSubjectTransferable?
     @State private var showSubjectsFileExporter: Bool = false
     @State private var showToDosFileExporter: Bool = false
-    @State private var showSRSubjectsFileExporter: Bool = false
 
     /// Importer
     @State private var showSubjectsImportAlert: Bool = false
     @State private var showToDosImportAlert: Bool = false
-    @State private var showSRSubjectsImportAlert: Bool = false
     @State private var showSubjectsFileImporter: Bool = false
     @State private var showToDosFileImporter: Bool = false
-    @State private var showSRSubjectsFileImporter: Bool = false
     @State private var importedURL: URL?
 
     var body: some View {
@@ -39,8 +34,7 @@ struct DataSettingsView: View {
             /// Subjects Import/Export
             Section {
                 Button("Exportar Matérias") {
-                    guard !showToDosFileExporter || !showSRSubjectsFileExporter
-                    else { return }
+                    guard !showToDosFileExporter else { return }
                     exportSubjects()
                 }
                 .disabled(subjects.isEmpty)
@@ -63,8 +57,7 @@ struct DataSettingsView: View {
                 }
 
                 Button("Importar Matérias") {
-                    guard !showToDosFileImporter || !showSRSubjectsFileImporter
-                    else { return }
+                    guard !showToDosFileImporter else { return }
                     showSubjectsImportAlert.toggle()
                 }
                 .alert(
@@ -102,9 +95,7 @@ struct DataSettingsView: View {
             /// To-Dos Import/Export
             Section {
                 Button("Exportar Tarefas") {
-                    guard
-                        !showSubjectsFileExporter || !showSRSubjectsFileExporter
-                    else { return }
+                    guard !showSubjectsFileExporter else { return }
                     exportToDos()
                 }
                 .disabled(todos.isEmpty)
@@ -127,9 +118,7 @@ struct DataSettingsView: View {
                 }
 
                 Button("Importar Tarefas") {
-                    guard
-                        !showSubjectsFileImporter || !showSRSubjectsFileImporter
-                    else { return }
+                    guard !showSubjectsFileImporter else { return }
                     showToDosImportAlert.toggle()
                 }
                 .alert(
@@ -163,72 +152,8 @@ struct DataSettingsView: View {
                 Text("Tarefas")
             }
             .listRowBackground(theme.secondaryBGColor())
-
-            /// Study Routine Subjects Import/Export
-            Section {
-                Button("Exportar Rotina de Estudos") {
-                    guard !showToDosFileExporter || !showSubjectsFileExporter
-                    else { return }
-                    exportSRSubjects()
-                }
-                .disabled(srsubjects.isEmpty)
-                .fileExporter(
-                    isPresented: $showSRSubjectsFileExporter,
-                    item: srSubjecsExportItem,
-                    contentTypes: [.data],
-                    defaultFilename: String(localized: "Rotina de Estudos")
-                ) { result in
-                    switch result {
-                    case .success(_):
-                        print("Sucesso!")
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-
-                    srSubjecsExportItem = nil
-                } onCancellation: {
-                    srSubjecsExportItem = nil
-                }
-
-                Button("Importar Rotina de Estudos") {
-                    guard !showToDosFileImporter || !showSubjectsFileImporter
-                    else { return }
-                    showSRSubjectsImportAlert.toggle()
-                }
-                .alert(
-                    "Importar Rotina de Estudos",
-                    isPresented: $showSRSubjectsImportAlert,
-                    actions: {
-                        Button("Cancelar", role: .cancel) {}
-                        Button("Continuar") {
-                            showSRSubjectsFileImporter.toggle()
-                        }
-                    },
-                    message: {
-                        Text(
-                            "Ao importar a rotina de estudos todas as informações existentes da rotina de estudos serão removidas. Deeseja continuar?"
-                        )
-                    }
-                )
-                .fileImporter(
-                    isPresented: $showSRSubjectsFileImporter,
-                    allowedContentTypes: [.data]
-                ) { result in
-                    switch result {
-                    case .success(let url):
-                        debugPrint("Sucesso!")
-                        importedURL = url
-                        importSRSubjects()
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                    }
-                }
-            } header: {
-                Text("Rotina de Estudos")
-            }
-            .listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Dados")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -306,43 +231,6 @@ struct DataSettingsView: View {
         }
     }
 
-    private func exportSRSubjects() {
-        Task.detached(priority: .background) {
-            do {
-                let databasePath = URL.documentsDirectory.appending(path: "database.store")
-
-                let configuration = ModelConfiguration(url: databasePath)
-
-                let container = try ModelContainer.init(
-                    for: Schema(versionedSchema: CurrentSchema.self),
-                    migrationPlan: MigrationPlan.self,
-                    configurations: configuration
-                )
-
-                let context = ModelContext(container)
-
-                let descriptor = FetchDescriptor(sortBy: [
-                    .init(\SRSubject.studyDay, order: .forward)
-                ])
-
-                let allObjects = try context.fetch(descriptor)
-                let exportItem = SRSubjectTransferable(subjects: allObjects)
-
-                debugPrint("Exportado com sucesso!")
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-
-                await MainActor.run {
-                    self.srSubjecsExportItem = exportItem
-                    showSRSubjectsFileExporter = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
-    }
-
     /// Importer
     private func importSubject() {
         guard let url = importedURL else { return }
@@ -397,11 +285,7 @@ struct DataSettingsView: View {
                             startTime: subject.startTime,
                             endTime: subject.endTime,
                             place: subject.place,
-                            isRecess: subject.isRecess,
-                            studyDay: subject.studyDay,
-                            studyTime: subject.studyTime,
-                            lastStudied: subject.lastStudied,
-                            isHidden: subject.isHidden
+                            isRecess: subject.isRecess
                         )
                     )
                 }
@@ -507,57 +391,6 @@ struct DataSettingsView: View {
                     body: "Tarefa: \(todo.title) Venceu!",
                     date: todo.dueDate
                 )
-            }
-        }
-    }
-
-    private func importSRSubjects() {
-        guard let url = importedURL else { return }
-        Task.detached(priority: .background) {
-            do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
-                let databasePath = URL.documentsDirectory.appending(path: "database.store")
-
-                let configuration = ModelConfiguration(url: databasePath)
-
-                let container = try ModelContainer.init(
-                    for: Schema(versionedSchema: CurrentSchema.self),
-                    migrationPlan: MigrationPlan.self,
-                    configurations: configuration
-                )
-
-                let context = ModelContext(container)
-
-                let descriptor = FetchDescriptor(sortBy: [
-                    .init(\SRSubject.studyDay, order: .forward)
-                ])
-
-                let existingSubjects = try context.fetch(descriptor)
-                for subject in existingSubjects {
-                    context.delete(subject)
-                }
-
-                let data = try Data(contentsOf: url)
-                let allSubjects = try JSONDecoder().decode(
-                    [SRSubject].self, from: data)
-
-                debugPrint(allSubjects.count)
-
-                for subject in allSubjects {
-                    context.insert(subject)
-                }
-
-                try context.save()
-
-                debugPrint("Importado com sucesso!")
-
-                url.stopAccessingSecurityScopedResource()
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
         }
     }

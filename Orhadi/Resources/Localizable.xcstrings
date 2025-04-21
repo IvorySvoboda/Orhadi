@@ -8,7 +8,7 @@
 
     },
     ":" : {
-      "shouldTranslate" : false
+
     },
     "%@" : {
       "shouldTranslate" : false
@@ -37,10 +37,14 @@
         }
       }
     },
+    "%lldm" : {
+
+    },
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
     },
     "5m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -51,6 +55,7 @@
       }
     },
     "10m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -61,6 +66,7 @@
       }
     },
     "15m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -71,6 +77,7 @@
       }
     },
     "20m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -81,6 +88,7 @@
       }
     },
     "25m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -91,6 +99,7 @@
       }
     },
     "30m" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -134,6 +143,7 @@
 
     },
     "Adicionar Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -170,6 +180,7 @@
       }
     },
     "Ao importar a rotina de estudos todas as informações existentes da rotina de estudos serão removidas. Deeseja continuar?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -511,6 +522,7 @@
       }
     },
     "Editar %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -585,6 +597,7 @@
       }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -705,6 +718,7 @@
 
     },
     "Estudos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -746,6 +760,7 @@
       }
     },
     "Excluir matéria?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -788,6 +803,7 @@
       }
     },
     "Exportar Rotina de Estudos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -934,6 +950,7 @@
       }
     },
     "Importar Rotina de Estudos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1001,6 +1018,7 @@
       }
     },
     "Isso removerá a matéria da visualização. Você pode reativá-la a qualquer momento nos ajustes." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1068,6 +1086,7 @@
       }
     },
     "Matérias Compartilhadas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1078,6 +1097,7 @@
       }
     },
     "Matérias Ocultas" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1097,6 +1117,7 @@
 
     },
     "Minha matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1179,6 +1200,7 @@
       }
     },
     "Nova Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1199,6 +1221,7 @@
       }
     },
     "Novo Intervalo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1225,6 +1248,7 @@
 
     },
     "Ocultar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1235,6 +1259,7 @@
       }
     },
     "Ocultar matéria?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1393,6 +1418,7 @@
       }
     },
     "Sem matérias ocultas." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1527,6 +1553,7 @@
 
     },
     "Visualização" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

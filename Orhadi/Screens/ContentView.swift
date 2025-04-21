@@ -23,20 +23,14 @@ struct ContentView: View {
                 ToDosView()
                     .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
-            Tab("Estudos", systemImage: "graduationcap.fill") {
-                if settings.sharedSubjects {
-                    SharedStudyRoutineView()
-                        .toolbarBackground(theme.bgColor(), for: .tabBar)
-                } else {
-                    StudyRoutineView()
-                        .toolbarBackground(theme.bgColor(), for: .tabBar)
-                }
+            Tab("Rotina de Estudos", systemImage: "graduationcap.fill") {
+                SharedStudyRoutineView()
+                    .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
                     .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
-            
         }
         .preferredColorScheme(theme.getTheme(for: settings.theme))
     }

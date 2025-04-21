@@ -11,10 +11,11 @@ struct SubjectListCell: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(Settings.self) private var settings
 
-    var subject: Subject
-    @Binding var subjectToEdit: Subject?
-
+    @State private var subjectToAdd: Subject?
+    @State private var subjectToEdit: Subject?
     @State private var showConfirmation: Bool = false
+
+    var subject: Subject
 
     // MARK: - Views
 
@@ -96,6 +97,7 @@ struct SubjectListCell: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             deleteSwipeAction
+            duplicateSwipeAction
             editSwipeAction
         }
         .alert("Excluir \(subject.isRecess ? String(localized: "intervalo") : String(localized: "matéria"))?",
@@ -107,6 +109,14 @@ struct SubjectListCell: View {
             }
         } message: {
             Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? String(localized: "este intervalo") : String(localized: "esta matéria"))?")
+        }
+        .sheet(item: $subjectToAdd) { subject in
+            SubjectSheetView(subject: subject, isNew: true)
+                .interactiveDismissDisabled()
+        }
+        .sheet(item: $subjectToEdit) { subject in
+            SubjectSheetView(subject: subject, isNew: false)
+                .interactiveDismissDisabled()
         }
     }
 
@@ -138,6 +148,21 @@ struct SubjectListCell: View {
         Button(action: { subjectToEdit = subject }) {
             Image(systemName: "pencil")
         }.tint(.accentColor)
+    }
+
+    private var duplicateSwipeAction: some View {
+        Button {
+            subjectToAdd = Subject(
+                name: subject.name,
+                teacher: subject.teacher,
+                schedule: subject.schedule,
+                startTime: subject.startTime + 1,
+                endTime: subject.endTime + 1,
+                place: subject.place,
+                isRecess: false)
+        } label: {
+            Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
+        }.tint(.teal)
     }
 
     // MARK: - Functions

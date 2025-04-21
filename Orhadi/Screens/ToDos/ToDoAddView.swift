@@ -54,7 +54,7 @@ struct ToDoAddView: View {
                     }
                 }.listRowBackground(theme.secondaryBGColor())
             }
-            .defaultList(theme)
+            .modifier(DefaultList())
             .navigationTitle("Nova Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

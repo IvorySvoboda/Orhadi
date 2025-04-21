@@ -83,7 +83,7 @@ struct SubjectTeacherPickerView: View {
                 }
             }.listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Professor")
         .navigationBarTitleDisplayMode(.inline)
     }

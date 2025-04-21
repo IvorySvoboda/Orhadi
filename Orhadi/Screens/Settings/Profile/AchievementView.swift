@@ -27,40 +27,40 @@ struct AchievementView: View {
     @State private var selectedAchievement: Achievement?
 
     var body: some View {
-        ZStack {
-            theme.bgColor()
-                .ignoresSafeArea()
-
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(achievements) { achievement in
-                        VStack(spacing: 15) {
-                            ZStack {
-                                BadgeView(imageName: achievement.imageName)
-                                    .scaleEffect(0.32)
-                                if !achievement.isUnlocked {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 40))
-                                        .foregroundStyle(Color.gray)
-                                        .shadow(radius: 15)
-                                }
-                            }.frame(width: 80, height: 80)
-                            Text(achievement.name)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .opacity(achievement.isUnlocked ? 1 : 0.5)
-                        }
-                        .onTapGesture {
-                            selectedAchievement = achievement
-                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(Text(achievement.name))
-                        .accessibilityHint(achievement.isUnlocked ? Text("Conquista desbloqueada") : Text("Conquista bloqueada"))
+        List {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(achievements) { achievement in
+                    VStack(spacing: 15) {
+                        ZStack {
+                            BadgeView(imageName: achievement.imageName)
+                                .scaleEffect(0.32)
+                            if !achievement.isUnlocked {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 40))
+                                    .foregroundStyle(Color.gray)
+                                    .shadow(radius: 15)
+                            }
+                        }.frame(width: 80, height: 80)
+                        Text(achievement.name)
+                            .lineLimit(1)
+                            .font(.subheadline)
+                            .opacity(achievement.isUnlocked ? 1 : 0.5)
                     }
-                }.padding()
+                    .onTapGesture {
+                        selectedAchievement = achievement
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Text(achievement.name))
+                    .accessibilityHint(achievement.isUnlocked ? Text("Conquista desbloqueada") : Text("Conquista bloqueada"))
+                }
             }
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .compositingGroup()
+            .drawingGroup()
         }
+        .modifier(DefaultPlainList())
         .navigationTitle("Conquistas")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(theme.bgColor(), for: .navigationBar)

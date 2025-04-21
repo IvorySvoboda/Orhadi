@@ -15,14 +15,12 @@ struct SubjectsView: View {
     @Environment(Settings.self) private var settings
 
     @Query(
-        sort: [.init(\Subject.startTime, order: .forward)],
-        animation: .bouncy
-    )
-    private var subjects: [Subject]
+        sort: \Subject.startTime,
+        animation: .smooth
+    ) private var subjects: [Subject]
 
     @State private var showConfirmationDialog: Bool = false
     @State private var subjectToAdd: Subject?
-    @State private var subjectToEdit: Subject?
     @State private var selectedDay: Int = Calendar.current.component(
         .weekday,
         from: Date()
@@ -40,13 +38,10 @@ struct SubjectsView: View {
                     subjects: subjects,
                     dateExtractor: { $0.schedule }
                 ) { subject in
-                    SubjectListCell(
-                        subject: subject,
-                        subjectToEdit: $subjectToEdit
-                    )
+                    SubjectListCell(subject: subject)
                 }
             }
-            .defaultPlainList(theme)
+            .modifier(DefaultPlainList())
             .navigationTitle("Matérias")
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -71,10 +66,24 @@ struct SubjectsView: View {
                 SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $subjectToEdit) { subject in
-                SubjectSheetView(subject: subject, isNew: false)
-                    .interactiveDismissDisabled()
-            }
+        }
+    }
+
+    private var principalToolbar: some View {
+        ZStack {
+            Text("Matérias")
+                .font(.headline)
+                .opacity(scrollOffsetY < 115 ? 1 : 0)
+                .offset(y: scrollOffsetY <= 70 ? -8 : 0)
+
+            Text(
+                Calendar.current.weekdaySymbols[selectedDay - 1]
+                    .uppercased()
+            )
+            .foregroundStyle(.tint)
+            .font(.caption)
+            .opacity(scrollOffsetY <= 70 ? 1 : 0)
+            .offset(y: scrollOffsetY <= 70 ? 8 : 14)
         }
     }
 
@@ -90,76 +99,54 @@ struct SubjectsView: View {
         }
     }
 
-    private var principalToolbar: some View {
-        ZStack {
-            Text("Matérias")
-                .font(.headline)
-                .opacity(scrollOffsetY < 115 ? 1 : 0)
-                .offset(y: scrollOffsetY <= 70 ? -8 : 0)
-
-            Text(
-                Calendar.current.weekdaySymbols[selectedDay - 1]
-                    .uppercased()
-            )
-            .foregroundStyle(Color.indigo)
-            .font(.caption)
-            .opacity(scrollOffsetY <= 70 ? 1 : 0)
-            .offset(y: scrollOffsetY <= 70 ? 8 : 14)
-        }
-    }
-
     private var confirmationSheet: some View {
-        ZStack {
-            theme.bgColor()
-                .ignoresSafeArea()
+        VStack {
+            Button {
+                showConfirmationDialog = false
+                subjectToAdd = Subject(isRecess: false)
+            } label: {
+                Text("Adicionar Matéria".uppercased())
+                    .foregroundStyle(theme.bgColor())
+                    .fontWeight(.semibold)
+                    .frame(width: 370, height: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.accentColor)
+                    )
+            }.buttonStyle(PlainButtonStyle())
 
-            VStack {
-                Button {
-                    showConfirmationDialog = false
-                    subjectToAdd = Subject(isRecess: false)
-                } label: {
-                    Text("Adicionar Matéria".uppercased())
-                        .foregroundStyle(theme.bgColor())
-                        .fontWeight(.semibold)
-                        .frame(width: 370, height: 45)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.accentColor)
-                        )
-                }.buttonStyle(PlainButtonStyle())
+            Button {
+                showConfirmationDialog = false
+                subjectToAdd = Subject(isRecess: true)
+            } label: {
+                Text("Adicionar Intervalo".uppercased())
+                    .foregroundStyle(theme.bgColor())
+                    .fontWeight(.semibold)
+                    .frame(width: 370, height: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.accentColor)
+                    )
+            }.buttonStyle(PlainButtonStyle())
 
-                Button {
-                    showConfirmationDialog = false
-                    subjectToAdd = Subject(isRecess: true)
-                } label: {
-                    Text("Adicionar Intervalo".uppercased())
-                        .foregroundStyle(theme.bgColor())
-                        .fontWeight(.semibold)
-                        .frame(width: 370, height: 45)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.accentColor)
-                        )
-                }.buttonStyle(PlainButtonStyle())
+            Divider()
 
-                Button {
-                    showConfirmationDialog = false
-                } label: {
-                    Text("Cancelar".uppercased())
-                        .foregroundStyle(theme.bgColor())
-                        .frame(width: 370, height: 45)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                .fill(Color.accentColor)
-                                .opacity(0.9)
-                        )
-                }
-                .buttonStyle(PlainButtonStyle())
-                .padding(.vertical, 5)
-            }.offset(y: 18)
+            Button {
+                showConfirmationDialog = false
+            } label: {
+                Text("Cancelar".uppercased())
+                    .foregroundStyle(theme.bgColor())
+                    .frame(width: 370, height: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color.accentColor)
+                    )
+            }.buttonStyle(PlainButtonStyle())
         }
+        .offset(y: 15)
         .presentationDragIndicator(.visible)
         .presentationDetents([.height(160)])
+        .presentationBackground(theme.bgColor())
     }
 }
 

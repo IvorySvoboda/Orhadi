@@ -28,7 +28,7 @@ struct SubjectsSettingsView: View {
             }
             .listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
     }

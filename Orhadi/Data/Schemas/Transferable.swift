@@ -18,16 +18,6 @@ struct SubjectTransferable: Transferable {
     }
 }
 
-struct SRSubjectTransferable: Transferable {
-    var subjects: [SRSubject]
-
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .data) {
-            return try JSONEncoder().encode($0.subjects)
-        }
-    }
-}
-
 struct ToDoTransferable: Transferable {
     var todos: [ToDo]
 

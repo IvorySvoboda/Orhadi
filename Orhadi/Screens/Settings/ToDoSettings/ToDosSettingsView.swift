@@ -39,7 +39,7 @@ struct ToDosSettingsView: View {
             }
             .listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
