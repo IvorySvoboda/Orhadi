@@ -43,62 +43,10 @@ struct StudyingView: View {
                 .ignoresSafeArea()
 
             VStack {
+                header
                 Divider()
-
-                HStack {
-                    if currentSessionIndex < sessionItems.count {
-                        Text(sessionItems[currentSessionIndex].name.isEmpty
-                             ? "Sem Nome"
-                             : sessionItems[currentSessionIndex].name)
-                    } else {
-                        Text("Estudos completados! 🔥")
-                    }
-                    Spacer()
-                    Button(action: { skipToNext() }) {
-                        Image(systemName: "forward.fill")
-                    }
-                    .padding(.trailing)
-                    .tint(colorScheme == .dark ? .white : .black)
-                    .disabled(studyFinished)
-                }.padding(.leading).offset(y: 2)
-
+                timerSection
                 Divider()
-
-                VStack {
-                    TimerView(remainingTime: timerManager.remainingTime)
-                        .onChange(of: timerManager.remainingTime) { _, newValue in
-                            remainingTime = newValue
-                            if newValue <= 0 {
-                                advanceSession()
-                            }
-
-                            if isRunning,
-                               currentSessionIndex < sessionItems.count,
-                               !sessionItems[currentSessionIndex].isBreak {
-                                user.timeStudied += 1
-                                game.addXP(10, to: user)
-                            }
-                        }
-                        .onChange(of: isRunning) { _, newValue in
-                            if newValue {
-                                if let pauseDate = pauseDate {
-                                    let pauseDuration = Date().timeIntervalSince(pauseDate)
-                                    sessionItems[currentSessionIndex].endTime += pauseDuration
-                                }
-                                pauseDate = nil
-                                timerManager.start(with: sessionItems[currentSessionIndex].endTime)
-                            } else {
-                                pauseDate = Date()
-                                timerManager.pause()
-                            }
-                        }
-                }
-                .frame(height: 200)
-
-                Divider()
-                    .offset(y: 2)
-                    .background(Color.clear)
-
                 nextSubjectsList
             }
         }
@@ -129,6 +77,60 @@ struct StudyingView: View {
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
         }
+    }
+
+    private var header: some View {
+        Group {
+            Divider()
+            HStack {
+                if currentSessionIndex < sessionItems.count {
+                    Text(sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                        .lineLimit(1)
+                        .frame(width: 200, alignment: .leading)
+                } else {
+                    Text("Estudos completados! 🔥")
+                }
+                Spacer()
+                Button {
+                    skipToNext()
+                } label: {
+                    Image(systemName: "forward.fill")
+                }
+                .tint(colorScheme == .dark ? .white : .black)
+                .disabled(studyFinished)
+            }.padding(.horizontal).offset(y: 2)
+        }
+    }
+
+    private var timerSection: some View {
+        VStack {
+            TimerView(remainingTime: timerManager.remainingTime)
+                .onChange(of: timerManager.remainingTime) { _, newValue in
+                    remainingTime = newValue
+
+                    if newValue <= 0 {
+                        advanceSession()
+                    }
+
+                    if isRunning, currentSessionIndex < sessionItems.count, !sessionItems[currentSessionIndex].isBreak {
+                        user.timeStudied += 1
+                        game.addXP(10, to: user)
+                    }
+                }
+                .onChange(of: isRunning) { _, newValue in
+                    if newValue {
+                        if let pauseDate = pauseDate {
+                            let pauseDuration = Date().timeIntervalSince(pauseDate)
+                            sessionItems[currentSessionIndex].endTime += pauseDuration
+                        }
+                        pauseDate = nil
+                        timerManager.start(with: sessionItems[currentSessionIndex].endTime)
+                    } else {
+                        pauseDate = Date()
+                        timerManager.pause()
+                    }
+                }
+        }.frame(height: 200)
     }
 
     private var nextSubjectsList: some View {
@@ -227,6 +229,7 @@ struct StudyingView: View {
     }
 
     private func advanceSession() {
+        guard currentSessionIndex < sessionItems.count else { return }
         let currentItem = sessionItems[currentSessionIndex]
 
         if !currentItem.isBreak, let subject = currentItem.subject {
@@ -303,120 +306,5 @@ struct ListRowModifier: ViewModifier {
                 viewDimensions in
                 return 0
             }
-    }
-}
-
-struct TimerView: View {
-
-    var remainingTime: TimeInterval
-
-    var body: some View {
-        let digits = getDigits(
-            from: max(0, Int(floor(remainingTime)))
-        )
-
-        HStack(spacing: -5) {
-            RollingDigitView(digit: digits[0])
-            RollingDigitView(digit: digits[1])
-            Text(":")
-                .font(
-                    .system(
-                        size: 30,
-                        weight: .bold,
-                        design: .monospaced
-                    )
-                )
-                .padding(.horizontal, 2)
-            RollingDigitView(digit: digits[2])
-            RollingDigitView(digit: digits[3])
-        }
-    }
-
-    private func getDigits(from seconds: Int) -> [Int] {
-        let minutes = seconds / 60
-        let seconds = seconds % 60
-        let m1 = minutes / 10
-        let m2 = minutes % 10
-        let s1 = seconds / 10
-        let s2 = seconds % 10
-        return [m1, m2, s1, s2]
-    }
-}
-
-struct RollingDigitView: View {
-    let digit: Int
-    @State private var previousDigit: Int = 0
-    @State private var isAnimating = false
-
-    var body: some View {
-        ZStack {
-            Text("\(previousDigit)")
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
-                .offset(y: isAnimating ? -50 : 0)
-                .opacity(isAnimating ? 0.1 : 1)
-                .scaleEffect(isAnimating ? 0.2 : 1)
-                .blur(radius: isAnimating ? 10 : 0)
-
-            Text("\(digit)")
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
-                .offset(y: isAnimating ? 0 : 50)
-                .opacity(isAnimating ? 1 : 0.1)
-                .scaleEffect(isAnimating ? 1 : 0)
-                .blur(radius: isAnimating ? 0 : 10)
-        }
-        .frame(width: 35, height: 120)
-        .onChange(of: digit) { _, newValue in
-            if newValue != previousDigit {
-                withAnimation(.bouncy(duration: 0.5)) {
-                    isAnimating = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    previousDigit = newValue
-                    isAnimating = false
-                }
-            }
-        }
-        .onAppear {
-            previousDigit = digit
-        }
-    }
-}
-
-class TimerManager: ObservableObject {
-    @Published var remainingTime: TimeInterval = 0
-    private var timer: Timer?
-    private var endTime: Date?
-
-    func start(with endTime: Date) {
-        self.endTime = endTime
-        self.remainingTime = endTime.timeIntervalSinceNow
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            self.tick()
-        }
-    }
-
-    func pause() {
-        timer?.invalidate()
-    }
-
-    func resume() {
-        guard let end = endTime else { return }
-        start(with: end)
-    }
-
-    private func tick() {
-        guard let end = endTime else { return }
-        let time = end.timeIntervalSinceNow
-        DispatchQueue.main.async {
-            self.remainingTime = time
-        }
-        if time <= 0 {
-            timer?.invalidate()
-        }
-    }
-
-    deinit {
-        timer?.invalidate()
     }
 }

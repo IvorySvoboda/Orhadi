@@ -1,5 +1,5 @@
 //
-//  ToDoAddView.swift
+//  ToDoSheetView.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 16/04/25.
@@ -7,38 +7,41 @@
 
 import SwiftUI
 
-struct ToDoAddView: View {
+struct ToDoSheetView: View {
     @Environment(OrhadiTheme.self) private var theme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
-    @State private var todo: ToDo = ToDo(title: "", info: "", dueDate: Date() + 3600)
+    @Bindable var todo: ToDo
+    var isNew: Bool
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Minha nova tarefa", text: $todo.title)
-                        .autocorrectionDisabled()
+                    HStack {
+                        Text("Título")
+                            .frame(width: 50, alignment: .leading)
+                        TextField("Trabalho de...", text: $todo.title)
+                            .autocorrectionDisabled()
+                    }
 
                     ZStack {
                         VStack {
                             if todo.info.isEmpty {
-                                Text("Fazer o dever de casa")
+                                Text("Fazer o trabalho em grupo...")
                                     .foregroundStyle(Color.secondary)
                                     .opacity(0.5)
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, -68)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.top)
+                        .padding(.leading, 5)
 
                         MarkdownTextField(text: $todo.info)
-                            .frame(height: 150)
-                            .padding(.leading, -5)
+                            .frame(height: 200)
                     }
-                } header: {
-                    Text("Nova Tarefa")
                 }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
@@ -55,16 +58,29 @@ struct ToDoAddView: View {
                 }.listRowBackground(theme.secondaryBGColor())
             }
             .modifier(DefaultList())
-            .navigationTitle("Nova Tarefa")
+            .navigationTitle("\(isNew ? "Nova" : "Editar") Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
-                        addItem()
+                        if isNew {
+                            addItem()
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                        } else {
+                            let todoID = todo.id
+                            let identifiers = [
+                                "\(todoID)-1h",
+                                "\(todoID)-24h",
+                                "\(todoID)-due",
+                            ]
+
+                            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+                            scheduleNotification(for: todo)
+                            
+                            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                        }
                         dismiss()
-                        UINotificationFeedbackGenerator().notificationOccurred(.success)
-                    }
-                    .disabled(todo.dueDate <= Date())
+                    }.disabled(todo.dueDate <= Date() || todo.title.isEmpty)
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar", role: .cancel) {

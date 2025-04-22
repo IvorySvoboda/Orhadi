@@ -1,13 +1,7 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
-    "" : {
-
-    },
     " – " : {
-
-    },
-    ":" : {
 
     },
     "%@" : {
@@ -21,8 +15,13 @@
             "value" : "%1$@ – %2$@"
           }
         }
-      },
-      "shouldTranslate" : false
+      }
+    },
+    "%@ Estudo" : {
+
+    },
+    "%@ Tarefa" : {
+
     },
     "%lld" : {
       "shouldTranslate" : false
@@ -42,72 +41,6 @@
     },
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
-    },
-    "5m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "5m"
-          }
-        }
-      }
-    },
-    "10m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "10m"
-          }
-        }
-      }
-    },
-    "15m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "15m"
-          }
-        }
-      }
-    },
-    "20m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "20m"
-          }
-        }
-      }
-    },
-    "25m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "25m"
-          }
-        }
-      }
-    },
-    "30m" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30m"
-          }
-        }
-      }
     },
     "A Fazer" : {
       "localizations" : {
@@ -141,17 +74,6 @@
     },
     "Acumulador" : {
 
-    },
-    "Adicionar Matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Subject"
-          }
-        }
-      }
     },
     "Adicionar Tarefa" : {
 
@@ -472,6 +394,12 @@
     "Dedicado" : {
 
     },
+    "Deletar" : {
+
+    },
+    "Deletar Estudo?" : {
+
+    },
     "Desbloqueada em %@" : {
 
     },
@@ -508,6 +436,9 @@
         }
       }
     },
+    "Duplicar" : {
+
+    },
     "Duração do Estudo" : {
 
     },
@@ -533,6 +464,7 @@
       }
     },
     "Editar Estudo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -576,6 +508,9 @@
     "Energizado" : {
 
     },
+    "Enviar e-mail" : {
+
+    },
     "Escuro" : {
       "localizations" : {
         "en" : {
@@ -597,7 +532,6 @@
       }
     },
     "Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -628,6 +562,7 @@
       }
     },
     "esta matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -641,6 +576,7 @@
 
     },
     "este intervalo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -759,17 +695,6 @@
         }
       }
     },
-    "Excluir matéria?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete subject?"
-          }
-        }
-      }
-    },
     "Excluir tarefa?" : {
       "localizations" : {
         "en" : {
@@ -844,6 +769,7 @@
       }
     },
     "Fazer o dever de casa" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -852,6 +778,12 @@
           }
         }
       }
+    },
+    "Fazer o trabalho em grupo..." : {
+
+    },
+    "Fim" : {
+
     },
     "Focado" : {
 
@@ -986,7 +918,11 @@
         }
       }
     },
+    "Inicio" : {
+
+    },
     "intervalo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1013,17 +949,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RECESS"
-          }
-        }
-      }
-    },
-    "Isso removerá a matéria da visualização. Você pode reativá-la a qualquer momento nos ajustes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This will remove the subject from view. You can reactivate it at any time in the settings."
           }
         }
       }
@@ -1056,6 +981,7 @@
 
     },
     "matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1066,6 +992,7 @@
       }
     },
     "Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1085,28 +1012,6 @@
         }
       }
     },
-    "Matérias Compartilhadas" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Shared Subjects"
-          }
-        }
-      }
-    },
-    "Matérias Ocultas" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hidden Subjects"
-          }
-        }
-      }
-    },
     "Mente Brilhante" : {
 
     },
@@ -1116,28 +1021,8 @@
     "Mestre do Tempo" : {
 
     },
-    "Minha matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My subject"
-          }
-        }
-      }
-    },
-    "Minha nova matéria" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My new subject"
-          }
-        }
-      }
-    },
     "Minha nova tarefa" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1211,6 +1096,7 @@
       }
     },
     "Nova Tarefa" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1219,6 +1105,9 @@
           }
         }
       }
+    },
+    "Novo" : {
+
     },
     "Novo Intervalo" : {
       "extractionState" : "stale",
@@ -1247,28 +1136,6 @@
     "Obrigatório" : {
 
     },
-    "Ocultar" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide"
-          }
-        }
-      }
-    },
-    "Ocultar matéria?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hide subject?"
-          }
-        }
-      }
-    },
     "Oráculo Acadêmico" : {
 
     },
@@ -1286,6 +1153,9 @@
       }
     },
     "Persistente" : {
+
+    },
+    "Português" : {
 
     },
     "Prazo" : {
@@ -1337,45 +1207,12 @@
         }
       }
     },
-    "Quarta-feira" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wednesday"
-          }
-        }
-      }
-    },
-    "Quinta-feira" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thursday"
-          }
-        }
-      }
-    },
     "Rotina de Estudos" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Study Routine"
-          }
-        }
-      }
-    },
-    "Sábado" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saturday"
           }
         }
       }
@@ -1413,17 +1250,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Monday"
-          }
-        }
-      }
-    },
-    "Sem matérias ocultas." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No hidden subjects"
           }
         }
       }
@@ -1507,18 +1333,13 @@
     "Tempo estudado" : {
 
     },
-    "Terça-feira" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tuesday"
-          }
-        }
-      }
+    "Título" : {
+
     },
     "To-Do Terminator" : {
+
+    },
+    "Trabalho de..." : {
 
     },
     "Transcendente" : {
@@ -1551,17 +1372,6 @@
     },
     "Viciado em Conhecimento" : {
 
-    },
-    "Visualização" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "View"
-          }
-        }
-      }
     },
     "Workaholic" : {
 

@@ -21,7 +21,6 @@ struct ProfileView: View {
     var body: some View {
         List {
             HStack() {
-                Spacer()
                 VStack {
                     if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
                         Image(uiImage: uiImage)
@@ -48,11 +47,9 @@ struct ProfileView: View {
                     Text("Level: \(user.level)")
                         .font(.subheadline)
                         .foregroundStyle(Color.secondary)
-                    Spacer()
                 }
-                Spacer()
             }
-            .frame(height: 170)
+            .frame(maxWidth: .infinity, maxHeight: 170, alignment: .center)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)

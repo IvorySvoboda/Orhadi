@@ -64,9 +64,12 @@ struct SettingsView: View {
                     NavigationLink {
                         StudyRoutineSettingsView(settings: settings)
                     } label: {
-                        Label(
-                            "Rotina de Estudos",
-                            systemImage: "graduationcap.fill")
+                        Label("Rotina de Estudos", systemImage: "graduationcap.fill")
+                    }
+                    NavigationLink {
+                        TeachersView()
+                    } label: {
+                        Label("Professores", systemImage: "person.2.fill")
                     }
                 }.listRowBackground(theme.secondaryBGColor())
 

@@ -45,8 +45,6 @@ struct BadgeView: View {
                 Image(systemName: imageName)
                     .font(.system(size: 100))
                     .foregroundStyle(Color.black)
-                    .blur(radius: 10)
-                    .opacity(0.6)
                 Image(systemName: imageName)
                     .font(.system(size: 100))
                     .foregroundStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8), .accentColor.opacity(0.6), .accentColor.opacity(0.4), .accentColor.opacity(0.2)], startPoint: .topTrailing, endPoint: .bottomLeading))

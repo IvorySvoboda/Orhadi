@@ -2,11 +2,12 @@
 //  OrhadiSchemaV1.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 16/04/25.
+//  Created by Zyvoxi . on 21/04/25.
 //
 
-import Foundation
 import SwiftData
+import Foundation
+import CoreTransferable
 
 enum OrhadiSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
@@ -14,6 +15,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     static var models: [any PersistentModel.Type] {
         [
             Subject.self,
+            SRSubject.self,
             ToDo.self,
             Settings.self,
             Teacher.self,
@@ -32,29 +34,22 @@ enum OrhadiSchemaV1: VersionedSchema {
         var place: String
         var isRecess: Bool
 
-        /// Variáveis para o StudyRoutine.
-        var studyDay: Date
-        var studyTime: Date
-        var lastStudied: Date
-        var isHidden: Bool
-
         init(
             name: String = "",
             teacher: Teacher? = nil,
-            schedule: Date = defaultSchedule(),
-            startTime: Date = defaultStartTime(),
-            endTime: Date = defaultStartTime() + TimeInterval(50 * 60),
+            schedule: Date = Date(timeIntervalSince1970: 0),
+            startTime: Date = Calendar.current.date(
+                bySettingHour: 7,
+                minute: 0,
+                second: 0,
+                of: Date(timeIntervalSince1970: 0))!,
+            endTime: Date = Calendar.current.date(
+                bySettingHour: 7,
+                minute: 50,
+                second: 0,
+                of: Date(timeIntervalSince1970: 0))!,
             place: String = "",
             isRecess: Bool,
-            studyDay: Date = Date(),
-            studyTime: Date = Calendar.current.date(
-                bySettingHour: 0,
-                minute: 30,
-                second: 0,
-                of: Date()
-            )!,
-            lastStudied: Date = Date() - 604800,
-            isHidden: Bool = false
         ) {
             self.name = name
             self.teacher = teacher
@@ -63,10 +58,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.endTime = endTime
             self.place = place
             self.isRecess = isRecess
-            self.studyDay = studyDay
-            self.studyTime = studyTime
-            self.lastStudied = lastStudied
-            self.isHidden = isHidden
         }
 
         static let sampleData = [
@@ -107,10 +98,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             case endTime
             case place
             case isRecess
-            case studyDay
-            case studyTime
-            case lastStudied
-            case isHidden
         }
 
         required init(from decoder: any Decoder) throws {
@@ -122,10 +109,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             endTime = try container.decode(Date.self, forKey: .endTime)
             place = try container.decode(String.self, forKey: .place)
             isRecess = try container.decode(Bool.self, forKey: .isRecess)
-            studyDay = try container.decode(Date.self, forKey: .studyDay)
-            studyTime = try container.decode(Date.self, forKey: .studyTime)
-            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
-            isHidden = try container.decode(Bool.self, forKey: .isHidden)
         }
 
         func encode(to encoder: any Encoder) throws {
@@ -137,10 +120,53 @@ enum OrhadiSchemaV1: VersionedSchema {
             try container.encode(endTime, forKey: .endTime)
             try container.encode(place, forKey: .place)
             try container.encode(isRecess, forKey: .isRecess)
+        }
+    }
+
+    @Model
+    class SRSubject: Codable {
+        var name: String
+        var studyDay: Date
+        var studyTime: Date
+        var lastStudied: Date
+
+        init(
+            name: String = "",
+            studyDay: Date = Date(timeIntervalSince1970: 0),
+            studyTime: Date = Calendar.current.date(
+                bySettingHour: 0,
+                minute: 30,
+                second: 0,
+                of: Date(timeIntervalSince1970: 0))!,
+            lastStudied: Date = Date(timeIntervalSince1970: 0)
+        ) {
+            self.name = name
+            self.studyDay = studyDay
+            self.studyTime = studyTime
+            self.lastStudied = lastStudied
+        }
+
+        enum CodingKeys: CodingKey {
+            case name
+            case studyDay
+            case studyTime
+            case lastStudied
+        }
+
+        required init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            name = try container.decode(String.self, forKey: .name)
+            studyDay = try container.decode(Date.self, forKey: .studyDay)
+            studyTime = try container.decode(Date.self, forKey: .studyTime)
+            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(name, forKey: .name)
             try container.encode(studyDay, forKey: .studyDay)
             try container.encode(studyTime, forKey: .studyTime)
             try container.encode(lastStudied, forKey: .lastStudied)
-            try container.encode(isHidden, forKey: .isHidden)
         }
     }
 
@@ -154,9 +180,9 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         init(
             id: String = UUID().uuidString,
-            title: String,
-            info: String,
-            dueDate: Date,
+            title: String = "",
+            info: String = "",
+            dueDate: Date = .now.addingTimeInterval(3600),
             isCompleted: Bool = false
         ) {
             self.id = id
@@ -207,6 +233,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         /// Study Routine
         var breakTime: TimeInterval
         var studyGoal: TimeInterval
+        var srSubjectsDeleteConfirmation: Bool
 
         /// Subjects
         var subjectsDeleteConfirmation: Bool
@@ -219,6 +246,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             theme: Theme = .auto,
             breakTime: TimeInterval = 600,
             studyGoal: TimeInterval = 3600,
+            srSubjectsDeleteConfirmation: Bool = true,
             subjectsDeleteConfirmation: Bool = true,
             scheduleNotifications: Bool = true,
             todosDeleteConfirmation: Bool = true,
@@ -226,6 +254,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.theme = theme
             self.breakTime = breakTime
             self.studyGoal = studyGoal
+            self.srSubjectsDeleteConfirmation = srSubjectsDeleteConfirmation
             self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
             self.scheduleNotifications = scheduleNotifications
             self.todosDeleteConfirmation = todosDeleteConfirmation

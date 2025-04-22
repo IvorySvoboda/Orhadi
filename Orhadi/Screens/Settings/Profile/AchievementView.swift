@@ -65,40 +65,48 @@ struct AchievementView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(theme.bgColor(), for: .navigationBar)
         .sheet(item: $selectedAchievement, onDismiss: { selectedAchievement = nil }) { achievement in
-            NavigationStack {
-                ZStack {
-                    theme.bgColor()
-                        .ignoresSafeArea()
+            BadgeSheetView(achievement: achievement)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+    }
+}
 
-                    VStack {
-                        ZStack {
-                            BadgeView(imageName: achievement.imageName)
-                                .scaleEffect(0.8)
-                            if !achievement.isUnlocked {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 100))
-                                    .foregroundStyle(Color.gray)
-                                    .shadow(radius: 5)
-                            }
-                        }.frame(width: 200, height: 200)
-                        VStack(spacing: 10) {
-                            if let unlockedAt = achievement.unlockedAt, achievement.isUnlocked {
-                                Text("Desbloqueada em \(unlockedAt.formatted(date: .abbreviated, time: .omitted))")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                            }
-                            Text("\(achievement.descriptionText)")
-                                .multilineTextAlignment(.center)
-                        }.padding()
-                    }
-                    .offset(y: -10)
+struct BadgeSheetView: View {
+    @Environment(OrhadiTheme.self) private var theme
+
+    var achievement: Achievement
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                theme.bgColor()
+                    .ignoresSafeArea()
+
+                VStack {
+                    ZStack {
+                        BadgeView(imageName: achievement.imageName)
+                        if !achievement.isUnlocked {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 100))
+                                .foregroundStyle(Color.gray)
+                                .shadow(radius: 5)
+                        }
+                    }.frame(width: 250, height: 250)
+                    VStack(spacing: 10) {
+                        if let unlockedAt = achievement.unlockedAt, achievement.isUnlocked {
+                            Text("Desbloqueada em \(unlockedAt.formatted(date: .abbreviated, time: .omitted))")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        Text("\(achievement.descriptionText)")
+                            .multilineTextAlignment(.center)
+                    }.padding()
                 }
-                .id(UUID())
-                .navigationTitle("\(achievement.name)")
-                .navigationBarTitleDisplayMode(.inline)
+                .offset(y: -10)
             }
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
+            .navigationTitle("\(achievement.name)")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

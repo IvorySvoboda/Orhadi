@@ -24,7 +24,7 @@ struct ContentView: View {
                     .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             Tab("Rotina de Estudos", systemImage: "graduationcap.fill") {
-                SharedStudyRoutineView()
+                StudyRoutineView()
                     .toolbarBackground(theme.bgColor(), for: .tabBar)
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {

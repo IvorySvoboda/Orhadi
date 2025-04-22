@@ -18,6 +18,7 @@ struct StudyRoutineSettingsView: View {
     var body: some View {
         Form {
             Section {
+                Toggle("Confirmar para Excluir", isOn: $settings.srSubjectsDeleteConfirmation)
                 Picker(
                     "Tempo de Descanso",
                     selection: $settings.breakTime

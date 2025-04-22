@@ -92,37 +92,35 @@ class GameManager {
             Achievement(id: "todo_10000", name: String(localized: "Lenda da Organização"), imageName: "crown.fill", descriptionText: String(localized: "Complete 10.000 tarefas"), difficultLevel: 80),
         ]
 
-        Task.detached(priority: .background) {
-            let request = FetchDescriptor<Achievement>()
-            if let existingAchievements = try? self.context.fetch(request) {
-                let existingIDs = Set(existingAchievements.map { $0.id })
-                
-                let newAchievements = predefined.filter { !existingIDs.contains($0.id) }
-                for achievement in newAchievements {
-                    self.context.insert(achievement)
-                }
-                
-                for achievement in predefined {
-                    let existingAchievement = existingAchievements.filter({ $0.id == achievement.id }).first
-                    if let existingAchievement {
-                        if existingAchievement.name != achievement.name {
-                            existingAchievement.name = achievement.name
-                        }
-                        if existingAchievement.descriptionText != achievement.descriptionText {
-                            existingAchievement.descriptionText = achievement.descriptionText
-                        }
-                        if existingAchievement.imageName != achievement.imageName {
-                            existingAchievement.imageName = achievement.imageName
-                        }
-                        if existingAchievement.difficultLevel != achievement.difficultLevel {
-                            existingAchievement.difficultLevel = achievement.difficultLevel
-                        }
+        let request = FetchDescriptor<Achievement>()
+        if let existingAchievements = try? self.context.fetch(request) {
+            let existingIDs = Set(existingAchievements.map { $0.id })
+
+            let newAchievements = predefined.filter { !existingIDs.contains($0.id) }
+            for achievement in newAchievements {
+                self.context.insert(achievement)
+            }
+
+            for achievement in predefined {
+                let existingAchievement = existingAchievements.filter({ $0.id == achievement.id }).first
+                if let existingAchievement {
+                    if existingAchievement.name != achievement.name {
+                        existingAchievement.name = achievement.name
+                    }
+                    if existingAchievement.descriptionText != achievement.descriptionText {
+                        existingAchievement.descriptionText = achievement.descriptionText
+                    }
+                    if existingAchievement.imageName != achievement.imageName {
+                        existingAchievement.imageName = achievement.imageName
+                    }
+                    if existingAchievement.difficultLevel != achievement.difficultLevel {
+                        existingAchievement.difficultLevel = achievement.difficultLevel
                     }
                 }
-                
-                if !newAchievements.isEmpty {
-                    try? self.context.save()
-                }
+            }
+
+            if !newAchievements.isEmpty {
+                try? self.context.save()
             }
         }
     }
