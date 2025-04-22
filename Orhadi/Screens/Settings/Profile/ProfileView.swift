@@ -20,68 +20,72 @@ struct ProfileView: View {
 
     var body: some View {
         List {
-            GeometryReader { geo in
-                let currentMinY = geo.frame(in: .global).minY
-
-                HStack() {
-                    Spacer()
-                    VStack {
-                        if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 100, height: 100)
-                                .clipped(antialiased: true)
-                                .clipShape(Circle())
-                                .onTapGesture {
-                                    isPhotoPickerPresented = true
-                                }
-                        } else {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 100, height: 100)
-                                .foregroundStyle(.tint)
-                                .onTapGesture {
-                                    isPhotoPickerPresented = true
-                                }
-                        }
-                        Text(user.name)
-                            .font(.largeTitle)
-                            .fontWeight(.semibold)
-                        Text("Level: \(user.level)")
-                            .font(.subheadline)
-                            .foregroundStyle(Color.secondary)
-                        Spacer()
+            HStack() {
+                VStack {
+                    if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 100, height: 100)
+                            .clipped(antialiased: true)
+                            .clipShape(Circle())
+                            .onTapGesture {
+                                isPhotoPickerPresented = true
+                            }
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .foregroundStyle(.tint)
+                            .onTapGesture {
+                                isPhotoPickerPresented = true
+                            }
                     }
-                    Spacer()
-                }
-                .onChange(of: currentMinY) { _, _ in
-                    withAnimation(.smooth(duration: 0.25)) {
-                        minY = Int(currentMinY)
-                    }
+                    Text(user.name)
+                        .font(.largeTitle)
+                        .fontWeight(.semibold)
+                    Text("Level: \(user.level)")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.secondary)
                 }
             }
-            .frame(height: 170)
+            .frame(maxWidth: .infinity, maxHeight: 170, alignment: .center)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                            withAnimation(.smooth(duration: 0.25)) {
+                                minY = Int(newY)
+                            }
+                        }
+                }
+            )
 
             Section {
-                NavigationLink("Conquistas") {
+                NavigationLink {
                     AchievementView()
+                } label: {
+                    Label("Conquistas", systemImage: "medal.star.fill")
                 }
             }.listRowBackground(theme.secondaryBGColor())
 
             Section {
-                NavigationLink("Informações pessoais") {
+                NavigationLink {
                     UserInfoView()
+                } label: {
+                    Label("Informações pessoais", systemImage: "person.fill")
                 }
-                NavigationLink("Estatísticas") {
+                NavigationLink {
                     StatisticsView()
+                } label: {
+                    Label("Estatísticas", systemImage: "chart.bar.xaxis")
                 }
             }.listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(user.name)
@@ -149,7 +153,7 @@ struct StatisticsView: View {
                 }
             }.listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Estatísticas")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -176,7 +180,7 @@ struct UserInfoView: View {
                 }
             }.listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Informações pessoais")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -207,7 +211,7 @@ struct UserNameEditView: View {
                 }
             }.listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Nome")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

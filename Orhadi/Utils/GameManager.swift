@@ -93,16 +93,34 @@ class GameManager {
         ]
 
         let request = FetchDescriptor<Achievement>()
-        if let existingAchievements = try? context.fetch(request) {
+        if let existingAchievements = try? self.context.fetch(request) {
             let existingIDs = Set(existingAchievements.map { $0.id })
 
             let newAchievements = predefined.filter { !existingIDs.contains($0.id) }
             for achievement in newAchievements {
-                context.insert(achievement)
+                self.context.insert(achievement)
+            }
+
+            for achievement in predefined {
+                let existingAchievement = existingAchievements.filter({ $0.id == achievement.id }).first
+                if let existingAchievement {
+                    if existingAchievement.name != achievement.name {
+                        existingAchievement.name = achievement.name
+                    }
+                    if existingAchievement.descriptionText != achievement.descriptionText {
+                        existingAchievement.descriptionText = achievement.descriptionText
+                    }
+                    if existingAchievement.imageName != achievement.imageName {
+                        existingAchievement.imageName = achievement.imageName
+                    }
+                    if existingAchievement.difficultLevel != achievement.difficultLevel {
+                        existingAchievement.difficultLevel = achievement.difficultLevel
+                    }
+                }
             }
 
             if !newAchievements.isEmpty {
-                try? context.save()
+                try? self.context.save()
             }
         }
     }

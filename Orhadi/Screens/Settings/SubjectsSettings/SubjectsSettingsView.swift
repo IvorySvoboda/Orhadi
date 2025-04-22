@@ -20,15 +20,8 @@ struct SubjectsSettingsView: View {
                 Toggle("Confirmar para Excluir", isOn: $settings.subjectsDeleteConfirmation)
             }
             .listRowBackground(theme.secondaryBGColor())
-
-            Section {
-                NavigationLink("Professores") {
-                    TeachersView()
-                }
-            }
-            .listRowBackground(theme.secondaryBGColor())
         }
-        .defaultList(theme)
+        .modifier(DefaultList())
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
     }

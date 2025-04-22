@@ -7,24 +7,15 @@
 
 import SwiftUI
 
-protocol StudyItem: Identifiable {
-    var name: String { get }
-    var studyTime: Date { get }
-    var lastStudied: Date { get set }
+struct SessionItem: Identifiable {
+    let id = UUID()
+    let name: String
+    var endTime: Date
+    let isBreak: Bool
+    let subject: SRSubject?
 }
 
-extension Subject: StudyItem {}
-extension SRSubject: StudyItem {}
-
-struct StudyingView<Subject: StudyItem & Equatable>: View {
-    struct SessionItem: Identifiable {
-        let id = UUID()
-        let name: String
-        var endTime: Date
-        let isBreak: Bool
-        let subject: Subject?
-    }
-
+struct StudyingView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(OrhadiTheme.self) private var theme
     @Environment(Settings.self) private var settings
@@ -35,14 +26,14 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
     @State private var sessionItems: [SessionItem] = []
     @State private var currentSessionIndex = 0
     @State private var remainingTime: TimeInterval = 0
-    @State private var countdownTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @StateObject private var timerManager = TimerManager()
     @State private var isRunning: Bool = false
     @State private var completedItems: [SessionItem] = []
     @State private var studyFinished: Bool = false
     @State private var pauseDate: Date?
     @State private var breakTime: TimeInterval = 0
 
-    @Binding var subjects: [Subject]
+    @Binding var subjects: [SRSubject]
 
     // MARK: - Views
 
@@ -52,18 +43,10 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                 .ignoresSafeArea()
 
             VStack {
+                header
                 Divider()
-
-                currentSubject
-
+                timerSection
                 Divider()
-
-                timer
-
-                Divider()
-                    .offset(y: 2)
-                    .background(Color.clear)
-
                 nextSubjectsList
             }
         }
@@ -96,28 +79,43 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         }
     }
 
-    private var currentSubject: some View {
-        HStack {
-            if currentSessionIndex < sessionItems.count {
-                Text(sessionItems[currentSessionIndex].name.isEmpty ? "Sem Nome" : sessionItems[currentSessionIndex].name)
-            } else {
-                Text("Estudos completados! 🔥")
-            }
-            Spacer()
-            Button(action: { skipToNext() }) {
-                Image(systemName: "forward.fill")
-            }
-            .padding(.trailing)
-            .tint(colorScheme == .dark ? .white : .black)
-            .disabled(studyFinished)
-        }.padding(.leading).offset(y: 2)
+    private var header: some View {
+        Group {
+            Divider()
+            HStack {
+                if currentSessionIndex < sessionItems.count {
+                    Text(sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                        .lineLimit(1)
+                        .frame(width: 200, alignment: .leading)
+                } else {
+                    Text("Estudos completados! 🔥")
+                }
+                Spacer()
+                Button {
+                    skipToNext()
+                } label: {
+                    Image(systemName: "forward.fill")
+                }
+                .tint(colorScheme == .dark ? .white : .black)
+                .disabled(studyFinished)
+            }.padding(.horizontal).offset(y: 2)
+        }
     }
 
-    private var timer: some View {
+    private var timerSection: some View {
         VStack {
-            TimerView(remainingTime: remainingTime)
-                .onReceive(countdownTimer) { _ in
-                    tick()
+            TimerView(remainingTime: timerManager.remainingTime)
+                .onChange(of: timerManager.remainingTime) { _, newValue in
+                    remainingTime = newValue
+
+                    if newValue <= 0 {
+                        advanceSession()
+                    }
+
+                    if isRunning, currentSessionIndex < sessionItems.count, !sessionItems[currentSessionIndex].isBreak {
+                        user.timeStudied += 1
+                        game.addXP(10, to: user)
+                    }
                 }
                 .onChange(of: isRunning) { _, newValue in
                     if newValue {
@@ -125,14 +123,14 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
                             let pauseDuration = Date().timeIntervalSince(pauseDate)
                             sessionItems[currentSessionIndex].endTime += pauseDuration
                         }
-                        countdownTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+                        pauseDate = nil
+                        timerManager.start(with: sessionItems[currentSessionIndex].endTime)
                     } else {
                         pauseDate = Date()
-                        countdownTimer.upstream.connect().cancel()
+                        timerManager.pause()
                     }
                 }
-        }
-        .frame(height: 200)
+        }.frame(height: 200)
     }
 
     private var nextSubjectsList: some View {
@@ -205,9 +203,7 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
             currentTime = studyEnd
 
             if index != subjects.count - 1 {
-                let breakEnd = currentTime.addingTimeInterval(
-                    settings.breakTime
-                )
+                let breakEnd = currentTime.addingTimeInterval(settings.breakTime)
                 sessionSequence.append(
                     SessionItem(
                         name: "Descanso",
@@ -226,25 +222,14 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         remainingTime = sessionSequence.first?.endTime.timeIntervalSinceNow ?? 0
         isRunning = true
         breakTime = settings.breakTime
-    }
 
-    private func tick() {
-        guard isRunning, currentSessionIndex < sessionItems.count else { return }
-
-        let currentItem = sessionItems[currentSessionIndex]
-        remainingTime = currentItem.endTime.timeIntervalSinceNow
-
-        if !currentItem.isBreak {
-            user.timeStudied += 1
-            game.checkAchievements(for: user)
-        }
-
-        if remainingTime <= 0 {
-            advanceSession()
+        if let firstEndTime = sessionSequence.first?.endTime {
+            timerManager.start(with: firstEndTime)
         }
     }
 
     private func advanceSession() {
+        guard currentSessionIndex < sessionItems.count else { return }
         let currentItem = sessionItems[currentSessionIndex]
 
         if !currentItem.isBreak, let subject = currentItem.subject {
@@ -260,10 +245,11 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         currentSessionIndex += 1
 
         if currentSessionIndex < sessionItems.count {
-            remainingTime = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+            timerManager.start(with: sessionItems[currentSessionIndex].endTime)
         } else {
             isRunning = false
             studyFinished = true
+            timerManager.pause()
         }
     }
 
@@ -277,7 +263,6 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         }
 
         let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
-
         sessionItems[currentSessionIndex].endTime = Date()
 
         for index in sessionItems.indices where index > currentSessionIndex {
@@ -289,15 +274,15 @@ struct StudyingView<Subject: StudyItem & Equatable>: View {
         UIImpactFeedbackGenerator(style: .soft).impactOccurred()
 
         if currentSessionIndex < sessionItems.count {
-            remainingTime = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
+            timerManager.start(with: sessionItems[currentSessionIndex].endTime)
         } else {
             isRunning = false
             studyFinished = true
-            remainingTime = 0
+            timerManager.pause()
         }
     }
 
-    private func updateLastStudied(for subject: Subject) {
+    private func updateLastStudied(for subject: SRSubject) {
         if let index = subjects.firstIndex(of: subject) {
             subjects[index].lastStudied = Date()
         }
@@ -321,82 +306,5 @@ struct ListRowModifier: ViewModifier {
                 viewDimensions in
                 return 0
             }
-    }
-}
-
-struct TimerView: View {
-
-    var remainingTime: TimeInterval
-
-    var body: some View {
-        let digits = getDigits(
-            from: max(0, Int(floor(remainingTime)))
-        )
-
-        HStack(spacing: -5) {
-            RollingDigitView(digit: digits[0])
-            RollingDigitView(digit: digits[1])
-            Text(":")
-                .font(
-                    .system(
-                        size: 30,
-                        weight: .bold,
-                        design: .monospaced
-                    )
-                )
-                .padding(.horizontal, 2)
-            RollingDigitView(digit: digits[2])
-            RollingDigitView(digit: digits[3])
-        }
-    }
-
-    private func getDigits(from seconds: Int) -> [Int] {
-        let minutes = seconds / 60
-        let seconds = seconds % 60
-        let m1 = minutes / 10
-        let m2 = minutes % 10
-        let s1 = seconds / 10
-        let s2 = seconds % 10
-        return [m1, m2, s1, s2]
-    }
-}
-
-struct RollingDigitView: View {
-    let digit: Int
-    @State private var previousDigit: Int = 0
-    @State private var isAnimating = false
-
-    var body: some View {
-        ZStack {
-            Text("\(previousDigit)")
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
-                .offset(y: isAnimating ? -50 : 0)
-                .opacity(isAnimating ? 0.1 : 1)
-                .scaleEffect(isAnimating ? 0.2 : 1)
-                .blur(radius: isAnimating ? 10 : 0)
-
-            Text("\(digit)")
-                .font(.system(size: 30, weight: .bold, design: .monospaced))
-                .offset(y: isAnimating ? 0 : 50)
-                .opacity(isAnimating ? 1 : 0.1)
-                .scaleEffect(isAnimating ? 1 : 0)
-                .blur(radius: isAnimating ? 0 : 10)
-        }
-        .frame(width: 30, height: 120)
-        .clipped()
-        .onChange(of: digit) { _, newValue in
-            if newValue != previousDigit {
-                withAnimation(.bouncy(duration: 0.5)) {
-                    isAnimating = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    previousDigit = newValue
-                    isAnimating = false
-                }
-            }
-        }
-        .onAppear {
-            previousDigit = digit
-        }
     }
 }

@@ -77,10 +77,10 @@ struct WeekdayPickerBar: View {
                             .scaleEffect(isPressed == index ? 1.05 : 1)
                             .onTapGesture {
                                 withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
-                                    UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                                     selectedDay = index
                                     proxy.scrollTo(index, anchor: .center)
                                 }
+                                UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
                             }
                             .simultaneousGesture(
                                 DragGesture(minimumDistance: 0)
@@ -95,6 +95,12 @@ struct WeekdayPickerBar: View {
                                         }
                                     }
                             )
+                            .scrollTransition { content, phase in
+                                content
+                                    .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                    .blur(radius: phase.isIdentity ? 0 : 1)
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.95)
+                            }
                             .id(index)
                     }
                 }

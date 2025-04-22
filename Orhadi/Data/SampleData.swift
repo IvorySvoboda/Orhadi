@@ -19,20 +19,14 @@ class SampleData {
     }
 
     private init() {
-        let schema = Schema([
-            Subject.self,
-            SRSubject.self,
-            ToDo.self,
-            Settings.self,
-        ])
 
         let modelConfiguration = ModelConfiguration(
-            schema: schema, isStoredInMemoryOnly: true
+            schema: Schema(versionedSchema: CurrentSchema.self), isStoredInMemoryOnly: true
         )
 
         do {
             container = try ModelContainer(
-                for: schema, configurations: [modelConfiguration]
+                for: Schema(versionedSchema: CurrentSchema.self), configurations: [modelConfiguration]
             )
 
             insertSampleData()
@@ -51,9 +45,6 @@ class SampleData {
         }
         for todo in ToDo.sampleData {
             context.insert(todo)
-        }
-        for subject in SRSubject.sampleData {
-            context.insert(subject)
         }
         context.insert(Settings())
         context.insert(UserProfile())

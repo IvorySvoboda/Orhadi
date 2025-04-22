@@ -24,7 +24,7 @@ struct MarkdownTextField: UIViewRepresentable {
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
 
-        let accentColor = UIColor(.indigo)
+        let accentColor = UIColor(Color.accent)
 
         let bold = UIBarButtonItem(image: UIImage(systemName: "bold"), style: .plain, target: context.coordinator, action: #selector(Coordinator.boldTapped))
         bold.tintColor = accentColor

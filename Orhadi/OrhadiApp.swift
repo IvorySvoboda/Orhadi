@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 import UserNotifications
 
-typealias CurrentSchema = OrhadiSchemaV3
+typealias CurrentSchema = OrhadiSchemaV1
 typealias Subject = CurrentSchema.Subject
 typealias SRSubject = CurrentSchema.SRSubject
 typealias ToDo = CurrentSchema.ToDo
@@ -25,6 +25,8 @@ struct OrhadiApp: App {
         migrationPlan: MigrationPlan.self,
         configurations: ModelConfiguration(url: URL.documentsDirectory.appending(path: "database.store"))
     )
+
+    
 
     var body: some Scene {
         WindowGroup {

@@ -14,7 +14,6 @@ struct SettingsView: View {
     @Environment(UserProfile.self) private var user
     @Environment(OrhadiTheme.self) private var theme
 
-    @State private var isErasing: Bool = false
     @State private var showEraseDataAlert: Bool = false
 
     @Bindable var settings: Settings
@@ -65,9 +64,12 @@ struct SettingsView: View {
                     NavigationLink {
                         StudyRoutineSettingsView(settings: settings)
                     } label: {
-                        Label(
-                            "Rotina de Estudos",
-                            systemImage: "graduationcap.fill")
+                        Label("Rotina de Estudos", systemImage: "graduationcap.fill")
+                    }
+                    NavigationLink {
+                        TeachersView()
+                    } label: {
+                        Label("Professores", systemImage: "person.2.fill")
                     }
                 }.listRowBackground(theme.secondaryBGColor())
 
@@ -89,7 +91,6 @@ struct SettingsView: View {
                     Button("Apagar Dados") {
                         showEraseDataAlert.toggle()
                     }
-                    .disabled(isErasing)
                     .alert(
                         "Apagar todos os dados?",
                         isPresented: $showEraseDataAlert
@@ -110,10 +111,18 @@ struct SettingsView: View {
 
                 Section {
                     HStack {
-                        Image("Logo")
-                            .resizable()
-                            .frame(width: 70, height: 70)
-                            .opacity(0.5)
+                        ZStack {
+                            Image("Logo")
+                                .resizable()
+                                .frame(width: 70, height: 70)
+                                .colorMultiply(.black)
+                                .opacity(colorScheme == .dark ? 0 : 0.5)
+
+                            Image("Logo")
+                                .resizable()
+                                .frame(width: 70, height: 70)
+                                .opacity(0.5)
+                        }
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Orhadi")
@@ -134,7 +143,7 @@ struct SettingsView: View {
                     Text("Sobre")
                 }.listRowBackground(theme.secondaryBGColor())
             }
-            .defaultList(theme)
+            .modifier(DefaultList())
             .navigationTitle("Ajustes")
         }
     }
@@ -144,7 +153,6 @@ struct SettingsView: View {
         do {
             let subjects = try modelContext.fetch(FetchDescriptor<Subject>())
             let todos = try modelContext.fetch(FetchDescriptor<ToDo>())
-            let srsubjects = try modelContext.fetch(FetchDescriptor<SRSubject>())
             let teachers = try modelContext.fetch(FetchDescriptor<Teacher>())
             let achievements = try modelContext.fetch(FetchDescriptor<Achievement>())
 
@@ -170,7 +178,6 @@ struct SettingsView: View {
 
                 modelContext.delete(todo)
             }
-            for subject in srsubjects { modelContext.delete(subject) }
             for teacher in teachers { modelContext.delete(teacher) }
             for achievement in achievements { modelContext.delete(achievement) }
 

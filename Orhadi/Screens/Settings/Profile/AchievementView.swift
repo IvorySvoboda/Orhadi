@@ -27,78 +27,86 @@ struct AchievementView: View {
     @State private var selectedAchievement: Achievement?
 
     var body: some View {
-        ZStack {
-            theme.bgColor()
-                .ignoresSafeArea()
-
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(achievements) { achievement in
-                        VStack(spacing: 15) {
-                            ZStack {
-                                BadgeView(imageName: achievement.imageName)
-                                    .scaleEffect(0.32)
-                                if !achievement.isUnlocked {
-                                    Image(systemName: "lock.fill")
-                                        .font(.system(size: 40))
-                                        .foregroundStyle(Color.gray)
-                                        .shadow(radius: 15)
-                                }
-                            }.frame(width: 80, height: 80)
-                            Text(achievement.name)
-                                .lineLimit(1)
-                                .font(.subheadline)
-                                .opacity(achievement.isUnlocked ? 1 : 0.5)
-                        }
-                        .onTapGesture {
-                            selectedAchievement = achievement
-                            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel(Text(achievement.name))
-                        .accessibilityHint(achievement.isUnlocked ? Text("Conquista desbloqueada") : Text("Conquista bloqueada"))
+        List {
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(achievements) { achievement in
+                    VStack(spacing: 15) {
+                        ZStack {
+                            BadgeView(imageName: achievement.imageName)
+                                .scaleEffect(0.32)
+                            if !achievement.isUnlocked {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 40))
+                                    .foregroundStyle(Color.gray)
+                                    .shadow(radius: 15)
+                            }
+                        }.frame(width: 80, height: 80)
+                        Text(achievement.name)
+                            .lineLimit(1)
+                            .font(.subheadline)
+                            .opacity(achievement.isUnlocked ? 1 : 0.5)
                     }
-                }.padding()
+                    .onTapGesture {
+                        selectedAchievement = achievement
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Text(achievement.name))
+                    .accessibilityHint(achievement.isUnlocked ? Text("Conquista desbloqueada") : Text("Conquista bloqueada"))
+                }
             }
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
+            .compositingGroup()
+            .drawingGroup()
         }
+        .modifier(DefaultPlainList())
         .navigationTitle("Conquistas")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(theme.bgColor(), for: .navigationBar)
         .sheet(item: $selectedAchievement, onDismiss: { selectedAchievement = nil }) { achievement in
-            NavigationStack {
-                ZStack {
-                    theme.bgColor()
-                        .ignoresSafeArea()
+            BadgeSheetView(achievement: achievement)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+    }
+}
 
-                    VStack {
-                        ZStack {
-                            BadgeView(imageName: achievement.imageName)
-                                .scaleEffect(0.8)
-                            if !achievement.isUnlocked {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 100))
-                                    .foregroundStyle(Color.gray)
-                                    .shadow(radius: 5)
-                            }
-                        }.frame(width: 200, height: 200)
-                        VStack(spacing: 10) {
-                            if let unlockedAt = achievement.unlockedAt, achievement.isUnlocked {
-                                Text("Desbloqueada em \(unlockedAt.formatted(date: .abbreviated, time: .omitted))")
-                                    .font(.footnote)
-                                    .foregroundColor(.secondary)
-                            }
-                            Text("\(achievement.descriptionText)")
-                                .multilineTextAlignment(.center)
-                        }.padding()
-                    }
-                    .offset(y: -10)
+struct BadgeSheetView: View {
+    @Environment(OrhadiTheme.self) private var theme
+
+    var achievement: Achievement
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                theme.bgColor()
+                    .ignoresSafeArea()
+
+                VStack {
+                    ZStack {
+                        BadgeView(imageName: achievement.imageName)
+                        if !achievement.isUnlocked {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 100))
+                                .foregroundStyle(Color.gray)
+                                .shadow(radius: 5)
+                        }
+                    }.frame(width: 250, height: 250)
+                    VStack(spacing: 10) {
+                        if let unlockedAt = achievement.unlockedAt, achievement.isUnlocked {
+                            Text("Desbloqueada em \(unlockedAt.formatted(date: .abbreviated, time: .omitted))")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                        }
+                        Text("\(achievement.descriptionText)")
+                            .multilineTextAlignment(.center)
+                    }.padding()
                 }
-                .id(UUID())
-                .navigationTitle("\(achievement.name)")
-                .navigationBarTitleDisplayMode(.inline)
+                .offset(y: -10)
             }
-            .presentationDetents([.medium])
-            .presentationDragIndicator(.visible)
+            .navigationTitle("\(achievement.name)")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 }

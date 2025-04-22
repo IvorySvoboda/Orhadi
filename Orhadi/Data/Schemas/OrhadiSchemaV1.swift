@@ -2,77 +2,68 @@
 //  OrhadiSchemaV1.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 14/04/25.
+//  Created by Zyvoxi . on 21/04/25.
 //
 
-import Foundation
 import SwiftData
+import Foundation
+import CoreTransferable
 
 enum OrhadiSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
 
     static var models: [any PersistentModel.Type] {
-        [Subject.self, SRSubject.self, ToDo.self, Settings.self]
+        [
+            Subject.self,
+            SRSubject.self,
+            ToDo.self,
+            Settings.self,
+            Teacher.self,
+            UserProfile.self,
+            Achievement.self
+        ]
     }
 
     @Model
     class Subject: Codable {
-        @Attribute(.unique) var id: String
         var name: String
-        var teacher: String
-        var email: String
+        @Relationship(deleteRule: .nullify) var teacher: Teacher?
         var schedule: Date
         var startTime: Date
         var endTime: Date
         var place: String
         var isRecess: Bool
 
-        /// Variáveis para o StudyRoutine.
-        var studyDay: Date
-        var studyTime: Date
-        var lastStudied: Date
-        var isHidden: Bool
-
         init(
-            id: String = UUID().uuidString,
-            name: String,
-            teacher: String,
-            email: String,
-            schedule: Date,
-            startTime: Date,
-            endTime: Date,
-            place: String,
-            isRecess: Bool,
-            studyDay: Date = Date(),
-            studyTime: Date = Calendar.current.date(
-                bySettingHour: 0,
-                minute: 30,
+            name: String = "",
+            teacher: Teacher? = nil,
+            schedule: Date = Date(timeIntervalSince1970: 0),
+            startTime: Date = Calendar.current.date(
+                bySettingHour: 7,
+                minute: 0,
                 second: 0,
-                of: Date()
-            )!,
-            lastStudied: Date = Date() - 604800,
-            isHidden: Bool = false
+                of: Date(timeIntervalSince1970: 0))!,
+            endTime: Date = Calendar.current.date(
+                bySettingHour: 7,
+                minute: 50,
+                second: 0,
+                of: Date(timeIntervalSince1970: 0))!,
+            place: String = "",
+            isRecess: Bool,
         ) {
-            self.id = id
             self.name = name
             self.teacher = teacher
-            self.email = email
             self.schedule = schedule
             self.startTime = startTime
             self.endTime = endTime
             self.place = place
             self.isRecess = isRecess
-            self.studyDay = studyDay
-            self.studyTime = studyTime
-            self.lastStudied = lastStudied
-            self.isHidden = isHidden
         }
 
         static let sampleData = [
             Subject(
                 name: "Português",
-                teacher: "Prof. D",
-                email: "example@email.com",
+                teacher: Teacher(name: "Teste", email: "email@exemple.com"),
                 schedule: Date(),
                 startTime: Date(),
                 endTime: Date(),
@@ -81,8 +72,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             ),
             Subject(
                 name: "Biologia",
-                teacher: "Prof. J",
-                email: "example@email.com",
+                teacher: Teacher(name: "Teste2", email: "email@exemple.com"),
                 schedule: Date(),
                 startTime: Date(),
                 endTime: Date(),
@@ -91,8 +81,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             ),
             Subject(
                 name: "Química",
-                teacher: "Prof. H",
-                email: "example@email.com",
+                teacher: Teacher(name: "Teste3", email: "email@exemple.com"),
                 schedule: Date(),
                 startTime: Date(),
                 endTime: Date(),
@@ -102,126 +91,62 @@ enum OrhadiSchemaV1: VersionedSchema {
         ]
 
         enum CodingKeys: CodingKey {
-            case id
             case name
             case teacher
-            case email
             case schedule
             case startTime
             case endTime
             case place
             case isRecess
-            case studyDay
-            case studyTime
-            case lastStudied
-            case isHidden
         }
 
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = try container.decode(String.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
-            teacher = try container.decode(String.self, forKey: .teacher)
-            email = try container.decode(String.self, forKey: .email)
+            teacher = try container.decodeIfPresent(Teacher.self, forKey: .teacher)
             schedule = try container.decode(Date.self, forKey: .schedule)
             startTime = try container.decode(Date.self, forKey: .startTime)
             endTime = try container.decode(Date.self, forKey: .endTime)
             place = try container.decode(String.self, forKey: .place)
             isRecess = try container.decode(Bool.self, forKey: .isRecess)
-            studyDay = try container.decode(Date.self, forKey: .studyDay)
-            studyTime = try container.decode(Date.self, forKey: .studyTime)
-            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
-            isHidden = try container.decode(Bool.self, forKey: .isHidden)
         }
 
         func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(id, forKey: .id)
             try container.encode(name, forKey: .name)
             try container.encode(teacher, forKey: .teacher)
-            try container.encode(email, forKey: .email)
             try container.encode(schedule, forKey: .schedule)
             try container.encode(startTime, forKey: .startTime)
             try container.encode(endTime, forKey: .endTime)
             try container.encode(place, forKey: .place)
             try container.encode(isRecess, forKey: .isRecess)
-            try container.encode(studyDay, forKey: .studyDay)
-            try container.encode(studyTime, forKey: .studyTime)
-            try container.encode(lastStudied, forKey: .lastStudied)
-            try container.encode(isHidden, forKey: .isHidden)
         }
     }
 
     @Model
     class SRSubject: Codable {
-        var id: String
         var name: String
         var studyDay: Date
         var studyTime: Date
         var lastStudied: Date
 
         init(
-            id: String = UUID().uuidString,
-            name: String,
-            studyDay: Date,
-            studyTime: Date,
-            lastStudied: Date = Calendar.current.date(
-                byAdding: .year, value: 2020, to: Date())!
+            name: String = "",
+            studyDay: Date = Date(timeIntervalSince1970: 0),
+            studyTime: Date = Calendar.current.date(
+                bySettingHour: 0,
+                minute: 30,
+                second: 0,
+                of: Date(timeIntervalSince1970: 0))!,
+            lastStudied: Date = Date(timeIntervalSince1970: 0)
         ) {
-            self.id = id
             self.name = name
             self.studyDay = studyDay
             self.studyTime = studyTime
             self.lastStudied = lastStudied
         }
 
-        static let sampleData = [
-            SRSubject(
-                name: "Português",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 2, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-            SRSubject(
-                name: "Matemática",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 2, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-            SRSubject(
-                name: "História",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 2, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-            SRSubject(
-                name: "Química",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 3, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-            SRSubject(
-                name: "Geografia",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 3, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-            SRSubject(
-                name: "Biologia",
-                studyDay: Calendar.current.date(
-                    byAdding: .weekday, value: 3, to: Date())!,
-                studyTime: Calendar.current.date(
-                    bySettingHour: 0, minute: 30, second: 0, of: Date())!
-            ),
-        ]
-
         enum CodingKeys: CodingKey {
-            case id
             case name
             case studyDay
             case studyTime
@@ -230,7 +155,6 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            id = try container.decode(String.self, forKey: .id)
             name = try container.decode(String.self, forKey: .name)
             studyDay = try container.decode(Date.self, forKey: .studyDay)
             studyTime = try container.decode(Date.self, forKey: .studyTime)
@@ -239,7 +163,6 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         func encode(to encoder: any Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(id, forKey: .id)
             try container.encode(name, forKey: .name)
             try container.encode(studyDay, forKey: .studyDay)
             try container.encode(studyTime, forKey: .studyTime)
@@ -257,9 +180,9 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         init(
             id: String = UUID().uuidString,
-            title: String,
-            info: String,
-            dueDate: Date,
+            title: String = "",
+            info: String = "",
+            dueDate: Date = .now.addingTimeInterval(3600),
             isCompleted: Bool = false
         ) {
             self.id = id
@@ -309,9 +232,8 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         /// Study Routine
         var breakTime: TimeInterval
-        var sharedSubjects: Bool
-        var srsubjectsDeleteConfirmation: Bool
         var studyGoal: TimeInterval
+        var srSubjectsDeleteConfirmation: Bool
 
         /// Subjects
         var subjectsDeleteConfirmation: Bool
@@ -323,22 +245,106 @@ enum OrhadiSchemaV1: VersionedSchema {
         init(
             theme: Theme = .auto,
             breakTime: TimeInterval = 600,
-            srsubjectsDeleteConfirmation: Bool = true,
             studyGoal: TimeInterval = 3600,
-            sharedSubjects: Bool = true,
+            srSubjectsDeleteConfirmation: Bool = true,
             subjectsDeleteConfirmation: Bool = true,
             scheduleNotifications: Bool = true,
             todosDeleteConfirmation: Bool = true,
         ) {
             self.theme = theme
             self.breakTime = breakTime
-            self.srsubjectsDeleteConfirmation = srsubjectsDeleteConfirmation
             self.studyGoal = studyGoal
-            self.sharedSubjects = sharedSubjects
+            self.srSubjectsDeleteConfirmation = srSubjectsDeleteConfirmation
             self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
             self.scheduleNotifications = scheduleNotifications
             self.todosDeleteConfirmation = todosDeleteConfirmation
         }
     }
 
+    @Model
+    class Teacher: Codable {
+        @Attribute(.unique) var name: String
+        var email: String
+
+        init(
+            name: String,
+            email: String
+        ) {
+            self.name = name
+            self.email = email
+        }
+
+        enum CodingKeys: CodingKey {
+            case name
+            case email
+        }
+
+        required init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            name = try container.decode(String.self, forKey: .name)
+            email = try container.decode(String.self, forKey: .email)
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(name, forKey: .name)
+            try container.encode(email, forKey: .email)
+        }
+    }
+
+    @Model
+    class UserProfile {
+        @Attribute(.unique) var name: String
+        var photo: Data?
+        var level: Int
+        var xp: Int
+        var timeStudied: Int
+        var completedToDos: Int
+
+        init(
+            name: String = "Orhadi",
+            photo: Data? = nil,
+            level: Int = 1,
+            xp: Int = 0,
+            timeStudied: Int = 0,
+            completedToDos: Int = 0
+        ) {
+            self.name = name
+            self.photo = photo
+            self.level = level
+            self.xp = xp
+            self.timeStudied = timeStudied
+            self.completedToDos = completedToDos
+        }
+    }
+
+    @Model
+    class Achievement {
+        @Attribute(.unique) var id: String
+        var name: String
+        var imageName: String
+        var descriptionText: String
+        var isUnlocked: Bool
+        var unlockedAt: Date?
+        var difficultLevel: Int
+
+        init(
+            id: String,
+            name: String,
+            imageName: String,
+            descriptionText: String,
+            isUnlocked: Bool = false,
+            unlockedAt: Date? = nil,
+            difficultLevel: Int
+        ) {
+            self.id = id
+            self.name = name
+            self.imageName = imageName
+            self.descriptionText = descriptionText
+            self.isUnlocked = isUnlocked
+            self.unlockedAt = unlockedAt
+            self.difficultLevel = difficultLevel
+        }
+    }
 }
+
