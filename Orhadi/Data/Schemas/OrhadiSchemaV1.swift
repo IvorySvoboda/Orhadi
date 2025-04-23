@@ -25,9 +25,41 @@ enum OrhadiSchemaV1: VersionedSchema {
     }
 
     @Model
+    class Teacher: Codable {
+        @Attribute(.unique) var name: String
+        var email: String
+        @Relationship(inverse: \Subject.teacher) var subjects: [Subject] = []
+
+        init(
+            name: String = "",
+            email: String = ""
+        ) {
+            self.name = name
+            self.email = email
+        }
+
+        enum CodingKeys: CodingKey {
+            case name
+            case email
+        }
+
+        required init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            name = try container.decode(String.self, forKey: .name)
+            email = try container.decode(String.self, forKey: .email)
+        }
+
+        func encode(to encoder: any Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(name, forKey: .name)
+            try container.encode(email, forKey: .email)
+        }
+    }
+
+    @Model
     class Subject: Codable {
         var name: String
-        @Relationship(deleteRule: .nullify) var teacher: Teacher?
+        var teacher: Teacher?
         var schedule: Date
         var startTime: Date
         var endTime: Date
@@ -226,73 +258,6 @@ enum OrhadiSchemaV1: VersionedSchema {
     }
 
     @Model
-    class Settings {
-        /// App
-        var theme: Theme
-
-        /// Study Routine
-        var breakTime: TimeInterval
-        var studyGoal: TimeInterval
-        var srSubjectsDeleteConfirmation: Bool
-
-        /// Subjects
-        var subjectsDeleteConfirmation: Bool
-
-        /// ToDos
-        var scheduleNotifications: Bool
-        var todosDeleteConfirmation: Bool
-
-        init(
-            theme: Theme = .auto,
-            breakTime: TimeInterval = 600,
-            studyGoal: TimeInterval = 3600,
-            srSubjectsDeleteConfirmation: Bool = true,
-            subjectsDeleteConfirmation: Bool = true,
-            scheduleNotifications: Bool = true,
-            todosDeleteConfirmation: Bool = true,
-        ) {
-            self.theme = theme
-            self.breakTime = breakTime
-            self.studyGoal = studyGoal
-            self.srSubjectsDeleteConfirmation = srSubjectsDeleteConfirmation
-            self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
-            self.scheduleNotifications = scheduleNotifications
-            self.todosDeleteConfirmation = todosDeleteConfirmation
-        }
-    }
-
-    @Model
-    class Teacher: Codable {
-        @Attribute(.unique) var name: String
-        var email: String
-
-        init(
-            name: String,
-            email: String
-        ) {
-            self.name = name
-            self.email = email
-        }
-
-        enum CodingKeys: CodingKey {
-            case name
-            case email
-        }
-
-        required init(from decoder: any Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            name = try container.decode(String.self, forKey: .name)
-            email = try container.decode(String.self, forKey: .email)
-        }
-
-        func encode(to encoder: any Encoder) throws {
-            var container = encoder.container(keyedBy: CodingKeys.self)
-            try container.encode(name, forKey: .name)
-            try container.encode(email, forKey: .email)
-        }
-    }
-
-    @Model
     class UserProfile {
         @Attribute(.unique) var name: String
         var photo: Data?
@@ -344,6 +309,45 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.isUnlocked = isUnlocked
             self.unlockedAt = unlockedAt
             self.difficultLevel = difficultLevel
+        }
+    }
+
+    @Model
+    class Settings {
+        /// App
+        var theme: Theme
+
+        /// Study Routine
+        var breakTime: TimeInterval
+        var studyGoal: TimeInterval
+        var srSubjectsDeleteConfirmation: Bool
+
+        /// Subjects
+        var subjectsDeleteConfirmation: Bool
+
+        /// ToDos
+        var gracePeriod: TimeInterval
+        var scheduleNotifications: Bool
+        var todosDeleteConfirmation: Bool
+
+        init(
+            theme: Theme = .auto,
+            breakTime: TimeInterval = 600,
+            studyGoal: TimeInterval = 3600,
+            srSubjectsDeleteConfirmation: Bool = true,
+            subjectsDeleteConfirmation: Bool = true,
+            gracePeriod: TimeInterval = 86400,
+            scheduleNotifications: Bool = true,
+            todosDeleteConfirmation: Bool = true,
+        ) {
+            self.theme = theme
+            self.breakTime = breakTime
+            self.studyGoal = studyGoal
+            self.srSubjectsDeleteConfirmation = srSubjectsDeleteConfirmation
+            self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
+            self.gracePeriod = gracePeriod
+            self.scheduleNotifications = scheduleNotifications
+            self.todosDeleteConfirmation = todosDeleteConfirmation
         }
     }
 }

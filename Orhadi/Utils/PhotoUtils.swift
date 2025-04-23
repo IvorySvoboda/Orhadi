@@ -15,7 +15,6 @@ func resizeImageAspectFill(_ data: Data, targetSize: CGSize) -> Data? {
     let widthRatio = targetSize.width / originalSize.width
     let heightRatio = targetSize.height / originalSize.height
 
-    // Escolhe o maior para garantir que vai preencher
     let scale = max(widthRatio, heightRatio)
     let scaledSize = CGSize(width: originalSize.width * scale, height: originalSize.height * scale)
 

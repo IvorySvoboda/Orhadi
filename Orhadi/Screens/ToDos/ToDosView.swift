@@ -13,44 +13,86 @@ struct ToDosView: View {
     @Environment(OrhadiTheme.self) private var theme
     @Environment(Settings.self) private var settings
 
-    @Query(sort: [.init(\ToDo.dueDate, order: .forward)], animation: .bouncy)
-    private var todos: [ToDo]
+    @Query(sort: \ToDo.dueDate, animation: .smooth) private var todos: [ToDo]
 
     @State private var todoToAdd: ToDo?
+    @State private var todoToEdit: ToDo?
+    @State private var showPendingSection = false
+    @State private var showUpcomingSection = false
+    @State private var showCompletedSection = false
 
     var body: some View {
         NavigationStack {
+            let pendingTodos = todos.filter {
+                $0.dueDate < .now &&
+                $0.dueDate.addingTimeInterval(settings.gracePeriod) > .now &&
+                !$0.isCompleted
+            }
+
+            let upcomingTodos = todos.filter {
+                $0.dueDate > .now && !$0.isCompleted
+            }
+
+            let completedOrExpiredTodos = todos
+                .filter {
+                    $0.dueDate.addingTimeInterval(settings.gracePeriod) < .now || $0.isCompleted
+                }
+                .sorted { $0.dueDate > $1.dueDate }
+
             List {
-                if !todos.filter({ $0.dueDate > Date() && !$0.isCompleted }).isEmpty {
-                    Section {
-                        ForEach(todos.filter { $0.dueDate > Date() && !$0.isCompleted })
-                        { todo in
-                            ToDoRow(todo: todo)
+                if showPendingSection {
+                    Section(header: SectionHeader(text: String(localized: "Em Atraso"))) {
+                        ForEach(pendingTodos) { todo in
+                            ToDoRow(todo: todo, todoToEdit: $todoToEdit)
                         }
-                    } header: {
-                        SectionHeader(text: String(localized: "A Fazer"))
                     }.listRowBackground(theme.bgColor())
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .animation(.smooth, value: pendingTodos)
                 }
 
-                if !todos.filter({$0.dueDate < Date() || $0.isCompleted}).isEmpty {
-                    Section {
-                        ForEach(
-                            todos.sorted(by: { $0.dueDate > $1.dueDate }).filter {
-                                $0.dueDate < Date() || $0.isCompleted
-                            }
-                        ) { todo in
-                            ToDoRow(todo: todo)
+                if showUpcomingSection {
+                    Section(header: SectionHeader(text: String(localized: "A Fazer"))) {
+                        ForEach(upcomingTodos) { todo in
+                            ToDoRow(todo: todo, todoToEdit: $todoToEdit)
                         }
-                    } header: {
-                        SectionHeader(text: String(localized: "Completados ou Vencidos"))
                     }.listRowBackground(theme.bgColor())
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .animation(.smooth, value: upcomingTodos)
+                }
+
+                if showCompletedSection {
+                    Section(header: SectionHeader(text: String(localized: "Completadas ou Vencidas"))) {
+                        ForEach(completedOrExpiredTodos) { todo in
+                            ToDoRow(todo: todo, todoToEdit: $todoToEdit)
+                        }
+                    }.listRowBackground(theme.bgColor())
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .animation(.smooth, value: completedOrExpiredTodos)
+                }
+            }
+            .onAppear {
+                showPendingSection = !pendingTodos.isEmpty
+                showUpcomingSection = !upcomingTodos.isEmpty
+                showCompletedSection = !completedOrExpiredTodos.isEmpty
+            }
+            .onChange(of: pendingTodos) { _, newValue in
+                withAnimation(.smooth) {
+                    showPendingSection = !newValue.isEmpty
+                }
+            }
+            .onChange(of: upcomingTodos) { _, newValue in
+                withAnimation(.smooth) {
+                    showUpcomingSection = !newValue.isEmpty
+                }
+            }
+            .onChange(of: completedOrExpiredTodos) { _, newValue in
+                withAnimation(.smooth) {
+                    showCompletedSection = !newValue.isEmpty
                 }
             }
             .modifier(DefaultPlainList())
             .navigationTitle("Tarefas")
-            .overlay {
-                overlay
-            }
+            .overlay { overlay }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -62,6 +104,10 @@ struct ToDosView: View {
             }
             .sheet(item: $todoToAdd) { todo in
                 ToDoSheetView(todo: todo, isNew: true)
+                    .interactiveDismissDisabled()
+            }
+            .sheet(item: $todoToEdit) { todo in
+                ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
             }
         }
@@ -101,6 +147,7 @@ struct ToDoRow: View {
     @State private var showConfirmation: Bool = false
 
     var todo: ToDo
+    @Binding var todoToEdit: ToDo?
 
     // MARK: - Views
 
@@ -180,9 +227,15 @@ struct ToDoRow: View {
                     .foregroundStyle(Color.accentColor)
             }
 
-            if todo.dueDate < Date() && !todo.isCompleted {
-                Image(systemName: "xmark")
-                    .foregroundStyle(.red)
+            if !todo.isCompleted {
+                if todo.dueDate < Date() && todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(.orange)
+                }
+                if todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() {
+                    Image(systemName: "xmark")
+                        .foregroundStyle(.red)
+                }
             }
 
             VStack(alignment: .leading) {
@@ -195,10 +248,11 @@ struct ToDoRow: View {
                     .foregroundStyle(.secondary)
             }
             .swipeActions(edge: .leading) {
-                completeSwipeAction
+                completeToggleSwipeAction
             }
             .swipeActions(edge: .trailing) {
                 deleteSwipeAction
+                editSwipeAction
             }
             .alert("Excluir tarefa?", isPresented: $showConfirmation) {
                 Button("Cancelar", role: .cancel) {}
@@ -213,9 +267,9 @@ struct ToDoRow: View {
 
     // MARK: Swipe Actions
 
-    private var completeSwipeAction: some View {
+    private var completeToggleSwipeAction: some View {
         Group {
-            if !todo.isCompleted && todo.dueDate > Date() {
+            if todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
                 Button(role: .destructive, action: { completeToDo() }) {
                     Label("Completar", systemImage: "checkmark")
                 }.tint(.accentColor)
@@ -242,23 +296,43 @@ struct ToDoRow: View {
         }
     }
 
+    private var editSwipeAction: some View {
+        Button {
+            todoToEdit = todo
+        } label: {
+            Label("Editar", systemImage: "pencil")
+                .labelStyle(.iconOnly)
+        }.tint(Color.accentColor)
+    }
+
     // MARK: - Functions
 
     private func completeToDo() {
-        let todoID = todo.id
-        let identifiers = [
-            "\(todoID)-1h",
-            "\(todoID)-24h",
-            "\(todoID)-due",
-        ]
+        if !todo.isCompleted {
+            let todoID = todo.id
+            let identifiers = [
+                "\(todoID)-1h",
+                "\(todoID)-24h",
+                "\(todoID)-due",
+            ]
 
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-        user.completedToDos += 1
-        game.addXP(100, to: user)
+            user.completedToDos += 1
+            game.addXP(100, to: user)
 
-        withAnimation(.bouncy) {
-            todo.isCompleted = true
+            withAnimation(.bouncy) {
+                todo.isCompleted = true
+            }
+        } else {
+            user.completedToDos -= 1
+            game.addXP(-100, to: user)
+
+            todo.scheduleNotification()
+
+            withAnimation(.bouncy) {
+                todo.isCompleted = false
+            }
         }
     }
 

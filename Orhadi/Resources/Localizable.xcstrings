@@ -2,7 +2,7 @@
   "sourceLanguage" : "pt-BR",
   "strings" : {
     " – " : {
-
+      "shouldTranslate" : false
     },
     "%@" : {
       "shouldTranslate" : false
@@ -15,9 +15,13 @@
             "value" : "%1$@ – %2$@"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%@ Estudo" : {
+
+    },
+    "%@ Professor(a)" : {
 
     },
     "%@ Tarefa" : {
@@ -25,6 +29,15 @@
     },
     "%lld" : {
       "shouldTranslate" : false
+    },
+    "%lld dias" : {
+
+    },
+    "%lld horas" : {
+
+    },
+    "%lld minutos" : {
+
     },
     "%lld/%lld" : {
       "localizations" : {
@@ -34,13 +47,23 @@
             "value" : "%1$lld/%2$lld"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "%lldm" : {
 
     },
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
+    },
+    "1 dia" : {
+
+    },
+    "1 hora" : {
+
+    },
+    "1 minuto" : {
+
     },
     "A Fazer" : {
       "localizations" : {
@@ -113,6 +136,7 @@
       }
     },
     "Ao importar as matérias todas as matérias já existentes serão removidas. Deeseja continuar?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -123,6 +147,7 @@
       }
     },
     "Ao importar as tarefas todas as tarefas já existentes serão removidas. Deeseja continuar?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -131,6 +156,15 @@
           }
         }
       }
+    },
+    "Ao importar uma nova rotina de estudo todas os itens já existentes na rotina atual serão removidas. Deseja continuar?" : {
+
+    },
+    "Ao importar, todas as matérias todas as matérias existentes serão removidas. Deseja continuar?" : {
+
+    },
+    "Ao importar, todas as tarefas todas as tarefas existentes serão removidas. Deseja continuar?" : {
+
     },
     "Apagar" : {
       "localizations" : {
@@ -143,6 +177,7 @@
       }
     },
     "Apagar Dados" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -151,6 +186,21 @@
           }
         }
       }
+    },
+    "Apagar todas as matérias" : {
+
+    },
+    "Apagar todas as matérias?" : {
+
+    },
+    "Apagar todas as tarefas" : {
+
+    },
+    "Apagar todas as tarefas?" : {
+
+    },
+    "Apagar todos os dados" : {
+
     },
     "Apagar todos os dados?" : {
       "localizations" : {
@@ -161,6 +211,12 @@
           }
         }
       }
+    },
+    "Apagar todos os estudos" : {
+
+    },
+    "Apagar todos os estudos?" : {
+
     },
     "Aparência" : {
       "localizations" : {
@@ -179,6 +235,9 @@
 
     },
     "Ascendido" : {
+
+    },
+    "Atrasadas" : {
 
     },
     "Auto" : {
@@ -280,7 +339,11 @@
     "Começo Brilhante" : {
 
     },
+    "Completadas ou Vencidas" : {
+
+    },
     "Completados ou Vencidos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -328,6 +391,9 @@
 
     },
     "Complete 500 tarefas" : {
+
+    },
+    "Concluídas" : {
 
     },
     "Concluído" : {
@@ -495,6 +561,9 @@
         }
       }
     },
+    "Em Atraso" : {
+
+    },
     "email@exemple.com" : {
       "localizations" : {
         "en" : {
@@ -653,17 +722,6 @@
     "Estudioso Eterno" : {
 
     },
-    "Estudos" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Studies"
-          }
-        }
-      }
-    },
     "Estudos completados! 🔥" : {
       "localizations" : {
         "en" : {
@@ -728,7 +786,6 @@
       }
     },
     "Exportar Rotina de Estudos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -768,17 +825,6 @@
         }
       }
     },
-    "Fazer o dever de casa" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Do the homework"
-          }
-        }
-      }
-    },
     "Fazer o trabalho em grupo..." : {
 
     },
@@ -786,6 +832,9 @@
 
     },
     "Focado" : {
+
+    },
+    "Futuras" : {
 
     },
     "Ganhe 1.000 XP acumulados" : {
@@ -881,8 +930,10 @@
         }
       }
     },
+    "Importar Matérias?" : {
+
+    },
     "Importar Rotina de Estudos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -891,6 +942,9 @@
           }
         }
       }
+    },
+    "Importar Rotina de Estudos?" : {
+
     },
     "Importar Tarefas" : {
       "localizations" : {
@@ -901,6 +955,9 @@
           }
         }
       }
+    },
+    "Importar Tarefas?" : {
+
     },
     "Incansável" : {
 
@@ -921,28 +978,6 @@
     "Inicio" : {
 
     },
-    "intervalo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "recess"
-          }
-        }
-      }
-    },
-    "Intervalo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recess"
-          }
-        }
-      }
-    },
     "INTERVALO" : {
       "localizations" : {
         "en" : {
@@ -952,6 +987,9 @@
           }
         }
       }
+    },
+    "Intervalos" : {
+
     },
     "Lenda da Organização" : {
 
@@ -980,28 +1018,6 @@
     "Maratonista de XP" : {
 
     },
-    "matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "subject"
-          }
-        }
-      }
-    },
-    "Matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subject"
-          }
-        }
-      }
-    },
     "Matérias" : {
       "localizations" : {
         "en" : {
@@ -1020,17 +1036,6 @@
     },
     "Mestre do Tempo" : {
 
-    },
-    "Minha nova tarefa" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My new to-do"
-          }
-        }
-      }
     },
     "Mítico" : {
 
@@ -1084,41 +1089,8 @@
         }
       }
     },
-    "Nova Matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Subject"
-          }
-        }
-      }
-    },
-    "Nova Tarefa" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New To-Do"
-          }
-        }
-      }
-    },
     "Novo" : {
 
-    },
-    "Novo Intervalo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Recess"
-          }
-        }
-      }
     },
     "Novo Professor" : {
       "localizations" : {
@@ -1152,6 +1124,9 @@
         }
       }
     },
+    "Pendentes" : {
+
+    },
     "Persistente" : {
 
     },
@@ -1177,15 +1152,8 @@
         }
       }
     },
-    "Professor" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teacher"
-          }
-        }
-      }
+    "Professor(a)" : {
+
     },
     "Professores" : {
       "localizations" : {
@@ -1267,6 +1235,9 @@
     "Sem Tarefas" : {
 
     },
+    "Sem Tolerância" : {
+
+    },
     "Sexta-feira" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1337,6 +1308,18 @@
 
     },
     "To-Do Terminator" : {
+
+    },
+    "Tolerância" : {
+
+    },
+    "Total de Estudos" : {
+
+    },
+    "Total de Itens" : {
+
+    },
+    "Total de tarefas" : {
 
     },
     "Trabalho de..." : {

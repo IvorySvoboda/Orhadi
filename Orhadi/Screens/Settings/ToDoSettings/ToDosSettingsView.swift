@@ -22,8 +22,16 @@ struct ToDosSettingsView: View {
                     "Confirmar para Excluir",
                     isOn: $settings.todosDeleteConfirmation
                 )
-            }
-            .listRowBackground(theme.secondaryBGColor())
+
+                Picker("Tolerância", selection: $settings.gracePeriod) {
+                    Text("Sem Tolerância")
+                        .tag(TimeInterval(0))
+                    ForEach(1..<5) { i in
+                        Text(formatTimeInterval(TimeInterval(21600 * i)))
+                            .tag(TimeInterval(21600 * i))
+                    }
+                }
+            }.listRowBackground(theme.secondaryBGColor())
 
             Section {
                 Toggle(

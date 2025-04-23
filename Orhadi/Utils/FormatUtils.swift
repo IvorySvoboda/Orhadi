@@ -43,6 +43,22 @@ func formatHourAndMinute(_ time: TimeInterval) -> String {
     return "\(dateHour > 0 ? "\(dateHour)h " : "")\(dateMinute)m"
 }
 
+func formatTimeInterval(_ interval: TimeInterval) -> String {
+    let secondsInHour: Double = 3600
+    let secondsInDay: Double = 86400
+
+    if interval >= secondsInDay {
+        let days = Int(interval / secondsInDay)
+        return days == 1 ? String(localized: "1 dia") : String(localized: "\(days) dias")
+    } else if interval >= secondsInHour {
+        let hours = Int(interval / secondsInHour)
+        return hours == 1 ? String(localized: "1 hora") : String(localized: "\(hours) horas")
+    } else {
+        let minutes = Int(interval / 60)
+        return minutes <= 1 ? String(localized: "1 minuto") : String(localized: "\(minutes) minutos")
+    }
+}
+
 func formatTime(_ int: Int) -> String {
     let hour = int / 3600
     let minutes = (int % 3600) / 60

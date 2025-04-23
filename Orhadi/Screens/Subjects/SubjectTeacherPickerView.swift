@@ -19,7 +19,7 @@ struct SubjectTeacherPickerView: View {
             SubjectTeacherPicker(subject: subject)
         } label: {
             HStack {
-                Text("Professor")
+                Text("Professor(a)")
                 Spacer()
                 Text(subject.teacher?.name ?? "Nenhum")
                     .foregroundColor(.secondary)
@@ -29,13 +29,15 @@ struct SubjectTeacherPickerView: View {
 }
 
 struct SubjectTeacherPicker: View {
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
 
-    @State private var showAddSheet: Bool = false
+    @State private var teacherToAdd: Teacher?
+    @State private var teacherToEdit: Teacher?
 
     @Bindable var subject: Subject
 
@@ -65,7 +67,25 @@ struct SubjectTeacherPicker: View {
                                     .foregroundColor(.accentColor)
                             }
                         }
-                    }.tint(colorScheme == .dark ? .white : .black)
+                    }
+                    .tint(colorScheme == .dark ? .white : .black)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            withAnimation {
+                                context.delete(teacher)
+                            }
+                        } label: {
+                            Label("Excluir", systemImage: "trash.fill")
+                                .labelStyle(.iconOnly)
+                        }
+
+                        Button {
+                            teacherToEdit = teacher
+                        } label: {
+                            Label("Editar", systemImage: "pencil")
+                                .labelStyle(.iconOnly)
+                        }.tint(Color.accentColor)
+                    }
                 }
             }.listRowBackground(theme.secondaryBGColor())
 
@@ -90,19 +110,23 @@ struct SubjectTeacherPicker: View {
 
             Section {
                 Button {
-                    showAddSheet.toggle()
+                    teacherToAdd = Teacher()
                 } label: {
                     CustomLabel("Novo Professor", systemImage: "plus")
                 }
                 .tint(Color.accentColor)
-                .sheet(isPresented: $showAddSheet) {
-                    TeacherAddView()
-                        .interactiveDismissDisabled()
-                }
             }.listRowBackground(theme.secondaryBGColor())
         }
         .modifier(DefaultList())
-        .navigationTitle("Professor")
+        .navigationTitle("Professor(a)")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $teacherToAdd) { teacher in
+            TeacherSheetView(teacher: teacher, isNew: true)
+                .interactiveDismissDisabled()
+        }
+        .sheet(item: $teacherToEdit) { teacher in
+            TeacherSheetView(teacher: teacher, isNew: false)
+                .interactiveDismissDisabled()
+        }
     }
 }

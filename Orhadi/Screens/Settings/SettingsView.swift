@@ -14,8 +14,6 @@ struct SettingsView: View {
     @Environment(UserProfile.self) private var user
     @Environment(OrhadiTheme.self) private var theme
 
-    @State private var showEraseDataAlert: Bool = false
-
     @Bindable var settings: Settings
 
     var body: some View {
@@ -84,29 +82,11 @@ struct SettingsView: View {
                 }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
-                    NavigationLink("Dados") {
+                    NavigationLink {
                         DataSettingsView()
+                    } label: {
+                        Label("Dados", systemImage: "square.stack.3d.down.right.fill")
                     }
-
-                    Button("Apagar Dados") {
-                        showEraseDataAlert.toggle()
-                    }
-                    .alert(
-                        "Apagar todos os dados?",
-                        isPresented: $showEraseDataAlert
-                    ) {
-                        Button("Cancelar", role: .cancel) {}
-                        Button("Apagar", role: .destructive) {
-                            eraseAllData()
-                        }
-                    } message: {
-                        Text(
-                            "Esta ação é permanente e não pode ser desfeita. Tem certeza que deseja continuar?"
-                        )
-                    }
-
-                } header: {
-                    Text("Dados")
                 }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
@@ -145,49 +125,6 @@ struct SettingsView: View {
             }
             .modifier(DefaultList())
             .navigationTitle("Ajustes")
-        }
-    }
-
-    @MainActor
-    private func eraseAllData() {
-        do {
-            let subjects = try modelContext.fetch(FetchDescriptor<Subject>())
-            let todos = try modelContext.fetch(FetchDescriptor<ToDo>())
-            let teachers = try modelContext.fetch(FetchDescriptor<Teacher>())
-            let achievements = try modelContext.fetch(FetchDescriptor<Achievement>())
-
-            for subject in subjects {
-
-                subject.teacher = nil
-
-                try! modelContext.save()
-
-                modelContext.delete(subject)
-            }
-            for todo in todos {
-                let todoID = todo.id
-                let identifiers = [
-                    "\(todoID)-1h",
-                    "\(todoID)-24h",
-                    "\(todoID)-due",
-                ]
-
-                NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-                debugPrint("Notificações desabilitadas para: \(todo.title)")
-
-                modelContext.delete(todo)
-            }
-            for teacher in teachers { modelContext.delete(teacher) }
-            for achievement in achievements { modelContext.delete(achievement) }
-
-            try modelContext.delete(model: Settings.self)
-            try modelContext.delete(model: UserProfile.self)
-
-            modelContext.insert(Settings())
-            modelContext.insert(UserProfile())
-        } catch {
-            print(error.localizedDescription)
         }
     }
 }

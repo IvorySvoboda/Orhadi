@@ -50,9 +50,10 @@ struct ToDoSheetView: View {
                         selection: $todo.dueDate,
                         displayedComponents: [.hourAndMinute, .date]
                     )
+                    .disabled(todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() && !isNew)
                     .onChange(of: todo.dueDate) { _, newDate in
                         guard newDate > Date() else {
-                            return todo.dueDate = Date() + 3600
+                            return todo.dueDate = Date().addingTimeInterval(3600)
                         }
                     }
                 }.listRowBackground(theme.secondaryBGColor())
@@ -75,12 +76,13 @@ struct ToDoSheetView: View {
                             ]
 
                             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-                            scheduleNotification(for: todo)
-                            
+
+                            todo.scheduleNotification()
+
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
-                    }.disabled(todo.dueDate <= Date() || todo.title.isEmpty)
+                    }.disabled(todo.title.isEmpty)
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancelar", role: .cancel) {
@@ -93,42 +95,11 @@ struct ToDoSheetView: View {
 
     private func addItem() {
         if settings.scheduleNotifications {
-            scheduleNotification(for: todo)
+            todo.scheduleNotification()
         }
 
         withAnimation(.bouncy) {
             modelContext.insert(todo)
         }
-    }
-
-    private func scheduleNotification(for todo: ToDo) {
-        if let oneHourBefore = Calendar.current.date(
-            byAdding: .hour, value: -1, to: todo.dueDate
-        ) {
-            NotificationsManager.shared.addNotification(
-                identifier: "\(todo.id)-1h",
-                title: todo.title,
-                body: String(localized: "Falta 1 hora para a tarefa expirar."),
-                date: oneHourBefore
-            )
-        }
-
-        if let twentyFourHoursBefore = Calendar.current.date(
-            byAdding: .hour, value: -24, to: todo.dueDate
-        ) {
-            NotificationsManager.shared.addNotification(
-                identifier: "\(todo.id)-24h",
-                title: todo.title,
-                body: String(localized: "Falta 1 dia para a tarefa expirar."),
-                date: twentyFourHoursBefore
-            )
-        }
-
-        NotificationsManager.shared.addNotification(
-            identifier: "\(todo.id)-due",
-            title: String(localized: "A Tarefa Venceu!"),
-            body: String(localized: "A Tarefa: \(todo.title) Venceu!"),
-            date: todo.dueDate
-        )
     }
 }
