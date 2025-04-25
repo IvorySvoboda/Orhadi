@@ -11,8 +11,19 @@
 		28BD45F42DAAF6BC00B916B1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 28BD45F32DAAF6BC00B916B1 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		28453A272DB997C400AE5079 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2804F4D02D92275700649FD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2804F4D72D92275700649FD0;
+			remoteInfo = Orhadi;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		2804F4D82D92275700649FD0 /* Orhadi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Orhadi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28453A232DB997C400AE5079 /* OrhadiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrhadiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		28AA05E72DA8073300814D25 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 /* End PBXFileReference section */
 
@@ -20,6 +31,11 @@
 		2804F4DA2D92275700649FD0 /* Orhadi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Orhadi;
+			sourceTree = "<group>";
+		};
+		28453A242DB997C400AE5079 /* OrhadiTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = OrhadiTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -33,6 +49,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28453A202DB997C400AE5079 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -40,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
+				28453A242DB997C400AE5079 /* OrhadiTests */,
 				2804F4D92D92275700649FD0 /* Products */,
 				28AA05E72DA8073300814D25 /* README.md */,
 			);
@@ -49,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				2804F4D82D92275700649FD0 /* Orhadi.app */,
+				28453A232DB997C400AE5079 /* OrhadiTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,6 +104,29 @@
 			productReference = 2804F4D82D92275700649FD0 /* Orhadi.app */;
 			productType = "com.apple.product-type.application";
 		};
+		28453A222DB997C400AE5079 /* OrhadiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28453A2B2DB997C400AE5079 /* Build configuration list for PBXNativeTarget "OrhadiTests" */;
+			buildPhases = (
+				28453A1F2DB997C400AE5079 /* Sources */,
+				28453A202DB997C400AE5079 /* Frameworks */,
+				28453A212DB997C400AE5079 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				28453A282DB997C400AE5079 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				28453A242DB997C400AE5079 /* OrhadiTests */,
+			);
+			name = OrhadiTests;
+			packageProductDependencies = (
+			);
+			productName = OrhadiTests;
+			productReference = 28453A232DB997C400AE5079 /* OrhadiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -86,11 +134,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					2804F4D72D92275700649FD0 = {
 						CreatedOnToolsVersion = 16.2;
+					};
+					28453A222DB997C400AE5079 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 2804F4D72D92275700649FD0;
 					};
 				};
 			};
@@ -113,6 +165,7 @@
 			projectRoot = "";
 			targets = (
 				2804F4D72D92275700649FD0 /* Orhadi */,
+				28453A222DB997C400AE5079 /* OrhadiTests */,
 			);
 		};
 /* End PBXProject section */
@@ -126,6 +179,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28453A212DB997C400AE5079 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -136,7 +196,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		28453A1F2DB997C400AE5079 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		28453A282DB997C400AE5079 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2804F4D72D92275700649FD0 /* Orhadi */;
+			targetProxy = 28453A272DB997C400AE5079 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		2804F4E62D92275900649FD0 /* Debug */ = {
@@ -271,7 +346,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Orhadi/Orhadi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2648;
+				CURRENT_PROJECT_VERSION = 3088;
 				DEVELOPMENT_ASSET_PATHS = "\"Orhadi/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -289,7 +364,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
@@ -311,7 +386,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Orhadi/Orhadi.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2648;
+				CURRENT_PROJECT_VERSION = 3088;
 				DEVELOPMENT_ASSET_PATHS = "\"Orhadi/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -329,7 +404,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
@@ -341,6 +416,44 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "";
+			};
+			name = Release;
+		};
+		28453A292DB997C400AE5079 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XJ8LRTT74C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.OrhadiTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Orhadi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Orhadi";
+			};
+			name = Debug;
+		};
+		28453A2A2DB997C400AE5079 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XJ8LRTT74C;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.OrhadiTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Orhadi.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Orhadi";
 			};
 			name = Release;
 		};
@@ -361,6 +474,15 @@
 			buildConfigurations = (
 				2804F4E92D92275900649FD0 /* Debug */,
 				2804F4EA2D92275900649FD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28453A2B2DB997C400AE5079 /* Build configuration list for PBXNativeTarget "OrhadiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28453A292DB997C400AE5079 /* Debug */,
+				28453A2A2DB997C400AE5079 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

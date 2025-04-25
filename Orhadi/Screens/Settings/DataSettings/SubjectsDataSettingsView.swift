@@ -179,21 +179,15 @@ struct SubjectsDataSettingsView: View {
                 for subject in allSubjects {
                     var teacher: Teacher? = nil
 
-                    if let name = subject.teacher?.name, let email = subject.teacher?.email, !name.isEmpty || !email.isEmpty {
-                        let existingTeacher = try? context.fetch(
-                            FetchDescriptor<Teacher>(
-                                predicate: #Predicate { $0.name == name }
-                            )
-                        ).first
+                    if let subjectTeacher = subject.teacher {
+                        let existingTeacher = try context.fetch(FetchDescriptor<Teacher>(
+                            predicate: #Predicate { $0.name == subjectTeacher.name }
+                        )).first
 
-                        if let foundTeacher = existingTeacher {
-                            teacher = foundTeacher
+                        if let existingTeacher {
+                            teacher = existingTeacher
                         } else {
-                            teacher = Teacher(
-                                name: name,
-                                email: email
-                            )
-                            context.insert(teacher!)
+                            teacher = subjectTeacher
                         }
                     }
 

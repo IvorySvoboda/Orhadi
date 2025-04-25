@@ -70,6 +70,7 @@ struct ToDosView: View {
                     .animation(.smooth, value: completedOrExpiredTodos)
                 }
             }
+            /// Usamos onAppear e onChange para controlar a visibilidade das seções, garantindo um experiência fluida.
             .onAppear {
                 showPendingSection = !pendingTodos.isEmpty
                 showUpcomingSection = !upcomingTodos.isEmpty
@@ -228,10 +229,14 @@ struct ToDoRow: View {
             }
 
             if !todo.isCompleted {
+                /// `dueDate` menor que a data atual, porém ao adicionar o período de tolerância fica maior que a data atual?
+                /// exibe ⚠️.
                 if todo.dueDate < Date() && todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundStyle(.orange)
                 }
+                /// Se mesmo com com período de tolerância o `dueDate` for menor que que a data atual,
+                /// exibe ❌.
                 if todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() {
                     Image(systemName: "xmark")
                         .foregroundStyle(.red)
@@ -269,6 +274,8 @@ struct ToDoRow: View {
 
     private var completeToggleSwipeAction: some View {
         Group {
+            /// Permite alterar o estado de completo/incompleto apenas se
+            /// o `dueDate`, considerando o período de tolerância, for maior que a data atual.
             if todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
                 Button(role: .destructive, action: { completeToDo() }) {
                     Label("Completar", systemImage: "checkmark")
@@ -308,6 +315,7 @@ struct ToDoRow: View {
     // MARK: - Functions
 
     private func completeToDo() {
+        /// Se a tarefas não estiver completada
         if !todo.isCompleted {
             let todoID = todo.id
             let identifiers = [
@@ -316,20 +324,28 @@ struct ToDoRow: View {
                 "\(todoID)-due",
             ]
 
+            /// remove as notificações agendadas
             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
+            /// aumenta as tarefas completadas do usuário e adiciona 100 de xp para ele.
             user.completedToDos += 1
             game.addXP(100, to: user)
 
+            /// completa a tarefa.
             withAnimation(.bouncy) {
                 todo.isCompleted = true
             }
-        } else {
+        } else { /// se não
+            /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
             user.completedToDos -= 1
             game.addXP(-100, to: user)
 
-            todo.scheduleNotification()
+            /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
+            if settings.scheduleNotifications {
+                todo.scheduleNotification()
+            }
 
+            /// descompleta a tarefa.
             withAnimation(.bouncy) {
                 todo.isCompleted = false
             }

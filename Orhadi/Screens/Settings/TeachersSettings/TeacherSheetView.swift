@@ -41,6 +41,14 @@ struct TeacherSheetView: View {
                                 )
                             ).first
 
+                            /// Se ja existe um professor com o nome fornecido e
+                            /// esse professor não é o mesmo que o professor que
+                            /// está sendo editado/adicionado ou o nome fornecido
+                            /// está vazio, previne o salvamento.
+                            ///
+                            /// ao adicionar um professor, o `foundTeacher` nunca
+                            /// sera igual ao professor que se sendo adicionado,
+                            /// pois ele ainda não foi adicionado ao Banco de Dados.
                             if let foundTeacher = existingTeacher, foundTeacher != teacher {
                                 preventSave = true
                             } else if name.isEmpty {
@@ -70,8 +78,11 @@ struct TeacherSheetView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         withAnimation {
+                            /// Atualiza as informações do professor
                             teacher.name = name
                             teacher.email = email
+
+                            /// Se for um novo professor, adiciona ele no banco de dados.
                             if isNew {
                                 context.insert(teacher)
                                 UINotificationFeedbackGenerator().notificationOccurred(.success)

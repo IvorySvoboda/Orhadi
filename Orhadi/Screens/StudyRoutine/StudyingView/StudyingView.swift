@@ -12,7 +12,7 @@ struct SessionItem: Identifiable {
     let name: String
     var endTime: Date
     let isBreak: Bool
-    let subject: SRSubject?
+    let subject: SRStudy?
 }
 
 struct StudyingView: View {
@@ -33,7 +33,7 @@ struct StudyingView: View {
     @State private var pauseDate: Date?
     @State private var breakTime: TimeInterval = 0
 
-    @Binding var subjects: [SRSubject]
+    @Binding var subjects: [SRStudy]
 
     // MARK: - Views
 
@@ -282,7 +282,7 @@ struct StudyingView: View {
         }
     }
 
-    private func updateLastStudied(for subject: SRSubject) {
+    private func updateLastStudied(for subject: SRStudy) {
         if let index = subjects.firstIndex(of: subject) {
             subjects[index].lastStudied = Date()
         }

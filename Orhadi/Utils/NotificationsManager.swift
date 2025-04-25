@@ -17,11 +17,9 @@ class NotificationsManager {
     func requestNotificationAuthorization() {
         center.requestAuthorization(
             options: [.alert, .sound, .badge]) { granted, _ in
-                debugPrint("Notificação autorizada: \(granted)")
-#if DEBUG
-                guard granted else { return }
-                self.getNotificationSettings()
-#endif
+                if !granted {
+                    print("Notificações desativadas!")
+                }
             }
     }
 
@@ -30,12 +28,6 @@ class NotificationsManager {
         center.getNotificationSettings { (settings) in
             let authorized = settings.authorizationStatus == .authorized
             completion(authorized)
-        }
-    }
-
-    func getNotificationSettings() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
         }
     }
 

@@ -12,7 +12,7 @@ struct SRSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(OrhadiTheme.self) private var theme
 
-    @Bindable var subject: SRSubject
+    @Bindable var study: SRStudy
     var isNew: Bool
 
     var body: some View {
@@ -22,16 +22,16 @@ struct SRSheetView: View {
                     HStack {
                         Text("Nome")
                             .frame(width: 50, alignment: .leading)
-                        TextField("Português", text: $subject.name)
+                        TextField("Português", text: $study.name)
                             .autocorrectionDisabled()
                     }
                 }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
-                    CustomDayPickerView(date: $subject.studyDay)
+                    CustomDayPickerView(date: $study.studyDay)
                     DatePicker(
                         "Duração do Estudo",
-                        selection: $subject.studyTime,
+                        selection: $study.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
                 }.listRowBackground(theme.secondaryBGColor())
@@ -49,22 +49,22 @@ struct SRSheetView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
-                        dismiss()
                         if isNew {
-                            addSubject()
+                            addStudy()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                         } else {
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
-                    }.disabled(subject.name.isEmpty)
+                        dismiss()
+                    }.disabled(study.name.isEmpty)
                 }
             }
         }
     }
 
-    private func addSubject() {
+    private func addStudy() {
         withAnimation {
-            context.insert(subject)
+            context.insert(study)
         }
     }
 }

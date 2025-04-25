@@ -11,11 +11,11 @@ import SwiftUI
 struct SRDataSettingsView: View {
     @Environment(OrhadiTheme.self) private var theme
 
-    @Query(animation: .smooth) private var subjects: [SRSubject]
+    @Query(animation: .smooth) private var subjects: [SRStudy]
 
     @State private var showDeleteConfirmation: Bool = false
     /// Exporter
-    @State private var srExportItem: SRSubjectTransferable?
+    @State private var srExportItem: SRStudyTransferable?
     @State private var showSRFileExporter: Bool = false
     /// Importer
     @State private var showSRImportAlert: Bool = false
@@ -88,7 +88,7 @@ struct SRDataSettingsView: View {
                 .alert("Apagar todos os estudos?", isPresented: $showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
-                        deleteAllSRSubjects()
+                        deleteAllStudies()
                     }
                 }
             }.listRowBackground(theme.secondaryBGColor())
@@ -98,14 +98,14 @@ struct SRDataSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func deleteAllSRSubjects() {
+    private func deleteAllStudies() {
         Task.detached(priority: .background) {
             do {
                 let context = try createContext()
 
-                let subjects = try context.fetch(FetchDescriptor<SRSubject>())
+                let studies = try context.fetch(FetchDescriptor<SRStudy>())
 
-                for subject in subjects { context.delete(subject) }
+                for study in studies { context.delete(study) }
 
                 try context.save()
 
@@ -122,10 +122,10 @@ struct SRDataSettingsView: View {
             do {
                 let context = try createContext()
 
-                let descriptor = FetchDescriptor<SRSubject>()
+                let descriptor = FetchDescriptor<SRStudy>()
 
                 let allObjects = try context.fetch(descriptor)
-                let exportItem = SRSubjectTransferable(subjects: allObjects)
+                let exportItem = SRStudyTransferable(studies: allObjects)
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
 
@@ -148,13 +148,13 @@ struct SRDataSettingsView: View {
 
                 let context = try createContext()
 
-                try context.delete(model: SRSubject.self)
+                try context.delete(model: SRStudy.self)
 
                 let data = try Data(contentsOf: url)
-                let allSubjects = try JSONDecoder().decode(
-                    [SRSubject].self, from: data)
+                let allStudies = try JSONDecoder().decode(
+                    [SRStudy].self, from: data)
 
-                for subject in allSubjects { context.insert(subject) }
+                for study in allStudies { context.insert(study) }
 
                 try context.save()
 

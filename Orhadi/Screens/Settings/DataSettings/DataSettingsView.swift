@@ -72,7 +72,7 @@ struct DataSettingsView: View {
                 let teachers = try context.fetch(FetchDescriptor<Teacher>())
                 let subjects = try context.fetch(FetchDescriptor<Subject>())
                 let todos = try context.fetch(FetchDescriptor<ToDo>())
-                let srsubjects = try context.fetch(FetchDescriptor<SRSubject>())
+                let studies = try context.fetch(FetchDescriptor<SRStudy>())
                 let users = try context.fetch(FetchDescriptor<UserProfile>())
                 let achievements = try context.fetch(FetchDescriptor<Achievement>())
                 let settings = try context.fetch(FetchDescriptor<Settings>())
@@ -80,7 +80,7 @@ struct DataSettingsView: View {
                 for t in teachers { context.delete(t) }
                 for sb in subjects { context.delete(sb) }
                 for td in todos { context.delete(td) }
-                for srsb in srsubjects { context.delete(srsb) }
+                for st in studies { context.delete(st) }
                 for u in users { context.delete(u) }
                 for a in achievements { context.delete(a) }
                 for s in settings { context.delete(s) }

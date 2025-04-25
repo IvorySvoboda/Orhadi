@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
+    "" : {
+
+    },
     " – " : {
       "shouldTranslate" : false
     },
@@ -219,6 +222,7 @@
 
     },
     "Aparência" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -825,7 +829,7 @@
         }
       }
     },
-    "Fazer o trabalho em grupo..." : {
+    "Fazer ... " : {
 
     },
     "Fim" : {
@@ -1124,9 +1128,6 @@
         }
       }
     },
-    "Pendentes" : {
-
-    },
     "Persistente" : {
 
     },
@@ -1329,6 +1330,9 @@
 
     },
     "Universo XP" : {
+
+    },
+    "Vencidas" : {
 
     },
     "Versão: %@ (%@)" : {

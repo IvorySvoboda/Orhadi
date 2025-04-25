@@ -51,7 +51,18 @@ struct SubjectsView: View {
                 }
             }
             .overlay { overlay }
-            .sheet(isPresented: $showConfirmationDialog) { confirmationSheet }
+            .confirmationDialog("", isPresented: $showConfirmationDialog) {
+                ForEach([
+                    (title: "Adicionar Matéria", isRecess: false),
+                    (title: "Adicionar Intervalo", isRecess: true)
+                ], id: \.title) { option in
+                    Button(option.title) {
+                        showConfirmationDialog = false
+                        subjectToAdd = Subject(isRecess: option.isRecess)
+                    }
+                }
+                Button("Cancelar", role: .cancel) {}
+            }
             .sheet(item: $subjectToAdd) { subject in
                 SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
@@ -92,49 +103,6 @@ struct SubjectsView: View {
                 }
             }
         }
-    }
-
-    // MARK: Sheet: Add Subject/Interval
-
-    private var confirmationSheet: some View {
-        VStack {
-            ForEach([
-                (title: "Adicionar Matéria", isRecess: false),
-                (title: "Adicionar Intervalo", isRecess: true)
-            ], id: \.title) { option in
-                Button {
-                    showConfirmationDialog = false
-                    subjectToAdd = Subject(isRecess: option.isRecess)
-                } label: {
-                    Text(option.title.uppercased())
-                        .foregroundStyle(theme.bgColor())
-                        .fontWeight(.semibold)
-                        .frame(width: 370, height: 45)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Color.accentColor)
-                        )
-                }.buttonStyle(.plain)
-            }
-
-            Divider()
-
-            Button {
-                showConfirmationDialog = false
-            } label: {
-                Text("Cancelar".uppercased())
-                    .foregroundStyle(theme.bgColor())
-                    .frame(width: 370, height: 45)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.accentColor)
-                    )
-            }.buttonStyle(.plain)
-        }
-        .offset(y: 15)
-        .presentationDragIndicator(.visible)
-        .presentationDetents([.height(160)])
-        .presentationBackground(theme.bgColor())
     }
 }
 
@@ -223,6 +191,8 @@ struct SubjectRow: View {
 
     private var sendEmailSwipeAction: some View {
         Group {
+            /// se existe um professor na matéria e o email do professor não está vazio
+            /// crie o botão para enviar um email
             if let teacher = subject.teacher, !teacher.email.isEmpty {
                 Button(action: { openMail(to: teacher.email) }) {
                     Label("Enviar e-mail", systemImage: "envelope.fill")
@@ -234,6 +204,7 @@ struct SubjectRow: View {
 
     private var deleteSwipeAction: some View {
         Group {
+            // Cria o botão adequado para as configurações do usuário
             if settings.subjectsDeleteConfirmation {
                 Button(action: { showDeleteConfirmation.toggle() }) {
                     Label("Excluir", systemImage: "trash.fill")

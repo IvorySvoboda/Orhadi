@@ -13,13 +13,13 @@ struct StudyRoutineView: View {
     @Environment(Settings.self) private var settings
     @Environment(OrhadiTheme.self) private var theme
 
-    @Query(sort: \SRSubject.name, animation: .smooth)
-    private var subjects: [SRSubject]
+    @Query(sort: \SRStudy.name, animation: .smooth)
+    private var subjects: [SRStudy]
 
-    @State private var subjectToAdd: SRSubject?
-    @State private var subjectToEdit: SRSubject?
+    @State private var subjectToAdd: SRStudy?
+    @State private var subjectToEdit: SRStudy?
     @State private var showDeleteConfirmation: Bool = false
-    @State private var subjectsToStudy: [SRSubject] = []
+    @State private var subjectsToStudy: [SRStudy] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
     @State private var scrollOffsetY: Int = 151
@@ -67,7 +67,7 @@ struct StudyRoutineView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        subjectToAdd = SRSubject()
+                        subjectToAdd = SRStudy()
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title2)
@@ -90,11 +90,11 @@ struct StudyRoutineView: View {
                 StudyingView(subjects: $subjectsToStudy)
             }
             .sheet(item: $subjectToAdd) { subject in
-                SRSheetView(subject: subject, isNew: true)
+                SRSheetView(study: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $subjectToEdit) { subject in
-                SRSheetView(subject: subject, isNew: false)
+                SRSheetView(study: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
         }
@@ -125,11 +125,11 @@ struct SRRow: View {
 
     @State private var showDeleteConfirmation: Bool = false
 
-    var subject: SRSubject
-    @Binding var subjectsToStudy: [SRSubject]
+    var subject: SRStudy
+    @Binding var subjectsToStudy: [SRStudy]
     @Binding var navigateToStudyingView: Bool
-    @Binding var subjectToAdd: SRSubject?
-    @Binding var subjectToEdit: SRSubject?
+    @Binding var subjectToAdd: SRStudy?
+    @Binding var subjectToEdit: SRStudy?
 
     // MARK: - Views
 
@@ -181,13 +181,13 @@ struct SRRow: View {
 
     private var deleteSwipeAction: some View {
         Group {
-            if settings.srSubjectsDeleteConfirmation {
+            /// Cria o botão adequado para as configurações do usuário.
+            if settings.studyDeleteConfirmation {
                 Button {
                     showDeleteConfirmation.toggle()
                 } label: {
                     Image(systemName: "trash.fill")
-                }
-                .tint(.red)
+                }.tint(.red)
             } else {
                 Button(role: .destructive) {
                     deleteSubject()

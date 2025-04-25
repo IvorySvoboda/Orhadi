@@ -10,7 +10,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.modelContext) private var modelContext
     @Environment(UserProfile.self) private var user
     @Environment(OrhadiTheme.self) private var theme
 
@@ -19,66 +18,12 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
-                    NavigationLink {
-                        ProfileView()
-                    } label: {
-                        HStack {
-                            if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
-                                Image(uiImage: uiImage)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 48, height: 48)
-                                    .clipped(antialiased: true)
-                                    .clipShape(Circle())
-                            } else {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .frame(width: 48, height: 48)
-                                    .foregroundStyle(.tint)
-                            }
-                            VStack(alignment: .leading) {
-                                Text(user.name)
-                                    .font(.headline)
-                                Text("Level: \(user.level)")
-                                    .font(.caption)
-                                    .foregroundStyle(Color.secondary)
-                            }
-                        }.frame(height: 40)
-                    }
-                }.listRowBackground(theme.secondaryBGColor())
+                userProfileSection
+
+                mainSettingsSection
 
                 Section {
-                    NavigationLink {
-                        SubjectsSettingsView(settings: settings)
-                    } label: {
-                        Label("Matérias", systemImage: "book.fill")
-                    }
-                    NavigationLink {
-                        ToDosSettingsView(settings: settings)
-                    } label: {
-                        Label("Tarefas", systemImage: "list.clipboard.fill")
-                    }
-                    NavigationLink {
-                        StudyRoutineSettingsView(settings: settings)
-                    } label: {
-                        Label("Rotina de Estudos", systemImage: "graduationcap.fill")
-                    }
-                    NavigationLink {
-                        TeachersView()
-                    } label: {
-                        Label("Professores", systemImage: "person.2.fill")
-                    }
-                }.listRowBackground(theme.secondaryBGColor())
-
-                Section {
-                    Picker("Tema", selection: $settings.theme) {
-                        Text("Auto").tag(Theme.auto)
-                        Text("Claro").tag(Theme.light)
-                        Text("Escuro").tag(Theme.dark)
-                    }
-                } header: {
-                    Text("Aparência")
+                    CustomThemePickerView()
                 }.listRowBackground(theme.secondaryBGColor())
 
                 Section {
@@ -89,43 +34,103 @@ struct SettingsView: View {
                     }
                 }.listRowBackground(theme.secondaryBGColor())
 
-                Section {
-                    HStack {
-                        ZStack {
-                            Image("Logo")
-                                .resizable()
-                                .frame(width: 70, height: 70)
-                                .colorMultiply(.black)
-                                .opacity(colorScheme == .dark ? 0 : 0.5)
-
-                            Image("Logo")
-                                .resizable()
-                                .frame(width: 70, height: 70)
-                                .opacity(0.5)
-                        }
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Orhadi")
-                                .bold()
-                            Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Text("© Zyvoxi Industries")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                    }
-                    .listRowInsets(
-                        EdgeInsets(
-                            top: 5, leading: 10, bottom: 5, trailing: 10))
-                } header: {
-                    Text("Sobre")
-                }.listRowBackground(theme.secondaryBGColor())
+                aboutSection
             }
             .modifier(DefaultList())
             .navigationTitle("Ajustes")
         }
+    }
+
+    private var userProfileSection: some View {
+        Section {
+            NavigationLink {
+                ProfileView()
+            } label: {
+                HStack {
+                    if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 48, height: 48)
+                            .clipped(antialiased: true)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .foregroundStyle(.tint)
+                    }
+                    VStack(alignment: .leading) {
+                        Text(user.name)
+                            .font(.headline)
+                        Text("Level: \(user.level)")
+                            .font(.caption)
+                            .foregroundStyle(Color.secondary)
+                    }
+                }.frame(height: 40)
+            }
+        }.listRowBackground(theme.secondaryBGColor())
+    }
+
+    private var mainSettingsSection: some View {
+        Section {
+            NavigationLink {
+                SubjectsSettingsView(settings: settings)
+            } label: {
+                Label("Matérias", systemImage: "book.fill")
+            }
+            NavigationLink {
+                ToDosSettingsView(settings: settings)
+            } label: {
+                Label("Tarefas", systemImage: "list.clipboard.fill")
+            }
+            NavigationLink {
+                StudyRoutineSettingsView(settings: settings)
+            } label: {
+                Label("Rotina de Estudos", systemImage: "graduationcap.fill")
+            }
+            NavigationLink {
+                TeachersView()
+            } label: {
+                Label("Professores", systemImage: "person.2.fill")
+            }
+        }.listRowBackground(theme.secondaryBGColor())
+    }
+
+    private var aboutSection: some View {
+        Section {
+            HStack {
+                ZStack {
+                    Image("Logo")
+                        .resizable()
+                        .frame(width: 70, height: 70)
+                        .colorMultiply(.black)
+                        .opacity(colorScheme == .dark ? 0 : 0.5)
+
+                    Image("Logo")
+                        .resizable()
+                        .frame(width: 70, height: 70)
+                        .opacity(0.5)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Orhadi")
+                        .bold()
+                    Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("© Zyvoxi Industries")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .listRowInsets(
+                EdgeInsets(
+                    top: 5, leading: 10, bottom: 5, trailing: 10))
+        } header: {
+            Text("Sobre")
+        }.listRowBackground(theme.secondaryBGColor())
     }
 }
 

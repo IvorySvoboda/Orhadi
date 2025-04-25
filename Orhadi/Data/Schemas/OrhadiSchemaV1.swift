@@ -1,13 +1,12 @@
 //
-//  OrhadiSchemaV1.swift
+//  OrhadiSchemaV2.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 21/04/25.
+//  Created by Zyvoxi . on 23/04/25.
 //
 
-import SwiftData
 import Foundation
-import CoreTransferable
+import SwiftData
 
 enum OrhadiSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
@@ -15,19 +14,19 @@ enum OrhadiSchemaV1: VersionedSchema {
     static var models: [any PersistentModel.Type] {
         [
             Subject.self,
-            SRSubject.self,
+            SRStudy.self,
             ToDo.self,
             Settings.self,
             Teacher.self,
             UserProfile.self,
-            Achievement.self
+            Achievement.self,
         ]
     }
 
     @Model
     class Teacher: Codable {
-        @Attribute(.unique) var name: String
-        var email: String
+        @Attribute(.unique) var name: String = ""
+        var email: String = ""
         @Relationship(inverse: \Subject.teacher) var subjects: [Subject] = []
 
         init(
@@ -58,30 +57,32 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class Subject: Codable {
-        var name: String
-        var teacher: Teacher?
-        var schedule: Date
-        var startTime: Date
-        var endTime: Date
-        var place: String
+        var name: String = ""
+        var teacher: Teacher? = nil
+        var schedule: Date = Date(timeIntervalSince1970: 0)
+        var startTime: Date = Calendar.current.date(
+            bySettingHour: 7,
+            minute: 0,
+            second: 0,
+            of: Date(timeIntervalSince1970: 0)
+        )!
+        var endTime: Date = Calendar.current.date(
+            bySettingHour: 7,
+            minute: 50,
+            second: 0,
+            of: Date(timeIntervalSince1970: 0)
+        )!
+        var place: String = ""
         var isRecess: Bool
 
         init(
             name: String = "",
             teacher: Teacher? = nil,
             schedule: Date = Date(timeIntervalSince1970: 0),
-            startTime: Date = Calendar.current.date(
-                bySettingHour: 7,
-                minute: 0,
-                second: 0,
-                of: Date(timeIntervalSince1970: 0))!,
-            endTime: Date = Calendar.current.date(
-                bySettingHour: 7,
-                minute: 50,
-                second: 0,
-                of: Date(timeIntervalSince1970: 0))!,
+            startTime: Date = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date(timeIntervalSince1970: 0))!,
+            endTime: Date = Calendar.current.date(bySettingHour: 7, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!,
             place: String = "",
-            isRecess: Bool,
+            isRecess: Bool
         ) {
             self.name = name
             self.teacher = teacher
@@ -92,34 +93,44 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.isRecess = isRecess
         }
 
+
         static let sampleData = [
             Subject(
                 name: "Português",
-                teacher: Teacher(name: "Teste", email: "email@exemple.com"),
+                teacher: Teacher(name: "Ana Lima", email: "ana.lima@example.com"),
                 schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
+                startTime: Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!,
+                endTime: Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date())!,
                 place: "Sala 109",
                 isRecess: false
             ),
             Subject(
-                name: "Biologia",
-                teacher: Teacher(name: "Teste2", email: "email@exemple.com"),
+                name: "Matemática",
+                teacher: Teacher(name: "Carlos Mendes", email: "carlos.mendes@example.com"),
                 schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
-                place: "Sala 109",
+                startTime: Calendar.current.date(bySettingHour: 9, minute: 15, second: 0, of: Date())!,
+                endTime: Calendar.current.date(bySettingHour: 10, minute: 15, second: 0, of: Date())!,
+                place: "Sala 202",
                 isRecess: false
             ),
             Subject(
-                name: "Química",
-                teacher: Teacher(name: "Teste3", email: "email@exemple.com"),
+                name: "",
+                teacher: nil,
                 schedule: Date(),
-                startTime: Date(),
-                endTime: Date(),
-                place: "Sala 109",
-                isRecess: false
+                startTime: Calendar.current.date(bySettingHour: 10, minute: 15, second: 0, of: Date())!,
+                endTime: Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date())!,
+                place: "",
+                isRecess: true
             ),
+            Subject(
+                name: "História",
+                teacher: Teacher(name: "Beatriz Rocha", email: "beatriz.rocha@example.com"),
+                schedule: Date(),
+                startTime: Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date())!,
+                endTime: Calendar.current.date(bySettingHour: 11, minute: 30, second: 0, of: Date())!,
+                place: "Sala 105",
+                isRecess: false
+            )
         ]
 
         enum CodingKeys: CodingKey {
@@ -156,11 +167,16 @@ enum OrhadiSchemaV1: VersionedSchema {
     }
 
     @Model
-    class SRSubject: Codable {
-        var name: String
-        var studyDay: Date
-        var studyTime: Date
-        var lastStudied: Date
+    class SRStudy: Codable {
+        var name: String = ""
+        var studyDay: Date = Date(timeIntervalSince1970: 0)
+        var studyTime: Date = Calendar.current.date(
+            bySettingHour: 0,
+            minute: 30,
+            second: 0,
+            of: Date(timeIntervalSince1970: 0)
+        )!
+        var lastStudied: Date = Date(timeIntervalSince1970: 0)
 
         init(
             name: String = "",
@@ -169,7 +185,8 @@ enum OrhadiSchemaV1: VersionedSchema {
                 bySettingHour: 0,
                 minute: 30,
                 second: 0,
-                of: Date(timeIntervalSince1970: 0))!,
+                of: Date(timeIntervalSince1970: 0)
+            )!,
             lastStudied: Date = Date(timeIntervalSince1970: 0)
         ) {
             self.name = name
@@ -177,6 +194,12 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.studyTime = studyTime
             self.lastStudied = lastStudied
         }
+
+        static let sampleData = [
+            SRStudy(name: "Português"),
+            SRStudy(name: "Matemática"),
+            SRStudy(name: "História")
+        ]
 
         enum CodingKeys: CodingKey {
             case name
@@ -225,9 +248,22 @@ enum OrhadiSchemaV1: VersionedSchema {
         }
 
         static let sampleData = [
-            ToDo(title: "Tarefa", info: "", dueDate: Date(), isCompleted: false),
-            ToDo(title: "Tarefa", info: "", dueDate: Date() + 3600, isCompleted: false),
-            ToDo(title: "Tarefa", info: "", dueDate: Date(), isCompleted: true)
+            ToDo(
+                title: "Tarefa",
+                info: "",
+                dueDate: Date(),
+                isCompleted: false
+            ),
+            ToDo(
+                title: "Tarefa",
+                info: "",
+                dueDate: Date().addingTimeInterval(3600),
+                isCompleted: false
+            ),
+            ToDo(title: "Tarefa",
+                 info: "",
+                 dueDate: Date(),
+                 isCompleted: true),
         ]
 
         enum CodingKeys: CodingKey {
@@ -320,7 +356,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         /// Study Routine
         var breakTime: TimeInterval
         var studyGoal: TimeInterval
-        var srSubjectsDeleteConfirmation: Bool
+        var studyDeleteConfirmation: Bool
 
         /// Subjects
         var subjectsDeleteConfirmation: Bool
@@ -334,7 +370,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             theme: Theme = .auto,
             breakTime: TimeInterval = 600,
             studyGoal: TimeInterval = 3600,
-            srSubjectsDeleteConfirmation: Bool = true,
+            studyDeleteConfirmation: Bool = true,
             subjectsDeleteConfirmation: Bool = true,
             gracePeriod: TimeInterval = 86400,
             scheduleNotifications: Bool = true,
@@ -343,7 +379,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.theme = theme
             self.breakTime = breakTime
             self.studyGoal = studyGoal
-            self.srSubjectsDeleteConfirmation = srSubjectsDeleteConfirmation
+            self.studyDeleteConfirmation = studyDeleteConfirmation
             self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
             self.gracePeriod = gracePeriod
             self.scheduleNotifications = scheduleNotifications
@@ -351,4 +387,3 @@ enum OrhadiSchemaV1: VersionedSchema {
         }
     }
 }
-

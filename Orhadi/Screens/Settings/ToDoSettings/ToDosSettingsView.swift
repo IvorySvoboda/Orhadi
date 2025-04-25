@@ -23,14 +23,7 @@ struct ToDosSettingsView: View {
                     isOn: $settings.todosDeleteConfirmation
                 )
 
-                Picker("Tolerância", selection: $settings.gracePeriod) {
-                    Text("Sem Tolerância")
-                        .tag(TimeInterval(0))
-                    ForEach(1..<5) { i in
-                        Text(formatTimeInterval(TimeInterval(21600 * i)))
-                            .tag(TimeInterval(21600 * i))
-                    }
-                }
+                ToDoGracePeriodePickerView()
             }.listRowBackground(theme.secondaryBGColor())
 
             Section {
@@ -52,7 +45,7 @@ struct ToDosSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in
-                notificationStatus = authorizedStatus
+                self.notificationStatus = authorizedStatus
                 if !notificationStatus {
                     settings.scheduleNotifications = false
                 }
@@ -61,3 +54,68 @@ struct ToDosSettingsView: View {
     }
 }
 
+struct ToDoGracePeriodePickerView: View {
+    @Environment(Settings.self) private var settings
+
+    var body: some View {
+        NavigationLink {
+            ToDoGracePeriodePicker()
+        } label: {
+            HStack {
+                Text("Tolerância")
+                Spacer()
+                Text(formatTimeInterval(settings.gracePeriod))
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+struct ToDoGracePeriodePicker: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
+    @Environment(Settings.self) private var settings
+    @Environment(OrhadiTheme.self) private var theme
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(1..<5) { i in
+                    Button {
+                        settings.gracePeriod = TimeInterval(21600 * i)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Text(formatTimeInterval(TimeInterval(21600 * i)))
+                            Spacer()
+                            if settings.gracePeriod == TimeInterval(21600 * i) {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                    }.tint(colorScheme == .dark ? .white : .black)
+                }
+            }.listRowBackground(theme.secondaryBGColor())
+
+            Section {
+                Button {
+                    settings.gracePeriod = 0
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text("Sem Tolerância")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        if settings.gracePeriod == 0 {
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.accentColor)
+                        }
+                    }
+                }.tint(Color.secondary)
+            }.listRowBackground(theme.secondaryBGColor())
+        }
+        .modifier(DefaultList())
+        .navigationTitle("Tolerância")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}

@@ -30,7 +30,7 @@ struct ToDoSheetView: View {
                     ZStack {
                         VStack {
                             if todo.info.isEmpty {
-                                Text("Fazer o trabalho em grupo...")
+                                Text("Fazer ... ")
                                     .foregroundStyle(Color.secondary)
                                     .opacity(0.5)
                             }
@@ -52,8 +52,9 @@ struct ToDoSheetView: View {
                     )
                     .disabled(todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() && !isNew)
                     .onChange(of: todo.dueDate) { _, newDate in
-                        guard newDate > Date() else {
-                            return todo.dueDate = Date().addingTimeInterval(3600)
+                        /// Não pode criar tarefas para o passado.
+                        if newDate < .now {
+                            todo.dueDate = Date().addingTimeInterval(3600)
                         }
                     }
                 }.listRowBackground(theme.secondaryBGColor())
@@ -68,6 +69,7 @@ struct ToDoSheetView: View {
                             addItem()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                         } else {
+                            /// Se não for uma tarefa nova, atualiza as notificações agendadas.
                             let todoID = todo.id
                             let identifiers = [
                                 "\(todoID)-1h",
@@ -77,7 +79,10 @@ struct ToDoSheetView: View {
 
                             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-                            todo.scheduleNotification()
+                            /// Sempre respeitando as preferências do usuário.
+                            if settings.scheduleNotifications {
+                                todo.scheduleNotification()
+                            }
 
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }

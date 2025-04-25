@@ -44,13 +44,13 @@ struct ToDosDataSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Pendentes")
+                    Text("Atrasadas")
                     Spacer()
                     Text("\(pending.count)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Atrasadas")
+                    Text("Vencidas")
                     Spacer()
                     Text("\(expired.count)")
                         .foregroundStyle(.secondary)

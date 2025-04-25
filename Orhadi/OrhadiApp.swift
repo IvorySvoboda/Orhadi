@@ -11,7 +11,7 @@ import UserNotifications
 
 typealias CurrentSchema = OrhadiSchemaV1
 typealias Subject = CurrentSchema.Subject
-typealias SRSubject = CurrentSchema.SRSubject
+typealias SRStudy = CurrentSchema.SRStudy
 typealias ToDo = CurrentSchema.ToDo
 typealias Settings = CurrentSchema.Settings
 typealias Teacher = CurrentSchema.Teacher
@@ -20,13 +20,12 @@ typealias Achievement = CurrentSchema.Achievement
 
 @main
 struct OrhadiApp: App {
+    /// Crie o container do SwiftData
     let container = try! ModelContainer.init(
         for: Schema(versionedSchema: CurrentSchema.self),
         migrationPlan: MigrationPlan.self,
         configurations: ModelConfiguration(url: URL.documentsDirectory.appending(path: "database.store"))
     )
-
-    
 
     var body: some Scene {
         WindowGroup {
@@ -45,14 +44,17 @@ struct RootView: View {
     var body: some View {
         ContentView()
             .onAppear {
+                /// Verifica se `settings` e `userProfile` é nil, se for, insere eles no context.
                 if settings.first == nil {
                     modelContext.insert(Settings())
                 }
                 if userProfile.first == nil {
                     modelContext.insert(UserProfile())
                 }
+                /// Solicita permissão para as notificações
                 NotificationsManager.shared.requestNotificationAuthorization()
             }
+            /// Coloca no Environment algumas variáveis uteis
             .environment(settings.first ?? Settings())
             .environment(userProfile.first ?? UserProfile())
             .environment(GameManager(context: modelContext))

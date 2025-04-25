@@ -103,6 +103,7 @@ struct SubjectSheetView: View {
                 DatePicker("Fim", selection: $subject.endTime, displayedComponents: [.hourAndMinute])
                     .labelsHidden()
                     .onChange(of: subject.endTime) { _, newDate in
+                        /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
                         if newDate <= subject.startTime {
                             subject.endTime = subject.startTime + 60
                         }
@@ -118,12 +119,14 @@ struct SubjectSheetView: View {
    private func addItem() {
        withAnimation {
            if !subject.isRecess {
-               let existingSubject = try? context.fetch(FetchDescriptor<Subject>(
+               let existingSubjects = try? context.fetch(FetchDescriptor<Subject>(
                 predicate: #Predicate { $0.name == subject.name }
                ))
 
-               if let existingSubject, existingSubject.isEmpty {
-                   context.insert(SRSubject(
+               /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
+               /// adiciona ele na Rotina de Estudos também.
+               if let existingSubjects, existingSubjects.isEmpty {
+                   context.insert(SRStudy(
                     name: subject.name,
                     studyDay: subject.schedule
                    ))
