@@ -7,49 +7,6 @@
 
 import SwiftUI
 
-struct GroupedSubjectsList<Subject: Identifiable, Content: View>: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    @Binding var scrollOffsetY: Int
-    @Binding var selectedDay: Int
-
-    let subjects: [Subject]
-    let dateExtractor: (Subject) -> Date
-    let cell: (Subject) -> Content
-
-    var body: some View {
-        VStack(spacing: 0) {
-            WeekdayPickerBar(
-                selectedDay: $selectedDay
-            )
-            .frame(height: 40)
-        }
-        .listRowInsets(
-            EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        )
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-        .background(
-            GeometryReader { geo in
-                Color.clear
-                    .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                        withAnimation(.smooth(duration: 0.25)) {
-                            scrollOffsetY = Int(newY)
-                        }
-                    }
-            }
-        )
-
-        let filteredSubjects = subjects.filter {
-            Calendar.current.component(.weekday, from: dateExtractor($0)) == selectedDay
-        }
-
-        ForEach(filteredSubjects) { subject in
-            cell(subject)
-        }
-    }
-}
-
 struct WeekdayPickerBar: View {
     @Environment(OrhadiTheme.self) private var theme
 
@@ -113,5 +70,10 @@ struct WeekdayPickerBar: View {
                 }
             }
         }
+        .listRowInsets(
+            EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
+        )
+        .listRowBackground(Color.clear)
+        .listRowSeparator(.hidden)
     }
 }

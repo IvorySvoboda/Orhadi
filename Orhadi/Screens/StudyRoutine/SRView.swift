@@ -14,12 +14,12 @@ struct StudyRoutineView: View {
     @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: \SRStudy.name, animation: .smooth)
-    private var subjects: [SRStudy]
+    private var studies: [SRStudy]
 
-    @State private var subjectToAdd: SRStudy?
-    @State private var subjectToEdit: SRStudy?
+    @State private var studyToAdd: SRStudy?
+    @State private var studyToEdit: SRStudy?
     @State private var showDeleteConfirmation: Bool = false
-    @State private var subjectsToStudy: [SRStudy] = []
+    @State private var studiesToStudy: [SRStudy] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
     @State private var scrollOffsetY: Int = 151
@@ -29,17 +29,28 @@ struct StudyRoutineView: View {
     var body: some View {
         NavigationStack {
             List {
-                GroupedSubjectsList(
-                    scrollOffsetY: $scrollOffsetY,
-                    selectedDay: $selectedDay,
-                    subjects: subjects,
-                    dateExtractor: { $0.studyDay }
-                ) { subject in
-                    SRRow(subject: subject,
-                          subjectsToStudy: $subjectsToStudy,
+                WeekdayPickerBar(selectedDay: $selectedDay)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                                    withAnimation(.smooth(duration: 0.25)) {
+                                        scrollOffsetY = Int(newY)
+                                    }
+                                }
+                        }
+                    )
+
+                let filteredStudies = studies.filter {
+                    Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+                }
+
+                ForEach(filteredStudies) { study in
+                    SRRow(study: study,
+                          studiesToStudy: $studiesToStudy,
                           navigateToStudyingView: $navigateToStudyingView,
-                          subjectToAdd: $subjectToAdd,
-                          subjectToEdit: $subjectToEdit)
+                          studyToAdd: $studyToAdd,
+                          studyToEdit: $studyToEdit)
                 }
             }
             .modifier(DefaultPlainList())
@@ -67,7 +78,7 @@ struct StudyRoutineView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        subjectToAdd = SRStudy()
+                        studyToAdd = SRStudy()
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title2)
@@ -75,26 +86,26 @@ struct StudyRoutineView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    let filteredSubjects = subjects.filter { $0.isForToday && !$0.hasStudiedThisWeek }
+                    let filteredstudies = studies.filter { $0.isForToday && !$0.hasStudiedThisWeek }
                     Button {
-                        guard !filteredSubjects.isEmpty else { return }
-                        subjectsToStudy = filteredSubjects
+                        guard !filteredstudies.isEmpty else { return }
+                        studiesToStudy = filteredstudies
                         navigateToStudyingView.toggle()
                     } label: {
                         Image(systemName: "play.circle.fill")
                             .font(.title2)
-                    }.disabled(filteredSubjects.isEmpty)
+                    }.disabled(filteredstudies.isEmpty)
                 }
             }
             .navigationDestination(isPresented: $navigateToStudyingView) {
-                StudyingView(subjects: $subjectsToStudy)
+                StudyingView(studies: $studiesToStudy)
             }
-            .sheet(item: $subjectToAdd) { subject in
-                SRSheetView(study: subject, isNew: true)
+            .sheet(item: $studyToAdd) { study in
+                SRSheetView(study: study, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $subjectToEdit) { subject in
-                SRSheetView(study: subject, isNew: false)
+            .sheet(item: $studyToEdit) { study in
+                SRSheetView(study: study, isNew: false)
                     .interactiveDismissDisabled()
             }
         }
@@ -102,7 +113,7 @@ struct StudyRoutineView: View {
 
     private var overlay: some View {
         Group {
-            if subjects.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
+            if studies.filter({ Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay }).isEmpty && scrollOffsetY < 300 {
                 ContentUnavailableView {
                     Label("Nenhuma Matéria", systemImage: "graduationcap")
                 } description: {
@@ -125,28 +136,28 @@ struct SRRow: View {
 
     @State private var showDeleteConfirmation: Bool = false
 
-    var subject: SRStudy
-    @Binding var subjectsToStudy: [SRStudy]
+    var study: SRStudy
+    @Binding var studiesToStudy: [SRStudy]
     @Binding var navigateToStudyingView: Bool
-    @Binding var subjectToAdd: SRStudy?
-    @Binding var subjectToEdit: SRStudy?
+    @Binding var studyToAdd: SRStudy?
+    @Binding var studyToEdit: SRStudy?
 
     // MARK: - Views
 
     var body: some View {
         HStack {
-            if subject.hasStudiedThisWeek {
+            if study.hasStudiedThisWeek {
                 Image(systemName: "checkmark")
                     .foregroundStyle(.tint)
             }
 
-            Text(subject.name.nilIfEmpty() ?? "Sem Nome")
+            Text(study.name.nilIfEmpty() ?? "Sem Nome")
                 .lineLimit(1)
                 .frame(maxWidth: 200, alignment: .leading)
 
             Spacer()
 
-            Text(formatHourAndMinute(subject.studyTime))
+            Text(formatHourAndMinute(study.studyTime))
                 .bold()
         }
         .listRowBackground(Color.clear)
@@ -161,7 +172,7 @@ struct SRRow: View {
         .alert("Deletar Estudo?", isPresented: $showDeleteConfirmation) {
             Button("Cancelar", role: .cancel) {}
             Button("Deletar", role: .destructive) {
-                deleteSubject()
+                deleteStudy()
             }
         } message: {
             Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?")
@@ -172,7 +183,7 @@ struct SRRow: View {
 
     private var startStudySwipeAction: some View {
         Button(action: {
-            subjectsToStudy = [subject]
+            studiesToStudy = [study]
             navigateToStudyingView.toggle()
         }) {
             Label("Iniciar", systemImage: "play.circle.fill")
@@ -190,7 +201,7 @@ struct SRRow: View {
                 }.tint(.red)
             } else {
                 Button(role: .destructive) {
-                    deleteSubject()
+                    deleteStudy()
                 } label: {
                     Image(systemName: "trash.fill")
                 }
@@ -200,7 +211,7 @@ struct SRRow: View {
 
     private var duplicateSwipeAction: some View {
         Button {
-            subjectToAdd = subject
+            studyToAdd = study
         } label: {
             Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
         }.tint(.teal)
@@ -208,7 +219,7 @@ struct SRRow: View {
 
     private var editSwipeAction: some View {
         Button {
-            subjectToEdit = subject
+            studyToEdit = study
         } label: {
             Image(systemName: "pencil")
         }.tint(.accentColor)
@@ -216,9 +227,9 @@ struct SRRow: View {
 
     // MARK: - Functions
 
-    private func deleteSubject() {
+    private func deleteStudy() {
         withAnimation {
-            context.delete(subject)
+            context.delete(study)
         }
     }
 }

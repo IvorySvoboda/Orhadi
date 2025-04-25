@@ -51,7 +51,6 @@ struct CustomDayPicker: View {
                     } label: {
                         HStack {
                             Text(name)
-                                .font(.headline)
                             Spacer()
                             if selectedWeekday == index {
                                 Image(systemName: "checkmark")

@@ -12,7 +12,7 @@ struct SessionItem: Identifiable {
     let name: String
     var endTime: Date
     let isBreak: Bool
-    let subject: SRStudy?
+    let study: SRStudy?
 }
 
 struct StudyingView: View {
@@ -33,7 +33,7 @@ struct StudyingView: View {
     @State private var pauseDate: Date?
     @State private var breakTime: TimeInterval = 0
 
-    @Binding var subjects: [SRStudy]
+    @Binding var studies: [SRStudy]
 
     // MARK: - Views
 
@@ -155,12 +155,12 @@ struct StudyingView: View {
                             .foregroundStyle(Color.secondary)
                         }
                         .modifier(ListRowModifier())
-                    } else if let subject = sessionItem.subject {
+                    } else if let study = sessionItem.study {
                         HStack {
-                            Text(subject.name.isEmpty ? "Sem Nome" : subject.name)
+                            Text(study.name.isEmpty ? "Sem Nome" : study.name)
                                 .bold()
                             Spacer()
-                            Text(formatHourAndMinute(subject.studyTime))
+                            Text(formatHourAndMinute(study.studyTime))
                                 .bold()
                         }
                         .frame(height: 35)
@@ -181,10 +181,10 @@ struct StudyingView: View {
         var sessionSequence: [SessionItem] = []
         var currentTime = Date()
 
-        for (index, subject) in subjects.enumerated() {
+        for (index, study) in studies.enumerated() {
             let components = Calendar.current.dateComponents(
                 [.hour, .minute],
-                from: subject.studyTime
+                from: study.studyTime
             )
             let hours = components.hour ?? 0
             let minutes = components.minute ?? 0
@@ -194,22 +194,22 @@ struct StudyingView: View {
             let studyEnd = currentTime.addingTimeInterval(studyDuration)
             sessionSequence.append(
                 SessionItem(
-                    name: subject.name,
+                    name: study.name,
                     endTime: studyEnd,
                     isBreak: false,
-                    subject: subject
+                    study: study
                 )
             )
             currentTime = studyEnd
 
-            if index != subjects.count - 1 {
+            if index != studies.count - 1 {
                 let breakEnd = currentTime.addingTimeInterval(settings.breakTime)
                 sessionSequence.append(
                     SessionItem(
                         name: "Descanso",
                         endTime: breakEnd,
                         isBreak: true,
-                        subject: nil
+                        study: nil
                     )
                 )
                 currentTime = breakEnd
@@ -232,9 +232,9 @@ struct StudyingView: View {
         guard currentSessionIndex < sessionItems.count else { return }
         let currentItem = sessionItems[currentSessionIndex]
 
-        if !currentItem.isBreak, let subject = currentItem.subject {
-            updateLastStudied(for: subject)
-            let components = Calendar.current.dateComponents([.hour, .minute], from: subject.studyTime)
+        if !currentItem.isBreak, let study = currentItem.study {
+            updateLastStudied(for: study)
+            let components = Calendar.current.dateComponents([.hour, .minute], from: study.studyTime)
             game.addXP(50 * (((components.hour ?? 0) * 60) + (components.minute ?? 0)), to: user)
         }
 
@@ -282,9 +282,9 @@ struct StudyingView: View {
         }
     }
 
-    private func updateLastStudied(for subject: SRStudy) {
-        if let index = subjects.firstIndex(of: subject) {
-            subjects[index].lastStudied = Date()
+    private func updateLastStudied(for study: SRStudy) {
+        if let index = studies.firstIndex(of: study) {
+            studies[index].lastStudied = Date()
         }
     }
 }

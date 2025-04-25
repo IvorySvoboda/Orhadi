@@ -73,7 +73,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             of: Date(timeIntervalSince1970: 0)
         )!
         var place: String = ""
-        var isRecess: Bool
+        var isRecess: Bool = false
 
         init(
             name: String = "",

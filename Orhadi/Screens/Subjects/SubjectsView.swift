@@ -28,16 +28,26 @@ struct SubjectsView: View {
     var body: some View {
         NavigationStack {
             List {
-                GroupedSubjectsList(
-                    scrollOffsetY: $scrollOffsetY,
-                    selectedDay: $selectedDay,
-                    subjects: subjects,
-                    dateExtractor: { $0.schedule }
-                ) { subject in
-                    SubjectRow(
-                        subject: subject,
-                        subjectToAdd: $subjectToAdd,
-                        subjectToEdit: $subjectToEdit)
+                WeekdayPickerBar(selectedDay: $selectedDay)
+                    .background(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                                    withAnimation(.smooth(duration: 0.25)) {
+                                        scrollOffsetY = Int(newY)
+                                    }
+                                }
+                        }
+                    )
+
+                let filteredSubjects = subjects.filter {
+                    Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
+                }
+
+                ForEach(filteredSubjects) { subject in
+                    SubjectRow(subject: subject,
+                               subjectToAdd: $subjectToAdd,
+                               subjectToEdit: $subjectToEdit)
                 }
             }
             .modifier(DefaultPlainList())

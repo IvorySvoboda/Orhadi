@@ -72,7 +72,6 @@ struct CustomThemePicker: View {
                 } label: {
                     HStack {
                         Text("Claro")
-                            .font(.headline)
                         Spacer()
                         if settings.theme == .light {
                             Image(systemName: "checkmark")
@@ -87,7 +86,6 @@ struct CustomThemePicker: View {
                 } label: {
                     HStack {
                         Text("Escuro")
-                            .font(.headline)
                         Spacer()
                         if settings.theme == .dark {
                             Image(systemName: "checkmark")
@@ -102,7 +100,6 @@ struct CustomThemePicker: View {
                 } label: {
                     HStack {
                         Text("Auto")
-                            .font(.headline)
                         Spacer()
                         if settings.theme == .auto {
                             Image(systemName: "checkmark")
