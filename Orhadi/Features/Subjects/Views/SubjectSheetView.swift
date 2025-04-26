@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SubjectSheetView: View {
-   @Environment(OrhadiTheme.self) private var theme
    @Environment(\.modelContext) private var context
    @Environment(\.dismiss) private var dismiss
 
@@ -35,7 +34,7 @@ struct SubjectSheetView: View {
                }
                timeSelectionSection
            }
-           .modifier(DefaultList())
+           .orhadiListStyle()
            .navigationTitle(navigationTitle)
            .navigationBarTitleDisplayMode(.inline)
            .toolbar {
@@ -77,13 +76,13 @@ struct SubjectSheetView: View {
                 TextField("Sala 101", text: $subject.place)
                     .autocorrectionDisabled()
             }
-        }.listRowBackground(theme.secondaryBGColor())
+        }.listRowBackground(Color.orhadiSecondaryBG)
     }
 
     private var teacherSelectionSection: some View {
         Section {
             SubjectTeacherPickerView(subject: subject)
-        }.listRowBackground(theme.secondaryBGColor())
+        }.listRowBackground(Color.orhadiSecondaryBG)
     }
 
     private var timeSelectionSection: some View {
@@ -111,7 +110,7 @@ struct SubjectSheetView: View {
             }
         } header: {
             Text("Horário")
-        }.listRowBackground(theme.secondaryBGColor())
+        }.listRowBackground(Color.orhadiSecondaryBG)
     }
 
     // MARK: - Functions

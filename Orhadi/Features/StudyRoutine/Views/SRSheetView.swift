@@ -10,7 +10,6 @@ import SwiftUI
 struct SRSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Environment(OrhadiTheme.self) private var theme
 
     @Bindable var study: SRStudy
     var isNew: Bool
@@ -25,7 +24,7 @@ struct SRSheetView: View {
                         TextField("Português", text: $study.name)
                             .autocorrectionDisabled()
                     }
-                }.listRowBackground(theme.secondaryBGColor())
+                }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
                     CustomDayPickerView(date: $study.studyDay)
@@ -34,9 +33,9 @@ struct SRSheetView: View {
                         selection: $study.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                }.listRowBackground(theme.secondaryBGColor())
+                }.listRowBackground(Color.orhadiSecondaryBG)
             }
-            .modifier(DefaultList())
+            .orhadiListStyle()
             .navigationTitle("\(isNew ? String(localized: "Novo") : String(localized: "Editar")) Estudo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -64,7 +63,11 @@ struct SRSheetView: View {
 
     private func addStudy() {
         withAnimation {
-            context.insert(study)
+            context.insert(SRStudy(
+                name: study.name,
+                studyDay: study.studyDay,
+                studyTime: study.studyTime
+            ))
         }
     }
 }

@@ -7,39 +7,20 @@
 
 import SwiftUI
 
-struct SessionItem: Identifiable {
-    let id = UUID()
-    let name: String
-    var endTime: Date
-    let isBreak: Bool
-    let study: SRStudy?
-}
-
 struct StudyingView: View {
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
 
-    @State private var isReady: Bool = false
-    @State private var sessionItems: [SessionItem] = []
-    @State private var currentSessionIndex = 0
-    @State private var remainingTime: TimeInterval = 0
-    @StateObject private var timerManager = TimerManager()
-    @State private var isRunning: Bool = false
-    @State private var completedItems: [SessionItem] = []
-    @State private var studyFinished: Bool = false
-    @State private var pauseDate: Date?
-    @State private var breakTime: TimeInterval = 0
-
+    @State var viewModel = StudyingViewModel()
     @Binding var studies: [SRStudy]
 
     // MARK: - Views
 
     var body: some View {
         ZStack {
-            Color(theme.bgColor())
+            Color.orhadiBG
                 .ignoresSafeArea()
 
             VStack {
@@ -54,238 +35,133 @@ struct StudyingView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    isRunning.toggle()
-                }) {
-                    if isRunning && !studyFinished {
-                        Image(systemName: "pause.circle.fill")
-                            .font(.title2)
-                    } else {
-                        Image(systemName: "play.circle.fill")
-                            .font(.title2)
-                    }
-                }.disabled(studyFinished)
+                playPauseButton
             }
         }
-        .toolbarBackground(theme.bgColor(), for: .navigationBar)
+        .toolbarBackground(.orhadiBG, for: .navigationBar)
+        .disableIdleTimer()
         .onAppear {
-            if !isReady {
-                prepareSession()
+            if !viewModel.isReady {
+                viewModel.prepareSession(
+                    for: studies,
+                    with: settings,
+                    gameManager: game,
+                    user: user
+                )
             }
-            UIApplication.shared.isIdleTimerDisabled = true
-        }
-        .onDisappear {
-            UIApplication.shared.isIdleTimerDisabled = false
         }
     }
 
+    // MARK: - Header
     private var header: some View {
         Group {
             Divider()
             HStack {
-                if currentSessionIndex < sessionItems.count {
-                    Text(sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                if viewModel.currentSessionIndex < viewModel.sessionItems.count {
+                    Text(viewModel.currentStudyName)
                         .lineLimit(1)
                         .frame(width: 200, alignment: .leading)
                 } else {
                     Text("Estudos completados! 🔥")
                 }
                 Spacer()
-                Button {
-                    skipToNext()
-                } label: {
-                    Image(systemName: "forward.fill")
-                }
-                .tint(colorScheme == .dark ? .white : .black)
-                .disabled(studyFinished)
-            }.padding(.horizontal).offset(y: 2)
+                skipButton
+            }
+            .padding(.horizontal)
+            .offset(y: 2)
         }
     }
 
-    private var timerSection: some View {
-        VStack {
-            TimerView(remainingTime: timerManager.remainingTime)
-                .onChange(of: timerManager.remainingTime) { _, newValue in
-                    remainingTime = newValue
-
-                    if newValue <= 0 {
-                        advanceSession()
-                    }
-
-                    if isRunning, currentSessionIndex < sessionItems.count, !sessionItems[currentSessionIndex].isBreak {
-                        user.timeStudied += 1
-                        game.addXP(10, to: user)
-                    }
-                }
-                .onChange(of: isRunning) { _, newValue in
-                    if newValue {
-                        if let pauseDate = pauseDate {
-                            let pauseDuration = Date().timeIntervalSince(pauseDate)
-                            sessionItems[currentSessionIndex].endTime += pauseDuration
-                        }
-                        pauseDate = nil
-                        timerManager.start(with: sessionItems[currentSessionIndex].endTime)
-                    } else {
-                        pauseDate = Date()
-                        timerManager.pause()
-                    }
-                }
-        }.frame(height: 200)
+    // MARK: - Play/Pause Button
+    private var playPauseButton: some View {
+        Button {
+            viewModel.isRunning.toggle()
+        } label: {
+            if viewModel.isRunning && !viewModel.studyFinished {
+                Image(systemName: "pause.circle.fill")
+                    .font(.title2)
+            } else {
+                Image(systemName: "play.circle.fill")
+                    .font(.title2)
+            }
+        }
+        .disabled(viewModel.studyFinished)
     }
 
+    // MARK: - Skip Button
+    private var skipButton: some View {
+        Button {
+            viewModel.skipToNext()
+        } label: {
+            Image(systemName: "forward.fill")
+        }
+        .tint(colorScheme == .dark ? .white : .black)
+        .disabled(viewModel.studyFinished)
+    }
+
+    // MARK: - Timer Section
+    private var timerSection: some View {
+        VStack {
+            HStack {
+                RollingTextView(text: viewModel.timeString)
+                    .font(.system(size: 40, weight: .bold, design: .monospaced))
+            }
+            .onChange(of: viewModel.timerManager.remainingTime) { _, _ in
+                viewModel.handleTimeChange()
+            }
+            .onChange(of: viewModel.isRunning) { _, newValue in
+                viewModel.handleRunningChange()
+            }
+        }
+        .frame(height: 200)
+    }
+
+    // MARK: - Next Subjects List
     private var nextSubjectsList: some View {
         List {
-            if currentSessionIndex < sessionItems.count {
-                ForEach(
-                    sessionItems.filter { item in
-                        item.id != sessionItems[currentSessionIndex].id &&
-                        !completedItems.contains(where: { $0.id == item.id })
-                    }
-                ) { sessionItem in
-                    if sessionItem.isBreak {
-                        HStack {
-                            Text("Descanso")
-                                .font(.system(size: 14))
-                                .foregroundStyle(Color.secondary)
-                            Spacer()
-                            Text(
-                                formatHourAndMinute(breakTime)
-                            )
-                            .font(.system(size: 14))
-                            .foregroundStyle(Color.secondary)
-                        }
-                        .modifier(ListRowModifier())
-                    } else if let study = sessionItem.study {
-                        HStack {
-                            Text(study.name.isEmpty ? "Sem Nome" : study.name)
-                                .bold()
-                            Spacer()
-                            Text(formatHourAndMinute(study.studyTime))
-                                .bold()
-                        }
-                        .frame(height: 35)
-                        .modifier(ListRowModifier())
-                    }
+            if viewModel.currentSessionIndex < viewModel.sessionItems.count {
+                ForEach(viewModel.filteredSessionItems) { sessionItem in
+                    sessionRow(for: sessionItem)
                 }
             }
         }
         .listStyle(.plain)
         .contentMargins(.top, -4)
-        .background(theme.bgColor())
+        .background(.orhadiBG)
         .environment(\.defaultMinListRowHeight, 20)
     }
 
-    // MARK: - Functions
-
-    private func prepareSession() {
-        var sessionSequence: [SessionItem] = []
-        var currentTime = Date()
-
-        for (index, study) in studies.enumerated() {
-            let components = Calendar.current.dateComponents(
-                [.hour, .minute],
-                from: study.studyTime
-            )
-            let hours = components.hour ?? 0
-            let minutes = components.minute ?? 0
-
-            let studyDuration = TimeInterval(hours * 3600 + minutes * 60)
-
-            let studyEnd = currentTime.addingTimeInterval(studyDuration)
-            sessionSequence.append(
-                SessionItem(
-                    name: study.name,
-                    endTime: studyEnd,
-                    isBreak: false,
-                    study: study
-                )
-            )
-            currentTime = studyEnd
-
-            if index != studies.count - 1 {
-                let breakEnd = currentTime.addingTimeInterval(settings.breakTime)
-                sessionSequence.append(
-                    SessionItem(
-                        name: "Descanso",
-                        endTime: breakEnd,
-                        isBreak: true,
-                        study: nil
-                    )
-                )
-                currentTime = breakEnd
+    private func sessionRow(for sessionItem: SessionItem) -> some View {
+        Group {
+            if sessionItem.isBreak {
+                breakSessionRow
+            } else if let study = sessionItem.study {
+                studySessionRow(for: study)
             }
         }
-
-        isReady = true
-        sessionItems = sessionSequence
-        currentSessionIndex = 0
-        remainingTime = sessionSequence.first?.endTime.timeIntervalSinceNow ?? 0
-        isRunning = true
-        breakTime = settings.breakTime
-
-        if let firstEndTime = sessionSequence.first?.endTime {
-            timerManager.start(with: firstEndTime)
-        }
     }
 
-    private func advanceSession() {
-        guard currentSessionIndex < sessionItems.count else { return }
-        let currentItem = sessionItems[currentSessionIndex]
-
-        if !currentItem.isBreak, let study = currentItem.study {
-            updateLastStudied(for: study)
-            let components = Calendar.current.dateComponents([.hour, .minute], from: study.studyTime)
-            game.addXP(50 * (((components.hour ?? 0) * 60) + (components.minute ?? 0)), to: user)
+    private var breakSessionRow: some View {
+        HStack {
+            Text("Descanso")
+            Spacer()
+            Text(formatHourAndMinute(viewModel.breakTime))
         }
-
-        withAnimation {
-            completedItems.append(currentItem)
-        }
-
-        currentSessionIndex += 1
-
-        if currentSessionIndex < sessionItems.count {
-            timerManager.start(with: sessionItems[currentSessionIndex].endTime)
-        } else {
-            isRunning = false
-            studyFinished = true
-            timerManager.pause()
-        }
+        .font(.system(size: 14))
+        .foregroundStyle(Color.secondary)
+        .modifier(ListRowModifier())
     }
 
-    private func skipToNext() {
-        guard currentSessionIndex < sessionItems.count else { return }
-
-        let currentItem = sessionItems[currentSessionIndex]
-
-        withAnimation {
-            completedItems.append(currentItem)
+    private func studySessionRow(for study: SRStudy) -> some View {
+        HStack {
+            Text(study.name.isEmpty ? "Sem Nome" : study.name)
+                .bold()
+            Spacer()
+            Text(formatHourAndMinute(study.studyTime))
+                .bold()
         }
-
-        let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
-        sessionItems[currentSessionIndex].endTime = Date()
-
-        for index in sessionItems.indices where index > currentSessionIndex {
-            sessionItems[index].endTime -= adjustment
-        }
-
-        currentSessionIndex += 1
-
-        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-
-        if currentSessionIndex < sessionItems.count {
-            timerManager.start(with: sessionItems[currentSessionIndex].endTime)
-        } else {
-            isRunning = false
-            studyFinished = true
-            timerManager.pause()
-        }
-    }
-
-    private func updateLastStudied(for study: SRStudy) {
-        if let index = studies.firstIndex(of: study) {
-            studies[index].lastStudied = Date()
-        }
+        .frame(height: 35)
+        .modifier(ListRowModifier())
     }
 }
 
@@ -302,9 +178,6 @@ struct ListRowModifier: ViewModifier {
                     trailing: 0
                 )
             )
-            .alignmentGuide(.listRowSeparatorLeading) {
-                viewDimensions in
-                return 0
-            }
+            .alignmentGuide(.listRowSeparatorLeading) { viewDimensions in 0 }
     }
 }

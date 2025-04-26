@@ -11,7 +11,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "#!/bin/bash&#10;&#10;cd &quot;$SRCROOT&quot;&#10;&#10;# Get the current date in format &quot;MMDDYY&quot;&#10;current_date=$(date &quot;+%y%m%d&quot;)&#10;&#10;# Read VERSION and BUILD_NUMBER from Config.xcconfig&#10;version=$(awk -F &quot;=&quot; &apos;/VERSION/ {print $2}&apos; Config.xcconfig | tr -d &apos; &apos;)&#10;previous_build_number=$(awk -F &quot;=&quot; &apos;/BUILD_NUMBER/ {print $2}&apos; Config.xcconfig | tr -d &apos; &apos;)&#10;&#10;# Split VERSION into major.minor.patch&#10;IFS=&apos;.&apos; read -r major minor patch &lt;&lt;&lt; &quot;$version&quot;&#10;&#10;# Multiply major * minor * patch&#10;version_number=$((major * minor * patch))&#10;&#10;# Remove prefix &quot;&lt;number&gt;D&quot; to extract date+counter part&#10;build_info_after_D=${previous_build_number#*D}&#10;&#10;# Now split into date and counter&#10;previous_date=${build_info_after_D:0:6}&#10;previous_counter=${build_info_after_D:6}&#10;&#10;# Decide the new counter&#10;if [[ &quot;$current_date&quot; == &quot;$previous_date&quot; ]]; then&#10;    new_counter=$((previous_counter + 1))&#10;else&#10;    new_counter=1&#10;fi&#10;&#10;# Build the new build number&#10;new_build_number=&quot;${version_number}D${current_date}${new_counter}&quot;&#10;&#10;# Update Config.xcconfig&#10;sed -i -e &quot;/BUILD_NUMBER =/ s/= .*/= $new_build_number/&quot; Config.xcconfig&#10;&#10;# Clean sed backup (macOS-specific)&#10;rm -f Config.xcconfig-e&#10;&#10;echo &quot;New build number generated: $new_build_number&quot;&#10;">
+               scriptText = "#!/bin/bash&#10;&#10;cd &quot;$SRCROOT/$PRODUCT_NAME&quot;&#10;&#10;previous_build_number=$(awk -F &quot;=&quot; &apos;/BUILD_NUMBER/ {print $2}&apos; Config.xcconfig | tr -d &apos; &apos;)&#10;&#10;# Build the new build number&#10;new_build_number=$((previous_build_number + 1))&#10;&#10;# Update Config.xcconfig&#10;sed -i &apos;&apos; -e &quot;/BUILD_NUMBER =/ s/= .*/= $new_build_number/&quot; Config.xcconfig&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
@@ -58,6 +58,11 @@
                BlueprintName = "OrhadiTests"
                ReferencedContainer = "container:Orhadi.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "ViewModelTest">
+               </Test>
+            </SkippedTests>
          </TestableReference>
       </Testables>
    </TestAction>

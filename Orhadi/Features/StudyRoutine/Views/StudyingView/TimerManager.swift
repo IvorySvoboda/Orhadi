@@ -7,9 +7,10 @@
 
 import Foundation
 import Combine
+import Observation
 
-class TimerManager: ObservableObject {
-    @Published var remainingTime: TimeInterval = 0
+@Observable class TimerManager {
+    var remainingTime: TimeInterval = 0
 
     private var cancellable: AnyCancellable?
     private var endTime: Date?
@@ -28,7 +29,6 @@ class TimerManager: ObservableObject {
 
     func pause() {
         cancellable?.cancel()
-        self.remainingTime = 0
     }
 
     private func tick() {

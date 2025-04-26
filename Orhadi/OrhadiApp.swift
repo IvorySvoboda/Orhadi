@@ -36,7 +36,6 @@ struct OrhadiApp: App {
 }
 
 struct RootView: View {
-    @Environment(\.colorScheme) private var scheme
     @Environment(\.modelContext) private var modelContext
     @Query private var settings: [Settings]
     @Query private var userProfile: [UserProfile]
@@ -58,6 +57,5 @@ struct RootView: View {
             .environment(settings.first ?? Settings())
             .environment(userProfile.first ?? UserProfile())
             .environment(GameManager(context: modelContext))
-            .environment(OrhadiTheme(colorScheme: scheme))
     }
 }

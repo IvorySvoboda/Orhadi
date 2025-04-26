@@ -32,7 +32,6 @@ struct SubjectTeacherPicker: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
 
     @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
 
@@ -87,7 +86,7 @@ struct SubjectTeacherPicker: View {
                         }.tint(Color.accentColor)
                     }
                 }
-            }.listRowBackground(theme.secondaryBGColor())
+            }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
                 Button {
@@ -106,7 +105,7 @@ struct SubjectTeacherPicker: View {
                         }
                     }
                 }.tint(colorScheme == .dark ? .white : .black)
-            }.listRowBackground(theme.secondaryBGColor())
+            }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
                 Button {
@@ -115,9 +114,9 @@ struct SubjectTeacherPicker: View {
                     CustomLabel("Novo Professor", systemImage: "plus")
                 }
                 .tint(Color.accentColor)
-            }.listRowBackground(theme.secondaryBGColor())
+            }.listRowBackground(Color.orhadiSecondaryBG)
         }
-        .modifier(DefaultList())
+        .orhadiListStyle()
         .navigationTitle("Professor(a)")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in

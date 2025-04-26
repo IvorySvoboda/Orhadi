@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ToDoSheetView: View {
-    @Environment(OrhadiTheme.self) private var theme
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
@@ -42,7 +41,7 @@ struct ToDoSheetView: View {
                         MarkdownTextField(text: $todo.info)
                             .frame(height: 200)
                     }
-                }.listRowBackground(theme.secondaryBGColor())
+                }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
                     DatePicker(
@@ -57,9 +56,9 @@ struct ToDoSheetView: View {
                             todo.dueDate = Date().addingTimeInterval(3600)
                         }
                     }
-                }.listRowBackground(theme.secondaryBGColor())
+                }.listRowBackground(Color.orhadiSecondaryBG)
             }
-            .modifier(DefaultList())
+            .orhadiListStyle()
             .navigationTitle("\(isNew ? "Nova" : "Editar") Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

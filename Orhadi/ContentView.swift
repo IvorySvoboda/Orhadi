@@ -8,31 +8,53 @@
 import SwiftData
 import SwiftUI
 
+enum Theme: Codable, CaseIterable {
+    case light, dark, auto
+
+    var name: String {
+        switch self {
+        case .light:
+            return String(localized: "Claro")
+        case .dark:
+            return String(localized: "Escuro")
+        case .auto:
+            return String(localized: "Auto")
+        }
+    }
+}
+
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
-    @Environment(OrhadiTheme.self) private var theme
 
     var body: some View {
         TabView {
             Tab("Matérias", systemImage: "book.fill") {
                 SubjectsView()
-                    .toolbarBackground(theme.bgColor(), for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
                 ToDosView()
-                    .toolbarBackground(theme.bgColor(), for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Rotina de Estudos", systemImage: "graduationcap.fill") {
-                StudyRoutineView()
-                    .toolbarBackground(theme.bgColor(), for: .tabBar)
+                SRView()
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
-                    .toolbarBackground(theme.bgColor(), for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
         }
-        .preferredColorScheme(theme.getTheme(for: settings.theme))
+        .preferredColorScheme(getTheme(for: settings.theme))
+    }
+
+    func getTheme(for theme: Theme) -> ColorScheme? {
+        switch theme {
+        case .auto: return nil
+        case .light: return .light
+        case .dark: return .dark
+        }
     }
 }
 

@@ -1,0 +1,9 @@
+//
+//  Config.xcconfig
+//  Orhadi
+//
+//  Created by Zyvoxi . on 26/04/25.
+//
+
+VERSION = 3.3.2
+BUILD_NUMBER = 3158

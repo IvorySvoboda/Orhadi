@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		285D39AF2DBCE2B600CDC4D0 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 285D39AE2DBCE2B600CDC4D0 /* Config.xcconfig */; };
-		28AA05E82DA8074100814D25 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 28AA05E72DA8073300814D25 /* README.md */; };
 		28BD45F42DAAF6BC00B916B1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 28BD45F32DAAF6BC00B916B1 /* MarkdownUI */; };
 /* End PBXBuildFile section */
 
@@ -25,8 +23,6 @@
 /* Begin PBXFileReference section */
 		2804F4D82D92275700649FD0 /* Orhadi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Orhadi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28453A232DB997C400AE5079 /* OrhadiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrhadiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		285D39AE2DBCE2B600CDC4D0 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		28AA05E72DA8073300814D25 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.markdown; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -35,9 +31,14 @@
 			path = Orhadi;
 			sourceTree = "<group>";
 		};
-		28453A242DB997C400AE5079 /* OrhadiTests */ = {
+		28453A242DB997C400AE5079 /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = OrhadiTests;
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		285D39B32DBD2C5300CDC4D0 /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -65,10 +66,9 @@
 			isa = PBXGroup;
 			children = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
-				28453A242DB997C400AE5079 /* OrhadiTests */,
+				28453A242DB997C400AE5079 /* Tests */,
 				2804F4D92D92275700649FD0 /* Products */,
-				28AA05E72DA8073300814D25 /* README.md */,
-				285D39AE2DBCE2B600CDC4D0 /* Config.xcconfig */,
+				285D39B32DBD2C5300CDC4D0 /* Resources */,
 			);
 			sourceTree = "<group>";
 		};
@@ -99,6 +99,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
+				285D39B32DBD2C5300CDC4D0 /* Resources */,
 			);
 			name = Orhadi;
 			packageProductDependencies = (
@@ -122,7 +123,7 @@
 				28453A282DB997C400AE5079 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				28453A242DB997C400AE5079 /* OrhadiTests */,
+				28453A242DB997C400AE5079 /* Tests */,
 			);
 			name = OrhadiTests;
 			packageProductDependencies = (
@@ -179,8 +180,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				285D39AF2DBCE2B600CDC4D0 /* Config.xcconfig in Resources */,
-				28AA05E82DA8074100814D25 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +274,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = XJ8LRTT74C;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -296,6 +296,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = "$(VERSION)";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -341,6 +342,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = "$(BUILD_NUMBER)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = XJ8LRTT74C;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -356,6 +358,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = "$(VERSION)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -367,7 +370,8 @@
 		};
 		2804F4E92D92275900649FD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 285D39AE2DBCE2B600CDC4D0 /* Config.xcconfig */;
+			baseConfigurationReferenceAnchor = 2804F4DA2D92275700649FD0 /* Orhadi */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -408,7 +412,8 @@
 		};
 		2804F4EA2D92275900649FD0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 285D39AE2DBCE2B600CDC4D0 /* Config.xcconfig */;
+			baseConfigurationReferenceAnchor = 2804F4DA2D92275700649FD0 /* Orhadi */;
+			baseConfigurationReferenceRelativePath = Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
