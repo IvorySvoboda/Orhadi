@@ -1,33 +1,11 @@
 //
-//  StudyRoutineSettingsView.swift
+//  BreakTimePickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/04/25.
+//  Created by Zyvoxi . on 25/04/25.
 //
 
-import Charts
-import SwiftData
 import SwiftUI
-
-struct StudyRoutineSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
-
-    @Bindable var settings: Settings
-
-    var body: some View {
-        Form {
-            Section {
-                Toggle("Confirmar para Excluir", isOn: $settings.studyDeleteConfirmation)
-                BreakTimePickerView()
-            }
-            .listRowBackground(theme.secondaryBGColor())
-        }
-        .modifier(DefaultList())
-        .navigationTitle("Rotina de Estudos")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
 struct BreakTimePickerView: View {
     @Environment(Settings.self) private var settings
@@ -70,7 +48,7 @@ struct BreakTimePicker: View {
                         }
                     }.tint(colorScheme == .dark ? .white : .black)
                 }
-            }.listRowBackground(theme.bgColor())
+            }.listRowBackground(theme.secondaryBGColor())
         }
         .modifier(DefaultList())
         .navigationTitle("Tempo de Descanso")

@@ -1,65 +1,18 @@
 //
-//  TasksSettingsView.swift
+//  GracePeriodPickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/04/25.
+//  Created by Zyvoxi . on 25/04/25.
 //
 
 import SwiftUI
 
-struct ToDosSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
-
-    @State private var notificationStatus: Bool = false
-
-    @Bindable var settings: Settings
-
-    var body: some View {
-        Form {
-            Section {
-                Toggle(
-                    "Confirmar para Excluir",
-                    isOn: $settings.todosDeleteConfirmation
-                )
-
-                ToDoGracePeriodePickerView()
-            }.listRowBackground(theme.secondaryBGColor())
-
-            Section {
-                Toggle(
-                    "Agendar Notificações",
-                    isOn: $settings.scheduleNotifications
-                ).disabled(!notificationStatus)
-            } header: {
-                Text("Notificações")
-            } footer: {
-                Text(
-                    "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
-                )
-            }
-            .listRowBackground(theme.secondaryBGColor())
-        }
-        .modifier(DefaultList())
-        .navigationTitle("Tarefas")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            NotificationsManager.shared.notificationStatus { authorizedStatus in
-                self.notificationStatus = authorizedStatus
-                if !notificationStatus {
-                    settings.scheduleNotifications = false
-                }
-            }
-        }
-    }
-}
-
-struct ToDoGracePeriodePickerView: View {
+struct GracePeriodPickerView: View {
     @Environment(Settings.self) private var settings
 
     var body: some View {
         NavigationLink {
-            ToDoGracePeriodePicker()
+            GracePeriodPicker()
         } label: {
             HStack {
                 Text("Tolerância")
@@ -71,7 +24,7 @@ struct ToDoGracePeriodePickerView: View {
     }
 }
 
-struct ToDoGracePeriodePicker: View {
+struct GracePeriodPicker: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings

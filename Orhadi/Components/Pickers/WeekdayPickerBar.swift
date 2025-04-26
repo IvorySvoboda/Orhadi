@@ -1,5 +1,5 @@
 //
-//  GroupedSubjectsList.swift
+//  WeekdayPickerBar.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 05/04/25.

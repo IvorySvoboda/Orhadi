@@ -13,7 +13,7 @@ struct TimerView: View {
     var body: some View {
         let timeString = getFormattedTime(from: remainingTime)
 
-        return HStack(spacing: -5) {
+        return HStack {
             RollingTextView(text: timeString)
                 .font(.system(size: 40, weight: .bold, design: .monospaced))
         }

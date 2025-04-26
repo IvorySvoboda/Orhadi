@@ -49,6 +49,8 @@ struct ProfileView: View {
                         .foregroundStyle(Color.secondary)
                 }
             }
+            .compositingGroup()
+            .drawingGroup()
             .frame(maxWidth: .infinity, maxHeight: 170, alignment: .center)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
             .listRowBackground(Color.clear)
@@ -115,112 +117,5 @@ struct ProfileView: View {
         ProfileView()
             .environment(UserProfile())
             .environment(GameManager(context: SampleData.shared.context))
-    }
-}
-
-struct StatisticsView: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(GameManager.self) private var game
-    @Environment(UserProfile.self) private var user
-    @Environment(OrhadiTheme.self) private var theme
-
-    var body: some View {
-        List {
-            Section {
-                HStack {
-                    Text("Level")
-                    Spacer()
-                    Text("\(user.level)")
-                        .foregroundStyle(Color.secondary)
-                }
-                HStack {
-                    Text("XP")
-                    Spacer()
-                    Text("\(user.xp)/\(game.xpRequired(for: user.level))")
-                        .foregroundStyle(Color.secondary)
-                }
-                HStack {
-                    Text("Tempo estudado")
-                    Spacer()
-                    Text(formatTime(user.timeStudied))
-                        .foregroundStyle(Color.secondary)
-                }
-                HStack {
-                    Text("Tarefas completadas")
-                    Spacer()
-                    Text("\(user.completedToDos)")
-                        .foregroundStyle(Color.secondary)
-                }
-            }.listRowBackground(theme.secondaryBGColor())
-        }
-        .modifier(DefaultList())
-        .navigationTitle("Estatísticas")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct UserInfoView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(UserProfile.self) private var user
-    @Environment(OrhadiTheme.self) private var theme
-
-    var body: some View {
-        List {
-            Section {
-                NavigationLink {
-                    UserNameEditView(user: user)
-                } label: {
-                    HStack {
-                        Text("Nome")
-                        Spacer()
-                        Text(user.name)
-                            .foregroundStyle(Color.secondary)
-                    }
-                }
-            }.listRowBackground(theme.secondaryBGColor())
-        }
-        .modifier(DefaultList())
-        .navigationTitle("Informações pessoais")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-struct UserNameEditView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(OrhadiTheme.self) private var theme
-
-    @Bindable var user: UserProfile
-
-    @State private var userName: String
-
-    init(user: UserProfile) {
-        self.user = user
-        _userName = State(initialValue: user.name)
-    }
-
-    var body: some View {
-        Form {
-            Section {
-                HStack {
-                    Text("Nome")
-                        .frame(width: 50, alignment: .leading)
-                    TextField("Obrigatório", text: $userName)
-                        .autocorrectionDisabled()
-                }
-            }.listRowBackground(theme.secondaryBGColor())
-        }
-        .modifier(DefaultList())
-        .navigationTitle("Nome")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Concluído") {
-                    user.name = userName
-                    dismiss()
-                }.disabled(userName == user.name || userName.isEmpty)
-            }
-        }
     }
 }
