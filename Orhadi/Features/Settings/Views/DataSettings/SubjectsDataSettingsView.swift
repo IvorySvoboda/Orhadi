@@ -10,86 +10,72 @@ import SwiftUI
 
 struct SubjectsDataSettingsView: View {
 
-    @Query(animation: .smooth) private var subjects: [Subject]
-
-    @State private var showDeleteConfirmation: Bool = false
-    /// Exporter
-    @State private var subjectsExportItem: SubjectTransferable?
-    @State private var showSubjectsFileExporter: Bool = false
-    /// Importer
-    @State private var showSubjectsImportAlert: Bool = false
-    @State private var showSubjectsFileImporter: Bool = false
-    @State private var importedURL: URL?
+    @State private var viewModel = SubjectsDataSettingsViewModel()
 
     var body: some View {
         Form {
             Section {
-                let subjects = self.subjects.filter({ !$0.isRecess })
-                let recess = self.subjects.filter({ $0.isRecess })
-
                 HStack {
                     Text("Total de Itens")
                     Spacer()
-                    Text("\(self.subjects.count)")
+                    Text("\((viewModel.subjects?.count ?? 0))")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Matérias")
                     Spacer()
-                    Text("\(subjects.count)")
+                    Text("\(viewModel.allSubjects)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Intervalos")
                     Spacer()
-                    Text("\(recess.count)")
+                    Text("\(viewModel.allRecess)")
                         .foregroundStyle(.secondary)
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
                 Button("Exportar Matérias") {
-                    exportSubjects()
+                    viewModel.exportSubjects()
                 }
-                .disabled(subjects.isEmpty)
+                .disabled((viewModel.subjects?.isEmpty ?? true))
                 .fileExporter(
-                    isPresented: $showSubjectsFileExporter,
-                    item: subjectsExportItem,
+                    isPresented: $viewModel.showSubjectsFileExporter,
+                    item: viewModel.subjectsExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "Matérias")
                 ) { result in
                     switch result {
                     case .success(_):
-                        print("Sucesso!")
+                        viewModel.subjectsExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
+                        viewModel.subjectsExportItem = nil
                     }
-
-                    subjectsExportItem = nil
                 } onCancellation: {
-                    subjectsExportItem = nil
+                    viewModel.subjectsExportItem = nil
                 }
 
                 Button("Importar Matérias") {
-                    showSubjectsImportAlert.toggle()
+                    viewModel.showSubjectsImportAlert.toggle()
                 }
-                .alert("Importar Matérias?", isPresented: $showSubjectsImportAlert) {
+                .alert("Importar Matérias?", isPresented: $viewModel.showSubjectsImportAlert) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Continuar") {
-                        showSubjectsFileImporter.toggle()
+                        viewModel.showSubjectsFileImporter.toggle()
                     }
                 } message: {
                     Text("Ao importar, todas as matérias todas as matérias existentes serão removidas. Deseja continuar?")
                 }
                 .fileImporter(
-                    isPresented: $showSubjectsFileImporter,
+                    isPresented: $viewModel.showSubjectsFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        debugPrint("Sucesso!")
-                        importedURL = url
-                        importSubject()
+                        viewModel.importedURL = url
+                        viewModel.importSubject()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -98,12 +84,12 @@ struct SubjectsDataSettingsView: View {
 
             Section {
                 Button("Apagar todas as matérias") {
-                    showDeleteConfirmation.toggle()
+                    viewModel.showDeleteConfirmation.toggle()
                 }.tint(.red)
-                .alert("Apagar todas as matérias?", isPresented: $showDeleteConfirmation) {
+                    .alert("Apagar todas as matérias?", isPresented: $viewModel.showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
-                        deleteAllSubjects()
+                        viewModel.deleteAllSubjects()
                     }
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
@@ -111,107 +97,5 @@ struct SubjectsDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    /// Delete
-    private func deleteAllSubjects() {
-        Task.detached(priority: .background) {
-            do {
-                let context = try createContext()
-
-                let subjects = try context.fetch(FetchDescriptor<Subject>())
-
-                for subject in subjects {
-                    context.delete(subject)
-                }
-
-                try context.save()
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
-    }
-
-    /// Exporter
-    private func exportSubjects() {
-        Task.detached(priority: .background) {
-            do {
-                let context = try createContext()
-
-                let descriptor = FetchDescriptor<Subject>()
-
-                let allObjects = try context.fetch(descriptor)
-                let exportItem = SubjectTransferable(subjects: allObjects)
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-
-                await MainActor.run {
-                    self.subjectsExportItem = exportItem
-                    showSubjectsFileExporter = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
-    }
-
-    /// Importer
-    private func importSubject() {
-        guard let url = importedURL else { return }
-        Task.detached(priority: .background) {
-            do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
-                let context = try createContext()
-
-                let existingSubjects = try context.fetch(FetchDescriptor<Subject>())
-                for subject in existingSubjects { context.delete(subject) }
-
-                let data = try Data(contentsOf: url)
-                let allSubjects = try JSONDecoder().decode(
-                    [Subject].self, from: data)
-
-                for subject in allSubjects {
-                    var teacher: Teacher? = nil
-
-                    if let subjectTeacher = subject.teacher {
-                        let existingTeacher = try context.fetch(FetchDescriptor<Teacher>(
-                            predicate: #Predicate { $0.name == subjectTeacher.name }
-                        )).first
-
-                        if let existingTeacher {
-                            teacher = existingTeacher
-                        } else {
-                            teacher = subjectTeacher
-                        }
-                    }
-
-                    context.insert(
-                        Subject(
-                            name: subject.name,
-                            teacher: teacher,
-                            schedule: subject.schedule,
-                            startTime: subject.startTime,
-                            endTime: subject.endTime,
-                            place: subject.place,
-                            isRecess: subject.isRecess
-                        )
-                    )
-                }
-
-                try context.save()
-
-                url.stopAccessingSecurityScopedResource()
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
     }
 }

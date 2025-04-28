@@ -68,7 +68,7 @@ struct SubjectTeacherPicker: View {
                         }
                     }
                     .tint(colorScheme == .dark ? .white : .black)
-                    .swipeActions(edge: .trailing) {
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
                             withAnimation {
                                 context.delete(teacher)

@@ -97,7 +97,9 @@ struct SubjectRow: View {
             /// se existe um professor na matéria e o email do professor não está vazio
             /// crie o botão para enviar um email
             if let teacher = subject.teacher, !teacher.email.isEmpty {
-                Button(action: { openMail(to: teacher.email) }) {
+                Button {
+                    subject.openMail()
+                } label: {
                     Label("Enviar e-mail", systemImage: "envelope.fill")
                         .labelStyle(.iconOnly)
                 }.tint(.accentColor)
@@ -150,13 +152,5 @@ struct SubjectRow: View {
             Label("Editar", systemImage: "pencil")
                 .labelStyle(.iconOnly)
         }.tint(.accentColor)
-    }
-
-    // MARK: - Funcitons
-
-    private func openMail(to email: String) {
-        guard let encoded = subject.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "mailto:\(email)?subject=\(encoded)") else { return }
-        UIApplication.shared.open(url)
     }
 }

@@ -10,101 +10,80 @@ import SwiftUI
 
 struct ToDosDataSettingsView: View {
     @Environment(Settings.self) private var settings
-
     @Query(animation: .smooth) private var todos: [ToDo]
 
-    @State private var showDeleteConfirmation: Bool = false
-    /// Exporter
-    @State private var todosExportItem: ToDoTransferable?
-    @State private var showToDosFileExporter: Bool = false
-    /// Importer
-    @State private var showToDosImportAlert: Bool = false
-    @State private var showToDosFileImporter: Bool = false
-    @State private var importedURL: URL?
+    @State private var viewModel = ToDosDataSettingsViewModel()
 
     var body: some View {
         Form {
             Section {
-                let completed = self.todos.filter({ $0.isCompleted })
-                let pending = self.todos.filter({ $0.dueDate < Date() && $0.dueDate.addingTimeInterval(settings.gracePeriod) > Date() && !$0.isCompleted })
-                let expired = self.todos.filter({ $0.dueDate.addingTimeInterval(settings.gracePeriod) < Date() && !$0.isCompleted })
-                let upcoming = self.todos.filter({ $0.dueDate > Date() && !$0.isCompleted })
-
                 HStack {
                     Text("Total de tarefas")
                     Spacer()
-                    Text("\(self.todos.count)")
+                    Text("\(viewModel.todos?.count ?? 0)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Concluídas")
                     Spacer()
-                    Text("\(completed.count)")
+                    Text("\(viewModel.completedTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Atrasadas")
                     Spacer()
-                    Text("\(pending.count)")
+                    Text("\(viewModel.overdueTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Vencidas")
+                    Text("A Fazer")
                     Spacer()
-                    Text("\(expired.count)")
-                        .foregroundStyle(.secondary)
-                }
-                HStack {
-                    Text("Futuras")
-                    Spacer()
-                    Text("\(upcoming.count)")
+                    Text("\(viewModel.pendingTodos)")
                         .foregroundStyle(.secondary)
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
                 Button("Exportar Tarefas") {
-                    exportToDos()
+                    viewModel.exportToDos()
                 }
                 .disabled(todos.isEmpty)
                 .fileExporter(
-                    isPresented: $showToDosFileExporter,
-                    item: todosExportItem,
+                    isPresented: $viewModel.showToDosFileExporter,
+                    item: viewModel.todosExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "Tarefas")
                 ) { result in
                     switch result {
                     case .success(_):
-                        print("Sucesso!")
+                        viewModel.todosExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
+                        viewModel.todosExportItem = nil
                     }
-
-                    todosExportItem = nil
                 } onCancellation: {
-                    todosExportItem = nil
+                    viewModel.todosExportItem = nil
                 }
 
                 Button("Importar Tarefas") {
-                    showToDosImportAlert.toggle()
+                    viewModel.showToDosImportAlert.toggle()
                 }
-                .alert("Importar Tarefas?", isPresented: $showToDosImportAlert) {
+                .alert("Importar Tarefas?", isPresented: $viewModel.showToDosImportAlert) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Continuar") {
-                        showToDosFileImporter.toggle()
+                        viewModel.showToDosFileImporter.toggle()
                     }
                 } message: {
                     Text("Ao importar, todas as tarefas todas as tarefas existentes serão removidas. Deseja continuar?")
                 }
                 .fileImporter(
-                    isPresented: $showToDosFileImporter,
+                    isPresented: $viewModel.showToDosFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        debugPrint("Sucesso!")
-                        importedURL = url
-                        importToDos()
+                        viewModel.importedURL = url
+                        viewModel.importToDos()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -113,12 +92,12 @@ struct ToDosDataSettingsView: View {
 
             Section {
                 Button("Apagar todas as tarefas") {
-                    showDeleteConfirmation.toggle()
+                    viewModel.showDeleteConfirmation.toggle()
                 }.tint(.red)
-                .alert("Apagar todas as tarefas?", isPresented: $showDeleteConfirmation) {
+                    .alert("Apagar todas as tarefas?", isPresented: $viewModel.showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
-                        deleteAllToDo()
+                        viewModel.deleteAllToDo()
                     }
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
@@ -126,107 +105,5 @@ struct ToDosDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func deleteAllToDo() {
-        Task.detached(priority: .background) {
-            do {
-                let context = try createContext()
-
-                let todos = try context.fetch(FetchDescriptor<ToDo>())
-
-                for todo in todos {
-                    let todoID = todo.id
-                    let identifiers = [
-                        "\(todoID)-1h",
-                        "\(todoID)-24h",
-                        "\(todoID)-due",
-                    ]
-
-                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-                    context.delete(todo)
-                }
-
-                try context.save()
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
-    }
-
-    private func exportToDos() {
-        Task.detached(priority: .background) {
-            do {
-                let context = try createContext()
-
-                let descriptor = FetchDescriptor(sortBy: [SortDescriptor(\ToDo.dueDate, order: .forward)])
-
-                let allObjects = try context.fetch(descriptor)
-                let exportItem = ToDoTransferable(todos: allObjects)
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-
-                await MainActor.run {
-                    self.todosExportItem = exportItem
-                    showToDosFileExporter = true
-                }
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
-    }
-
-    private func importToDos() {
-        guard let url = importedURL else { return }
-        Task.detached(priority: .background) {
-            do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
-                let context = try createContext()
-
-                let settings = try context.fetch(FetchDescriptor<Settings>()).first ?? Settings()
-                let existingToDos = try context.fetch(FetchDescriptor<ToDo>())
-
-                for todo in existingToDos {
-                    let todoID = todo.id
-                    let identifiers = [
-                        "\(todoID)-1h",
-                        "\(todoID)-24h",
-                        "\(todoID)-due",
-                    ]
-
-                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-                    context.delete(todo)
-                }
-
-                let data = try Data(contentsOf: url)
-                let allToDos = try JSONDecoder().decode(
-                    [ToDo].self, from: data)
-
-                for todo in allToDos {
-                    if !todo.isCompleted, todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
-                        todo.scheduleNotification()
-                    }
-                    context.insert(todo)
-                }
-
-                try context.save()
-
-                debugPrint("Importado com sucesso!")
-
-                url.stopAccessingSecurityScopedResource()
-
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-        }
     }
 }

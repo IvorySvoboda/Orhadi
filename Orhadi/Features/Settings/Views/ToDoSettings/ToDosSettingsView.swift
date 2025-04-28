@@ -21,8 +21,6 @@ struct ToDosSettingsView: View {
                     "Confirmar para Excluir",
                     isOn: $settings.todosDeleteConfirmation
                 )
-
-                GracePeriodPickerView()
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {

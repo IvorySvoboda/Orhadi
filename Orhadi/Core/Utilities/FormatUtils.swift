@@ -71,13 +71,22 @@ func formatTime(_ date: Date) -> String {
     let dateFormatter = DateFormatter()
     dateFormatter.dateFormat = String(localized: "HH:mm")
 
-    return dateFormatter.string(from: date).capitalized
+    return dateFormatter.string(from: date)
 }
 
 /// Formata um `Date` em uma `String` no formato "dd/MM/yyyy – hh:mm".
 func formatDueDate(_ date: Date) -> String {
-    let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = String(localized: "dd/MM/yyyy – HH:mm")
+    let formatter1 = DateFormatter()
+    formatter1.timeStyle = .none
+    formatter1.dateStyle = .medium
+    formatter1.doesRelativeDateFormatting = true
 
-    return dateFormatter.string(from: date)
+    let formatter2 = DateFormatter()
+    formatter2.dateFormat = String(localized: "dd/MM/yyyy")
+
+    if date > Calendar.current.date(byAdding: .day, value: 2, to: .now)! || date < Calendar.current.date(byAdding: .day, value: -2, to: .now)! {
+        return formatter2.string(from: date)
+    } else {
+        return formatter1.string(from: date)
+    }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 import MarkdownUI
 
 struct ToDoRow: View {
@@ -18,6 +19,7 @@ struct ToDoRow: View {
 
     var todo: ToDo
     @Binding var todoToEdit: ToDo?
+    var deleteToDo: () -> Void
 
     // MARK: - Views
 
@@ -98,26 +100,24 @@ struct ToDoRow: View {
             }
 
             if !todo.isCompleted {
-                /// `dueDate` menor que a data atual, porém ao adicionar o período de tolerância fica maior que a data atual?
-                /// exibe ⚠️.
-                if todo.dueDate < Date() && todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
+                if todo.dueDate < Date() {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.orange)
-                }
-                /// Se mesmo com com período de tolerância o `dueDate` for menor que que a data atual,
-                /// exibe ❌.
-                if todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() {
-                    Image(systemName: "xmark")
                         .foregroundStyle(.red)
                 }
             }
 
             VStack(alignment: .leading) {
-                Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
-                    .font(.headline)
-                    .lineLimit(1)
-                    .frame(maxWidth: 200, alignment: .leading)
-                CustomLabel("\(formatDueDate(todo.dueDate))", systemImage: "calendar")
+                HStack {
+                    Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
+                        .font(.headline)
+                        .lineLimit(1)
+                    if todo.priority.rawValue > 0 {
+                        Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
+                            .font(.headline)
+                            .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
+                    }
+                }.frame(maxWidth: 300, alignment: .leading)
+                CustomLabel("\(formatDueDate(todo.dueDate))\(todo.withHour ? ", às \(formatTime(todo.dueDate))" : "")", systemImage: "calendar")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -131,7 +131,9 @@ struct ToDoRow: View {
             .alert("Excluir tarefa?", isPresented: $showConfirmation) {
                 Button("Cancelar", role: .cancel) {}
                 Button("Excluir", role: .destructive) {
-                    deleteToDo()
+                    withAnimation {
+                        deleteToDo()
+                    }
                 }
             } message: {
                 Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta tarefa?")
@@ -142,15 +144,15 @@ struct ToDoRow: View {
     // MARK: Swipe Actions
 
     private var completeToggleSwipeAction: some View {
-        Group {
-            /// Permite alterar o estado de completo/incompleto apenas se
-            /// o `dueDate`, considerando o período de tolerância, for maior que a data atual.
-            if todo.dueDate.addingTimeInterval(settings.gracePeriod) > Date() {
-                Button(role: .destructive, action: { completeToDo() }) {
-                    Label("Completar", systemImage: "checkmark")
-                }.tint(.accentColor)
+        Button(role: .destructive, action: { completeToDo() }) {
+            if todo.isCompleted {
+                Label("Descompletar", systemImage: "minus")
+                    .labelStyle(.iconOnly)
+            } else {
+                Label("Completar", systemImage: "checkmark")
+                    .labelStyle(.iconOnly)
             }
-        }
+        }.tint(.accentColor)
     }
 
     private var deleteSwipeAction: some View {
@@ -160,6 +162,7 @@ struct ToDoRow: View {
                     showConfirmation.toggle()
                 }) {
                     Label("Excluir", systemImage: "trash.fill")
+                        .labelStyle(.iconOnly)
                 }
                 .tint(.red)
             } else {
@@ -201,8 +204,9 @@ struct ToDoRow: View {
             game.addXP(100, to: user)
 
             /// completa a tarefa.
-            withAnimation(.bouncy) {
+            withAnimation {
                 todo.isCompleted = true
+                todo.completedAt = .now
             }
         } else { /// se não
             /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
@@ -215,24 +219,11 @@ struct ToDoRow: View {
             }
 
             /// descompleta a tarefa.
-            withAnimation(.bouncy) {
+            withAnimation {
                 todo.isCompleted = false
+                todo.completedAt = nil
             }
         }
     }
-
-    private func deleteToDo() {
-        let todoID = todo.id
-        let identifiers = [
-            "\(todoID)-1h",
-            "\(todoID)-24h",
-            "\(todoID)-due",
-        ]
-
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-        withAnimation(.bouncy) {
-            modelContext.delete(todo)
-        }
-    }
 }
+

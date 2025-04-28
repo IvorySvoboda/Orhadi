@@ -33,9 +33,7 @@ struct TeachersView: View {
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
                     Button {
-                        if let url = URL(string: "mailto:\(teacher.email)") {
-                            UIApplication.shared.open(url)
-                        }
+                        teacher.openMail()
                     } label: {
                         Image(systemName: "envelope.fill")
                     }.tint(.accentColor)

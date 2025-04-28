@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct CustomDisclosureGroupStyle: DisclosureGroupStyle {
+
+    var addPadding: Bool
+
+    init(addPadding: Bool = true) {
+        self.addPadding = addPadding
+    }
+
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
@@ -21,7 +28,7 @@ struct CustomDisclosureGroupStyle: DisclosureGroupStyle {
         }
         if configuration.isExpanded {
             configuration.content
-                .padding(.leading, 30)
+                .padding(.leading, addPadding ? 30 : 0)
                 .disclosureGroupStyle(self)
         }
     }

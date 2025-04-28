@@ -7,48 +7,82 @@
 
 import SwiftData
 import SwiftUI
-import MarkdownUI
 
 struct ToDosView: View {
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-    @Query(sort: \ToDo.dueDate, animation: .smooth) private var todos: [ToDo]
+
+    @Query(
+        sort: [.init(\ToDo.dueDate, order: .forward)],
+        animation: .smooth
+    ) private var todos: [ToDo]
 
     @State private var viewModel = ToDosViewModel()
 
     var body: some View {
         NavigationStack {
             List {
-                if viewModel.showPendingSection {
-                    Section(header: SectionHeader(text: String(localized: "Em Atraso"))) {
-                        ForEach(viewModel.pendingTodos) { todo in
-                            ToDoRow(todo: todo, todoToEdit: $viewModel.todoToEdit)
+                if viewModel.showOverdueSection {
+                    Section(
+                        header: SectionHeader(
+                            text: String(localized: "Em Atraso")
+                        )
+                    ) {
+                        ForEach(viewModel.overdueTodos, id: \.id) { todo in
+                            ToDoRow(
+                                todo: todo,
+                                todoToEdit: $viewModel.todoToEdit,
+                                deleteToDo: {
+                                    viewModel.deleteTodo(todo, using: context)
+                                }
+                            )
                         }
                     }
                     .listRowBackground(Color.orhadiBG)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .transition(.opacity.combined(with: .slide))
+                    .animation(.smooth, value: viewModel.overdueTodos)
+                }
+
+                if viewModel.showPendingSection {
+                    Section(
+                        header: SectionHeader(
+                            text: String(localized: "A Fazer")
+                        )
+                    ) {
+                        ForEach(viewModel.pendingTodos, id: \.id) { todo in
+                            ToDoRow(
+                                todo: todo,
+                                todoToEdit: $viewModel.todoToEdit,
+                                deleteToDo: {
+                                    viewModel.deleteTodo(todo, using: context)
+                                }
+                            )
+                        }
+                    }
+                    .listRowBackground(Color.orhadiBG)
+                    .transition(.opacity.combined(with: .slide))
                     .animation(.smooth, value: viewModel.pendingTodos)
                 }
 
-                if viewModel.showUpcomingSection {
-                    Section(header: SectionHeader(text: String(localized: "A Fazer"))) {
-                        ForEach(viewModel.upcomingTodos) { todo in
-                            ToDoRow(todo: todo, todoToEdit: $viewModel.todoToEdit)
-                        }
-                    }
-                    .listRowBackground(Color.orhadiBG)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                    .animation(.smooth, value: viewModel.upcomingTodos)
-                }
-
                 if viewModel.showCompletedSection {
-                    Section(header: SectionHeader(text: String(localized: "Completadas ou Vencidas"))) {
-                        ForEach(viewModel.completedOrExpiredTodos) { todo in
-                            ToDoRow(todo: todo, todoToEdit: $viewModel.todoToEdit)
+                    Section(
+                        header: SectionHeader(
+                            text: String(localized: "Completadas")
+                        )
+                    ) {
+                        ForEach(viewModel.completedTodos, id: \.id) { todo in
+                            ToDoRow(
+                                todo: todo,
+                                todoToEdit: $viewModel.todoToEdit,
+                                deleteToDo: {
+                                    viewModel.deleteTodo(todo, using: context)
+                                }
+                            )
                         }
                     }
                     .listRowBackground(Color.orhadiBG)
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                    .animation(.smooth, value: viewModel.completedOrExpiredTodos)
+                    .transition(.push(from: .trailing))
+                    .animation(.smooth, value: viewModel.completedTodos)
                 }
             }
             .orhadiPlainListStyle()
@@ -72,12 +106,42 @@ struct ToDosView: View {
                 ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
             }
-            .onAppear {
-                viewModel.updateTodos(todos, gracePeriod: settings.gracePeriod)
+        }
+        .onChange(of: todos) { _, _ in
+            viewModel.updateTodos(todos)
+        }
+        .onChange(of: viewModel.pendingTodos) { _, _ in
+            viewModel.updateSectionVisibility()
+        }
+        .onChange(of: viewModel.overdueTodos) { _, _ in
+            viewModel.updateSectionVisibility()
+        }
+        .onChange(of: viewModel.completedTodos) { _, _ in
+            viewModel.updateSectionVisibility()
+        }
+        .onChange(of: viewModel.todoToEdit) { _, _ in
+            viewModel.updateSectionVisibility()
+        }
+        .onAppear {
+            NotificationCenter.default.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                viewModel.updateTodos(todos)
             }
-            .onChange(of: todos) { _, newTodos in
-                viewModel.updateTodos(newTodos, gracePeriod: settings.gracePeriod)
-            }
+
+            viewModel.startUpdatingTodos()
+
+            viewModel.updateTodos(todos)
+        }
+        .onDisappear {
+            NotificationCenter.default.removeObserver(
+                self,
+                name: UIApplication.didBecomeActiveNotification,
+                object: nil
+            )
+            viewModel.stopUpdatingTodos()
         }
     }
 

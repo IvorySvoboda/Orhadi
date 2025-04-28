@@ -12,19 +12,19 @@ struct ToDoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
+    @State private var viewModel = ToDosViewModel()
+    @State private var isHourPickerExpanded = false
+
     @Bindable var todo: ToDo
+
     var isNew: Bool
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    HStack {
-                        Text("Título")
-                            .frame(width: 50, alignment: .leading)
-                        TextField("Trabalho de...", text: $todo.title)
-                            .autocorrectionDisabled()
-                    }
+                    TextField("Trabalho de...", text: $todo.title)
+                        .autocorrectionDisabled()
 
                     ZStack {
                         VStack {
@@ -44,24 +44,101 @@ struct ToDoSheetView: View {
                 }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
-                    DatePicker(
-                        "Prazo",
-                        selection: $todo.dueDate,
-                        displayedComponents: [.hourAndMinute, .date]
-                    )
-                    .disabled(todo.dueDate.addingTimeInterval(settings.gracePeriod) < Date() && !isNew)
-                    .onChange(of: todo.dueDate) { _, newDate in
-                        /// Não pode criar tarefas para o passado.
-                        if newDate < .now {
-                            todo.dueDate = Date().addingTimeInterval(3600)
+                    ToDoPriorityPickerView(todo: todo)
+                }.listRowBackground(Color.orhadiSecondaryBG)
+
+                Section {
+                    DisclosureGroup {
+                        DatePicker(
+                            "Data",
+                            selection: $todo.dueDate,
+                            displayedComponents: [.date]
+                        )
+                        .datePickerStyle(.graphical)
+                    } label: {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .resizable()
+                                .frame(width: 23, height: 23)
+                                .foregroundStyle(Color.accentColor)
+                                .padding(.trailing, 10)
+                                .padding(.leading, 2)
+                            VStack(alignment: .leading) {
+                                var todoDate: String {
+                                    let formatter = DateFormatter()
+                                    formatter.timeStyle = .none
+                                    formatter.dateStyle = .medium
+                                    formatter.doesRelativeDateFormatting = true
+
+                                    return formatter.string(from: todo.dueDate)
+                                }
+
+                                Text("Data")
+                                Text(todoDate)
+                                    .font(.caption)
+                                    .foregroundStyle(Color.accentColor)
+                            }
                         }
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                    .disclosureGroupStyle(CustomDisclosureGroupStyle(addPadding: false))
+
+                    DisclosureGroup(isExpanded: Binding(
+                        get: { isHourPickerExpanded },
+                        set: { newValue in
+                            if todo.withHour {
+                                isHourPickerExpanded = newValue
+                            }
+                        }
+                    )) {
+                        DatePicker(
+                            "Hora",
+                            selection: $todo.dueDate,
+                            displayedComponents: [.hourAndMinute]
+                        )
+                        .labelsHidden()
+                        .datePickerStyle(.wheel)
+                    } label: {
+                        Toggle(isOn: $todo.withHour) {
+                            HStack {
+                                Image(systemName: "clock")
+                                    .resizable()
+                                    .frame(width: 23, height: 23)
+                                    .foregroundStyle(Color.accentColor)
+                                    .padding(.trailing, 10)
+                                    .padding(.leading, 2)
+                                VStack(alignment: .leading) {
+                                    Text("Hora")
+                                    if todo.withHour {
+                                        Text("às \(formatTime(todo.dueDate))")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.accentColor)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .onChange(of: todo.withHour) { _, newValue in
+                        if !newValue {
+                            withAnimation {
+                                isHourPickerExpanded = false
+                            }
+                        }
+                    }
+                    .disclosureGroupStyle(CustomDisclosureGroupStyle(addPadding: false))
+                }
+                .listRowBackground(Color.orhadiSecondaryBG)
             }
             .orhadiListStyle()
             .navigationTitle("\(isNew ? "Nova" : "Editar") Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                if isNew {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancelar", role: .cancel) {
+                            dismiss()
+                        }
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         if isNew {
@@ -78,20 +155,21 @@ struct ToDoSheetView: View {
 
                             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
+                            if !todo.withHour {
+                                todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
+                            }
+
                             /// Sempre respeitando as preferências do usuário.
                             if settings.scheduleNotifications {
                                 todo.scheduleNotification()
                             }
 
+                            viewModel.updateSectionVisibility()
+
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
                     }.disabled(todo.title.isEmpty)
-                }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar", role: .cancel) {
-                        dismiss()
-                    }
                 }
             }
         }
@@ -102,7 +180,11 @@ struct ToDoSheetView: View {
             todo.scheduleNotification()
         }
 
-        withAnimation(.bouncy) {
+        if !todo.withHour {
+            todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
+        }
+
+        withAnimation {
             modelContext.insert(todo)
         }
     }

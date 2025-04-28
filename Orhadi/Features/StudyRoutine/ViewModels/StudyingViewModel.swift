@@ -11,13 +11,14 @@ struct SessionItem: Identifiable {
 
 @Observable class StudyingViewModel {
     // MARK: - Properties
+    var timerManager = TimerManager()
+
     var game: GameManager?
     var user: UserProfile?
 
     var isReady: Bool = false
     var sessionItems: [SessionItem] = []
     var currentSessionIndex = 0
-    @ObservationIgnored var timerManager = TimerManager()
     var isRunning: Bool = false
     var completedItems: [SessionItem] = []
     var studyFinished: Bool = false
@@ -84,17 +85,29 @@ struct SessionItem: Identifiable {
 
     // MARK: - Session Progression
     func advanceSession() {
+        /// Proteje o app de "crashar" por `out of range`
+        /// verificando se o index atual é menor que a
+        /// quantidade de itens na seção atual.
         guard currentSessionIndex < sessionItems.count else { return }
+
+        /// Define o item atual.
         let currentItem = sessionItems[currentSessionIndex]
 
+        /// Completa o item atual.
         handleCompletedSession(currentItem)
 
+        /// Coloca o item atual pra os itens completados.
         withAnimation {
             completedItems.append(currentItem)
         }
 
+        /// Avança para o proximo item.
         currentSessionIndex += 1
 
+        /// Se o index for menor que a quantidade
+        /// de itens em `sessionItems`, continua
+        /// os estudos normalmente, atualizando o
+        /// timer, se não, termina a seção.
         if currentSessionIndex < sessionItems.count {
             timerManager.start(with: sessionItems[currentSessionIndex].endTime)
         } else {
@@ -103,18 +116,31 @@ struct SessionItem: Identifiable {
     }
 
     func skipToNext() {
+        /// Proteje o app de "crashar" por `out of range`
+        /// verificando se o index atual é menor que a
+        /// quantidade de itens na seção atual.
         guard currentSessionIndex < sessionItems.count else { return }
 
+        /// Define o item atual.
         let currentItem = sessionItems[currentSessionIndex]
+
+        /// Coloca o item atual nos itens completados.
         withAnimation {
             completedItems.append(currentItem)
         }
 
+        /// Ajusta o tempo da seção ja que o item foi pulado.
         adjustSessionTimes()
 
+        /// avança para o proximo item
         currentSessionIndex += 1
+
         UIImpactFeedbackGenerator(style: .soft).impactOccurred()
 
+        /// Se o index for menor que a quantidade
+        /// de itens em `sessionItems`, continua
+        /// os estudos normalmente, atualizando o
+        /// timer, se não, termina a seção.
         if currentSessionIndex < sessionItems.count {
             timerManager.start(with: sessionItems[currentSessionIndex].endTime)
         } else {

@@ -30,6 +30,16 @@
     "%@ Tarefa" : {
 
     },
+    "%@%@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -126,6 +136,9 @@
           }
         }
       }
+    },
+    "Alta" : {
+
     },
     "Ao importar a rotina de estudos todas as informações existentes da rotina de estudos serão removidas. Deeseja continuar?" : {
       "extractionState" : "stale",
@@ -238,6 +251,9 @@
     "Aquecendo" : {
 
     },
+    "às %@" : {
+
+    },
     "Ascendido" : {
 
     },
@@ -253,6 +269,9 @@
           }
         }
       }
+    },
+    "Baixa" : {
+
     },
     "Cancelar" : {
       "localizations" : {
@@ -343,7 +362,7 @@
     "Começo Brilhante" : {
 
     },
-    "Completadas ou Vencidas" : {
+    "Completadas" : {
 
     },
     "Completados ou Vencidos" : {
@@ -451,7 +470,14 @@
     "Das" : {
 
     },
+    "Data" : {
+
+    },
+    "dd/MM/yyyy" : {
+
+    },
     "dd/MM/yyyy – HH:mm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -482,6 +508,9 @@
           }
         }
       }
+    },
+    "Descompletar" : {
+
     },
     "Deus do Estudo" : {
 
@@ -838,9 +867,6 @@
     "Focado" : {
 
     },
-    "Futuras" : {
-
-    },
     "Ganhe 1.000 XP acumulados" : {
 
     },
@@ -901,6 +927,9 @@
           }
         }
       }
+    },
+    "Hora" : {
+
     },
     "Horário" : {
       "localizations" : {
@@ -1032,6 +1061,9 @@
         }
       }
     },
+    "Média" : {
+
+    },
     "Mente Brilhante" : {
 
     },
@@ -1073,6 +1105,9 @@
           }
         }
       }
+    },
+    "Nenhuma" : {
+
     },
     "Nenhuma Matéria" : {
 
@@ -1134,10 +1169,10 @@
     "Português" : {
 
     },
-    "Prazo" : {
+    "Primeiros Passos" : {
 
     },
-    "Primeiros Passos" : {
+    "Prioridade" : {
 
     },
     "Produtividade Total" : {
@@ -1236,9 +1271,6 @@
     "Sem Tarefas" : {
 
     },
-    "Sem Tolerância" : {
-
-    },
     "Sexta-feira" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1305,13 +1337,7 @@
     "Tempo estudado" : {
 
     },
-    "Título" : {
-
-    },
     "To-Do Terminator" : {
-
-    },
-    "Tolerância" : {
 
     },
     "Total de Estudos" : {
@@ -1330,9 +1356,6 @@
 
     },
     "Universo XP" : {
-
-    },
-    "Vencidas" : {
 
     },
     "Versão: %@ (%@)" : {

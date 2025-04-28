@@ -6,47 +6,48 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @Observable
 final class ToDosViewModel {
-    private var allTodos: [ToDo] = []
-    private var gracePeriod: TimeInterval = 0
+    // MARK: - Properties
+
+    private(set) var allTodos: [ToDo] = []
+    private var timer: Timer? = nil
 
     var showPendingSection: Bool = false
-    var showUpcomingSection: Bool = false
+    var showOverdueSection: Bool = false
     var showCompletedSection: Bool = false
     var todoToAdd: ToDo? = nil
     var todoToEdit: ToDo? = nil
 
-    var pendingTodos: [ToDo] {
+    // MARK: - Computed Properties
+
+    var overdueTodos: [ToDo] {
         allTodos.filter {
-            $0.dueDate < .now
-                && $0.dueDate.addingTimeInterval(gracePeriod) > .now
-                && !$0.isCompleted
+            $0.dueDate < Date() && !$0.isCompleted
         }
     }
 
-    var upcomingTodos: [ToDo] {
+    var pendingTodos: [ToDo] {
         allTodos.filter {
             $0.dueDate > .now && !$0.isCompleted
         }
     }
 
-    var completedOrExpiredTodos: [ToDo] {
-        allTodos
-            .filter {
-                $0.dueDate.addingTimeInterval(gracePeriod) < .now
-                    || $0.isCompleted
-            }
-            .sorted { $0.dueDate > $1.dueDate }
+    var completedTodos: [ToDo] {
+        allTodos.filter {
+            $0.isCompleted
+        }
     }
 
     // MARK: - Actions
 
-    func updateTodos(_ todos: [ToDo], gracePeriod: TimeInterval) {
-        self.allTodos = todos
-        self.gracePeriod = gracePeriod
-        updateSectionVisibility()
+    func updateTodos(_ todos: [ToDo]) {
+        withAnimation {
+            self.allTodos = todos
+            updateSectionVisibility()
+        }
     }
 
     func addNewTodo() {
@@ -54,8 +55,42 @@ final class ToDosViewModel {
     }
 
     func updateSectionVisibility() {
-        showPendingSection = !pendingTodos.isEmpty
-        showUpcomingSection = !upcomingTodos.isEmpty
-        showCompletedSection = !completedOrExpiredTodos.isEmpty
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation {
+                self.showPendingSection = !self.pendingTodos.isEmpty
+                self.showOverdueSection = !self.overdueTodos.isEmpty
+                self.showCompletedSection = !self.completedTodos.isEmpty
+            }
+        }
+    }
+
+    func startUpdatingTodos() {
+        /// pré atualiza
+        self.updateTodos(self.allTodos)
+
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+            self.updateTodos(self.allTodos)
+        }
+    }
+
+    func stopUpdatingTodos() {
+        timer?.invalidate()
+    }
+
+    func deleteTodo(_ todo: ToDo, using context: ModelContext) {
+        let todoID = todo.id
+        let identifiers = [
+            "\(todoID)-1h",
+            "\(todoID)-24h",
+            "\(todoID)-due",
+        ]
+
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        self.updateTodos(self.allTodos.filter { $0 != todo })
+
+        withAnimation {
+            context.delete(todo)
+        }
     }
 }
