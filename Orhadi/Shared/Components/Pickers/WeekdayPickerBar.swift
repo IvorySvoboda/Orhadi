@@ -36,8 +36,8 @@ struct WeekdayPickerBar: View {
                                     selectedDay = index
                                     proxy.scrollTo(index, anchor: .center)
                                 }
+                                UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
                             }
-                            .sensoryFeedback(.impact(intensity: 0.8), trigger: selectedDay)
                             .simultaneousGesture(
                                 DragGesture(minimumDistance: 0)
                                     .onChanged { _ in

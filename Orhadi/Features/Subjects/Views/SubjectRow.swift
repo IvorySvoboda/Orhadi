@@ -20,7 +20,7 @@ struct SubjectRow: View {
     // MARK: - Views
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 5) {
             if subject.isRecess {
                 HStack {
                     Text("INTERVALO")
@@ -39,7 +39,7 @@ struct SubjectRow: View {
                     .lineLimit(1)
                     .frame(maxWidth: 200, alignment: .leading)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 3) {
                     if let teacher = subject.teacher {
                         if !teacher.name.isEmpty {
                             CustomLabel("\(teacher.name)", systemImage: "person.fill")
@@ -68,30 +68,6 @@ struct SubjectRow: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            sendEmailSwipeAction
-        }
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            deleteSwipeAction
-            duplicateSwipeAction
-            editSwipeAction
-        }
-        .alert(
-            "Excluir \(subject.isRecess ? "intervalo" : "matéria")?",
-            isPresented: $showDeleteConfirmation
-        ) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Excluir", role: .destructive) {
-                deleteSubject()
-            }
-        } message: {
-            Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?")
-        }
-    }
-
-    // MARK: Swipe Actions
-
-    private var sendEmailSwipeAction: some View {
-        Group {
             /// se existe um professor na matéria e o email do professor não está vazio
             /// crie o botão para enviar um email
             if let teacher = subject.teacher, !teacher.email.isEmpty {
@@ -103,10 +79,7 @@ struct SubjectRow: View {
                 }.tint(.accentColor)
             }
         }
-    }
-
-    private var deleteSwipeAction: some View {
-        Group {
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             // Cria o botão adequado para as configurações do usuário
             if settings.subjectsDeleteConfirmation {
                 Button {
@@ -124,30 +97,37 @@ struct SubjectRow: View {
                         .labelStyle(.iconOnly)
                 }
             }
+
+            Button {
+                subjectToAdd = Subject(
+                    name: subject.name,
+                    teacher: subject.teacher,
+                    schedule: subject.schedule,
+                    startTime: subject.startTime + 1,
+                    endTime: subject.endTime + 1,
+                    place: subject.place,
+                    isRecess: subject.isRecess)
+            } label: {
+                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                    .labelStyle(.iconOnly)
+            }.tint(.teal)
+
+            Button { subjectToEdit = subject } label: {
+                Label("Editar", systemImage: "pencil")
+                    .labelStyle(.iconOnly)
+            }.tint(.accentColor)
         }
-    }
-
-    private var duplicateSwipeAction: some View {
-        Button {
-            subjectToAdd = Subject(
-                name: subject.name,
-                teacher: subject.teacher,
-                schedule: subject.schedule,
-                startTime: subject.startTime + 1,
-                endTime: subject.endTime + 1,
-                place: subject.place,
-                isRecess: subject.isRecess)
-        } label: {
-            Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
-                .labelStyle(.iconOnly)
-        }.tint(.teal)
-    }
-
-    private var editSwipeAction: some View {
-        Button { subjectToEdit = subject } label: {
-            Label("Editar", systemImage: "pencil")
-                .labelStyle(.iconOnly)
-        }.tint(.accentColor)
+        .alert(
+            "Excluir \(subject.isRecess ? "intervalo" : "matéria")?",
+            isPresented: $showDeleteConfirmation
+        ) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Excluir", role: .destructive) {
+                deleteSubject()
+            }
+        } message: {
+            Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?")
+        }
     }
 
     // MARK: - Actions

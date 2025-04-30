@@ -171,8 +171,8 @@ struct ToDosSectionPickerBar: View {
                     withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
                         selectedSection = section
                     }
+                    UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
                 }
-                .sensoryFeedback(.impact(intensity: 0.8), trigger: selectedSection)
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { _ in

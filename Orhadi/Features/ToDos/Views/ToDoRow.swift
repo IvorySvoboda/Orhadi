@@ -118,6 +118,7 @@ struct ToDoRow: View {
                     Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
                         .font(.headline)
                         .lineLimit(1)
+                        .foregroundStyle(todo.isCompleted ? Color.secondary : Color.white)
                 }.frame(maxWidth: 300, alignment: .leading)
                 CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                     .font(.caption)

@@ -118,7 +118,7 @@ struct SettingsView: View {
                     Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("© Zyvoxi Industries")
+                    Text("© Zyvoxi")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
