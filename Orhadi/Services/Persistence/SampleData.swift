@@ -32,6 +32,8 @@ class SampleData {
             insertSampleData()
 
             try context.save()
+
+            GameManager(context: context).setupAchievementsIfNeeded()
         } catch {
             fatalError(
                 "Could not create ModelContainer: \(error.localizedDescription)"
@@ -40,15 +42,11 @@ class SampleData {
     }
 
     private func insertSampleData() {
-        for subject in Subject.sampleData {
-            context.insert(subject)
-        }
-        for todo in ToDo.sampleData {
-            context.insert(todo)
-        }
+        for subject in Subject.sampleData { context.insert(subject) }
+        for todo in ToDo.sampleData { context.insert(todo) }
+        for study in SRStudy.sampleData { context.insert(study) }
+
         context.insert(Settings())
         context.insert(UserProfile())
-
-        _ = GameManager(context: context)
     }
 }

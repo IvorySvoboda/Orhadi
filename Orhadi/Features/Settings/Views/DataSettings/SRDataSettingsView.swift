@@ -10,7 +10,20 @@ import SwiftUI
 
 struct SRDataSettingsView: View {
 
-    @State private var viewModel = SRDataSettingsViewModel()
+    @Query(animation: .smooth) private var studies: [SRStudy]
+
+    // MARK: - Properties
+
+    @State private var showDeleteConfirmation: Bool = false
+
+    /// Exporter
+    @State private var srExportItem: SRStudyTransferable?
+    @State private var showSRFileExporter: Bool = false
+
+    /// Importer
+    @State private var showSRImportAlert: Bool = false
+    @State private var showSRFileImporter: Bool = false
+    @State private var importedURL: URL?
 
     var body: some View {
         Form {
@@ -18,53 +31,53 @@ struct SRDataSettingsView: View {
                 HStack {
                     Text("Total de Estudos")
                     Spacer()
-                    Text("\(viewModel.studies?.count ?? 0)")
+                    Text("\(studies.count)")
                         .foregroundStyle(.secondary)
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
                 Button("Exportar Rotina de Estudos") {
-                    viewModel.exportSR()
+                    exportSR()
                 }
-                .disabled(viewModel.studies?.isEmpty ?? true)
+                .disabled(studies.isEmpty)
                 .fileExporter(
-                    isPresented: $viewModel.showSRFileExporter,
-                    item: viewModel.srExportItem,
+                    isPresented: $showSRFileExporter,
+                    item: srExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "Rotina de Estudos")
                 ) { result in
                     switch result {
                     case .success(_):
                         print("Sucesso!")
-                        viewModel.srExportItem = nil
+                        srExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
-                        viewModel.srExportItem = nil
+                        srExportItem = nil
                     }
                 } onCancellation: {
-                    viewModel.srExportItem = nil
+                    srExportItem = nil
                 }
 
                 Button("Importar Rotina de Estudos") {
-                    viewModel.showSRImportAlert.toggle()
+                    showSRImportAlert.toggle()
                 }
-                .alert("Importar Rotina de Estudos?", isPresented: $viewModel.showSRImportAlert) {
+                .alert("Importar Rotina de Estudos?", isPresented: $showSRImportAlert) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Continuar") {
-                        viewModel.showSRFileImporter.toggle()
+                        showSRFileImporter.toggle()
                     }
                 } message: {
                     Text("Ao importar uma nova rotina de estudo todas os itens já existentes na rotina atual serão removidas. Deseja continuar?")
                 }
                 .fileImporter(
-                    isPresented: $viewModel.showSRFileImporter,
+                    isPresented: $showSRFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        viewModel.importedURL = url
-                        viewModel.importSR()
+                        importedURL = url
+                        importSR()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -73,12 +86,12 @@ struct SRDataSettingsView: View {
 
             Section {
                 Button("Apagar todos os estudos") {
-                    viewModel.showDeleteConfirmation.toggle()
+                    showDeleteConfirmation.toggle()
                 }.tint(.red)
-                    .alert("Apagar todos os estudos?", isPresented: $viewModel.showDeleteConfirmation) {
+                    .alert("Apagar todos os estudos?", isPresented: $showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
-                        viewModel.deleteAllStudies()
+                        deleteAllStudies()
                     }
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
@@ -86,5 +99,77 @@ struct SRDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Rotina de Estudos")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    // MARK: - Actions
+
+    private func deleteAllStudies() {
+        Task.detached(priority: .background) {
+            do {
+                let context = ModelContext(try createContainer())
+
+                let studies = try context.fetch(FetchDescriptor<SRStudy>())
+
+                for study in studies { context.delete(study) }
+
+                try context.save()
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
+    }
+
+    private func exportSR() {
+        Task.detached(priority: .background) {
+            do {
+                let context = ModelContext(try createContainer())
+
+                let descriptor = FetchDescriptor<SRStudy>()
+
+                let allObjects = try context.fetch(descriptor)
+                let exportItem = SRStudyTransferable(studies: allObjects)
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+                await MainActor.run {
+                    self.srExportItem = exportItem
+                    self.showSRFileExporter = true
+                }
+            } catch {
+                print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
+    }
+
+    private func importSR() {
+        guard let url = importedURL else { return }
+        Task.detached(priority: .background) {
+            do {
+                guard url.startAccessingSecurityScopedResource() else { return }
+
+                let context = ModelContext(try createContainer())
+
+                try context.delete(model: SRStudy.self)
+
+                let data = try Data(contentsOf: url)
+                let allStudies = try JSONDecoder().decode(
+                    [SRStudy].self, from: data)
+
+                for study in allStudies { context.insert(study) }
+
+                try context.save()
+
+                url.stopAccessingSecurityScopedResource()
+
+                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                print(error.localizedDescription)
+                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
+        }
     }
 }

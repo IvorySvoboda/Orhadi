@@ -37,13 +37,3 @@ struct ToDoTransferable: Transferable {
         }
     }
 }
-
-struct TeacherTransferable: Transferable {
-    var teachers: [Teacher]
-
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .data) {
-            return try JSONEncoder().encode($0.teachers)
-        }
-    }
-}

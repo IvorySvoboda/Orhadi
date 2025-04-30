@@ -27,7 +27,7 @@ struct SubjectRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fontWeight(.semibold)
-                    CustomLabel("\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))", systemImage: "clock.fill")
+                    CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fontWeight(.semibold)
@@ -54,7 +54,7 @@ struct SubjectRow: View {
                         }
                     }
 
-                    CustomLabel("\(formatTime(subject.startTime)) – \(formatTime(subject.endTime))", systemImage: "clock.fill")
+                    CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
@@ -120,9 +120,8 @@ struct SubjectRow: View {
                 .tint(.red)
             } else {
                 Button(role: .destructive) {
-                    withAnimation {
-                        context.delete(subject)
-                    }
+                    subject.isDeleted = true
+                    context.delete(subject)
                 } label: {
                     Label("Excluir", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)

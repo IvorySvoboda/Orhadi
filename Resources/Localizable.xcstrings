@@ -30,27 +30,8 @@
     "%@ Tarefa" : {
 
     },
-    "%@%@" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@%2$@"
-          }
-        }
-      }
-    },
     "%lld" : {
       "shouldTranslate" : false
-    },
-    "%lld dias" : {
-
-    },
-    "%lld horas" : {
-
-    },
-    "%lld minutos" : {
-
     },
     "%lld/%lld" : {
       "localizations" : {
@@ -69,15 +50,6 @@
     "© Zyvoxi Industries" : {
       "shouldTranslate" : false
     },
-    "1 dia" : {
-
-    },
-    "1 hora" : {
-
-    },
-    "1 minuto" : {
-
-    },
     "A Fazer" : {
       "localizations" : {
         "en" : {
@@ -88,7 +60,11 @@
         }
       }
     },
+    "A Tarefa está atrasada!" : {
+
+    },
     "A Tarefa Venceu!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -98,7 +74,11 @@
         }
       }
     },
+    "A Tarefa: %@ está atrasada!" : {
+
+    },
     "A Tarefa: %@ Venceu!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -251,9 +231,6 @@
     "Aquecendo" : {
 
     },
-    "às %@" : {
-
-    },
     "Ascendido" : {
 
     },
@@ -362,9 +339,6 @@
     "Começo Brilhante" : {
 
     },
-    "Completadas" : {
-
-    },
     "Completados ou Vencidos" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -422,6 +396,9 @@
     "Concluído" : {
 
     },
+    "Concluídos" : {
+
+    },
     "Confirmar para Excluir" : {
       "localizations" : {
         "en" : {
@@ -471,9 +448,6 @@
 
     },
     "Data" : {
-
-    },
-    "dd/MM/yyyy" : {
 
     },
     "dd/MM/yyyy – HH:mm" : {
@@ -593,9 +567,6 @@
           }
         }
       }
-    },
-    "Em Atraso" : {
-
     },
     "email@exemple.com" : {
       "localizations" : {
@@ -839,6 +810,7 @@
       }
     },
     "Falta 1 dia para a tarefa expirar." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -848,7 +820,11 @@
         }
       }
     },
+    "Falta 1 dia para o prazo da tarefa." : {
+
+    },
     "Falta 1 hora para a tarefa expirar." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -857,6 +833,9 @@
           }
         }
       }
+    },
+    "Falta 1 hora para o prazo da tarefa." : {
+
     },
     "Fazer ... " : {
 
@@ -919,6 +898,7 @@
 
     },
     "HH:mm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

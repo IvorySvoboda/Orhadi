@@ -34,7 +34,7 @@ struct SRRow: View {
 
             Spacer()
 
-            Text(formatHourAndMinute(study.studyTime))
+            Text(study.studyTime.formatToHour())
                 .bold()
         }
         .listRowBackground(Color.clear)
@@ -59,10 +59,10 @@ struct SRRow: View {
     // MARK: Swipe Actions
 
     private var startStudySwipeAction: some View {
-        Button(action: {
+        Button {
             studiesToStudy = [study]
             navigateToStudyingView.toggle()
-        }) {
+        } label: {
             Label("Iniciar", systemImage: "play.circle.fill")
         }.tint(.accentColor)
     }

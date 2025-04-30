@@ -57,9 +57,9 @@ struct TeachersView: View {
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
+                Button {
                     teacherToAdd = Teacher()
-                }) {
+                } label: {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
                 }

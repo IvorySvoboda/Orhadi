@@ -12,7 +12,6 @@ struct ToDoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
-    @State private var viewModel = ToDosViewModel()
     @State private var isHourPickerExpanded = false
 
     @Bindable var todo: ToDo
@@ -64,23 +63,14 @@ struct ToDoSheetView: View {
                                 .padding(.trailing, 10)
                                 .padding(.leading, 2)
                             VStack(alignment: .leading) {
-                                var todoDate: String {
-                                    let formatter = DateFormatter()
-                                    formatter.timeStyle = .none
-                                    formatter.dateStyle = .medium
-                                    formatter.doesRelativeDateFormatting = true
-
-                                    return formatter.string(from: todo.dueDate)
-                                }
-
                                 Text("Data")
-                                Text(todoDate)
+                                Text(todo.dueDate.relativeFormated())
                                     .font(.caption)
                                     .foregroundStyle(Color.accentColor)
                             }
                         }
                     }
-                    .disclosureGroupStyle(CustomDisclosureGroupStyle(addPadding: false))
+                    .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
 
                     DisclosureGroup(isExpanded: Binding(
                         get: { isHourPickerExpanded },
@@ -109,7 +99,7 @@ struct ToDoSheetView: View {
                                 VStack(alignment: .leading) {
                                     Text("Hora")
                                     if todo.withHour {
-                                        Text("às \(formatTime(todo.dueDate))")
+                                        Text("\(todo.dueDate.formatToHour())")
                                             .font(.caption)
                                             .foregroundStyle(Color.accentColor)
                                     }
@@ -124,7 +114,7 @@ struct ToDoSheetView: View {
                             }
                         }
                     }
-                    .disclosureGroupStyle(CustomDisclosureGroupStyle(addPadding: false))
+                    .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
                 }
                 .listRowBackground(Color.orhadiSecondaryBG)
             }
@@ -163,8 +153,6 @@ struct ToDoSheetView: View {
                             if settings.scheduleNotifications {
                                 todo.scheduleNotification()
                             }
-
-                            viewModel.updateSectionVisibility()
 
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }

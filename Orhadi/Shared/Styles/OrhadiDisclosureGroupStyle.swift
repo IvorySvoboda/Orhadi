@@ -1,5 +1,5 @@
 //
-//  CustomDisclosureGroupStyle.swift
+//  OrhadiDisclosureGroupStyle.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 27/03/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomDisclosureGroupStyle: DisclosureGroupStyle {
+struct OrhadiDisclosureGroupStyle: DisclosureGroupStyle {
 
     var addPadding: Bool
 

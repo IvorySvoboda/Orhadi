@@ -10,16 +10,16 @@ import SwiftData
 import MarkdownUI
 
 struct ToDoRow: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
 
-    @State private var showConfirmation: Bool = false
-
     var todo: ToDo
+
     @Binding var todoToEdit: ToDo?
-    var deleteToDo: () -> Void
+
+    @State private var showConfirmation: Bool = false
 
     // MARK: - Views
 
@@ -29,7 +29,7 @@ struct ToDoRow: View {
         } label: {
             todoLabel
         }
-        .disclosureGroupStyle(CustomDisclosureGroupStyle())
+        .disclosureGroupStyle(OrhadiDisclosureGroupStyle())
     }
 
     // MARK: DisclosureGroup Content
@@ -117,14 +117,14 @@ struct ToDoRow: View {
                             .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
                     }
                 }.frame(maxWidth: 300, alignment: .leading)
-                CustomLabel("\(formatDueDate(todo.dueDate))\(todo.withHour ? ", às \(formatTime(todo.dueDate))" : "")", systemImage: "calendar")
+                CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .swipeActions(edge: .leading) {
                 completeToggleSwipeAction
             }
-            .swipeActions(edge: .trailing) {
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                 deleteSwipeAction
                 editSwipeAction
             }
@@ -158,13 +158,12 @@ struct ToDoRow: View {
     private var deleteSwipeAction: some View {
         Group {
             if settings.todosDeleteConfirmation {
-                Button(action: {
+                Button {
                     showConfirmation.toggle()
-                }) {
+                } label: {
                     Label("Excluir", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)
-                }
-                .tint(.red)
+                }.tint(.red)
             } else {
                 Button(role: .destructive, action: {
                     deleteToDo()
@@ -204,10 +203,10 @@ struct ToDoRow: View {
             game.addXP(100, to: user)
 
             /// completa a tarefa.
-            withAnimation {
-                todo.isCompleted = true
-                todo.completedAt = .now
-            }
+            //            withAnimation {
+            todo.isCompleted = true
+            todo.completedAt = .now
+            //            }
         } else { /// se não
             /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
             user.completedToDos -= 1
@@ -219,11 +218,26 @@ struct ToDoRow: View {
             }
 
             /// descompleta a tarefa.
-            withAnimation {
-                todo.isCompleted = false
-                todo.completedAt = nil
-            }
+            //            withAnimation {
+            todo.isCompleted = false
+            todo.completedAt = nil
+            //            }
         }
     }
-}
 
+    private func deleteToDo() {
+        let todoID = todo.id
+        let identifiers = [
+            "\(todoID)-1h",
+            "\(todoID)-24h",
+            "\(todoID)-due",
+        ]
+
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        //        withAnimation {
+        todo.isDeleted = true
+        context.delete(todo)
+        //        }
+    }
+}

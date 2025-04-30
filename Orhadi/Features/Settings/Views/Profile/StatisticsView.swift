@@ -30,7 +30,7 @@ struct StatisticsView: View {
                 HStack {
                     Text("Tempo estudado")
                     Spacer()
-                    Text(formatTime(user.timeStudied))
+                    Text("\(user.timeStudied)")
                         .foregroundStyle(Color.secondary)
                 }
                 HStack {

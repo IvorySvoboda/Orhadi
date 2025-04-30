@@ -17,7 +17,7 @@ struct BreakTimePickerView: View {
             HStack {
                 Text("Tempo de Descanso")
                 Spacer()
-                Text(formatHourAndMinute(settings.breakTime))
+                Text(settings.breakTime.formatToHour())
                     .foregroundStyle(.secondary)
             }
         }

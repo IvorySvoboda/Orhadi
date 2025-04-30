@@ -22,6 +22,21 @@ extension View {
             .toolbarBackground(Color.orhadiBG, for: .navigationBar)
     }
 
+    func plainListRow() -> some View {
+        self
+            .padding(.horizontal)
+            .listRowBackground(Color.clear)
+            .listRowInsets(
+                EdgeInsets(
+                    top: -1,
+                    leading: 0,
+                    bottom: 0,
+                    trailing: 0
+                )
+            )
+            .alignmentGuide(.listRowSeparatorLeading) { viewDimensions in 0 }
+    }
+
     func disableIdleTimer() -> some View {
         self
             .onAppear {

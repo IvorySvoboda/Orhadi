@@ -21,11 +21,7 @@ typealias Achievement = CurrentSchema.Achievement
 @main
 struct OrhadiApp: App {
     /// Crie o container do SwiftData
-    let container = try! ModelContainer.init(
-        for: Schema(versionedSchema: CurrentSchema.self),
-        migrationPlan: MigrationPlan.self,
-        configurations: ModelConfiguration(url: URL.documentsDirectory.appending(path: "database.store"))
-    )
+    let container = try! createContainer()
 
     var body: some Scene {
         WindowGroup {
