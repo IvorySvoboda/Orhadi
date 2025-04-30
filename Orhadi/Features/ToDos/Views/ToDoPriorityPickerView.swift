@@ -27,6 +27,12 @@ enum Priority: Int, Codable, CaseIterable {
     }
 }
 
+extension Priority: Comparable {
+    static func <(lhs: Self, rhs: Self) -> Bool {
+        lhs.rawValue < rhs.rawValue
+    }
+}
+
 struct ToDoPriorityPickerView: View {
 
     @Bindable var todo: ToDo

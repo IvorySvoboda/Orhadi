@@ -108,14 +108,16 @@ struct ToDoRow: View {
 
             VStack(alignment: .leading) {
                 HStack {
+                    if todo.priority.rawValue > 0 {
+                        Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
+                            .font(.subheadline)
+                            .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
+                            .frame(width: 5, alignment: .center)
+                            .padding(.leading, 2)
+                    }
                     Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
                         .font(.headline)
                         .lineLimit(1)
-                    if todo.priority.rawValue > 0 {
-                        Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
-                            .font(.headline)
-                            .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
-                    }
                 }.frame(maxWidth: 300, alignment: .leading)
                 CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                     .font(.caption)
@@ -124,16 +126,14 @@ struct ToDoRow: View {
             .swipeActions(edge: .leading) {
                 completeToggleSwipeAction
             }
-            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            .swipeActions(edge: .trailing) {
                 deleteSwipeAction
                 editSwipeAction
             }
             .alert("Excluir tarefa?", isPresented: $showConfirmation) {
                 Button("Cancelar", role: .cancel) {}
                 Button("Excluir", role: .destructive) {
-                    withAnimation {
-                        deleteToDo()
-                    }
+                    deleteToDo()
                 }
             } message: {
                 Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta tarefa?")
@@ -203,10 +203,10 @@ struct ToDoRow: View {
             game.addXP(100, to: user)
 
             /// completa a tarefa.
-            //            withAnimation {
-            todo.isCompleted = true
-            todo.completedAt = .now
-            //            }
+            withAnimation {
+                todo.isCompleted = true
+                todo.completedAt = .now
+            }
         } else { /// se não
             /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
             user.completedToDos -= 1
@@ -218,10 +218,10 @@ struct ToDoRow: View {
             }
 
             /// descompleta a tarefa.
-            //            withAnimation {
-            todo.isCompleted = false
-            todo.completedAt = nil
-            //            }
+            withAnimation {
+                todo.isCompleted = false
+                todo.completedAt = nil
+            }
         }
     }
 
@@ -235,9 +235,9 @@ struct ToDoRow: View {
 
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-        //        withAnimation {
-        todo.isDeleted = true
-        context.delete(todo)
-        //        }
+        withAnimation {
+            todo.isDeleted = true
+            context.delete(todo)
+        }
     }
 }

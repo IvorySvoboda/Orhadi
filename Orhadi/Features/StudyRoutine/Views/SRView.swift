@@ -12,9 +12,9 @@ struct SRView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
-    @Query(
-        sort: \SRStudy.name, animation: .smooth
-    ) private var studies: [SRStudy]
+    @Query(filter: #Predicate<SRStudy> {
+        !$0.isDeleted
+    }, sort: \SRStudy.name, animation: .smooth) private var studies: [SRStudy]
 
     // MARK: - Properties
 
@@ -31,14 +31,10 @@ struct SRView: View {
         Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
     }
 
-    var filteredStudies: [SRStudy] {
-        studies.filter {
-            Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay && !$0.isDeleted
-        }
-    }
-
     var isTodayEmpty: Bool {
-        filteredStudies.isEmpty
+        !studies.filter {
+            Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+        }.isEmpty
     }
 
     var studiesForToday: [SRStudy] {
@@ -66,7 +62,9 @@ struct SRView: View {
                         }
                     )
 
-                ForEach(filteredStudies) { study in
+                ForEach(studies.filter {
+                    Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+                }) { study in
                     SRRow(
                         study: study,
                         studiesToStudy: $studiesToStudy,

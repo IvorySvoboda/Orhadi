@@ -390,6 +390,9 @@
     "Complete 500 tarefas" : {
 
     },
+    "Conclua tarefas para vê-las aqui." : {
+
+    },
     "Concluídas" : {
 
     },
@@ -1095,6 +1098,12 @@
     "Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?" : {
 
     },
+    "Nenhuma Tarefa Concluída" : {
+
+    },
+    "Nenhuma Tarefa Pendente" : {
+
+    },
     "Nome" : {
 
     },
@@ -1247,9 +1256,6 @@
           }
         }
       }
-    },
-    "Sem Tarefas" : {
-
     },
     "Sexta-feira" : {
       "extractionState" : "manual",

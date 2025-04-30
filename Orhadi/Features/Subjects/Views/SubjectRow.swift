@@ -81,9 +81,7 @@ struct SubjectRow: View {
         ) {
             Button("Cancelar", role: .cancel) {}
             Button("Excluir", role: .destructive) {
-                withAnimation {
-                    context.delete(subject)
-                }
+                deleteSubject()
             }
         } message: {
             Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?")
@@ -120,8 +118,7 @@ struct SubjectRow: View {
                 .tint(.red)
             } else {
                 Button(role: .destructive) {
-                    subject.isDeleted = true
-                    context.delete(subject)
+                    deleteSubject()
                 } label: {
                     Label("Excluir", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)
@@ -151,5 +148,14 @@ struct SubjectRow: View {
             Label("Editar", systemImage: "pencil")
                 .labelStyle(.iconOnly)
         }.tint(.accentColor)
+    }
+
+    // MARK: - Actions
+
+    private func deleteSubject() {
+        withAnimation {
+            subject.isDeleted = true
+            context.delete(subject)
+        }
     }
 }

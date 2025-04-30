@@ -12,10 +12,9 @@ struct SubjectsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
-    @Query(
-        sort: \Subject.startTime,
-        animation: .smooth
-    ) private var subjects: [Subject]
+    @Query(filter: #Predicate<Subject> {
+        !$0.isDeleted
+    }, sort: \Subject.startTime, animation: .smooth) private var subjects: [Subject]
 
     // MARK: - Properties
 
@@ -27,14 +26,10 @@ struct SubjectsView: View {
 
     // MARK: - Computed Properties
 
-    var filteredSubjects: [Subject] {
-        subjects.filter {
-            Calendar.current.component(.weekday, from: $0.schedule) == selectedDay && !$0.isDeleted
-        }
-    }
-
     var hasSubjectsToday: Bool {
-        filteredSubjects.isEmpty
+        !subjects.filter {
+            Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
+        }.isEmpty
     }
 
     var titleForToolbar: String {
@@ -58,7 +53,9 @@ struct SubjectsView: View {
                         }
                     )
 
-                ForEach(filteredSubjects) { subject in
+                ForEach(subjects.filter {
+                    Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
+                }) { subject in
                     SubjectRow(subject: subject,
                                subjectToAdd: $subjectToAdd,
                                subjectToEdit: $subjectToEdit)
@@ -124,7 +121,7 @@ struct SubjectsView: View {
 
     private var overlay: some View {
         Group {
-            if hasSubjectsToday && scrollOffsetY < 300 {
+            if !hasSubjectsToday && scrollOffsetY < 300 {
                 ContentUnavailableView {
                     Label("Nenhuma Matéria", systemImage: "book")
                 } description: {

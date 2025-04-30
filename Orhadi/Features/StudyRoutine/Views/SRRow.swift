@@ -106,6 +106,7 @@ struct SRRow: View {
 
     private func deleteStudy() {
         withAnimation {
+            study.isDeleted = true
             context.delete(study)
         }
     }
