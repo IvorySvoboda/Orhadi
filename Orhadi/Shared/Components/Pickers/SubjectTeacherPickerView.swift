@@ -19,7 +19,7 @@ struct SubjectTeacherPickerView: View {
             SubjectTeacherPicker(subject: subject)
         } label: {
             HStack {
-                Text("Professor(a)")
+                Label("Professor(a)", systemImage: "person.fill")
                 Spacer()
                 Text(subject.teacher?.name ?? "Nenhum")
                     .foregroundColor(.secondary)

@@ -99,11 +99,9 @@ struct ToDoRow: View {
                     .foregroundStyle(Color.accentColor)
             }
 
-            if !todo.isCompleted {
-                if todo.dueDate < Date() {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
-                }
+            if !todo.isCompleted, todo.dueDate < .now {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.red)
             }
 
             VStack(alignment: .leading) {
@@ -115,21 +113,53 @@ struct ToDoRow: View {
                             .frame(width: 5, alignment: .center)
                             .padding(.leading, 2.5)
                     }
+
                     Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
                         .font(.headline)
                         .lineLimit(1)
                         .foregroundStyle(todo.isCompleted ? Color.secondary : Color.white)
-                }.frame(maxWidth: 300, alignment: .leading)
+                }
+                .frame(maxWidth: 300, alignment: .leading)
+
                 CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .swipeActions(edge: .leading) {
-                completeToggleSwipeAction
+                Button(role: .destructive) {
+                    completeToDo()
+                } label: {
+                    if todo.isCompleted {
+                        Label("Descompletar", systemImage: "minus")
+                            .labelStyle(.iconOnly)
+                    } else {
+                        Label("Completar", systemImage: "checkmark")
+                            .labelStyle(.iconOnly)
+                    }
+                }.tint(.accentColor)
             }
             .swipeActions(edge: .trailing) {
-                deleteSwipeAction
-                editSwipeAction
+                if settings.todosDeleteConfirmation {
+                    Button {
+                        showConfirmation.toggle()
+                    } label: {
+                        Label("Excluir", systemImage: "trash.fill")
+                            .labelStyle(.iconOnly)
+                    }.tint(.red)
+                } else {
+                    Button(role: .destructive) {
+                        deleteToDo()
+                    } label: {
+                        Label("Excluir", systemImage: "trash.fill")
+                    }
+                }
+
+                Button {
+                    todoToEdit = todo
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                        .labelStyle(.iconOnly)
+                }.tint(Color.accentColor)
             }
             .alert("Excluir tarefa?", isPresented: $showConfirmation) {
                 Button("Cancelar", role: .cancel) {}
@@ -142,49 +172,7 @@ struct ToDoRow: View {
         }
     }
 
-    // MARK: Swipe Actions
-
-    private var completeToggleSwipeAction: some View {
-        Button(role: .destructive, action: { completeToDo() }) {
-            if todo.isCompleted {
-                Label("Descompletar", systemImage: "minus")
-                    .labelStyle(.iconOnly)
-            } else {
-                Label("Completar", systemImage: "checkmark")
-                    .labelStyle(.iconOnly)
-            }
-        }.tint(.accentColor)
-    }
-
-    private var deleteSwipeAction: some View {
-        Group {
-            if settings.todosDeleteConfirmation {
-                Button {
-                    showConfirmation.toggle()
-                } label: {
-                    Label("Excluir", systemImage: "trash.fill")
-                        .labelStyle(.iconOnly)
-                }.tint(.red)
-            } else {
-                Button(role: .destructive, action: {
-                    deleteToDo()
-                }) {
-                    Label("Excluir", systemImage: "trash.fill")
-                }
-            }
-        }
-    }
-
-    private var editSwipeAction: some View {
-        Button {
-            todoToEdit = todo
-        } label: {
-            Label("Editar", systemImage: "pencil")
-                .labelStyle(.iconOnly)
-        }.tint(Color.accentColor)
-    }
-
-    // MARK: - Functions
+    // MARK: - Actions
 
     private func completeToDo() {
         /// Se a tarefas não estiver completada

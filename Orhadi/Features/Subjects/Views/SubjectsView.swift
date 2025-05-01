@@ -26,13 +26,13 @@ struct SubjectsView: View {
 
     // MARK: - Computed Properties
 
-    var hasSubjectsToday: Bool {
-        !subjects.filter {
+    var isTodayEmpty: Bool {
+        subjects.filter {
             Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
         }.isEmpty
     }
 
-    var titleForToolbar: String {
+    var toolbarTitle: String {
         Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
     }
 
@@ -41,17 +41,7 @@ struct SubjectsView: View {
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $selectedDay)
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                                    withAnimation(.smooth(duration: 0.25)) {
-                                        scrollOffsetY = Int(newY)
-                                    }
-                                }
-                        }
-                    )
+                subjectsPickerBar
 
                 ForEach(subjects.filter {
                     Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
@@ -65,8 +55,20 @@ struct SubjectsView: View {
             .navigationTitle("Matérias")
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    principalToolbar
+                    ZStack {
+                        Text("Matérias")
+                            .font(.headline)
+                            .opacity(scrollOffsetY < 115 ? 1 : 0)
+                            .offset(y: scrollOffsetY <= 60 ? -8 : 0)
+
+                        Text(toolbarTitle)
+                            .foregroundStyle(.tint)
+                            .font(.caption)
+                            .opacity(scrollOffsetY <= 60 ? 1 : 0)
+                            .offset(y: scrollOffsetY <= 60 ? 8 : 14)
+                    }
                 }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showConfirmationDialog.toggle()
@@ -100,28 +102,23 @@ struct SubjectsView: View {
         }
     }
 
-    // MARK: - Toolbar
-
-    private var principalToolbar: some View {
-        ZStack {
-            Text("Matérias")
-                .font(.headline)
-                .opacity(scrollOffsetY < 115 ? 1 : 0)
-                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
-
-            Text(titleForToolbar)
-                .foregroundStyle(.tint)
-                .font(.caption)
-                .opacity(scrollOffsetY <= 60 ? 1 : 0)
-                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
-        }
+    private var subjectsPickerBar: some View {
+        WeekdayPickerBar(selectedDay: $selectedDay)
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                            withAnimation(.smooth(duration: 0.25)) {
+                                scrollOffsetY = Int(newY)
+                            }
+                        }
+                }
+            )
     }
-
-    // MARK: - Overlay
 
     private var overlay: some View {
         Group {
-            if !hasSubjectsToday && scrollOffsetY < 300 {
+            if isTodayEmpty && scrollOffsetY < 300 {
                 ContentUnavailableView {
                     Label("Nenhuma Matéria", systemImage: "book")
                 } description: {

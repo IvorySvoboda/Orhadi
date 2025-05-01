@@ -71,8 +71,20 @@ struct ToDosView: View {
                 .navigationTitle("Tarefas")
                 .toolbar {
                     ToolbarItem(placement: .principal) {
-                        principalToolbar
+                        ZStack {
+                            Text("Tarefas")
+                                .font(.headline)
+                                .opacity(offsetScrollY < 115 ? 1 : 0)
+                                .offset(y: offsetScrollY <= 60 ? -8 : 0)
+
+                            Text(selectedSection.string.uppercased())
+                                .foregroundStyle(.tint)
+                                .font(.caption)
+                                .opacity(offsetScrollY <= 60 ? 1 : 0)
+                                .offset(y: offsetScrollY <= 60 ? 8 : 14)
+                        }
                     }
+
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             todoToAdd = ToDo()
@@ -94,21 +106,6 @@ struct ToDosView: View {
             }
     }
 
-    private var principalToolbar: some View {
-        ZStack {
-            Text("Tarefas")
-                .font(.headline)
-                .opacity(offsetScrollY < 115 ? 1 : 0)
-                .offset(y: offsetScrollY <= 60 ? -8 : 0)
-
-            Text(selectedSection.string.uppercased())
-                .foregroundStyle(.tint)
-                .font(.caption)
-                .opacity(offsetScrollY <= 60 ? 1 : 0)
-                .offset(y: offsetScrollY <= 60 ? 8 : 14)
-        }
-    }
-
     private var todoPickerBar: some View {
         ToDosSectionPickerBar(selectedSection: $selectedSection)
             .background(
@@ -123,11 +120,9 @@ struct ToDosView: View {
             )
     }
 
-
     private var overlay: some View {
         Group {
-            let todos = selectedSection == .pending ? pendingToDos : completedToDos
-            if todos.isEmpty, offsetScrollY < 300 {
+            if (selectedSection == .pending ? pendingToDos : completedToDos).isEmpty, offsetScrollY < 300 {
                 ContentUnavailableView {
                     Label(
                         selectedSection == .pending ? "Nenhuma Tarefa Pendente" : "Nenhuma Tarefa Concluída",

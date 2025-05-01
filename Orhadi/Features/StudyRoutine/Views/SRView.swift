@@ -27,14 +27,14 @@ struct SRView: View {
 
     // MARK: - Computed Properties
 
-    var toolbarTitle: String {
-        Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
-    }
-
     var isTodayEmpty: Bool {
-        !studies.filter {
+        studies.filter {
             Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
         }.isEmpty
+    }
+
+    var toolbarTitle: String {
+        Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
     }
 
     var studiesForToday: [SRStudy] {
@@ -104,7 +104,8 @@ struct SRView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         if canStartStudying {
-                            prepareStudiesToStudy()
+                            studiesToStudy = studiesForToday
+                            navigateToStudyingView = true
                         }
                     } label: {
                         Image(systemName: "play.circle.fill")
@@ -137,11 +138,6 @@ struct SRView: View {
                 }
             }
         }
-    }
-
-    func prepareStudiesToStudy() {
-        studiesToStudy = studiesForToday
-        navigateToStudyingView = true
     }
 }
 
