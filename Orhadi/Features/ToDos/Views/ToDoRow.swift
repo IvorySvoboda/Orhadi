@@ -113,7 +113,7 @@ struct ToDoRow: View {
                             .font(.subheadline)
                             .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
                             .frame(width: 5, alignment: .center)
-                            .padding(.leading, 2)
+                            .padding(.leading, 2.5)
                     }
                     Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
                         .font(.headline)

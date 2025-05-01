@@ -107,13 +107,13 @@ struct SubjectsView: View {
             Text("Matérias")
                 .font(.headline)
                 .opacity(scrollOffsetY < 115 ? 1 : 0)
-                .offset(y: scrollOffsetY <= 70 ? -8 : 0)
+                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
 
             Text(titleForToolbar)
                 .foregroundStyle(.tint)
                 .font(.caption)
-                .opacity(scrollOffsetY <= 70 ? 1 : 0)
-                .offset(y: scrollOffsetY <= 70 ? 8 : 14)
+                .opacity(scrollOffsetY <= 60 ? 1 : 0)
+                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
         }
     }
 

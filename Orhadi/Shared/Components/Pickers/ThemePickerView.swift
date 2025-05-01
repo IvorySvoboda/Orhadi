@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct CustomThemePickerView: View {
+struct ThemePickerView: View {
     @Environment(Settings.self) private var settings
 
     // MARK: - Views
 
     var body: some View {
         NavigationLink {
-            CustomThemePicker()
+            ThemePicker()
         } label: {
             HStack {
                 themeIcon
@@ -47,7 +47,7 @@ struct CustomThemePickerView: View {
     }
 }
 
-struct CustomThemePicker: View {
+struct ThemePicker: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings

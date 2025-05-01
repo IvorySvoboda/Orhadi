@@ -51,9 +51,20 @@ struct ToDosView: View {
                 List {
                     todoPickerBar
 
-                    ForEach(selectedSection == .pending ? pendingToDos.sorted(by: { $0.priority > $1.priority }) : completedToDos) { todo in
-                        ToDoRow(todo: todo, todoToEdit: $todoToEdit)
-                            .listRowBackground(Color.orhadiBG)
+                    if selectedSection == .pending {
+                        Section {
+                            ForEach(pendingToDos.sorted(by: { $0.priority > $1.priority })) { todo in
+                                ToDoRow(todo: todo, todoToEdit: $todoToEdit)
+                            }
+                        }
+                        .listRowBackground(Color.orhadiBG)
+                    } else {
+                        Section {
+                            ForEach(completedToDos) { todo in
+                                ToDoRow(todo: todo, todoToEdit: $todoToEdit)
+                            }
+                        }
+                        .listRowBackground(Color.orhadiBG)
                     }
                 }
                 .orhadiPlainListStyle()
@@ -88,13 +99,13 @@ struct ToDosView: View {
             Text("Tarefas")
                 .font(.headline)
                 .opacity(offsetScrollY < 115 ? 1 : 0)
-                .offset(y: offsetScrollY <= 70 ? -8 : 0)
+                .offset(y: offsetScrollY <= 60 ? -8 : 0)
 
             Text(selectedSection.string.uppercased())
                 .foregroundStyle(.tint)
                 .font(.caption)
-                .opacity(offsetScrollY <= 70 ? 1 : 0)
-                .offset(y: offsetScrollY <= 70 ? 8 : 14)
+                .opacity(offsetScrollY <= 60 ? 1 : 0)
+                .offset(y: offsetScrollY <= 60 ? 8 : 14)
         }
     }
 
@@ -104,7 +115,7 @@ struct ToDosView: View {
                 GeometryReader { geo in
                     Color.clear
                         .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                            withAnimation {
+                            withAnimation(.smooth(duration: 0.25)) {
                                 offsetScrollY = Int(newY)
                             }
                         }
@@ -143,58 +154,4 @@ struct ToDosView: View {
     ToDosView()
         .modelContainer(SampleData.shared.container)
         .environment(Settings())
-}
-
-struct ToDosSectionPickerBar: View {
-
-    @Binding var selectedSection: ToDoSection
-
-    @State private var isPressed: ToDoSection?
-
-    var body: some View {
-        HStack(spacing: 12) {
-            ForEach(ToDoSection.allCases, id: \.string) { section in
-                ZStack {
-                    Text("\(section.string)")
-                        .font(.callout)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .foregroundColor(selectedSection == section ? Color.orhadiBG : .primary)
-                }
-                .frame(maxWidth: .infinity)
-                .background(
-                    Capsule()
-                        .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBG)
-                )
-                .scaleEffect(isPressed == section ? 1.05 : 1)
-                .onTapGesture {
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
-                        selectedSection = section
-                    }
-                    UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
-                }
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { _ in
-                            withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.6)) {
-                                isPressed = section
-                            }
-                        }
-                        .onEnded { _ in
-                            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8)) {
-                                isPressed = nil
-                            }
-                        }
-                )
-                .id(section)
-            }
-        }
-        .padding(.horizontal)
-        .frame(height: 40)
-        .listRowInsets(
-            EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0)
-        )
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
-    }
 }

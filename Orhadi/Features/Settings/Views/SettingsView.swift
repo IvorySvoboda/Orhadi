@@ -22,7 +22,7 @@ struct SettingsView: View {
                 mainSettingsSection
 
                 Section {
-                    CustomThemePickerView()
+                    ThemePickerView()
                 }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
@@ -35,8 +35,8 @@ struct SettingsView: View {
 
                 aboutSection
             }
-            .orhadiListStyle()
             .navigationTitle("Ajustes")
+            .orhadiListStyle()
         }
     }
 
@@ -99,18 +99,11 @@ struct SettingsView: View {
     private var aboutSection: some View {
         Section {
             HStack {
-                ZStack {
-                    Image("Logo")
-                        .resizable()
-                        .frame(width: 70, height: 70)
-                        .colorMultiply(.black)
-                        .opacity(colorScheme == .dark ? 0 : 0.5)
-
-                    Image("Logo")
-                        .resizable()
-                        .frame(width: 70, height: 70)
-                        .opacity(0.5)
-                }
+                Image("Logo")
+                    .renderingMode(.template)
+                    .resizable()
+                    .frame(width: 70, height: 70)
+                    .foregroundStyle(.secondary)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Orhadi")

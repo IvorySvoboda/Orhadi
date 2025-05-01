@@ -8,21 +8,6 @@
 import SwiftData
 import SwiftUI
 
-enum Theme: Codable, CaseIterable {
-    case light, dark, auto
-
-    var name: String {
-        switch self {
-        case .light:
-            return String(localized: "Claro")
-        case .dark:
-            return String(localized: "Escuro")
-        case .auto:
-            return String(localized: "Auto")
-        }
-    }
-}
-
 struct ContentView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
