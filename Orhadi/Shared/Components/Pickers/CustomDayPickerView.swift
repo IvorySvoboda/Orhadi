@@ -28,7 +28,6 @@ struct CustomDayPickerView: View {
 
 struct CustomDayPicker: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
 
     @State private var selectedWeekday: Int
     @Binding var date: Date
@@ -56,7 +55,7 @@ struct CustomDayPicker: View {
                                     .foregroundColor(.accentColor)
                             }
                         }
-                    }.tint(colorScheme == .dark ? .white : .black)
+                    }.tint(Color.font)
                 }
             }
             .listRowBackground(Color.orhadiSecondaryBG)

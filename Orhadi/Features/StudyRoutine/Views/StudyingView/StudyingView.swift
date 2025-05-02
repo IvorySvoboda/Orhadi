@@ -16,7 +16,6 @@ struct SessionItem: Identifiable {
 }
 
 struct StudyingView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
@@ -128,7 +127,7 @@ struct StudyingView: View {
         } label: {
             Image(systemName: "forward.fill")
         }
-        .tint(colorScheme == .dark ? .white : .black)
+        .tint(.font)
         .disabled(studyFinished)
     }
 

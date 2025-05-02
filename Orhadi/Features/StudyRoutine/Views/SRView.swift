@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SRView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
     @Query(filter: #Predicate<SRStudy> {
@@ -50,29 +49,29 @@ struct SRView: View {
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $selectedDay)
-                    .background(
-                        GeometryReader { geo in
-                            Color.clear
-                                .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                                    withAnimation(.smooth(duration: 0.25)) {
-                                        scrollOffsetY = Int(newY)
-                                    }
-                                }
-                        }
-                    )
+                weekdayPickerBar
+                    .transaction { (tx: inout Transaction) in
+                        tx.disablesAnimations = false
+                        tx.animation = .interactiveSpring(response: 0.5, dampingFraction: 0.8)
+                    }
 
                 ForEach(studies.filter {
                     Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
                 }) { study in
                     SRRow(
                         study: study,
-                        studiesToStudy: $studiesToStudy,
-                        navigateToStudyingView: $navigateToStudyingView,
-                        studyToAdd: $studyToAdd,
-                        studyToEdit: $studyToEdit
+                        onStudy: {
+                            studiesToStudy = [study]
+                            navigateToStudyingView.toggle()
+                        },
+                        onAdd: { studyToAdd = study },
+                        onEdit: {studyToEdit = study }
                     )
                 }
+            }
+            .transaction { (tx: inout Transaction) in
+                tx.disablesAnimations = true
+                tx.animation = nil
             }
             .orhadiPlainListStyle()
             .navigationTitle("Rotina de Estudos")
@@ -126,6 +125,20 @@ struct SRView: View {
                     .interactiveDismissDisabled()
             }
         }
+    }
+
+    private var weekdayPickerBar: some View {
+        WeekdayPickerBar(selectedDay: $selectedDay)
+            .background(
+                GeometryReader { geo in
+                    Color.clear
+                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                            withAnimation(.smooth(duration: 0.25)) {
+                                scrollOffsetY = Int(newY)
+                            }
+                        }
+                }
+            )
     }
 
     private var overlay: some View {

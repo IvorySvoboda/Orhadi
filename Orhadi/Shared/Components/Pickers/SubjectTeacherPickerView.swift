@@ -31,7 +31,6 @@ struct SubjectTeacherPickerView: View {
 struct SubjectTeacherPicker: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
 
     @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
 
@@ -67,7 +66,7 @@ struct SubjectTeacherPicker: View {
                             }
                         }
                     }
-                    .tint(colorScheme == .dark ? .white : .black)
+                    .tint(.font)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
                             withAnimation {
@@ -104,7 +103,7 @@ struct SubjectTeacherPicker: View {
                                 .foregroundColor(.accentColor)
                         }
                     }
-                }.tint(colorScheme == .dark ? .white : .black)
+                }.tint(.font)
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {

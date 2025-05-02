@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct SubjectsSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
 
     @Bindable var settings: Settings
 

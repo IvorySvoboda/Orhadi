@@ -10,7 +10,6 @@ import SwiftData
 import SwiftUI
 
 struct StudyRoutineSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
 
     @Bindable var settings: Settings
 

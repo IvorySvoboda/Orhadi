@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
     // MARK: - Queries

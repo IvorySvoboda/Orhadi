@@ -14,10 +14,9 @@ struct SRRow: View {
     @State private var showDeleteConfirmation: Bool = false
 
     var study: SRStudy
-    @Binding var studiesToStudy: [SRStudy]
-    @Binding var navigateToStudyingView: Bool
-    @Binding var studyToAdd: SRStudy?
-    @Binding var studyToEdit: SRStudy?
+    var onStudy: () -> Void
+    var onAdd: () -> Void
+    var onEdit: () -> Void
 
     // MARK: - Views
 
@@ -51,8 +50,6 @@ struct SRRow: View {
             Button("Deletar", role: .destructive) {
                 deleteStudy()
             }
-        } message: {
-            Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta matéria dos estudos?")
         }
     }
 
@@ -60,8 +57,7 @@ struct SRRow: View {
 
     private var startStudySwipeAction: some View {
         Button {
-            studiesToStudy = [study]
-            navigateToStudyingView.toggle()
+            onStudy()
         } label: {
             Label("Iniciar", systemImage: "play.circle.fill")
         }.tint(.accentColor)
@@ -88,7 +84,7 @@ struct SRRow: View {
 
     private var duplicateSwipeAction: some View {
         Button {
-            studyToAdd = study
+            onAdd()
         } label: {
             Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
         }.tint(.teal)
@@ -96,7 +92,7 @@ struct SRRow: View {
 
     private var editSwipeAction: some View {
         Button {
-            studyToEdit = study
+            onEdit()
         } label: {
             Image(systemName: "pencil")
         }.tint(.accentColor)

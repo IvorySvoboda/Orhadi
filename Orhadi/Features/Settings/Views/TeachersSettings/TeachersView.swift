@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct TeachersView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
 
     @Query private var subjects: [Subject]

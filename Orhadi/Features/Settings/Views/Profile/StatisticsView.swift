@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct StatisticsView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(GameManager.self) private var game
     @Environment(UserProfile.self) private var user
 

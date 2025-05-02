@@ -1,41 +1,26 @@
 //
-//  ToDoRow.swift
+//  ToDoRowView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/04/25.
+//  Created by Zyvoxi . on 01/05/25.
 //
 
 import SwiftUI
-import SwiftData
 import MarkdownUI
 
-struct ToDoRow: View {
+struct ToDoRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
 
-    var todo: ToDo
+    @State private var showDeleteConfirmation: Bool = false
 
-    @Binding var todoToEdit: ToDo?
-
-    @State private var showConfirmation: Bool = false
-
-    // MARK: - Views
+    let todo: ToDo
+    let onEdit: () -> Void
 
     var body: some View {
         DisclosureGroup {
-            todoInfo
-        } label: {
-            todoLabel
-        }
-        .disclosureGroupStyle(OrhadiDisclosureGroupStyle())
-    }
-
-    // MARK: DisclosureGroup Content
-
-    private var todoInfo: some View {
-        Group {
             if !todo.info.isEmpty {
                 Markdown(todo.info)
                     .markdownBlockStyle(\.heading1) { configuration in
@@ -89,11 +74,7 @@ struct ToDoRow: View {
             } else {
                 Text("Não informado.").opacity(0.5)
             }
-        }
-    }
-
-    private var todoLabel: some View {
-        Group {
+        } label: {
             if todo.isCompleted {
                 Image(systemName: "checkmark")
                     .foregroundStyle(Color.accentColor)
@@ -117,7 +98,7 @@ struct ToDoRow: View {
                     Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
                         .font(.headline)
                         .lineLimit(1)
-                        .foregroundStyle(todo.isCompleted ? Color.secondary : Color.white)
+                        .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
                 }
                 .frame(maxWidth: 300, alignment: .leading)
 
@@ -141,7 +122,7 @@ struct ToDoRow: View {
             .swipeActions(edge: .trailing) {
                 if settings.todosDeleteConfirmation {
                     Button {
-                        showConfirmation.toggle()
+                        showDeleteConfirmation.toggle()
                     } label: {
                         Label("Excluir", systemImage: "trash.fill")
                             .labelStyle(.iconOnly)
@@ -155,34 +136,38 @@ struct ToDoRow: View {
                 }
 
                 Button {
-                    todoToEdit = todo
+                    onEdit()
                 } label: {
                     Label("Editar", systemImage: "pencil")
                         .labelStyle(.iconOnly)
                 }.tint(Color.accentColor)
             }
-            .alert("Excluir tarefa?", isPresented: $showConfirmation) {
+            .alert("Excluir tarefa?", isPresented: $showDeleteConfirmation) {
                 Button("Cancelar", role: .cancel) {}
                 Button("Excluir", role: .destructive) {
                     deleteToDo()
                 }
-            } message: {
-                Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir esta tarefa?")
             }
         }
+        .disclosureGroupStyle(OrhadiDisclosureGroupStyle())
+        .listRowBackground(Color.clear)
     }
 
-    // MARK: - Actions
-
     private func completeToDo() {
+        let todoID = todo.id
+        let identifiers = [
+            "\(todoID)-1h",
+            "\(todoID)-24h",
+            "\(todoID)-due",
+        ]
+
         /// Se a tarefas não estiver completada
         if !todo.isCompleted {
-            let todoID = todo.id
-            let identifiers = [
-                "\(todoID)-1h",
-                "\(todoID)-24h",
-                "\(todoID)-due",
-            ]
+            /// completa a tarefa.
+            withAnimation {
+                todo.isCompleted = true
+                todo.completedAt = .now
+            }
 
             /// remove as notificações agendadas
             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
@@ -190,13 +175,13 @@ struct ToDoRow: View {
             /// aumenta as tarefas completadas do usuário e adiciona 100 de xp para ele.
             user.completedToDos += 1
             game.addXP(100, to: user)
-
-            /// completa a tarefa.
-            withAnimation {
-                todo.isCompleted = true
-                todo.completedAt = .now
-            }
         } else { /// se não
+            /// descompleta a tarefa.
+            withAnimation {
+                todo.isCompleted = false
+                todo.completedAt = nil
+            }
+
             /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
             user.completedToDos -= 1
             game.addXP(-100, to: user)
@@ -204,12 +189,6 @@ struct ToDoRow: View {
             /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
             if settings.scheduleNotifications {
                 todo.scheduleNotification()
-            }
-
-            /// descompleta a tarefa.
-            withAnimation {
-                todo.isCompleted = false
-                todo.completedAt = nil
             }
         }
     }

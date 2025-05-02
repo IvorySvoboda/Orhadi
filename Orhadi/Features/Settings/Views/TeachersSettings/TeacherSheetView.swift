@@ -10,7 +10,6 @@ import SwiftUI
 
 struct TeacherSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var context
 
     @State private var name: String
@@ -58,8 +57,6 @@ struct TeacherSheetView: View {
                         }
                     TextField("\(String(localized: "email@exemple.com"))", text: $email)
                         .autocorrectionDisabled()
-                } header: {
-                    Text("Editar Professor")
                 }.listRowBackground(Color.orhadiSecondaryBG)
             }
             .orhadiListStyle()

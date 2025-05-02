@@ -25,7 +25,6 @@ struct BreakTimePickerView: View {
 }
 
 struct BreakTimePicker: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
@@ -45,7 +44,7 @@ struct BreakTimePicker: View {
                                     .foregroundStyle(Color.accentColor)
                             }
                         }
-                    }.tint(colorScheme == .dark ? .white : .black)
+                    }.tint(Color.font)
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
         }

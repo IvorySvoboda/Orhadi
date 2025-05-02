@@ -8,105 +8,93 @@
 import SwiftData
 import SwiftUI
 
-enum ToDoSection: CaseIterable {
-    case pending, completed
-
-    var string: String {
-        switch self {
-        case .pending: return String(localized: "A Fazer")
-        case .completed: return String(localized: "Concluídos")
-        }
-    }
-}
-
 struct ToDosView: View {
-    @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
-
-    // MARK: - Queries
-
     @Query(filter: #Predicate<ToDo> {
         !$0.isArchived && !$0.isCompleted && !$0.isDeleted
     }, sort: [
         .init(\.dueDate, order: .forward),
         .init(\.title, order: .forward),
-    ], animation: .smooth) private var pendingToDos: [ToDo]
+    ]) private var pendingToDos: [ToDo]
 
     @Query(filter: #Predicate<ToDo> {
         !$0.isArchived && $0.isCompleted && !$0.isDeleted
-    }, sort: \ToDo.completedAt, order: .reverse, animation: .smooth) private var completedToDos: [ToDo]
+    }, sort: \ToDo.completedAt, order: .reverse) private var completedToDos: [ToDo]
 
     // MARK: - Properties
 
-    @State private var timer: Timer? = nil
     @State private var todoToAdd: ToDo? = nil
     @State private var todoToEdit: ToDo? = nil
     @State private var selectedSection: ToDoSection = .pending
     @State private var offsetScrollY: Int = 151
 
+    // MARK: - Computed Properties
+
+    var visibleToDos: [ToDo] {
+        selectedSection == .pending ? pendingToDos : completedToDos
+    }
+
     // MARK: - Views
 
     var body: some View {
-            NavigationStack {
-                List {
-                    todoPickerBar
-
-                    if selectedSection == .pending {
-                        Section {
-                            ForEach(pendingToDos.sorted(by: { $0.priority > $1.priority })) { todo in
-                                ToDoRow(todo: todo, todoToEdit: $todoToEdit)
-                            }
-                        }
-                        .listRowBackground(Color.orhadiBG)
-                    } else {
-                        Section {
-                            ForEach(completedToDos) { todo in
-                                ToDoRow(todo: todo, todoToEdit: $todoToEdit)
-                            }
-                        }
-                        .listRowBackground(Color.orhadiBG)
-                    }
-                }
-                .orhadiPlainListStyle()
-                .navigationTitle("Tarefas")
-                .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        ZStack {
-                            Text("Tarefas")
-                                .font(.headline)
-                                .opacity(offsetScrollY < 115 ? 1 : 0)
-                                .offset(y: offsetScrollY <= 60 ? -8 : 0)
-
-                            Text(selectedSection.string.uppercased())
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(offsetScrollY <= 60 ? 1 : 0)
-                                .offset(y: offsetScrollY <= 60 ? 8 : 14)
-                        }
+        NavigationStack {
+            List {
+                sectionPickerBar
+                    .transaction { (tx: inout Transaction) in
+                        tx.disablesAnimations = false
+                        tx.animation = .interactiveSpring(response: 0.5, dampingFraction: 0.8)
                     }
 
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            todoToAdd = ToDo()
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                        }
-                    }
-                }
-                .overlay { overlay }
-                .sheet(item: $todoToAdd) { todo in
-                    ToDoSheetView(todo: todo, isNew: true)
-                        .interactiveDismissDisabled()
-                }
-                .sheet(item: $todoToEdit) { todo in
-                    ToDoSheetView(todo: todo, isNew: false)
-                        .interactiveDismissDisabled()
+                ForEach(visibleToDos) { todo in
+                    ToDoRowView(
+                        todo: todo,
+                        onEdit: { todoToEdit = todo }
+                    )
                 }
             }
+            .transaction { (tx: inout Transaction) in
+                tx.disablesAnimations = true
+                tx.animation = nil
+            }
+            .orhadiPlainListStyle()
+            .navigationTitle("Tarefas")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    ZStack {
+                        Text("Tarefas")
+                            .font(.headline)
+                            .opacity(offsetScrollY < 115 ? 1 : 0)
+                            .offset(y: offsetScrollY <= 60 ? -8 : 0)
+
+                        Text(selectedSection.string.uppercased())
+                            .foregroundStyle(.tint)
+                            .font(.caption)
+                            .opacity(offsetScrollY <= 60 ? 1 : 0)
+                            .offset(y: offsetScrollY <= 60 ? 8 : 14)
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        todoToAdd = ToDo()
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                    }
+                }
+            }
+            .overlay { overlay }
+            .sheet(item: $todoToAdd) { todo in
+                ToDoSheetView(todo: todo, isNew: true)
+                    .interactiveDismissDisabled()
+            }
+            .sheet(item: $todoToEdit) { todo in
+                ToDoSheetView(todo: todo, isNew: false)
+                    .interactiveDismissDisabled()
+            }
+        }
     }
 
-    private var todoPickerBar: some View {
+    private var sectionPickerBar: some View {
         ToDosSectionPickerBar(selectedSection: $selectedSection)
             .background(
                 GeometryReader { geo in
@@ -122,7 +110,7 @@ struct ToDosView: View {
 
     private var overlay: some View {
         Group {
-            if (selectedSection == .pending ? pendingToDos : completedToDos).isEmpty, offsetScrollY < 300 {
+            if visibleToDos.isEmpty, offsetScrollY < 300 {
                 ContentUnavailableView {
                     Label(
                         selectedSection == .pending ? "Nenhuma Tarefa Pendente" : "Nenhuma Tarefa Concluída",

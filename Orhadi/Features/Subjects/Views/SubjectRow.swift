@@ -14,8 +14,8 @@ struct SubjectRow: View {
     @State private var showDeleteConfirmation = false
 
     var subject: Subject
-    @Binding var subjectToAdd: Subject?
-    @Binding var subjectToEdit: Subject?
+    var onAdd: () -> Void
+    var onEdit: () -> Void
 
     // MARK: - Views
 
@@ -99,20 +99,13 @@ struct SubjectRow: View {
             }
 
             Button {
-                subjectToAdd = Subject(
-                    name: subject.name,
-                    teacher: subject.teacher,
-                    schedule: subject.schedule,
-                    startTime: subject.startTime + 1,
-                    endTime: subject.endTime + 1,
-                    place: subject.place,
-                    isRecess: subject.isRecess)
+                onAdd()
             } label: {
                 Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
                     .labelStyle(.iconOnly)
             }.tint(.teal)
 
-            Button { subjectToEdit = subject } label: {
+            Button { onEdit() } label: {
                 Label("Editar", systemImage: "pencil")
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
@@ -125,8 +118,6 @@ struct SubjectRow: View {
             Button("Excluir", role: .destructive) {
                 deleteSubject()
             }
-        } message: {
-            Text("Essa ação é permanente e não pode ser desfeita. Tem certeza de que deseja excluir \(subject.isRecess ? "este intervalo" : "esta matéria")?")
         }
     }
 

@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+enum ToDoSection: CaseIterable {
+    case pending, completed
+
+    var string: String {
+        switch self {
+        case .pending: return String(localized: "A Fazer")
+        case .completed: return String(localized: "Concluídos")
+        }
+    }
+}
+
 struct ToDosSectionPickerBar: View {
 
     @Binding var selectedSection: ToDoSection
@@ -32,7 +43,7 @@ struct ToDosSectionPickerBar: View {
                 )
                 .scaleEffect(isPressed == section ? 1.05 : 1)
                 .onTapGesture {
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
+                    withAnimation {
                         selectedSection = section
                     }
                     UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
@@ -40,12 +51,12 @@ struct ToDosSectionPickerBar: View {
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { _ in
-                            withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.6)) {
+                            withAnimation {
                                 isPressed = section
                             }
                         }
                         .onEnded { _ in
-                            withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8)) {
+                            withAnimation {
                                 isPressed = nil
                             }
                         }

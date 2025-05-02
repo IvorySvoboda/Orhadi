@@ -31,7 +31,6 @@ struct WeekdayPickerBar: View {
                         .background(
                             Capsule()
                                 .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBG)
-                                .frame(height: 32)
                         )
                         .scaleEffect(isPressed == index ? 1.05 : 1)
                         .onTapGesture {

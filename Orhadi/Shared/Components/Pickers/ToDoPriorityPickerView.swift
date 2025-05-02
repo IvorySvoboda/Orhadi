@@ -29,7 +29,6 @@ struct ToDoPriorityPickerView: View {
 
 struct ToDoPriorityPicker: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
 
     @Bindable var todo: ToDo
 
@@ -53,7 +52,7 @@ struct ToDoPriorityPicker: View {
                                 }
                             }
                         }
-                        .tint(colorScheme == .dark ? .white : .black)
+                        .tint(.font)
                     }
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
@@ -74,7 +73,7 @@ struct ToDoPriorityPicker: View {
                                 .foregroundColor(.accentColor)
                         }
                     }
-                }.tint(colorScheme == .dark ? .white : .black)
+                }.tint(.font)
             }.listRowBackground(Color.orhadiSecondaryBG)
         }
         .orhadiListStyle()

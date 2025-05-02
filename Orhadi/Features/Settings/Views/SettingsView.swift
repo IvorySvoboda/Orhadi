@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(UserProfile.self) private var user
 
     @Bindable var settings: Settings

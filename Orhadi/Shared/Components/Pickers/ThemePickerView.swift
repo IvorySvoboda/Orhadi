@@ -49,7 +49,6 @@ struct ThemePickerView: View {
 
 struct ThemePicker: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
     var body: some View {
@@ -68,7 +67,7 @@ struct ThemePicker: View {
                                     .foregroundColor(.accentColor)
                             }
                         }
-                    }.tint(colorScheme == .dark ? .white : .black)
+                    }.tint(.font)
                 }
             }
             .listRowBackground(Color.orhadiSecondaryBG)

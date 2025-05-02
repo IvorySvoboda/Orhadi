@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SubjectsView: View {
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(Settings.self) private var settings
 
     @Query(filter: #Predicate<Subject> {
@@ -41,15 +40,25 @@ struct SubjectsView: View {
     var body: some View {
         NavigationStack {
             List {
-                subjectsPickerBar
+                weekdayPickerBar
+                    .transaction { (tx: inout Transaction) in
+                        tx.disablesAnimations = false
+                        tx.animation = .interactiveSpring(response: 0.8, dampingFraction: 0.75)
+                    }
 
                 ForEach(subjects.filter {
                     Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
                 }) { subject in
-                    SubjectRow(subject: subject,
-                               subjectToAdd: $subjectToAdd,
-                               subjectToEdit: $subjectToEdit)
+                    SubjectRow(
+                        subject: subject,
+                        onAdd: { subjectToAdd = subject },
+                        onEdit: { subjectToEdit = subject }
+                    )
                 }
+            }
+            .transaction { (tx: inout Transaction) in
+                tx.disablesAnimations = true
+                tx.animation = nil
             }
             .orhadiPlainListStyle()
             .navigationTitle("Matérias")
@@ -102,7 +111,7 @@ struct SubjectsView: View {
         }
     }
 
-    private var subjectsPickerBar: some View {
+    private var weekdayPickerBar: some View {
         WeekdayPickerBar(selectedDay: $selectedDay)
             .background(
                 GeometryReader { geo in

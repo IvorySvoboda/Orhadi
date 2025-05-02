@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ToDosSettingsView: View {
-    @Environment(\.colorScheme) private var colorScheme
 
     @State private var notificationStatus: Bool = false
 
