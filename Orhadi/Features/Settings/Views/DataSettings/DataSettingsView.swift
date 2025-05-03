@@ -7,12 +7,15 @@
 
 import SwiftData
 import SwiftUI
+import PopupView
 
 struct DataSettingsView: View {
 
     // MARK: - Properties
 
     @State private var showEraseDataAlert: Bool = false
+    @State private var showErrorMessage: Bool = false
+    @State private var errorMessage: String = ""
 
     // MARK: - Views
 
@@ -56,6 +59,27 @@ struct DataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Dados")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: errorMessage, { _, _ in
+            if !errorMessage.isEmpty {
+                showErrorMessage = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    errorMessage = ""
+                }
+            }
+        })
+        .popup(isPresented: $showErrorMessage) {
+            Text(errorMessage)
+                .foregroundColor(.white)
+                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+        } customize: {
+            $0
+                .type(.toast)
+                .position(.top)
+                .animation(.smooth)
+                .autohideIn(2)
+        }
     }
 
     // MARK: - Actions
@@ -90,8 +114,10 @@ struct DataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }

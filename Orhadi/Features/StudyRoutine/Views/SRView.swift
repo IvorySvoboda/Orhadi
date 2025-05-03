@@ -50,10 +50,6 @@ struct SRView: View {
         NavigationStack {
             List {
                 weekdayPickerBar
-                    .transaction { (tx: inout Transaction) in
-                        tx.disablesAnimations = false
-                        tx.animation = .interactiveSpring(response: 0.5, dampingFraction: 0.8)
-                    }
 
                 ForEach(studies.filter {
                     Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
@@ -68,10 +64,6 @@ struct SRView: View {
                         onEdit: {studyToEdit = study }
                     )
                 }
-            }
-            .transaction { (tx: inout Transaction) in
-                tx.disablesAnimations = true
-                tx.animation = nil
             }
             .orhadiPlainListStyle()
             .navigationTitle("Rotina de Estudos")

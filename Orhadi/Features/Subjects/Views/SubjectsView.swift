@@ -41,10 +41,6 @@ struct SubjectsView: View {
         NavigationStack {
             List {
                 weekdayPickerBar
-                    .transaction { (tx: inout Transaction) in
-                        tx.disablesAnimations = false
-                        tx.animation = .interactiveSpring(response: 0.8, dampingFraction: 0.75)
-                    }
 
                 ForEach(subjects.filter {
                     Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
@@ -55,10 +51,6 @@ struct SubjectsView: View {
                         onEdit: { subjectToEdit = subject }
                     )
                 }
-            }
-            .transaction { (tx: inout Transaction) in
-                tx.disablesAnimations = true
-                tx.animation = nil
             }
             .orhadiPlainListStyle()
             .navigationTitle("Matérias")

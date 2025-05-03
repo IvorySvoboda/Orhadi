@@ -1,5 +1,5 @@
 //
-//  TasksView.swift
+//  ToDosView.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 26/03/25.
@@ -39,10 +39,6 @@ struct ToDosView: View {
         NavigationStack {
             List {
                 sectionPickerBar
-                    .transaction { (tx: inout Transaction) in
-                        tx.disablesAnimations = false
-                        tx.animation = .interactiveSpring(response: 0.5, dampingFraction: 0.8)
-                    }
 
                 ForEach(visibleToDos) { todo in
                     ToDoRowView(
@@ -51,10 +47,7 @@ struct ToDosView: View {
                     )
                 }
             }
-            .transaction { (tx: inout Transaction) in
-                tx.disablesAnimations = true
-                tx.animation = nil
-            }
+            .id(selectedSection)
             .orhadiPlainListStyle()
             .navigationTitle("Tarefas")
             .toolbar {
@@ -98,10 +91,11 @@ struct ToDosView: View {
         ToDosSectionPickerBar(selectedSection: $selectedSection)
             .background(
                 GeometryReader { geo in
+                    let minY = geo.frame(in: .global).minY
                     Color.clear
-                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
+                        .onChange(of: minY) { _, _ in
                             withAnimation(.smooth(duration: 0.25)) {
-                                offsetScrollY = Int(newY)
+                                offsetScrollY = Int(minY)
                             }
                         }
                 }

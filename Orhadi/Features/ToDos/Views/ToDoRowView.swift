@@ -15,12 +15,13 @@ struct ToDoRowView: View {
     @Environment(GameManager.self) private var game
 
     @State private var showDeleteConfirmation: Bool = false
+    @State private var isExpanded: Bool = false
 
     let todo: ToDo
     let onEdit: () -> Void
 
     var body: some View {
-        DisclosureGroup {
+        DisclosureGroup(isExpanded: $isExpanded) {
             if !todo.info.isEmpty {
                 Markdown(todo.info)
                     .markdownBlockStyle(\.heading1) { configuration in
@@ -149,8 +150,7 @@ struct ToDoRowView: View {
                 }
             }
         }
-        .disclosureGroupStyle(OrhadiDisclosureGroupStyle())
-        .listRowBackground(Color.clear)
+        .listRowBackground(Color.orhadiBG)
     }
 
     private func completeToDo() {

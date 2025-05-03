@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import PopupView
 
 struct SubjectsDataSettingsView: View {
 
@@ -15,6 +16,8 @@ struct SubjectsDataSettingsView: View {
     // MARK: - Properties
 
     @State private var showDeleteConfirmation: Bool = false
+    @State private var showErrorMessage: Bool = false
+    @State private var errorMessage: String = ""
 
     /// Exporter
     @State private var subjectsExportItem: SubjectTransferable?
@@ -91,7 +94,7 @@ struct SubjectsDataSettingsView: View {
                         showSubjectsFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as matérias todas as matérias existentes serão removidas. Deseja continuar?")
+                    Text("Ao importar, todas as matérias existentes serão removidas. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showSubjectsFileImporter,
@@ -122,6 +125,27 @@ struct SubjectsDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Matérias")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: errorMessage, { _, _ in
+            if !errorMessage.isEmpty {
+                showErrorMessage = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    errorMessage = ""
+                }
+            }
+        })
+        .popup(isPresented: $showErrorMessage) {
+            Text(errorMessage)
+                .foregroundColor(.white)
+                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+        } customize: {
+            $0
+                .type(.toast)
+                .position(.top)
+                .animation(.smooth)
+                .autohideIn(2)
+        }
     }
 
     // MARK: - Actions
@@ -142,8 +166,10 @@ struct SubjectsDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -166,8 +192,10 @@ struct SubjectsDataSettingsView: View {
                     self.showSubjectsFileExporter = true
                 }
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -222,8 +250,10 @@ struct SubjectsDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }

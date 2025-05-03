@@ -31,18 +31,22 @@ struct ContentView: View {
         TabView {
             Tab("Matérias", systemImage: "book.fill") {
                 SubjectsView()
+                    .toolbarBackground(.visible, for: .tabBar)
                     .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
                 ToDosView()
+                    .toolbarBackground(.visible, for: .tabBar)
                     .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Rotina de Estudos", systemImage: "graduationcap.fill") {
                 SRView()
+                    .toolbarBackground(.visible, for: .tabBar)
                     .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
             Tab("Ajustes", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
+                    .toolbarBackground(.visible, for: .tabBar)
                     .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
         }

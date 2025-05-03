@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import PopupView
 
 struct SRDataSettingsView: View {
 
@@ -15,6 +16,8 @@ struct SRDataSettingsView: View {
     // MARK: - Properties
 
     @State private var showDeleteConfirmation: Bool = false
+    @State private var showErrorMessage: Bool = false
+    @State private var errorMessage: String = ""
 
     /// Exporter
     @State private var srExportItem: SRStudyTransferable?
@@ -68,7 +71,7 @@ struct SRDataSettingsView: View {
                         showSRFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar uma nova rotina de estudo todas os itens já existentes na rotina atual serão removidas. Deseja continuar?")
+                    Text("Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão removidos. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showSRFileImporter,
@@ -99,6 +102,27 @@ struct SRDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Rotina de Estudos")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: errorMessage, { _, _ in
+            if !errorMessage.isEmpty {
+                showErrorMessage = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    errorMessage = ""
+                }
+            }
+        })
+        .popup(isPresented: $showErrorMessage) {
+            Text(errorMessage)
+                .foregroundColor(.white)
+                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+        } customize: {
+            $0
+                .type(.toast)
+                .position(.top)
+                .animation(.smooth)
+                .autohideIn(2)
+        }
     }
 
     // MARK: - Actions
@@ -116,8 +140,10 @@ struct SRDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -139,8 +165,10 @@ struct SRDataSettingsView: View {
                     self.showSRFileExporter = true
                 }
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -167,8 +195,10 @@ struct SRDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }

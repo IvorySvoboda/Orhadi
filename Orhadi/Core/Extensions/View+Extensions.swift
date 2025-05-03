@@ -17,7 +17,7 @@ extension View {
 
     func orhadiPlainListStyle() -> some View {
         self
-            .listStyle(PlainListStyle())
+            .listStyle(.plain)
             .background(Color.orhadiBG)
             .toolbarBackground(Color.orhadiBG, for: .navigationBar)
     }

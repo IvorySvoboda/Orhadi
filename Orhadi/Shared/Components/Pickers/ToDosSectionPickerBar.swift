@@ -12,8 +12,8 @@ enum ToDoSection: CaseIterable {
 
     var string: String {
         switch self {
-        case .pending: return String(localized: "A Fazer")
-        case .completed: return String(localized: "Concluídos")
+        case .pending: return String(localized: "Pendentes")
+        case .completed: return String(localized: "Concluídas")
         }
     }
 }
@@ -23,8 +23,6 @@ struct ToDosSectionPickerBar: View {
     @Binding var selectedSection: ToDoSection
 
     @State private var isPressed: ToDoSection?
-
-    @Namespace private var namespace
 
     var body: some View {
         HStack(spacing: 12) {

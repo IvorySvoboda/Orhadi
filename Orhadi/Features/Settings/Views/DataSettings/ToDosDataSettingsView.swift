@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import PopupView
 
 struct ToDosDataSettingsView: View {
     @Environment(Settings.self) private var settings
@@ -15,6 +16,8 @@ struct ToDosDataSettingsView: View {
     // MARK: - Properties
 
     @State private var showDeleteConfirmation: Bool = false
+    @State private var showErrorMessage: Bool = false
+    @State private var errorMessage: String = ""
 
     /// Exporter
     @State private var todosExportItem: ToDoTransferable?
@@ -101,7 +104,7 @@ struct ToDosDataSettingsView: View {
                         showToDosFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as tarefas todas as tarefas existentes serão removidas. Deseja continuar?")
+                    Text("Ao importar, todas as tarefas existentes serão removidas. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showToDosFileImporter,
@@ -132,6 +135,27 @@ struct ToDosDataSettingsView: View {
         .orhadiListStyle()
         .navigationTitle("Tarefas")
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: errorMessage, { _, _ in
+            if !errorMessage.isEmpty {
+                showErrorMessage = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    errorMessage = ""
+                }
+            }
+        })
+        .popup(isPresented: $showErrorMessage) {
+            Text(errorMessage)
+                .foregroundColor(.white)
+                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
+        } customize: {
+            $0
+                .type(.toast)
+                .position(.top)
+                .animation(.smooth)
+                .autohideIn(2)
+        }
     }
 
     // MARK: - Actions
@@ -160,8 +184,10 @@ struct ToDosDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -183,8 +209,10 @@ struct ToDosDataSettingsView: View {
                     self.showToDosFileExporter = true
                 }
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = error.localizedDescription
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
@@ -199,6 +227,10 @@ struct ToDosDataSettingsView: View {
 
                 let existingToDos = try context.fetch(FetchDescriptor<ToDo>())
 
+                let data = try Data(contentsOf: url)
+                let allToDos = try JSONDecoder().decode(
+                    [ToDo].self, from: data)
+
                 for todo in existingToDos {
                     let todoID = todo.id
                     let identifiers = [
@@ -211,10 +243,6 @@ struct ToDosDataSettingsView: View {
 
                     context.delete(todo)
                 }
-
-                let data = try Data(contentsOf: url)
-                let allToDos = try JSONDecoder().decode(
-                    [ToDo].self, from: data)
 
                 for todo in allToDos {
                     if !todo.isCompleted, todo.dueDate > Date() {
@@ -229,8 +257,10 @@ struct ToDosDataSettingsView: View {
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                print(error.localizedDescription)
-                await UINotificationFeedbackGenerator().notificationOccurred(.error)
+                await MainActor.run {
+                    errorMessage = "\(error.localizedDescription)"
+                    UINotificationFeedbackGenerator().notificationOccurred(.error)
+                }
             }
         }
     }
