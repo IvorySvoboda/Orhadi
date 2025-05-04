@@ -11,20 +11,6 @@ import SwiftUI
 struct ContentView: View {
     @Environment(Settings.self) private var settings
 
-    // MARK: - Queries
-
-    /// Esses `Query`aqui não tem utilidades, mas
-    /// por algum motivo, ele evitam o view `ToDoView`
-    /// de "crashar" ao completar/descompletar ou
-    /// deletar uma tarefa, e não, não adianta tentar
-    /// passar esse query para o `ToDoView` porque ela
-    /// vai continuar "crashando".
-    @Query private var _todos: [ToDo]
-    /// esses queries estão aqui também por conta do
-    /// mesmo motivo, só que apenas na parte de deletar…
-    @Query private var _subjects: [Subject]
-    @Query private var _studies: [SRStudy]
-
     // MARK: - Views
 
     var body: some View {

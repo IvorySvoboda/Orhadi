@@ -132,9 +132,14 @@ struct SRDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let studies = try context.fetch(FetchDescriptor<SRStudy>())
+                let studies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                }))
 
-                for study in studies { context.delete(study) }
+                for study in studies {
+                    study.isStudyDeleted = true
+                    study.deletedAt = .now
+                }
 
                 try context.save()
 
@@ -153,7 +158,9 @@ struct SRDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let descriptor = FetchDescriptor<SRStudy>()
+                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                })
 
                 let allObjects = try context.fetch(descriptor)
                 let exportItem = SRStudyTransferable(studies: allObjects)
@@ -176,22 +183,44 @@ struct SRDataSettingsView: View {
     private func importSR() {
         guard let url = importedURL else { return }
         Task.detached(priority: .background) {
+            guard url.startAccessingSecurityScopedResource() else { return }
+            defer { url.stopAccessingSecurityScopedResource() }
             do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
                 let context = ModelContext(try createContainer())
 
-                try context.delete(model: SRStudy.self)
-
                 let data = try Data(contentsOf: url)
-                let allStudies = try JSONDecoder().decode(
+                let importedStudies = try JSONDecoder().decode(
                     [SRStudy].self, from: data)
 
-                for study in allStudies { context.insert(study) }
+                var deletedStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    $0.isStudyDeleted
+                }))
+
+                let existingStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                }))
+
+                for study in existingStudies {
+                    study.isStudyDeleted = true
+                    study.deletedAt = .now
+
+                    deletedStudies.append(study)
+                }
+
+                for study in importedStudies {
+                    if let matchInTrash = deletedStudies.first(where: {
+                        $0.name == study.name &&
+                        $0.studyDay == study.studyDay &&
+                        $0.studyTime == study.studyTime
+                    }) {
+                        matchInTrash.isStudyDeleted = false
+                        matchInTrash.deletedAt = nil
+                    } else {
+                        context.insert(study)
+                    }
+                }
 
                 try context.save()
-
-                url.stopAccessingSecurityScopedResource()
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {

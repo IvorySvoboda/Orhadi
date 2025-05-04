@@ -11,7 +11,9 @@ import PopupView
 
 struct SubjectsDataSettingsView: View {
 
-    @Query(animation: .smooth) private var subjects: [Subject]
+    @Query(filter: #Predicate<Subject> {
+        !$0.isSubjectDeleted
+    }, animation: .smooth) private var subjects: [Subject]
 
     // MARK: - Properties
 
@@ -156,10 +158,13 @@ struct SubjectsDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let subjects = try context.fetch(FetchDescriptor<Subject>())
+                let subjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
+                    !$0.isSubjectDeleted
+                }))
 
                 for subject in subjects {
-                    context.delete(subject)
+                    subject.isSubjectDeleted = true
+                    subject.deletedAt = .now
                 }
 
                 try context.save()
@@ -180,7 +185,9 @@ struct SubjectsDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let descriptor = FetchDescriptor<Subject>()
+                let descriptor = FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
+                    !$0.isSubjectDeleted
+                })
 
                 let allObjects = try context.fetch(descriptor)
                 let exportItem = SubjectTransferable(subjects: allObjects)
@@ -204,19 +211,31 @@ struct SubjectsDataSettingsView: View {
     private func importSubject() {
         guard let url = importedURL else { return }
         Task.detached(priority: .background) {
+            guard url.startAccessingSecurityScopedResource() else { return }
+            defer { url.stopAccessingSecurityScopedResource() }
             do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
                 let context = ModelContext(try createContainer())
 
-                let existingSubjects = try context.fetch(FetchDescriptor<Subject>())
-                for subject in existingSubjects { context.delete(subject) }
-
                 let data = try Data(contentsOf: url)
-                let allSubjects = try JSONDecoder().decode(
+                let importedSubjects = try JSONDecoder().decode(
                     [Subject].self, from: data)
 
-                for subject in allSubjects {
+                var deletedSubjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
+                    $0.isSubjectDeleted
+                }))
+
+                let existingSubjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
+                    !$0.isSubjectDeleted
+                }))
+
+                for subject in existingSubjects {
+                    subject.isSubjectDeleted = true
+                    subject.deletedAt = .now
+
+                    deletedSubjects.append(subject)
+                }
+
+                for subject in importedSubjects {
                     var teacher: Teacher? = nil
 
                     if let subjectTeacher = subject.teacher {
@@ -231,22 +250,33 @@ struct SubjectsDataSettingsView: View {
                         }
                     }
 
-                    context.insert(
-                        Subject(
-                            name: subject.name,
-                            teacher: teacher,
-                            schedule: subject.schedule,
-                            startTime: subject.startTime,
-                            endTime: subject.endTime,
-                            place: subject.place,
-                            isRecess: subject.isRecess
+                    if let matchInTrash = deletedSubjects.first(where: {
+                        $0.name == subject.name &&
+                        Calendar.current.isDate($0.startTime, equalTo: subject.startTime, toGranularity: .minute) &&
+                        Calendar.current.isDate($0.endTime, equalTo: subject.endTime, toGranularity: .minute) &&
+                        Calendar.current.isDate($0.schedule, equalTo: subject.schedule, toGranularity: .minute) &&
+                        $0.isRecess == subject.isRecess &&
+                        $0.teacher == teacher &&
+                        $0.place == subject.place
+                    }) {
+                        matchInTrash.isSubjectDeleted = false
+                        matchInTrash.deletedAt = nil
+                    } else {
+                        context.insert(
+                            Subject(
+                                name: subject.name,
+                                teacher: teacher,
+                                schedule: subject.schedule,
+                                startTime: subject.startTime,
+                                endTime: subject.endTime,
+                                place: subject.place,
+                                isRecess: subject.isRecess
+                            )
                         )
-                    )
+                    }
                 }
 
                 try context.save()
-
-                url.stopAccessingSecurityScopedResource()
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {

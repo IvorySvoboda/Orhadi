@@ -12,7 +12,7 @@ struct SubjectsView: View {
     @Environment(Settings.self) private var settings
 
     @Query(filter: #Predicate<Subject> {
-        !$0.isDeleted
+        !$0.isSubjectDeleted
     }, sort: \Subject.startTime, animation: .smooth) private var subjects: [Subject]
 
     // MARK: - Properties

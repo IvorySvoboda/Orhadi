@@ -33,9 +33,10 @@ struct TeacherSheetView: View {
                     TextField("Prof. Ivory", text: $name)
                         .autocorrectionDisabled()
                         .onChange(of: name) { _, newName in
+                            let name = newName.trimmingCharacters(in: .whitespaces)
                             let existingTeacher = try? context.fetch(
                                 FetchDescriptor<Teacher>(
-                                    predicate: #Predicate { $0.name == newName }
+                                    predicate: #Predicate { $0.name == name }
                                 )
                             ).first
 
@@ -45,7 +46,7 @@ struct TeacherSheetView: View {
                             /// está vazio, previne o salvamento.
                             ///
                             /// ao adicionar um professor, o `foundTeacher` nunca
-                            /// sera igual ao professor que se sendo adicionado,
+                            /// sera igual ao professor que está sendo adicionado,
                             /// pois ele ainda não foi adicionado ao Banco de Dados.
                             if let foundTeacher = existingTeacher, foundTeacher != teacher {
                                 preventSave = true
@@ -75,8 +76,8 @@ struct TeacherSheetView: View {
                     Button("Salvar") {
                         withAnimation {
                             /// Atualiza as informações do professor
-                            teacher.name = name
-                            teacher.email = email
+                            teacher.name = name.trimmingCharacters(in: .whitespaces)
+                            teacher.email = email.trimmingCharacters(in: .whitespaces)
 
                             /// Se for um novo professor, adiciona ele no banco de dados.
                             if isNew {

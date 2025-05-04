@@ -8,17 +8,20 @@
 import SwiftUI
 import MarkdownUI
 
-struct ToDoRowView: View {
+struct ToDoRowView: View, Equatable {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
     @Environment(UserProfile.self) private var user
     @Environment(GameManager.self) private var game
 
-    @State private var showDeleteConfirmation: Bool = false
     @State private var isExpanded: Bool = false
 
     let todo: ToDo
     let onEdit: () -> Void
+
+    static func == (lhs: ToDoRowView, rhs: ToDoRowView) -> Bool {
+        lhs.todo.id == rhs.todo.id
+    }
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
@@ -121,19 +124,10 @@ struct ToDoRowView: View {
                 }.tint(.accentColor)
             }
             .swipeActions(edge: .trailing) {
-                if settings.todosDeleteConfirmation {
-                    Button {
-                        showDeleteConfirmation.toggle()
-                    } label: {
-                        Label("Excluir", systemImage: "trash.fill")
-                            .labelStyle(.iconOnly)
-                    }.tint(.red)
-                } else {
-                    Button(role: .destructive) {
-                        deleteToDo()
-                    } label: {
-                        Label("Excluir", systemImage: "trash.fill")
-                    }
+                Button(role: .destructive) {
+                    deleteToDo()
+                } label: {
+                    Label("Excluir", systemImage: "trash.fill")
                 }
 
                 Button {
@@ -142,12 +136,6 @@ struct ToDoRowView: View {
                     Label("Editar", systemImage: "pencil")
                         .labelStyle(.iconOnly)
                 }.tint(Color.accentColor)
-            }
-            .alert("Excluir tarefa?", isPresented: $showDeleteConfirmation) {
-                Button("Cancelar", role: .cancel) {}
-                Button("Excluir", role: .destructive) {
-                    deleteToDo()
-                }
             }
         }
         .listRowBackground(Color.orhadiBG)
@@ -204,8 +192,8 @@ struct ToDoRowView: View {
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
         withAnimation {
-            todo.isDeleted = true
-            context.delete(todo)
+            todo.isToDoDeleted = true
+            todo.deletedAt = .now
         }
     }
 }

@@ -10,14 +10,14 @@ import SwiftUI
 
 struct ToDosView: View {
     @Query(filter: #Predicate<ToDo> {
-        !$0.isArchived && !$0.isCompleted && !$0.isDeleted
+        !$0.isArchived && !$0.isToDoDeleted && !$0.isCompleted
     }, sort: [
         .init(\.dueDate, order: .forward),
         .init(\.title, order: .forward),
     ]) private var pendingToDos: [ToDo]
 
     @Query(filter: #Predicate<ToDo> {
-        !$0.isArchived && $0.isCompleted && !$0.isDeleted
+        !$0.isArchived && !$0.isToDoDeleted && $0.isCompleted
     }, sort: \ToDo.completedAt, order: .reverse) private var completedToDos: [ToDo]
 
     // MARK: - Properties

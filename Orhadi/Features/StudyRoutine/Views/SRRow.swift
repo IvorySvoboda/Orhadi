@@ -7,16 +7,18 @@
 
 import SwiftUI
 
-struct SRRow: View {
+struct SRRow: View, Equatable {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-
-    @State private var showDeleteConfirmation: Bool = false
 
     var study: SRStudy
     var onStudy: () -> Void
     var onAdd: () -> Void
     var onEdit: () -> Void
+
+    static func == (lhs: SRRow, rhs: SRRow) -> Bool {
+        lhs.study.id == rhs.study.id
+    }
 
     // MARK: - Views
 
@@ -38,72 +40,39 @@ struct SRRow: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            startStudySwipeAction
+            Button {
+                onStudy()
+            } label: {
+                Label("Iniciar", systemImage: "play.circle.fill")
+            }.tint(.accentColor)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            deleteSwipeAction
-            duplicateSwipeAction
-            editSwipeAction
-        }
-        .alert("Deletar Estudo?", isPresented: $showDeleteConfirmation) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Deletar", role: .destructive) {
+            Button(role: .destructive) {
                 deleteStudy()
+            } label: {
+                Image(systemName: "trash.fill")
             }
+
+            Button {
+                onAdd()
+            } label: {
+                Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
+            }.tint(.teal)
+
+            Button {
+                onEdit()
+            } label: {
+                Image(systemName: "pencil")
+            }.tint(.accentColor)
         }
-    }
-
-    // MARK: Swipe Actions
-
-    private var startStudySwipeAction: some View {
-        Button {
-            onStudy()
-        } label: {
-            Label("Iniciar", systemImage: "play.circle.fill")
-        }.tint(.accentColor)
-    }
-
-    private var deleteSwipeAction: some View {
-        Group {
-            /// Cria o botão adequado para as configurações do usuário.
-            if settings.studyDeleteConfirmation {
-                Button {
-                    showDeleteConfirmation.toggle()
-                } label: {
-                    Image(systemName: "trash.fill")
-                }.tint(.red)
-            } else {
-                Button(role: .destructive) {
-                    deleteStudy()
-                } label: {
-                    Image(systemName: "trash.fill")
-                }
-            }
-        }
-    }
-
-    private var duplicateSwipeAction: some View {
-        Button {
-            onAdd()
-        } label: {
-            Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
-        }.tint(.teal)
-    }
-
-    private var editSwipeAction: some View {
-        Button {
-            onEdit()
-        } label: {
-            Image(systemName: "pencil")
-        }.tint(.accentColor)
     }
 
     // MARK: - Functions
 
     private func deleteStudy() {
         withAnimation {
-            study.isDeleted = true
-            context.delete(study)
+            study.isStudyDeleted = true
+            study.deletedAt = .now
         }
     }
 }

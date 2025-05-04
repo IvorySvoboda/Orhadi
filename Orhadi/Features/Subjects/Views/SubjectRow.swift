@@ -7,15 +7,17 @@
 
 import SwiftUI
 
-struct SubjectRow: View {
+struct SubjectRow: View, Equatable {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-
-    @State private var showDeleteConfirmation = false
 
     var subject: Subject
     var onAdd: () -> Void
     var onEdit: () -> Void
+
+    static func == (lhs: SubjectRow, rhs: SubjectRow) -> Bool {
+        lhs.subject.id == rhs.subject.id
+    }
 
     // MARK: - Views
 
@@ -80,22 +82,11 @@ struct SubjectRow: View {
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            // Cria o botão adequado para as configurações do usuário
-            if settings.subjectsDeleteConfirmation {
-                Button {
-                    showDeleteConfirmation.toggle()
-                } label: {
-                    Label("Excluir", systemImage: "trash.fill")
-                        .labelStyle(.iconOnly)
-                }
-                .tint(.red)
-            } else {
-                Button(role: .destructive) {
-                    deleteSubject()
-                } label: {
-                    Label("Excluir", systemImage: "trash.fill")
-                        .labelStyle(.iconOnly)
-                }
+            Button(role: .destructive) {
+                deleteSubject()
+            } label: {
+                Label("Excluir", systemImage: "trash.fill")
+                    .labelStyle(.iconOnly)
             }
 
             Button {
@@ -105,19 +96,12 @@ struct SubjectRow: View {
                     .labelStyle(.iconOnly)
             }.tint(.teal)
 
-            Button { onEdit() } label: {
+            Button {
+                onEdit()
+            } label: {
                 Label("Editar", systemImage: "pencil")
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
-        }
-        .alert(
-            "Excluir \(subject.isRecess ? "intervalo" : "matéria")?",
-            isPresented: $showDeleteConfirmation
-        ) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Excluir", role: .destructive) {
-                deleteSubject()
-            }
         }
     }
 
@@ -125,8 +109,8 @@ struct SubjectRow: View {
 
     private func deleteSubject() {
         withAnimation {
-            subject.isDeleted = true
-            context.delete(subject)
+            subject.isSubjectDeleted = true
+            subject.deletedAt = .now
         }
     }
 }

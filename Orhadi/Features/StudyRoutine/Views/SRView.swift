@@ -12,7 +12,7 @@ struct SRView: View {
     @Environment(Settings.self) private var settings
 
     @Query(filter: #Predicate<SRStudy> {
-        !$0.isDeleted
+        !$0.isStudyDeleted
     }, sort: \SRStudy.name, animation: .smooth) private var studies: [SRStudy]
 
     // MARK: - Properties

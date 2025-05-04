@@ -40,19 +40,19 @@ struct DataSettingsView: View {
             }.listRowBackground(Color.orhadiSecondaryBG)
 
             Section {
-                Button("Apagar todos os dados") {
+                Button("Redefinir todos os dados") {
                     showEraseDataAlert.toggle()
                 }.tint(.red)
                 .alert(
-                    "Apagar todos os dados?",
+                    "Redefinir todos os dados?",
                     isPresented: $showEraseDataAlert
                 ) {
                     Button("Cancelar", role: .cancel) {}
-                    Button("Apagar", role: .destructive) {
+                    Button("Redefinir", role: .destructive) {
                         eraseAllData()
                     }
                 } message: {
-                    Text("Esta ação é permanente e não pode ser desfeita. Tem certeza que deseja continuar?")
+                    Text("Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperar os dados após redefinir. Tem certeza que deseja continuar?")
                 }
             }.listRowBackground(Color.orhadiSecondaryBG)
         }

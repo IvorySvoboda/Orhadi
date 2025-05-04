@@ -66,7 +66,8 @@ enum OrhadiSchemaV1: VersionedSchema {
         var endTime: Date = Calendar.current.date(bySettingHour: 7, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!
         var place: String = ""
         var isRecess: Bool = false
-        var isDeleted: Bool = false
+        var isSubjectDeleted: Bool = false
+        var deletedAt: Date?
 
         init(
             name: String = "",
@@ -76,7 +77,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             endTime: Date = Calendar.current.date(bySettingHour: 7, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!,
             place: String = "",
             isRecess: Bool,
-            isDeleted: Bool = false
         ) {
             self.name = name
             self.teacher = teacher
@@ -85,7 +85,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.endTime = endTime
             self.place = place
             self.isRecess = isRecess
-            self.isDeleted = isDeleted
         }
 
         static let sampleData = [
@@ -174,7 +173,8 @@ enum OrhadiSchemaV1: VersionedSchema {
         var completedAt: Date?
         var priority: Priority = Priority.none
         var isArchived: Bool = false
-        var isDeleted: Bool = false
+        var isToDoDeleted: Bool = false
+        var deletedAt: Date?
 
         init(
             id: String = UUID().uuidString,
@@ -186,8 +186,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             isCompleted: Bool = false,
             completedAt: Date? = nil,
             priority: Priority = Priority.none,
-            isArchived: Bool = false,
-            isDeleted: Bool = false
+            isArchived: Bool = false
         ) {
             self.id = id
             self.title = title
@@ -199,7 +198,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.completedAt = completedAt
             self.priority = priority
             self.isArchived = isArchived
-            self.isDeleted = isDeleted
         }
 
         static let sampleData: [ToDo] = [
@@ -304,20 +302,19 @@ enum OrhadiSchemaV1: VersionedSchema {
         var studyDay: Date = Date(timeIntervalSince1970: 0)
         var studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!
         var lastStudied: Date = Date(timeIntervalSince1970: 0)
-        var isDeleted: Bool = false
+        var isStudyDeleted: Bool = false
+        var deletedAt: Date?
 
         init(
             name: String = "",
             studyDay: Date = Date(timeIntervalSince1970: 0),
             studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!,
             lastStudied: Date = Date(timeIntervalSince1970: 0),
-            isDeleted: Bool = false
         ) {
             self.name = name
             self.studyDay = studyDay
             self.studyTime = studyTime
             self.lastStudied = lastStudied
-            self.isDeleted = isDeleted
         }
 
         static let sampleData = [
@@ -418,32 +415,20 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         /// Study Routine
         var breakTime: TimeInterval
-        var studyGoal: TimeInterval
-        var studyDeleteConfirmation: Bool
 
         /// Subjects
-        var subjectsDeleteConfirmation: Bool
 
         /// ToDos
         var scheduleNotifications: Bool
-        var todosDeleteConfirmation: Bool
 
         init(
             theme: Theme = .auto,
             breakTime: TimeInterval = 600,
-            studyGoal: TimeInterval = 3600,
-            studyDeleteConfirmation: Bool = true,
-            subjectsDeleteConfirmation: Bool = true,
             scheduleNotifications: Bool = true,
-            todosDeleteConfirmation: Bool = true,
         ) {
             self.theme = theme
             self.breakTime = breakTime
-            self.studyGoal = studyGoal
-            self.studyDeleteConfirmation = studyDeleteConfirmation
-            self.subjectsDeleteConfirmation = subjectsDeleteConfirmation
             self.scheduleNotifications = scheduleNotifications
-            self.todosDeleteConfirmation = todosDeleteConfirmation
         }
     }
 

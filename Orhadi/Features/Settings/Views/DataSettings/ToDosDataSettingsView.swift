@@ -11,7 +11,9 @@ import PopupView
 
 struct ToDosDataSettingsView: View {
     @Environment(Settings.self) private var settings
-    @Query(animation: .smooth) private var todos: [ToDo]
+    @Query(filter: #Predicate<ToDo> {
+        !$0.isToDoDeleted
+    }, animation: .smooth) private var todos: [ToDo]
 
     // MARK: - Properties
 
@@ -165,7 +167,9 @@ struct ToDosDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let todos = try context.fetch(FetchDescriptor<ToDo>())
+                let todos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate<ToDo> {
+                    !$0.isToDoDeleted
+                }))
 
                 for todo in todos {
                     let todoID = todo.id
@@ -177,7 +181,8 @@ struct ToDosDataSettingsView: View {
 
                     NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-                    context.delete(todo)
+                    todo.isToDoDeleted = true
+                    todo.deletedAt = .now
                 }
 
                 try context.save()
@@ -197,7 +202,9 @@ struct ToDosDataSettingsView: View {
             do {
                 let context = ModelContext(try createContainer())
 
-                let descriptor = FetchDescriptor(sortBy: [SortDescriptor(\ToDo.dueDate, order: .forward)])
+                let descriptor = FetchDescriptor(predicate: #Predicate<ToDo> {
+                    !$0.isToDoDeleted
+                })
 
                 let allObjects = try context.fetch(descriptor)
                 let exportItem = ToDoTransferable(todos: allObjects)
@@ -225,13 +232,19 @@ struct ToDosDataSettingsView: View {
 
                 let context = ModelContext(try createContainer())
 
-                let existingToDos = try context.fetch(FetchDescriptor<ToDo>())
-
                 let data = try Data(contentsOf: url)
-                let allToDos = try JSONDecoder().decode(
-                    [ToDo].self, from: data)
+                let importedTodos = try JSONDecoder().decode([ToDo].self, from: data)
 
-                for todo in existingToDos {
+                var deletedToDos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate<ToDo> {
+                    $0.isToDoDeleted
+                }))
+
+                let activeToDos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate<ToDo> {
+                    !$0.isToDoDeleted
+                }))
+
+                /// Marcar todas as tarefas ativas como deletadas
+                for todo in activeToDos {
                     let todoID = todo.id
                     let identifiers = [
                         "\(todoID)-1h",
@@ -241,18 +254,33 @@ struct ToDosDataSettingsView: View {
 
                     NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-                    context.delete(todo)
+                    todo.isToDoDeleted = true
+                    todo.deletedAt = .now
+
+                    deletedToDos.append(todo)
                 }
 
-                for todo in allToDos {
-                    if !todo.isCompleted, todo.dueDate > Date() {
-                        todo.scheduleNotification()
+                for imported in importedTodos {
+                    /// Verificar se há uma tarefa no lixo com mesmo conteúdo
+                    if let matchInTrash = deletedToDos.first(where: {
+                        $0.title == imported.title &&
+                        Calendar.current.isDate($0.dueDate, equalTo: imported.dueDate, toGranularity: .minute) &&
+                        $0.info == imported.info
+                    }) {
+                        /// Restaurar a tarefa do lixo
+                        matchInTrash.isToDoDeleted = false
+                        matchInTrash.deletedAt = nil
+                        matchInTrash.scheduleNotification()
+                    } else {
+                        /// Nova tarefa
+                        if !imported.isCompleted, imported.dueDate > Date() {
+                            imported.scheduleNotification()
+                        }
+                        context.insert(imported)
                     }
-                    context.insert(todo)
                 }
 
                 try context.save()
-
                 url.stopAccessingSecurityScopedResource()
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -264,4 +292,5 @@ struct ToDosDataSettingsView: View {
             }
         }
     }
+
 }

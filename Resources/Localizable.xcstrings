@@ -30,6 +30,9 @@
     "%@ Tarefa" : {
 
     },
+    "%@. Esta ação não poderá ser desfeita." : {
+
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -98,13 +101,13 @@
     "Alta" : {
 
     },
-    "Ao importar uma nova rotina de estudo todas os itens já existentes na rotina atual serão removidas. Deseja continuar?" : {
+    "Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão removidos. Deseja continuar?" : {
 
     },
-    "Ao importar, todas as matérias todas as matérias existentes serão removidas. Deseja continuar?" : {
+    "Ao importar, todas as matérias existentes serão removidas. Deseja continuar?" : {
 
     },
-    "Ao importar, todas as tarefas todas as tarefas existentes serão removidas. Deseja continuar?" : {
+    "Ao importar, todas as tarefas existentes serão removidas. Deseja continuar?" : {
 
     },
     "Apagar" : {
@@ -116,6 +119,15 @@
           }
         }
       }
+    },
+    "Apagar Estudo" : {
+
+    },
+    "Apagar Matéria" : {
+
+    },
+    "Apagar Tarefa" : {
+
     },
     "Apagar todas as matérias" : {
 
@@ -129,10 +141,8 @@
     "Apagar todas as tarefas?" : {
 
     },
-    "Apagar todos os dados" : {
-
-    },
     "Apagar todos os dados?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -148,10 +158,19 @@
     "Apagar todos os estudos?" : {
 
     },
+    "Apagar Tudo" : {
+
+    },
     "Aprendiz" : {
 
     },
     "Aquecendo" : {
+
+    },
+    "As matérias ficam disponíveis aqui por 30 dias. Após esse período, as matérias serão apagadas definitivamente." : {
+
+    },
+    "As tarefas ficam disponíveis aqui por 30 dias. Após esse período, as tarefas serão apagadas definitivamente." : {
 
     },
     "Ascendido" : {
@@ -311,10 +330,8 @@
     "Concluído" : {
 
     },
-    "Concluídos" : {
-
-    },
     "Confirmar para Excluir" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -366,12 +383,6 @@
 
     },
     "Dedicado" : {
-
-    },
-    "Deletar" : {
-
-    },
-    "Deletar Estudo?" : {
 
     },
     "Desbloqueada em %@" : {
@@ -456,6 +467,7 @@
       }
     },
     "Esta ação é permanente e não pode ser desfeita. Tem certeza que deseja continuar?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -465,7 +477,16 @@
         }
       }
     },
+    "Esta matéria será apagada. Esta ação não poderá ser desfeita." : {
+
+    },
+    "Esta tarefa será apagada. Esta ação não poderá ser desfeita." : {
+
+    },
     "Estatísticas" : {
+
+    },
+    "Este estudo será apagado. Esta ação não poderá ser desfeita." : {
 
     },
     "Estudando" : {
@@ -535,6 +556,9 @@
     "Estudioso Eterno" : {
 
     },
+    "Estudos Apagados" : {
+
+    },
     "Estudos completados! 🔥" : {
       "localizations" : {
         "en" : {
@@ -557,6 +581,7 @@
       }
     },
     "Excluir %@?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -567,6 +592,7 @@
       }
     },
     "Excluir tarefa?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -767,6 +793,9 @@
     "Inicio" : {
 
     },
+    "Intervalo" : {
+
+    },
     "INTERVALO" : {
       "localizations" : {
         "en" : {
@@ -816,6 +845,9 @@
           }
         }
       }
+    },
+    "Matérias Apagadas" : {
+
     },
     "Média" : {
 
@@ -925,6 +957,12 @@
         }
       }
     },
+    "Os estudos ficam disponíveis aqui por 30 dias. Após esse período, os estudos serão apagados definitivamente." : {
+
+    },
+    "Pendentes" : {
+
+    },
     "Persistente" : {
 
     },
@@ -972,6 +1010,27 @@
           }
         }
       }
+    },
+    "Recuperar" : {
+
+    },
+    "Redefinir" : {
+
+    },
+    "Redefinir todos os dados" : {
+
+    },
+    "Redefinir todos os dados?" : {
+
+    },
+    "Restaurar" : {
+
+    },
+    "Restaurar Todas" : {
+
+    },
+    "Restaurar Todos" : {
+
     },
     "Rotina de Estudos" : {
       "localizations" : {
@@ -1070,6 +1129,9 @@
         }
       }
     },
+    "Tarefas Apagadas" : {
+
+    },
     "Tarefas completadas" : {
 
     },
@@ -1097,6 +1159,9 @@
 
     },
     "To-Do Terminator" : {
+
+    },
+    "Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperar os dados após redefinir. Tem certeza que deseja continuar?" : {
 
     },
     "Total de Estudos" : {
