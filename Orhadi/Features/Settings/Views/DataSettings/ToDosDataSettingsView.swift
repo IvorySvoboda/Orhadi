@@ -11,7 +11,7 @@ import PopupView
 
 struct ToDosDataSettingsView: View {
     @Query(filter: #Predicate<ToDo> {
-        !$0.isToDoDeleted
+        !$0.isToDoDeleted && !$0.isArchived
     }, animation: .smooth) private var todos: [ToDo]
 
     // MARK: - Properties

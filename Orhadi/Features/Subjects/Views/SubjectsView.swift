@@ -80,7 +80,7 @@ struct SubjectsView: View {
                 }
             }
             .overlay { overlay }
-            .confirmationDialog("", isPresented: $showConfirmationDialog) {
+            .confirmationDialog("Adicionar", isPresented: $showConfirmationDialog) {
                 ForEach([
                     (title: "Adicionar Matéria", isRecess: false),
                     (title: "Adicionar Intervalo", isRecess: true)

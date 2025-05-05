@@ -105,6 +105,39 @@ struct SubjectRow: View, Equatable {
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
+        .contextMenu {
+            if let teacher = subject.teacher, !teacher.email.isEmpty {
+                Button {
+                    subject.openMail()
+                } label: {
+                    Label("Enviar e-mail", systemImage: "envelope.fill")
+                        .labelStyle(.iconOnly)
+                }
+            }
+
+            Button {
+                onEdit()
+            } label: {
+                Label("Editar", systemImage: "pencil")
+                    .labelStyle(.iconOnly)
+            }
+
+            Button {
+                onAdd()
+            } label: {
+                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                    .labelStyle(.iconOnly)
+            }
+
+            Button(role: .destructive) {
+                Task {
+                    deleteSubject()
+                }
+            } label: {
+                Label("Apagar", systemImage: "trash.fill")
+                    .labelStyle(.iconOnly)
+            }
+        }
     }
 
     // MARK: - Actions

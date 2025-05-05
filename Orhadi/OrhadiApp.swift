@@ -7,7 +7,6 @@
 
 import SwiftData
 import SwiftUI
-import UserNotifications
 
 typealias CurrentSchema = OrhadiSchemaV1
 typealias Subject = CurrentSchema.Subject
@@ -20,14 +19,13 @@ typealias Achievement = CurrentSchema.Achievement
 
 @main
 struct OrhadiApp: App {
-    /// Crie o container do SwiftData
+    /// Cria o container do SwiftData
     let container = try! createContainer()
 
     var body: some Scene {
         WindowGroup {
             RootView()
-        }
-        .modelContainer(container)
+        }.modelContainer(container)
     }
 }
 
@@ -46,12 +44,13 @@ struct RootView: View {
                 if userProfile.first == nil {
                     modelContext.insert(UserProfile())
                 }
+
                 /// Solicita permissão para as notificações
                 NotificationsManager.shared.requestNotificationAuthorization()
+
                 /// Apagas itens apagados a mais de 30 dias
                 cleanOldDeleted()
             }
-            /// Coloca no Environment algumas variáveis uteis
             .environment(settings.first ?? Settings())
             .environment(userProfile.first ?? UserProfile())
             .environment(GameManager(context: modelContext))

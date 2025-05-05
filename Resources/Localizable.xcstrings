@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "pt-BR",
   "strings" : {
-    "" : {
-
-    },
     " – " : {
       "shouldTranslate" : false
     },
@@ -22,16 +19,44 @@
       "shouldTranslate" : false
     },
     "%@ Estudo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Study"
+          }
+        }
+      }
     },
     "%@ Professor(a)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ Teacher"
+          }
+        }
+      }
     },
     "%@ Tarefa" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ To-Do"
+          }
+        }
+      }
     },
     "%@. Esta ação não poderá ser desfeita." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. This action can not be reverted."
+          }
+        }
+      }
     },
     "%lld" : {
       "shouldTranslate" : false
@@ -48,10 +73,24 @@
       "shouldTranslate" : false
     },
     "%lldm" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lldm"
+          }
+        }
+      }
     },
     "© Zyvoxi" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© Zyvoxi"
+          }
+        }
+      }
     },
     "A Fazer" : {
       "localizations" : {
@@ -70,6 +109,9 @@
 
     },
     "Acumulador" : {
+
+    },
+    "Adicionar" : {
 
     },
     "Adicionar Tarefa" : {
@@ -99,7 +141,14 @@
       }
     },
     "Alta" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High"
+          }
+        }
+      }
     },
     "Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão removidos. Deseja continuar?" : {
 
@@ -121,19 +170,47 @@
       }
     },
     "Apagar Estudo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Study"
+          }
+        }
+      }
     },
     "Apagar Matéria" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete Subject"
+          }
+        }
+      }
     },
     "Apagar Tarefa" : {
 
     },
     "Apagar todas as matérias" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all subjects"
+          }
+        }
+      }
     },
     "Apagar todas as matérias?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all subjects?"
+          }
+        }
+      }
     },
     "Apagar todas as tarefas" : {
 
@@ -141,22 +218,25 @@
     "Apagar todas as tarefas?" : {
 
     },
-    "Apagar todos os dados?" : {
-      "extractionState" : "stale",
+    "Apagar todos os estudos" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erase all data"
+            "value" : "Delete all studies"
           }
         }
       }
     },
-    "Apagar todos os estudos" : {
-
-    },
     "Apagar todos os estudos?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all studies?"
+          }
+        }
+      }
     },
     "Apagar Tudo" : {
 
@@ -165,6 +245,9 @@
 
     },
     "Aquecendo" : {
+
+    },
+    "Arquivar" : {
 
     },
     "As matérias ficam disponíveis aqui por 30 dias. Após esse período, as matérias serão apagadas definitivamente." : {
@@ -190,7 +273,14 @@
       }
     },
     "Baixa" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low"
+          }
+        }
+      }
     },
     "Cancelar" : {
       "localizations" : {
@@ -203,64 +293,204 @@
       }
     },
     "Chegue ao nível 3" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 3"
+          }
+        }
+      }
     },
     "Chegue ao nível 5" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 5"
+          }
+        }
+      }
     },
     "Chegue ao nível 8" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 8"
+          }
+        }
+      }
     },
     "Chegue ao nível 10" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 10"
+          }
+        }
+      }
     },
     "Chegue ao nível 12" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 12"
+          }
+        }
+      }
     },
     "Chegue ao nível 15" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 15"
+          }
+        }
+      }
     },
     "Chegue ao nível 20" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 20"
+          }
+        }
+      }
     },
     "Chegue ao nível 25" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 25"
+          }
+        }
+      }
     },
     "Chegue ao nível 30" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 30"
+          }
+        }
+      }
     },
     "Chegue ao nível 40" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 40"
+          }
+        }
+      }
     },
     "Chegue ao nível 50" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 50"
+          }
+        }
+      }
     },
     "Chegue ao nível 60" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 60"
+          }
+        }
+      }
     },
     "Chegue ao nível 75" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 75"
+          }
+        }
+      }
     },
     "Chegue ao nível 100" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 100"
+          }
+        }
+      }
     },
     "Chegue ao nível 150" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 150"
+          }
+        }
+      }
     },
     "Chegue ao nível 200" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 200"
+          }
+        }
+      }
     },
     "Chegue ao nível 300" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 300"
+          }
+        }
+      }
     },
     "Chegue ao nível 500" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 500"
+          }
+        }
+      }
     },
     "Chegue ao nível 750" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 750"
+          }
+        }
+      }
     },
     "Chegue ao nível 1000" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reach the level 1000"
+          }
+        }
+      }
     },
     "Claro" : {
       "localizations" : {
@@ -330,17 +560,6 @@
     "Concluído" : {
 
     },
-    "Confirmar para Excluir" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirm to Delete"
-          }
-        }
-      }
-    },
     "Conquista bloqueada" : {
 
     },
@@ -348,7 +567,14 @@
 
     },
     "Conquistas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Achievements"
+          }
+        }
+      }
     },
     "Consistente" : {
 
@@ -380,9 +606,25 @@
 
     },
     "Data" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Date"
+          }
+        }
+      }
     },
     "Dedicado" : {
+
+    },
+    "Desarquivar" : {
+
+    },
+    "Desarquivar Tarefa" : {
+
+    },
+    "Desarquivar Todas" : {
 
     },
     "Desbloqueada em %@" : {
@@ -399,13 +641,27 @@
       }
     },
     "Descompletar" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncomplete"
+          }
+        }
+      }
     },
     "Deus do Estudo" : {
 
     },
     "Dia" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Day"
+          }
+        }
+      }
     },
     "Divindade do XP" : {
 
@@ -413,19 +669,15 @@
     "Divino" : {
 
     },
-    "Domingo" : {
-      "extractionState" : "manual",
+    "Duplicar" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sunday"
+            "value" : "Duplicate"
           }
         }
       }
-    },
-    "Duplicar" : {
-
     },
     "Duração do Estudo" : {
 
@@ -454,7 +706,14 @@
 
     },
     "Enviar e-mail" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send e-mail"
+          }
+        }
+      }
     },
     "Escuro" : {
       "localizations" : {
@@ -462,17 +721,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dark"
-          }
-        }
-      }
-    },
-    "Esta ação é permanente e não pode ser desfeita. Tem certeza que deseja continuar?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This action is permanent and cannot be undone. Are you sure you want to proceed?"
           }
         }
       }
@@ -580,27 +828,8 @@
         }
       }
     },
-    "Excluir %@?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete %@?"
-          }
-        }
-      }
-    },
-    "Excluir tarefa?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete to-do?"
-          }
-        }
-      }
+    "Excluir Tarefa" : {
+
     },
     "Executor de Missões" : {
 
@@ -651,10 +880,24 @@
 
     },
     "Fazer ... " : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do …"
+          }
+        }
+      }
     },
     "Fim" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "End"
+          }
+        }
+      }
     },
     "Focado" : {
 
@@ -730,7 +973,14 @@
 
     },
     "Imortal" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imortal"
+          }
+        }
+      }
     },
     "Imortal do Conhecimento" : {
 
@@ -746,7 +996,14 @@
       }
     },
     "Importar Matérias?" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Subjects?"
+          }
+        }
+      }
     },
     "Importar Rotina de Estudos" : {
       "localizations" : {
@@ -759,17 +1016,17 @@
       }
     },
     "Importar Rotina de Estudos?" : {
-
-    },
-    "Importar Tarefas" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import To-Dos"
+            "value" : "Import Study Routine?"
           }
         }
       }
+    },
+    "Importar Tarefas" : {
+
     },
     "Importar Tarefas?" : {
 
@@ -791,10 +1048,24 @@
       }
     },
     "Inicio" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        }
+      }
     },
     "Intervalo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recess"
+          }
+        }
+      }
     },
     "INTERVALO" : {
       "localizations" : {
@@ -807,7 +1078,14 @@
       }
     },
     "Intervalos" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recess"
+          }
+        }
+      }
     },
     "Lenda da Organização" : {
 
@@ -822,16 +1100,44 @@
 
     },
     "Lendário" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendary"
+          }
+        }
+      }
     },
     "Level" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level"
+          }
+        }
+      }
     },
     "Level: %lld" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Level: %lld"
+          }
+        }
+      }
     },
     "Local" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Place"
+          }
+        }
+      }
     },
     "Maratonista de XP" : {
 
@@ -847,10 +1153,24 @@
       }
     },
     "Matérias Apagadas" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deleted Subjects"
+          }
+        }
+      }
     },
     "Média" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medium"
+          }
+        }
+      }
     },
     "Mente Brilhante" : {
 
@@ -869,7 +1189,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not Informed"
+            "value" : "Not provided"
           }
         }
       }
@@ -895,7 +1215,14 @@
       }
     },
     "Nenhuma" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        }
+      }
     },
     "Nenhuma Matéria" : {
 
@@ -910,7 +1237,14 @@
 
     },
     "Nome" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        }
+      }
     },
     "Notificações" : {
       "localizations" : {
@@ -923,7 +1257,14 @@
       }
     },
     "Novo" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New"
+          }
+        }
+      }
     },
     "Novo Professor" : {
       "localizations" : {
@@ -973,7 +1314,14 @@
 
     },
     "Prioridade" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Priority"
+          }
+        }
+      }
     },
     "Produtividade Total" : {
 
@@ -989,7 +1337,14 @@
       }
     },
     "Professor(a)" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teacher"
+          }
+        }
+      }
     },
     "Professores" : {
       "localizations" : {
@@ -1130,6 +1485,9 @@
       }
     },
     "Tarefas Apagadas" : {
+
+    },
+    "Tarefas Arquivadas" : {
 
     },
     "Tarefas completadas" : {

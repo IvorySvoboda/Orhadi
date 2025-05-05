@@ -134,12 +134,58 @@ struct ToDoRowView: View, Equatable {
                     Label("Excluir", systemImage: "trash.fill")
                 }
 
+                Button(role: .destructive) {
+                    Task {
+                        archiveTodo()
+                    }
+                } label: {
+                    Label("Arquivar", systemImage: "archivebox.fill")
+                }.tint(.teal)
+
                 Button {
                     onEdit()
                 } label: {
                     Label("Editar", systemImage: "pencil")
                         .labelStyle(.iconOnly)
                 }.tint(Color.accentColor)
+            }
+            .contextMenu {
+                Button {
+                    Task {
+                        completeToDo()
+                    }
+                } label: {
+                    if todo.isCompleted {
+                        Label("Descompletar", systemImage: "minus")
+                            .labelStyle(.iconOnly)
+                    } else {
+                        Label("Completar", systemImage: "checkmark")
+                            .labelStyle(.iconOnly)
+                    }
+                }
+
+                Button {
+                    onEdit()
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                        .labelStyle(.iconOnly)
+                }
+
+                Button {
+                    Task {
+                        archiveTodo()
+                    }
+                } label: {
+                    Label("Arquivar", systemImage: "archivebox.fill")
+                }
+
+                Button(role: .destructive) {
+                    Task {
+                        deleteToDo()
+                    }
+                } label: {
+                    Label("Excluir", systemImage: "trash.fill")
+                }
             }
         }
         .listRowBackground(Color.orhadiBG)
@@ -182,6 +228,21 @@ struct ToDoRowView: View, Equatable {
             if settings.scheduleNotifications {
                 todo.scheduleNotification()
             }
+        }
+    }
+
+    private func archiveTodo() {
+        let todoID = todo.id
+        let identifiers = [
+            "\(todoID)-1h",
+            "\(todoID)-24h",
+            "\(todoID)-due",
+        ]
+
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        withAnimation {
+            todo.isArchived = true
         }
     }
 

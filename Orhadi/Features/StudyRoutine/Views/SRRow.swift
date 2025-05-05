@@ -43,7 +43,7 @@ struct SRRow: View, Equatable {
             Button {
                 onStudy()
             } label: {
-                Label("Iniciar", systemImage: "play.circle.fill")
+                Label("Estudar", systemImage: "play.circle.fill")
             }.tint(.accentColor)
         }
         .swipeActions(edge: .trailing) {
@@ -69,6 +69,36 @@ struct SRRow: View, Equatable {
                 Label("Editar", systemImage: "pencil")
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
+        }
+        .contextMenu {
+            Button {
+                onStudy()
+            } label: {
+                Label("Estudar", systemImage: "play.circle.fill")
+            }
+
+            Button {
+                onEdit()
+            } label: {
+                Label("Editar", systemImage: "pencil")
+                    .labelStyle(.iconOnly)
+            }
+
+            Button {
+                onAdd()
+            } label: {
+                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                    .labelStyle(.iconOnly)
+            }
+
+            Button(role: .destructive) {
+                Task {
+                    deleteStudy()
+                }
+            } label: {
+                Label("Apagar", systemImage: "trash.fill")
+                    .labelStyle(.iconOnly)
+            }
         }
     }
 
