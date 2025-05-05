@@ -46,23 +46,26 @@ struct SRRow: View, Equatable {
                 Label("Iniciar", systemImage: "play.circle.fill")
             }.tint(.accentColor)
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+        .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
                 deleteStudy()
             } label: {
-                Image(systemName: "trash.fill")
+                Label("Apagar", systemImage: "trash.fill")
+                    .labelStyle(.iconOnly)
             }
 
             Button {
                 onAdd()
             } label: {
-                Image(systemName: "rectangle.fill.on.rectangle.angled.fill")
+                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                    .labelStyle(.iconOnly)
             }.tint(.teal)
 
             Button {
                 onEdit()
             } label: {
-                Image(systemName: "pencil")
+                Label("Editar", systemImage: "pencil")
+                    .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
     }

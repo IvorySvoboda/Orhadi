@@ -81,11 +81,11 @@ struct SubjectRow: View, Equatable {
                 }.tint(.accentColor)
             }
         }
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+        .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
                 deleteSubject()
             } label: {
-                Label("Excluir", systemImage: "trash.fill")
+                Label("Apagar", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
 
