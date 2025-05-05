@@ -52,7 +52,8 @@ struct ArchivedTodoRowView: View {
                     unarchiveTodo()
                 }
             } label: {
-                Label("Desarquivar Tarefa", systemImage: "archivebox.fill")
+                Label("Desarquivar", systemImage: "archivebox.fill")
+                    .labelStyle(.iconOnly)
             }.tint(.teal)
         }
         .swipeActions(edge: .trailing) {
@@ -61,7 +62,8 @@ struct ArchivedTodoRowView: View {
                     deleteToDo()
                 }
             } label: {
-                Label("Excluir Tarefa", systemImage: "trash.fill")
+                Label("Apagar", systemImage: "trash.fill")
+                    .labelStyle(.iconOnly)
             }
         }
         .contextMenu {

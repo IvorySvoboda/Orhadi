@@ -34,7 +34,8 @@ struct TeachersView: View {
                     Button {
                         teacher.openMail()
                     } label: {
-                        Image(systemName: "envelope.fill")
+                        Label("Enviar e-mail", systemImage: "envelope.fill")
+                            .labelStyle(.iconOnly)
                     }.tint(.accentColor)
                 }
             }
@@ -44,14 +45,39 @@ struct TeachersView: View {
                         context.delete(teacher)
                     }
                 } label: {
-                    Label("Excluir", systemImage: "trash.fill")
+                    Label("Apagar", systemImage: "trash.fill")
+                        .labelStyle(.iconOnly)
                 }
+
+                Button {
+                    teacherToEdit = teacher
+                } label: {
+                    Label("Editar", systemImage: "pencil")
+                        .labelStyle(.iconOnly)
+                }.tint(.accentColor)
+            }
+            .contextMenu {
+                if !teacher.email.isEmpty {
+                    Button {
+                        teacher.openMail()
+                    } label: {
+                        Label("Enviar e-mail", systemImage: "envelope.fill")
+                    }
+                }
+
                 Button {
                     teacherToEdit = teacher
                 } label: {
                     Label("Editar", systemImage: "pencil")
                 }
-                .tint(.accentColor)
+
+                Button(role: .destructive) {
+                    withAnimation {
+                        context.delete(teacher)
+                    }
+                } label: {
+                    Label("Apagar", systemImage: "trash.fill")
+                }
             }
         }
         .toolbar {

@@ -61,7 +61,7 @@ struct SRView: View {
                             navigateToStudyingView.toggle()
                         },
                         onAdd: { studyToAdd = study },
-                        onEdit: {studyToEdit = study }
+                        onEdit: { studyToEdit = study }
                     )
                 }
             }

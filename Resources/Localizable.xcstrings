@@ -621,9 +621,6 @@
     "Desarquivar" : {
 
     },
-    "Desarquivar Tarefa" : {
-
-    },
     "Desarquivar Todas" : {
 
     },
@@ -750,6 +747,9 @@
     "Estudante Supremo" : {
 
     },
+    "Estudar" : {
+
+    },
     "Estude por 1 hora no total" : {
 
     },
@@ -827,9 +827,6 @@
           }
         }
       }
-    },
-    "Excluir Tarefa" : {
-
     },
     "Executor de Missões" : {
 
@@ -1038,6 +1035,7 @@
 
     },
     "Iniciar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

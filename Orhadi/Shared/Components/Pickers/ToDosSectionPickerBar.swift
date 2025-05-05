@@ -7,17 +7,6 @@
 
 import SwiftUI
 
-enum ToDoSection: CaseIterable {
-    case pending, completed
-
-    var string: String {
-        switch self {
-        case .pending: return String(localized: "Pendentes")
-        case .completed: return String(localized: "Concluídas")
-        }
-    }
-}
-
 struct ToDosSectionPickerBar: View {
 
     @Binding var selectedSection: ToDoSection

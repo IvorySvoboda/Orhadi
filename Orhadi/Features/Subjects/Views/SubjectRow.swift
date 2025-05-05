@@ -111,7 +111,6 @@ struct SubjectRow: View, Equatable {
                     subject.openMail()
                 } label: {
                     Label("Enviar e-mail", systemImage: "envelope.fill")
-                        .labelStyle(.iconOnly)
                 }
             }
 
@@ -119,14 +118,12 @@ struct SubjectRow: View, Equatable {
                 onEdit()
             } label: {
                 Label("Editar", systemImage: "pencil")
-                    .labelStyle(.iconOnly)
             }
 
             Button {
                 onAdd()
             } label: {
                 Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
-                    .labelStyle(.iconOnly)
             }
 
             Button(role: .destructive) {
@@ -135,7 +132,6 @@ struct SubjectRow: View, Equatable {
                 }
             } label: {
                 Label("Apagar", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }
         }
     }

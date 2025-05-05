@@ -93,7 +93,7 @@ struct SubjectsView: View {
                 Button("Cancelar", role: .cancel) {}
             }
             .sheet(item: $subjectToAdd) { subject in
-                SubjectSheetView(subject: subject, isNew: true)
+                SubjectSheetView(subject: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $subjectToEdit) { subject in

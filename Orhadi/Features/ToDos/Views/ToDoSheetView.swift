@@ -64,7 +64,7 @@ struct ToDoSheetView: View {
                                 .padding(.leading, 2)
                             VStack(alignment: .leading) {
                                 Text("Data")
-                                Text(todo.dueDate.relativeFormated())
+                                Text(todo.dueDate.relativeFormatted())
                                     .font(.caption)
                                     .foregroundStyle(Color.accentColor)
                             }

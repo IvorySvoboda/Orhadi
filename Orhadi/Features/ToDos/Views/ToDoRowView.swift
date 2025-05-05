@@ -27,54 +27,7 @@ struct ToDoRowView: View, Equatable {
         DisclosureGroup(isExpanded: $isExpanded) {
             if !todo.info.isEmpty {
                 Markdown(todo.info)
-                    .markdownBlockStyle(\.heading1) { configuration in
-                        VStack(alignment: .leading, spacing: 0) {
-                            configuration.label
-                                .relativePadding(.bottom, length: .em(0.1))
-                                .markdownMargin(bottom: .em(0.5))
-                                .markdownTextStyle {
-                                    FontWeight(.semibold)
-                                    FontSize(.em(1.5))
-                                }
-                            Divider()
-                        }
-                    }
-                    .markdownBlockStyle(\.heading2) { configuration in
-                        configuration.label
-                            .relativePadding(.bottom, length: .em(0.1))
-                            .markdownMargin(bottom: .em(0.5))
-                            .markdownTextStyle {
-                                FontWeight(.semibold)
-                                FontSize(.em(1.3))
-                            }
-                    }
-                    .markdownBlockStyle(\.heading3) { configuration in
-                        configuration.label
-                            .relativePadding(.bottom, length: .em(0.1))
-                            .markdownMargin(bottom: .em(0.5))
-                            .markdownTextStyle {
-                                FontWeight(.semibold)
-                                FontSize(.em(1.1))
-                            }
-                    }
-                    .markdownTextStyle(\.code) {
-                        FontFamilyVariant(.normal)
-                        ForegroundColor(Color.accentColor)
-                        BackgroundColor(Color.accentColor.opacity(0.25))
-                    }
-                    .markdownBlockStyle(\.blockquote) { configuration in
-                        configuration.label
-                            .padding(5)
-                            .markdownTextStyle {
-                                BackgroundColor(nil)
-                            }
-                            .overlay(alignment: .leading) {
-                                Rectangle()
-                                    .fill(Color.accentColor)
-                                    .frame(width: 4)
-                            }
-                            .background(Color.accentColor.opacity(0.25))
-                    }
+                    .orhadiMarkdownStyle()
             } else {
                 Text("Não informado.").opacity(0.5)
             }
@@ -131,7 +84,8 @@ struct ToDoRowView: View, Equatable {
                         deleteToDo()
                     }
                 } label: {
-                    Label("Excluir", systemImage: "trash.fill")
+                    Label("Apagar", systemImage: "trash.fill")
+                        .labelStyle(.iconOnly)
                 }
 
                 Button(role: .destructive) {
@@ -140,6 +94,7 @@ struct ToDoRowView: View, Equatable {
                     }
                 } label: {
                     Label("Arquivar", systemImage: "archivebox.fill")
+                        .labelStyle(.iconOnly)
                 }.tint(.teal)
 
                 Button {
@@ -157,10 +112,8 @@ struct ToDoRowView: View, Equatable {
                 } label: {
                     if todo.isCompleted {
                         Label("Descompletar", systemImage: "minus")
-                            .labelStyle(.iconOnly)
                     } else {
                         Label("Completar", systemImage: "checkmark")
-                            .labelStyle(.iconOnly)
                     }
                 }
 
@@ -168,7 +121,6 @@ struct ToDoRowView: View, Equatable {
                     onEdit()
                 } label: {
                     Label("Editar", systemImage: "pencil")
-                        .labelStyle(.iconOnly)
                 }
 
                 Button {
@@ -184,7 +136,7 @@ struct ToDoRowView: View, Equatable {
                         deleteToDo()
                     }
                 } label: {
-                    Label("Excluir", systemImage: "trash.fill")
+                    Label("Apagar", systemImage: "trash.fill")
                 }
             }
         }
