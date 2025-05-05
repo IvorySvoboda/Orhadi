@@ -83,7 +83,9 @@ struct SubjectRow: View, Equatable {
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                deleteSubject()
+                Task {
+                    deleteSubject()
+                }
             } label: {
                 Label("Apagar", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)

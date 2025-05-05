@@ -115,8 +115,10 @@ struct SubjectsDataSettingsView: View {
             Section {
                 Button("Apagar todas as matérias") {
                     showDeleteConfirmation.toggle()
-                }.tint(.red)
-                    .alert("Apagar todas as matérias?", isPresented: $showDeleteConfirmation) {
+                }
+                .tint(.red)
+                .disabled(subjects.isEmpty)
+                .alert("Apagar todas as matérias?", isPresented: $showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
                         deleteAllSubjects()
@@ -278,7 +280,9 @@ struct SubjectsDataSettingsView: View {
 
                 try context.save()
 
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+                await MainActor.run {
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
             } catch {
                 await MainActor.run {
                     errorMessage = error.localizedDescription

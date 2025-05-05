@@ -48,7 +48,9 @@ struct SRRow: View, Equatable {
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                deleteStudy()
+                Task {
+                    deleteStudy()
+                }
             } label: {
                 Label("Apagar", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)

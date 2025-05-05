@@ -11,6 +11,13 @@ import SwiftUI
 struct ContentView: View {
     @Environment(Settings.self) private var settings
 
+    /// Não remover esses `@Query`, por algum motivo
+    /// eles evitam o app de travar ao deletar algum
+    /// item dos modelos.
+    @Query private var subjects: [Subject]
+    @Query private var todos: [ToDo]
+    @Query private var study: [SRStudy]
+
     // MARK: - Views
 
     var body: some View {

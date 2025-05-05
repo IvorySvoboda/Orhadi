@@ -112,7 +112,9 @@ struct ToDoRowView: View, Equatable {
             }
             .swipeActions(edge: .leading) {
                 Button(role: .destructive) {
-                    completeToDo()
+                    Task {
+                        completeToDo()
+                    }
                 } label: {
                     if todo.isCompleted {
                         Label("Descompletar", systemImage: "minus")
@@ -125,7 +127,9 @@ struct ToDoRowView: View, Equatable {
             }
             .swipeActions(edge: .trailing) {
                 Button(role: .destructive) {
-                    deleteToDo()
+                    Task {
+                        deleteToDo()
+                    }
                 } label: {
                     Label("Excluir", systemImage: "trash.fill")
                 }

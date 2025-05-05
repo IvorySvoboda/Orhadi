@@ -11,7 +11,9 @@ import PopupView
 
 struct SRDataSettingsView: View {
 
-    @Query(animation: .smooth) private var studies: [SRStudy]
+    @Query(filter: #Predicate<SRStudy> {
+        !$0.isStudyDeleted
+    }, animation: .smooth) private var studies: [SRStudy]
 
     // MARK: - Properties
 
@@ -90,8 +92,10 @@ struct SRDataSettingsView: View {
             Section {
                 Button("Apagar todos os estudos") {
                     showDeleteConfirmation.toggle()
-                }.tint(.red)
-                    .alert("Apagar todos os estudos?", isPresented: $showDeleteConfirmation) {
+                }
+                .tint(.red)
+                .disabled(studies.isEmpty)
+                .alert("Apagar todos os estudos?", isPresented: $showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
                         deleteAllStudies()
@@ -222,7 +226,9 @@ struct SRDataSettingsView: View {
 
                 try context.save()
 
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+                await MainActor.run {
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
             } catch {
                 await MainActor.run {
                     errorMessage = error.localizedDescription

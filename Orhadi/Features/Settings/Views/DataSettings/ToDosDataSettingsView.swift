@@ -10,7 +10,6 @@ import SwiftUI
 import PopupView
 
 struct ToDosDataSettingsView: View {
-    @Environment(Settings.self) private var settings
     @Query(filter: #Predicate<ToDo> {
         !$0.isToDoDeleted
     }, animation: .smooth) private var todos: [ToDo]
@@ -125,8 +124,10 @@ struct ToDosDataSettingsView: View {
             Section {
                 Button("Apagar todas as tarefas") {
                     showDeleteConfirmation.toggle()
-                }.tint(.red)
-                    .alert("Apagar todas as tarefas?", isPresented: $showDeleteConfirmation) {
+                }
+                .tint(.red)
+                .disabled(todos.isEmpty)
+                .alert("Apagar todas as tarefas?", isPresented: $showDeleteConfirmation) {
                     Button("Cancelar", role: .cancel) {}
                     Button("Apagar", role: .destructive) {
                         deleteAllToDo()
@@ -226,10 +227,10 @@ struct ToDosDataSettingsView: View {
 
     private func importToDos() {
         guard let url = importedURL else { return }
+        guard url.startAccessingSecurityScopedResource() else { return }
+        defer { url.stopAccessingSecurityScopedResource() }
         Task.detached(priority: .background) {
             do {
-                guard url.startAccessingSecurityScopedResource() else { return }
-
                 let context = ModelContext(try createContainer())
 
                 let data = try Data(contentsOf: url)
@@ -270,10 +271,13 @@ struct ToDosDataSettingsView: View {
                         /// Restaurar a tarefa do lixo
                         matchInTrash.isToDoDeleted = false
                         matchInTrash.deletedAt = nil
-                        matchInTrash.scheduleNotification()
+                        matchInTrash.isCompleted = imported.isCompleted
+                        if !matchInTrash.isCompleted, matchInTrash.dueDate > .now {
+                            matchInTrash.scheduleNotification()
+                        }
                     } else {
                         /// Nova tarefa
-                        if !imported.isCompleted, imported.dueDate > Date() {
+                        if !imported.isCompleted, imported.dueDate > .now {
                             imported.scheduleNotification()
                         }
                         context.insert(imported)
@@ -281,9 +285,10 @@ struct ToDosDataSettingsView: View {
                 }
 
                 try context.save()
-                url.stopAccessingSecurityScopedResource()
 
-                await UINotificationFeedbackGenerator().notificationOccurred(.success)
+                await MainActor.run {
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                }
             } catch {
                 await MainActor.run {
                     errorMessage = "\(error.localizedDescription)"

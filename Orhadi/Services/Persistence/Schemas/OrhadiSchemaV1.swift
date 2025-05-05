@@ -59,6 +59,7 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class Subject: Codable {
+        @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var teacher: Teacher? = nil
         var schedule: Date = Date(timeIntervalSince1970: 0)
@@ -177,7 +178,6 @@ enum OrhadiSchemaV1: VersionedSchema {
         var deletedAt: Date?
 
         init(
-            id: String = UUID().uuidString,
             title: String = "",
             info: String = "",
             dueDate: Date = Calendar.current.startOfDay(for: Date()),
@@ -188,7 +188,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             priority: Priority = Priority.none,
             isArchived: Bool = false
         ) {
-            self.id = id
             self.title = title
             self.info = info
             self.dueDate = dueDate
@@ -298,6 +297,7 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class SRStudy: Codable {
+        @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var studyDay: Date = Date(timeIntervalSince1970: 0)
         var studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!

@@ -179,7 +179,9 @@ struct DeletedTodosView: View {
         withAnimation {
             todo.isToDoDeleted = false
             todo.deletedAt = nil
-            todo.scheduleNotification()
+            if !todo.isCompleted, todo.dueDate > .now {
+                todo.scheduleNotification()
+            }
         }
     }
 }
