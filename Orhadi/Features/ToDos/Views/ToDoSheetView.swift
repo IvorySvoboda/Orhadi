@@ -179,7 +179,7 @@ struct ToDoSheetView: View {
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
-                    }.disabled(todo.title.isEmpty)
+                    }.disabled(title.isEmpty)
                 }
             }
         }
