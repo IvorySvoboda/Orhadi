@@ -20,7 +20,13 @@ typealias Achievement = CurrentSchema.Achievement
 @main
 struct OrhadiApp: App {
     /// Cria o container do SwiftData
-    let container = try! createContainer()
+    var container: ModelContainer {
+        do {
+            return try createContainer()
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

@@ -17,8 +17,8 @@ struct SRView: View {
 
     // MARK: - Properties
 
-    @State private var studyToAdd: SRStudy? = nil
-    @State private var studyToEdit: SRStudy? = nil
+    @State private var studyToAdd: SRStudy?
+    @State private var studyToEdit: SRStudy?
     @State private var studiesToStudy: [SRStudy] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())

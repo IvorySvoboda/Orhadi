@@ -61,7 +61,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     class Subject: Codable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
-        var teacher: Teacher? = nil
+        var teacher: Teacher?
         var schedule: Date = Date(timeIntervalSince1970: 0)
         var startTime: Date = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date(timeIntervalSince1970: 0))!
         var endTime: Date = Calendar.current.date(bySettingHour: 7, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!
@@ -124,7 +124,7 @@ enum OrhadiSchemaV1: VersionedSchema {
                 endTime: Calendar.current.date(bySettingHour: 11, minute: 30, second: 0, of: Date())!,
                 place: "Sala 105",
                 isRecess: false
-            ),
+            )
         ]
 
         enum CodingKeys: CodingKey {
@@ -251,7 +251,7 @@ enum OrhadiSchemaV1: VersionedSchema {
                 completedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()),
                 priority: .none,
                 isArchived: true
-            ),
+            )
         ]
 
         enum CodingKeys: CodingKey {
@@ -320,7 +320,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         static let sampleData = [
             SRStudy(name: "Português"),
             SRStudy(name: "Matemática"),
-            SRStudy(name: "História"),
+            SRStudy(name: "História")
         ]
 
         enum CodingKeys: CodingKey {
@@ -431,5 +431,4 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.scheduleNotifications = scheduleNotifications
         }
     }
-
 }

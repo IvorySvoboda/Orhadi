@@ -12,7 +12,7 @@ struct RollingTextView: View {
 
     @State private var previousText: String = ""
     @State private var isAnimating = false
-    @State private var pendingText: String? = nil
+    @State private var pendingText: String?
 
     var body: some View {
         HStack(spacing: 0) {
@@ -57,7 +57,6 @@ struct RollingTextView: View {
         return " "
     }
 }
-
 
 struct RollingCharView: View {
     var from: String

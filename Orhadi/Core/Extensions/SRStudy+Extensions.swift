@@ -15,7 +15,7 @@ extension SRStudy {
     }
 
     var hasStudiedThisWeek: Bool {
-        Calendar.current.isDate(lastStudied, equalTo: Date(), toGranularity: .weekOfYear) 
+        Calendar.current.isDate(lastStudied, equalTo: Date(), toGranularity: .weekOfYear)
     }
 
     var studyTimeInSeconds: TimeInterval {

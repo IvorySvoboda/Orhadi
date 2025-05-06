@@ -32,4 +32,3 @@ func resizeImageAspectFill(_ data: Data, targetSize: CGSize) -> Data? {
 
     return resizedImage.jpegData(compressionQuality: 0.8)
 }
-

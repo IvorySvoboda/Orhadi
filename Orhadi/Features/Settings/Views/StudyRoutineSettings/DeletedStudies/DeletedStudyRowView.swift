@@ -29,18 +29,18 @@ struct DeletedStudyRowView: View {
         .contentShape(Rectangle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button {
-                recoverStudy()
-            } label: {
-                Label("Recuperar", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
-            }
-
-            Button(role: .destructive) {
                 showDeleteConfirmation.toggle()
             } label: {
                 Label("Apagar", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
-            }
+            }.tint(.red)
+
+            Button(role: .destructive) {
+                recoverStudy()
+            } label: {
+                Label("Recuperar", systemImage: "gobackward")
+                    .labelStyle(.iconOnly)
+            }.tint(.indigo)
         }
         .confirmationDialog("Este estudo será apagado. Esta ação não poderá ser desfeita.",
                             isPresented: $showDeleteConfirmation, titleVisibility: .visible) {

@@ -148,7 +148,7 @@ struct ToDoRowView: View, Equatable {
         let identifiers = [
             "\(todoID)-1h",
             "\(todoID)-24h",
-            "\(todoID)-due",
+            "\(todoID)-due"
         ]
 
         /// Se a tarefas não estiver completada
@@ -188,7 +188,7 @@ struct ToDoRowView: View, Equatable {
         let identifiers = [
             "\(todoID)-1h",
             "\(todoID)-24h",
-            "\(todoID)-due",
+            "\(todoID)-due"
         ]
 
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
@@ -203,7 +203,7 @@ struct ToDoRowView: View, Equatable {
         let identifiers = [
             "\(todoID)-1h",
             "\(todoID)-24h",
-            "\(todoID)-due",
+            "\(todoID)-due"
         ]
 
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)

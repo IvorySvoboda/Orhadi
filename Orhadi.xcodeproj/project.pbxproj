@@ -92,7 +92,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2804F4E82D92275900649FD0 /* Build configuration list for PBXNativeTarget "Orhadi" */;
 			buildPhases = (
-				285D39AB2DBCDFDF00CDC4D0 /* ShellScript */,
+				28A0B30D2DC99BEF00ACBAA3 /* Lint */,
 				2804F4D42D92275700649FD0 /* Sources */,
 				2804F4D52D92275700649FD0 /* Frameworks */,
 				2804F4D62D92275700649FD0 /* Resources */,
@@ -201,7 +201,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		285D39AB2DBCDFDF00CDC4D0 /* ShellScript */ = {
+		28A0B30D2DC99BEF00ACBAA3 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -211,13 +211,14 @@
 			);
 			inputPaths = (
 			);
+			name = Lint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/sh\n\n# Gera o build number baseado na data\nbuildNumber=$(date +%Y%m%d)\n\n# Aplica no projeto\nagvtool new-version -all $buildNumber\n";
+			shellScript = "if command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -287,7 +288,7 @@
 				DEVELOPMENT_TEAM = XJ8LRTT74C;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -355,7 +356,7 @@
 				DEVELOPMENT_TEAM = XJ8LRTT74C;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

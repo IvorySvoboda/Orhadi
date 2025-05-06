@@ -53,7 +53,7 @@ struct SRDataSettingsView: View {
                     defaultFilename: String(localized: "Rotina de Estudos")
                 ) { result in
                     switch result {
-                    case .success(_):
+                    case .success:
                         print("Sucesso!")
                         srExportItem = nil
                     case .failure(let error):

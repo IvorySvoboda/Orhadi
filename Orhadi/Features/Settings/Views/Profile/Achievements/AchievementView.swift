@@ -14,7 +14,7 @@ struct AchievementView: View {
     @Query(sort: [
         SortDescriptor(\Achievement.isUnlocked, order: .reverse),
         SortDescriptor(\Achievement.difficultLevel, order: .forward),
-        SortDescriptor(\Achievement.unlockedAt, order: .reverse),
+        SortDescriptor(\Achievement.unlockedAt, order: .reverse)
     ]) private var achievements: [Achievement]
 
     private let columns = [

@@ -89,7 +89,7 @@ class GameManager {
             Achievement(id: "todo_2000", name: String(localized: "General da Rotina"), imageName: "checkmark.shield.fill", descriptionText: String(localized: "Complete 2.000 tarefas"), difficultLevel: 50),
             Achievement(id: "todo_3000", name: String(localized: "Executor Supremo"), imageName: "hammer.circle.fill", descriptionText: String(localized: "Complete 3.000 tarefas"), difficultLevel: 60),
             Achievement(id: "todo_5000", name: String(localized: "Workaholic"), imageName: "briefcase.fill", descriptionText: String(localized: "Complete 5.000 tarefas"), difficultLevel: 70),
-            Achievement(id: "todo_10000", name: String(localized: "Lenda da Organização"), imageName: "crown.fill", descriptionText: String(localized: "Complete 10.000 tarefas"), difficultLevel: 80),
+            Achievement(id: "todo_10000", name: String(localized: "Lenda da Organização"), imageName: "crown.fill", descriptionText: String(localized: "Complete 10.000 tarefas"), difficultLevel: 80)
         ]
 
         let request = FetchDescriptor<Achievement>()

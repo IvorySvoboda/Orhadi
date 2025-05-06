@@ -11,8 +11,21 @@ struct SRSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @State private var name: String
+    @State private var studyDay: Date
+    @State private var studyTime: Date
+
     @Bindable var study: SRStudy
     var isNew: Bool
+
+    init(study: SRStudy, isNew: Bool) {
+        self.study = study
+        self.isNew = isNew
+
+        _name = State(initialValue: study.name)
+        _studyDay = State(initialValue: study.studyDay)
+        _studyTime = State(initialValue: study.studyTime)
+    }
 
     var body: some View {
         NavigationStack {
@@ -21,16 +34,16 @@ struct SRSheetView: View {
                     HStack {
                         Text("Nome")
                             .frame(width: 50, alignment: .leading)
-                        TextField("Português", text: $study.name)
+                        TextField("Português", text: $name)
                             .autocorrectionDisabled()
                     }
                 }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
-                    CustomDayPickerView(date: $study.studyDay)
+                    CustomDayPickerView(date: $studyDay)
                     DatePicker(
                         "Duração do Estudo",
-                        selection: $study.studyTime,
+                        selection: $studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
                 }.listRowBackground(Color.orhadiSecondaryBG)
@@ -46,16 +59,20 @@ struct SRSheetView: View {
                         }
                     }
                 }
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         if isNew {
                             addStudy()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                         } else {
+                            study.name = name
+                            study.studyDay = studyDay
+                            study.studyTime = studyTime
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
-                    }.disabled(study.name.isEmpty)
+                    }.disabled(name.isEmpty)
                 }
             }
         }
@@ -64,9 +81,9 @@ struct SRSheetView: View {
     private func addStudy() {
         withAnimation {
             context.insert(SRStudy(
-                name: study.name,
-                studyDay: study.studyDay,
-                studyTime: study.studyTime
+                name: name,
+                studyDay: studyDay,
+                studyTime: studyTime
             ))
         }
     }

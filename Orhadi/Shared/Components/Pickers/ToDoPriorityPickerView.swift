@@ -7,30 +7,30 @@
 
 import SwiftUI
 
-struct ToDoPriorityPickerView: View {
+struct PriorityPickerView: View {
 
-    @Bindable var todo: ToDo
+    @Binding var priority: Priority
 
     // MARK: - Views
 
     var body: some View {
         NavigationLink {
-            ToDoPriorityPicker(todo: todo)
+            PriorityPicker(priority: $priority)
         } label: {
             HStack {
                 Label("Prioridade", systemImage: "exclamationmark.3")
                 Spacer()
-                Text(todo.priority.priorityString)
+                Text(priority.priorityString)
                     .foregroundColor(.secondary)
             }
         }
     }
 }
 
-struct ToDoPriorityPicker: View {
+struct PriorityPicker: View {
     @Environment(\.dismiss) private var dismiss
 
-    @Bindable var todo: ToDo
+    @Binding var priority: Priority
 
     var body: some View {
         List {
@@ -39,14 +39,14 @@ struct ToDoPriorityPicker: View {
                     if priority != .none {
                         Button {
                             withAnimation(.smooth(duration: 0.1)) {
-                                todo.priority = priority
+                                self.priority = priority
                             }
                             dismiss()
                         } label: {
                             HStack {
                                 Text(priority.priorityString)
                                 Spacer()
-                                if todo.priority == priority {
+                                if self.priority == priority {
                                     Image(systemName: "checkmark")
                                         .foregroundColor(.accentColor)
                                 }
@@ -60,7 +60,7 @@ struct ToDoPriorityPicker: View {
             Section {
                 Button {
                     withAnimation(.smooth(duration: 0.1)) {
-                        todo.priority = .none
+                        self.priority = .none
                         dismiss()
                     }
                 } label: {
@@ -68,7 +68,7 @@ struct ToDoPriorityPicker: View {
                         Text("Nenhuma")
                             .foregroundStyle(Color.secondary)
                         Spacer()
-                        if todo.priority == .none {
+                        if self.priority == .none {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.accentColor)
                         }
@@ -81,4 +81,3 @@ struct ToDoPriorityPicker: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
-

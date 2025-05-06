@@ -13,7 +13,7 @@ struct ToDosView: View {
         !$0.isArchived && !$0.isToDoDeleted && !$0.isCompleted
     }, sort: [
         .init(\.dueDate, order: .forward),
-        .init(\.title, order: .forward),
+        .init(\.title, order: .forward)
     ]) private var pendingToDos: [ToDo]
 
     @Query(filter: #Predicate<ToDo> {
@@ -22,8 +22,8 @@ struct ToDosView: View {
 
     // MARK: - Properties
 
-    @State private var todoToAdd: ToDo? = nil
-    @State private var todoToEdit: ToDo? = nil
+    @State private var todoToAdd: ToDo?
+    @State private var todoToEdit: ToDo?
     @State private var selectedSection: ToDoSection = .pending
     @State private var offsetScrollY: Int = 151
 

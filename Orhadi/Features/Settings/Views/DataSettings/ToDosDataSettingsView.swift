@@ -86,7 +86,7 @@ struct ToDosDataSettingsView: View {
                     defaultFilename: String(localized: "Tarefas")
                 ) { result in
                     switch result {
-                    case .success(_):
+                    case .success:
                         todosExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
@@ -177,7 +177,7 @@ struct ToDosDataSettingsView: View {
                     let identifiers = [
                         "\(todoID)-1h",
                         "\(todoID)-24h",
-                        "\(todoID)-due",
+                        "\(todoID)-due"
                     ]
 
                     NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
@@ -250,7 +250,7 @@ struct ToDosDataSettingsView: View {
                     let identifiers = [
                         "\(todoID)-1h",
                         "\(todoID)-24h",
-                        "\(todoID)-due",
+                        "\(todoID)-due"
                     ]
 
                     NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)

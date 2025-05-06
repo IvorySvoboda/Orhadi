@@ -141,7 +141,7 @@ struct StudyingView: View {
             .onChange(of: timerManager.remainingTime) { _, _ in
                 handleTimeChange()
             }
-            .onChange(of: isRunning) { _, newValue in
+            .onChange(of: isRunning) { _, _ in
                 handleRunningChange()
             }
         }

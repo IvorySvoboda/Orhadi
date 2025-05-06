@@ -13,21 +13,36 @@ struct ToDoSheetView: View {
     @Environment(Settings.self) private var settings
 
     @State private var isHourPickerExpanded = false
+    @State private var title: String
+    @State private var info: String
+    @State private var priority: Priority
+    @State private var dueDate: Date
+    @State private var withHour: Bool
 
     @Bindable var todo: ToDo
-
     var isNew: Bool
+
+    init(todo: ToDo, isNew: Bool) {
+        self.todo = todo
+        self.isNew = isNew
+
+        _title = State(initialValue: todo.title)
+        _info = State(initialValue: todo.info)
+        _priority = State(initialValue: todo.priority)
+        _dueDate = State(initialValue: todo.dueDate)
+        _withHour = State(initialValue: todo.withHour)
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Trabalho de...", text: $todo.title)
+                    TextField("Trabalho de...", text: $title)
                         .autocorrectionDisabled()
 
                     ZStack {
                         VStack {
-                            if todo.info.isEmpty {
+                            if info.isEmpty {
                                 Text("Fazer ... ")
                                     .foregroundStyle(Color.secondary)
                                     .opacity(0.5)
@@ -37,20 +52,20 @@ struct ToDoSheetView: View {
                         .padding(.top)
                         .padding(.leading, 5)
 
-                        MarkdownTextField(text: $todo.info)
+                        MarkdownTextField(text: $info)
                             .frame(height: 200)
                     }
                 }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
-                    ToDoPriorityPickerView(todo: todo)
+                    PriorityPickerView(priority: $priority)
                 }.listRowBackground(Color.orhadiSecondaryBG)
 
                 Section {
                     DisclosureGroup {
                         DatePicker(
                             "Data",
-                            selection: $todo.dueDate,
+                            selection: $dueDate,
                             displayedComponents: [.date]
                         )
                         .datePickerStyle(.graphical)
@@ -64,7 +79,7 @@ struct ToDoSheetView: View {
                                 .padding(.leading, 2)
                             VStack(alignment: .leading) {
                                 Text("Data")
-                                Text(todo.dueDate.relativeFormatted())
+                                Text(dueDate.relativeFormatted())
                                     .font(.caption)
                                     .foregroundStyle(Color.accentColor)
                             }
@@ -75,20 +90,20 @@ struct ToDoSheetView: View {
                     DisclosureGroup(isExpanded: Binding(
                         get: { isHourPickerExpanded },
                         set: { newValue in
-                            if todo.withHour {
+                            if withHour {
                                 isHourPickerExpanded = newValue
                             }
                         }
                     )) {
                         DatePicker(
                             "Hora",
-                            selection: $todo.dueDate,
+                            selection: $dueDate,
                             displayedComponents: [.hourAndMinute]
                         )
                         .labelsHidden()
                         .datePickerStyle(.wheel)
                     } label: {
-                        Toggle(isOn: $todo.withHour) {
+                        Toggle(isOn: $withHour) {
                             HStack {
                                 Image(systemName: "clock")
                                     .resizable()
@@ -98,8 +113,8 @@ struct ToDoSheetView: View {
                                     .padding(.leading, 2)
                                 VStack(alignment: .leading) {
                                     Text("Hora")
-                                    if todo.withHour {
-                                        Text("\(todo.dueDate.formatToHour())")
+                                    if withHour {
+                                        Text("\(dueDate.formatToHour())")
                                             .font(.caption)
                                             .foregroundStyle(Color.accentColor)
                                     }
@@ -107,7 +122,7 @@ struct ToDoSheetView: View {
                             }
                         }
                     }
-                    .onChange(of: todo.withHour) { _, newValue in
+                    .onChange(of: withHour) { _, newValue in
                         if !newValue {
                             withAnimation {
                                 isHourPickerExpanded = false
@@ -129,18 +144,25 @@ struct ToDoSheetView: View {
                         }
                     }
                 }
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Salvar") {
                         if isNew {
                             addItem()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
                         } else {
+                            todo.title = title
+                            todo.info = info
+                            todo.dueDate = dueDate
+                            todo.priority = priority
+                            todo.withHour = withHour
+
                             /// Se não for uma tarefa nova, atualiza as notificações agendadas.
                             let todoID = todo.id
                             let identifiers = [
                                 "\(todoID)-1h",
                                 "\(todoID)-24h",
-                                "\(todoID)-due",
+                                "\(todoID)-due"
                             ]
 
                             NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
@@ -164,16 +186,24 @@ struct ToDoSheetView: View {
     }
 
     private func addItem() {
+        let newTodo = ToDo(
+            title: title,
+            info: info,
+            dueDate: dueDate,
+            withHour: withHour,
+            priority: priority
+        )
+
         if settings.scheduleNotifications {
-            todo.scheduleNotification()
+            newTodo.scheduleNotification()
         }
 
-        if !todo.withHour {
-            todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
+        if !newTodo.withHour {
+            newTodo.dueDate = Calendar.current.startOfDay(for: newTodo.dueDate)
         }
 
         withAnimation {
-            modelContext.insert(todo)
+            modelContext.insert(newTodo)
         }
     }
 }

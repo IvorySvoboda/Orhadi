@@ -34,7 +34,7 @@ extension View {
                     trailing: 0
                 )
             )
-            .alignmentGuide(.listRowSeparatorLeading) { viewDimensions in 0 }
+            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
     }
 
     func disableIdleTimer() -> some View {

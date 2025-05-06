@@ -18,7 +18,7 @@ struct ProfileView: View {
 
     var body: some View {
         List {
-            HStack() {
+            HStack {
                 VStack {
                     if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
                         Image(uiImage: uiImage)
@@ -95,7 +95,7 @@ struct ProfileView: View {
             }
         }
         .photosPicker(isPresented: $isPhotoPickerPresented, selection: $selectedItem, matching: .images, photoLibrary: .shared())
-        .onChange(of: selectedItem) { _, newItem in
+        .onChange(of: selectedItem) { _, _ in
             Task {
                 if let data = try? await selectedItem?.loadTransferable(type: Data.self) {
                     let size = CGSize(width: 80, height: 80)

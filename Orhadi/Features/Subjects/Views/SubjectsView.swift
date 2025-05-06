@@ -19,8 +19,8 @@ struct SubjectsView: View {
 
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
     @State private var showConfirmationDialog: Bool = false
-    @State private var subjectToAdd: Subject? = nil
-    @State private var subjectToEdit: Subject? = nil
+    @State private var subjectToAdd: Subject?
+    @State private var subjectToEdit: Subject?
     @State private var scrollOffsetY: Int = 151
 
     // MARK: - Computed Properties
@@ -93,7 +93,7 @@ struct SubjectsView: View {
                 Button("Cancelar", role: .cancel) {}
             }
             .sheet(item: $subjectToAdd) { subject in
-                SubjectSheetView(subject: subject, isNew: false)
+                SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $subjectToEdit) { subject in

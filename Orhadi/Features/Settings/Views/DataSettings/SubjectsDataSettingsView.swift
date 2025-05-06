@@ -77,7 +77,7 @@ struct SubjectsDataSettingsView: View {
                     defaultFilename: String(localized: "Matérias")
                 ) { result in
                     switch result {
-                    case .success(_):
+                    case .success:
                         subjectsExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
@@ -238,7 +238,7 @@ struct SubjectsDataSettingsView: View {
                 }
 
                 for subject in importedSubjects {
-                    var teacher: Teacher? = nil
+                    var teacher: Teacher?
 
                     if let subjectTeacher = subject.teacher {
                         let existingTeacher = try context.fetch(FetchDescriptor<Teacher>(

@@ -59,7 +59,7 @@ struct DataTests {
         /// Deleta as "matérias" existentes.
         for subject in subjects { context.delete(subject) }
         for subject in allSubjects {
-            var teacher: Teacher? = nil
+            var teacher: Teacher?
 
             if let subjectTeacher = subject.teacher {
                 let existingTeacher = try context.fetch(

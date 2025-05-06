@@ -1,5 +1,5 @@
 //
-//  SubjectTeacherPickerView.swift
+//  TeacherPickerView.swift
 //  Orhadi
 //
 //  Created by Zyvoxi . on 16/04/25.
@@ -8,27 +8,27 @@
 import SwiftData
 import SwiftUI
 
-struct SubjectTeacherPickerView: View {
+struct TeacherPickerView: View {
 
-    @Bindable var subject: Subject
+    @Binding var teacher: Teacher?
 
     // MARK: - Views
 
     var body: some View {
         NavigationLink {
-            SubjectTeacherPicker(subject: subject)
+            TeacherPicker(teacher: $teacher)
         } label: {
             HStack {
                 Label("Professor(a)", systemImage: "person.fill")
                 Spacer()
-                Text(subject.teacher?.name ?? "Nenhum")
+                Text(teacher?.name ?? "Nenhum")
                     .foregroundColor(.secondary)
             }
         }
     }
 }
 
-struct SubjectTeacherPicker: View {
+struct TeacherPicker: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
@@ -37,7 +37,7 @@ struct SubjectTeacherPicker: View {
     @State private var teacherToAdd: Teacher?
     @State private var teacherToEdit: Teacher?
 
-    @Bindable var subject: Subject
+    @Binding var teacher: Teacher?
 
     var body: some View {
         List {
@@ -45,7 +45,7 @@ struct SubjectTeacherPicker: View {
                 ForEach(teachers) { teacher in
                     Button {
                         withAnimation(.smooth(duration: 0.1)) {
-                            subject.teacher = teacher
+                            self.teacher = teacher
                         }
                         dismiss()
                     } label: {
@@ -60,7 +60,7 @@ struct SubjectTeacherPicker: View {
                                 }
                             }
                             Spacer()
-                            if subject.teacher == teacher {
+                            if self.teacher == teacher {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.accentColor)
                             }
@@ -73,7 +73,7 @@ struct SubjectTeacherPicker: View {
                                 context.delete(teacher)
                             }
                         } label: {
-                            Label("Excluir", systemImage: "trash.fill")
+                            Label("Apagar", systemImage: "trash.fill")
                                 .labelStyle(.iconOnly)
                         }
 
@@ -90,7 +90,7 @@ struct SubjectTeacherPicker: View {
             Section {
                 Button {
                     withAnimation(.smooth(duration: 0.1)) {
-                        subject.teacher = nil
+                        self.teacher = nil
                         dismiss()
                     }
                 } label: {
@@ -98,7 +98,7 @@ struct SubjectTeacherPicker: View {
                         Text("Nenhum")
                             .foregroundStyle(Color.secondary)
                         Spacer()
-                        if subject.teacher == nil {
+                        if self.teacher == nil {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.accentColor)
                         }

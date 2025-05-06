@@ -77,12 +77,12 @@ struct MarkdownTextField: UIViewRepresentable {
 
         // MARK: - Ações da Toolbar
 
-        @objc func boldTapped()             { applyWrapping("**") }
-        @objc func italicTapped()           { applyWrapping("*") }
-        @objc func strikethroughTapped()    { applyWrapping("~~") }
-        @objc func codeTapped()             { applyWrapping("`") }
-        @objc func titleTapped()            { applyPrefix("# ") }
-        @objc func listTapped()             { applyPrefix("- ") }
+        @objc func boldTapped() { applyWrapping("**") }
+        @objc func italicTapped() { applyWrapping("*") }
+        @objc func strikethroughTapped() { applyWrapping("~~") }
+        @objc func codeTapped() { applyWrapping("`") }
+        @objc func titleTapped() { applyPrefix("# ") }
+        @objc func listTapped() { applyPrefix("- ") }
 
         // MARK: - Aplicar Markdown
 
