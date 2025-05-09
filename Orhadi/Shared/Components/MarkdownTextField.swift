@@ -46,6 +46,7 @@ struct MarkdownTextField: UIViewRepresentable {
 
         let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.items = [bold, space, italic, space, strikethrough, space, title, space, list, space, code]
+        toolbar.backgroundColor = UIColor(Color.orhadiBG)
 
         textView.inputAccessoryView = toolbar
 

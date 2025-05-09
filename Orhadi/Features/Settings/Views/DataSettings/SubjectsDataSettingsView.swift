@@ -96,7 +96,7 @@ struct SubjectsDataSettingsView: View {
                         showSubjectsFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as matérias existentes serão removidas. Deseja continuar?")
+                    Text("Ao importar, todas as matérias existentes serão apagadas. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showSubjectsFileImporter,

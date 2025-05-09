@@ -27,9 +27,22 @@
 		28453A232DB997C400AE5079 /* OrhadiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrhadiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		2846B3342DCE2FEC00E22E56 /* Exceptions for "Orhadi" folder in "Orhadi" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 2804F4D72D92275700649FD0 /* Orhadi */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2804F4DA2D92275700649FD0 /* Orhadi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				2846B3342DCE2FEC00E22E56 /* Exceptions for "Orhadi" folder in "Orhadi" target */,
+			);
 			path = Orhadi;
 			sourceTree = "<group>";
 		};
@@ -391,7 +404,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = Orhadi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Orhadi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -405,7 +418,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = "$(VERSION)";
+				MARKETING_VERSION = 3.4.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;
@@ -434,7 +447,7 @@
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "";
+				INFOPLIST_FILE = Orhadi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Orhadi;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -448,7 +461,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = "$(VERSION)";
+				MARKETING_VERSION = 3.4.6;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = NO;

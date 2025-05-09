@@ -105,7 +105,7 @@ struct ToDosDataSettingsView: View {
                         showToDosFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as tarefas existentes serão removidas. Deseja continuar?")
+                    Text("Ao importar, todas as tarefas existentes serão apagadas. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showToDosFileImporter,

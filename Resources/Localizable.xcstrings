@@ -150,13 +150,13 @@
         }
       }
     },
-    "Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão removidos. Deseja continuar?" : {
+    "Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão apagados. Deseja continuar?" : {
 
     },
-    "Ao importar, todas as matérias existentes serão removidas. Deseja continuar?" : {
+    "Ao importar, todas as matérias existentes serão apagadas. Deseja continuar?" : {
 
     },
-    "Ao importar, todas as tarefas existentes serão removidas. Deseja continuar?" : {
+    "Ao importar, todas as tarefas existentes serão apagadas. Deseja continuar?" : {
 
     },
     "Apagar" : {
@@ -1180,6 +1180,9 @@
 
     },
     "Mítico" : {
+
+    },
+    "Nada para estudar hoje. Que tal aproveitar pra descansar um pouco?" : {
 
     },
     "Não Informado" : {

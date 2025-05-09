@@ -73,7 +73,7 @@ struct SRDataSettingsView: View {
                         showSRFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão removidos. Deseja continuar?")
+                    Text("Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão apagados. Deseja continuar?")
                 }
                 .fileImporter(
                     isPresented: $showSRFileImporter,

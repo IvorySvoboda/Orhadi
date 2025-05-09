@@ -139,7 +139,7 @@ struct SRView: View {
                 ContentUnavailableView {
                     Label("Nenhuma Matéria", systemImage: "graduationcap")
                 } description: {
-                    Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
+                    Text("Nada para estudar hoje. Que tal aproveitar pra descansar um pouco?")
                 }
             }
         }
