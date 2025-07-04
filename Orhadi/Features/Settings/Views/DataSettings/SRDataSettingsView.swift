@@ -39,7 +39,7 @@ struct SRDataSettingsView: View {
                     Text("\(studies.count)")
                         .foregroundStyle(.secondary)
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Exportar Rotina de Estudos") {
@@ -87,7 +87,7 @@ struct SRDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Apagar todos os estudos") {
@@ -101,7 +101,7 @@ struct SRDataSettingsView: View {
                         deleteAllStudies()
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Rotina de Estudos")

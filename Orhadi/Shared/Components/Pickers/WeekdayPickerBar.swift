@@ -22,16 +22,21 @@ struct WeekdayPickerBar: View {
                         let isSelected = index == selectedDay
 
                         ZStack {
-                            Text(isSelected ? name.capitalized : name.prefix(3).capitalized)
+                            Text(name.prefix(3).capitalized)
                                 .font(.callout)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
                                 .foregroundColor(isSelected ? Color.orhadiBG : .primary)
                         }
-                        .background(
-                            Capsule()
-                                .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBG)
-                        )
+                        .background {
+                            if #available(iOS 26, *) {
+                                Capsule()
+                                    .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBGiOS26)
+                            } else {
+                                Capsule()
+                                    .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBG)
+                            }
+                        }
                         .scaleEffect(isPressed == index ? 1.05 : 1)
                         .onTapGesture {
                             withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
@@ -40,24 +45,22 @@ struct WeekdayPickerBar: View {
                             }
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.8)
                         }
-                        .simultaneousGesture(
-                            DragGesture(minimumDistance: 0)
-                                .onChanged { _ in
-                                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.6)) {
-                                        isPressed = index
-                                    }
+                        .onLongPressGesture(minimumDuration: 0, perform: {}, onPressingChanged: { pressing in
+                            if pressing {
+                                withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.6)) {
+                                    isPressed = index
                                 }
-                                .onEnded { _ in
-                                    withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8)) {
-                                        isPressed = 0
-                                    }
+                            } else {
+                                withAnimation(.interactiveSpring(response: 0.5, dampingFraction: 0.8)) {
+                                    isPressed = 0
                                 }
-                        )
+                            }
+                        })
                         .scrollTransition { content, phase in
                             content
-                                .opacity(phase.isIdentity ? 1.0 : 0.8)
+                                .opacity(phase.isIdentity ? 1.0 : 0.5)
                                 .blur(radius: phase.isIdentity ? 0 : 1)
-                                .scaleEffect(phase.isIdentity ? 1 : 0.95)
+                                .scaleEffect(phase.isIdentity ? 1 : 0.90)
                         }
                         .id(index)
                     }

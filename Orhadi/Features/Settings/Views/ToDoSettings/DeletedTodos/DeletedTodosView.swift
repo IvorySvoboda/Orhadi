@@ -22,6 +22,14 @@ struct DeletedTodosView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
 
+    var canShowBottomBar: Bool {
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     // MARK: - Views
 
     var body: some View {
@@ -37,7 +45,7 @@ struct DeletedTodosView: View {
                     DeletedTodosRowView(todo: todo)
                         .tag(todo)
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
+                .orhadiListRowBackground()
             }
         }
         .orhadiListStyle()
@@ -45,14 +53,17 @@ struct DeletedTodosView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
+        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
+        /// Oculta a TabBar no iOS 26+
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
-            ToolbarItem(placement: .bottomBar) {
-                HStack {
+            ToolbarItemGroup(placement: .bottomBar) {
+//                HStack {
                     Button(selectedTodos.isEmpty ? "Restaurar Todas" : "Restaurar") {
                         selectedTodos.isEmpty ? restoreAllTodos() : restoreSelectedTodos()
                     }
@@ -62,19 +73,31 @@ struct DeletedTodosView: View {
                     Button(selectedTodos.isEmpty ? "Apagar Tudo" : "Apagar") {
                         selectedTodos.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
                     }
-                }.padding(.bottom, 5)
+                    .confirmationDialog(
+                        "\(deletedTodos.count > 1 ? "Estas \(deletedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.",
+                        isPresented: $showDeleteAllConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive) {
+                            deleteAllTodos()
+                        } label: {
+                            Text("\(deletedTodos.count > 1 ? "Apagar \(deletedTodos.count) Tarefas" : "Apagar Tarefa")")
+                        }
+                    }
+                    .confirmationDialog(
+                        "\(selectedTodos.count > 1 ? "Estas \(selectedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.",
+                        isPresented: $showDeleteSelectedConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive) {
+                            deleteSelectedTodos()
+                        } label: {
+                            Text("\(selectedTodos.count > 1 ? "Apagar \(selectedTodos.count) Tarefas" : "Apagar Tarefa")")
+                        }
+                    }
+//                }.padding(.bottom, 5)
             }
         }
-        .confirmationDialog("\(deletedTodos.count > 1 ? "Estas \(deletedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteAllConfirmation, titleVisibility: .visible, actions: {
-            Button("\(deletedTodos.count > 1 ? "Apagar \(deletedTodos.count) Tarefas" : "Apagar Tarefa")", role: .destructive) {
-                deleteAllTodos()
-            }
-        })
-        .confirmationDialog("\(selectedTodos.count > 1 ? "Estas \(selectedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteSelectedConfirmation, titleVisibility: .visible, actions: {
-            Button("\(selectedTodos.count > 1 ? "Apagar \(selectedTodos.count) Tarefas" : "Apagar Tarefa")", role: .destructive) {
-                deleteSelectedTodos()
-            }
-        })
         .onChange(of: deletedTodos) { _, newTodos in
             if newTodos.isEmpty {
                 dismiss()

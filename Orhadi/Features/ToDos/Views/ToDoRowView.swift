@@ -140,7 +140,6 @@ struct ToDoRowView: View, Equatable {
                 }
             }
         }
-        .listRowBackground(Color.orhadiBG)
     }
 
     private func completeToDo() {

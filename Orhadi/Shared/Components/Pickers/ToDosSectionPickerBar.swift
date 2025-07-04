@@ -24,10 +24,15 @@ struct ToDosSectionPickerBar: View {
                         .foregroundColor(selectedSection == section ? Color.orhadiBG : .primary)
                 }
                 .frame(maxWidth: .infinity)
-                .background(
-                    Capsule()
-                        .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBG)
-                )
+                .background {
+                    if #available(iOS 26, *) {
+                        Capsule()
+                            .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBGiOS26)
+                    } else {
+                        Capsule()
+                            .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBG)
+                    }
+                }
                 .scaleEffect(isPressed == section ? 1.05 : 1)
                 .onTapGesture {
                     withAnimation {

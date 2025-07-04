@@ -42,9 +42,9 @@ struct DeletedStudyRowView: View {
                     .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
-        .confirmationDialog("Este estudo será apagado. Esta ação não poderá ser desfeita.",
-                            isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-            Button("Apagar Estudo", role: .destructive) {
+        .alert("Este estudo será apagado. Esta ação não poderá ser desfeita.", isPresented: $showDeleteConfirmation) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Apagar", role: .destructive) {
                 withAnimation {
                     context.delete(study)
                 }

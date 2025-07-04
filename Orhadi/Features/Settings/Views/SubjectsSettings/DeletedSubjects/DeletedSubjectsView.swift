@@ -22,6 +22,14 @@ struct DeletedSubjectsView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
 
+    var canShowBottomBar: Bool {
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     // MARK: - Views
 
     var body: some View {
@@ -37,44 +45,56 @@ struct DeletedSubjectsView: View {
                     DeletedSubjectRowView(subject: subject)
                         .tag(subject)
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
-            }
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Matérias Apagadas")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
+        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
+        /// Oculta a TabBar no iOS 26+
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
-            ToolbarItem(placement: .bottomBar) {
-                HStack {
-                    Button(selectedSubjects.isEmpty ? "Restaurar Todas" : "Restaurar") {
-                        selectedSubjects.isEmpty ? restoreAllSubjects() : restoreSelectedSubjects()
-                    }
+            ToolbarItemGroup(placement: .bottomBar) {
+                Button(selectedSubjects.isEmpty ? "Restaurar Todas" : "Restaurar") {
+                    selectedSubjects.isEmpty ? restoreAllSubjects() : restoreSelectedSubjects()
+                }
 
-                    Spacer()
+                Spacer()
 
-                    Button(selectedSubjects.isEmpty ? "Apagar Tudo" : "Apagar") {
-                        selectedSubjects.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                Button(selectedSubjects.isEmpty ? "Apagar Tudo" : "Apagar") {
+                    selectedSubjects.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                }
+                .confirmationDialog(
+                    "\(deletedSubjects.count > 1 ? "Estas \(deletedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.",
+                    isPresented: $showDeleteAllConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .destructive) {
+                        deleteAllSubjects()
+                    } label: {
+                        Text("\(deletedSubjects.count > 1 ? "Apagar \(deletedSubjects.count) Matérias" : "Apagar Matéria")")
                     }
-                }.padding(.bottom, 5)
+                }
+                .confirmationDialog(
+                    "\(selectedSubjects.count > 1 ? "Estas \(selectedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.",
+                    isPresented: $showDeleteSelectedConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .destructive) {
+                        deleteSelectedSubjects()
+                    } label: {
+                        Text("\(selectedSubjects.count > 1 ? "Apagar \(selectedSubjects.count) Matérias" : "Apagar Matéria")")
+                    }
+                }
             }
         }
-        .confirmationDialog("\(deletedSubjects.count > 1 ? "Estas \(deletedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteAllConfirmation, titleVisibility: .visible, actions: {
-            Button("\(deletedSubjects.count > 1 ? "Apagar \(deletedSubjects.count) Matérias" : "Apagar Matéria")", role: .destructive) {
-                deleteAllSubjects()
-            }
-        })
-        .confirmationDialog("\(selectedSubjects.count > 1 ? "Estas \(selectedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteSelectedConfirmation, titleVisibility: .visible, actions: {
-            Button("\(selectedSubjects.count > 1 ? "Apagar \(selectedSubjects.count) Matérias" : "Apagar Matéria")", role: .destructive) {
-                deleteSelectedSubjects()
-            }
-        })
         .onChange(of: deletedSubjects) { _, newSubjects in
             if newSubjects.isEmpty {
                 dismiss()

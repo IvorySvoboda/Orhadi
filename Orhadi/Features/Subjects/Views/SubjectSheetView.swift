@@ -9,8 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct SubjectSheetView: View {
-   @Environment(\.modelContext) private var context
-   @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
 
     @State private var name: String
     @State private var teacher: Teacher?
@@ -20,8 +20,8 @@ struct SubjectSheetView: View {
     @State private var place: String
     @State private var isRecess: Bool
 
-   @Bindable var subject: Subject
-   var isNew: Bool
+    @Bindable var subject: Subject
+    var isNew: Bool
 
     private var navigationTitle: String {
         if isNew {
@@ -48,48 +48,66 @@ struct SubjectSheetView: View {
 
     // MARK: - Views
 
-   var body: some View {
-       NavigationStack {
-           Form {
-               if !subject.isRecess {
-                   subjectInfoSection
-                   teacherSelectionSection
-               }
-               timeSelectionSection
-           }
-           .orhadiListStyle()
-           .navigationTitle(navigationTitle)
-           .navigationBarTitleDisplayMode(.inline)
-           .toolbar {
-               if isNew {
-                   ToolbarItem(placement: .cancellationAction) {
-                       Button("Cancelar", role: .cancel) {
-                           dismiss()
-                       }
-                   }
-               }
+    var body: some View {
+        NavigationStack {
+            Form {
+                if !subject.isRecess {
+                    subjectInfoSection
+                    teacherSelectionSection
+                }
+                timeSelectionSection
+            }
+            .orhadiListStyle()
+            .navigationTitle(navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.titleOnly)
+                        }
+                    }
+                }
 
-               ToolbarItem(placement: .confirmationAction) {
-                   Button("Salvar") {
-                       dismiss()
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        dismiss()
 
-                       if isNew {
-                           addItem()
-                           UINotificationFeedbackGenerator().notificationOccurred(.success)
-                       } else {
-                           subject.name = name
-                           subject.teacher = teacher
-                           subject.schedule = schedule
-                           subject.startTime = startTime
-                           subject.endTime = endTime
-                           subject.place = place
-                           UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-                       }
-                   }.disabled(name.isEmpty && !isRecess)
-               }
-           }
-       }
-   }
+                        if isNew {
+                            addItem()
+                            UINotificationFeedbackGenerator()
+                                .notificationOccurred(.success)
+                        } else {
+                            subject.name = name
+                            subject.teacher = teacher
+                            subject.schedule = schedule
+                            subject.startTime = startTime
+                            subject.endTime = endTime
+                            subject.place = place
+                            UIImpactFeedbackGenerator(style: .soft)
+                                .impactOccurred()
+                        }
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.titleOnly)
+                        }
+                    }
+                    .iOS26GlassEffect(tinted: true)
+                    .disabled(name.isEmpty && !isRecess)
+                }
+            }
+        }
+    }
 
     private var subjectInfoSection: some View {
         Section {
@@ -105,13 +123,13 @@ struct SubjectSheetView: View {
                 TextField("Sala 101", text: $place)
                     .autocorrectionDisabled()
             }
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 
     private var teacherSelectionSection: some View {
         Section {
             TeacherPickerView(teacher: $teacher)
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 
     private var timeSelectionSection: some View {
@@ -123,53 +141,70 @@ struct SubjectSheetView: View {
 
                 Spacer()
 
-                DatePicker("Inicio", selection: $startTime, displayedComponents: [.hourAndMinute])
-                    .labelsHidden()
+                DatePicker(
+                    "Inicio",
+                    selection: $startTime,
+                    displayedComponents: [.hourAndMinute]
+                )
+                .labelsHidden()
 
                 Text(" – ")
 
-                DatePicker("Fim", selection: $endTime, displayedComponents: [.hourAndMinute])
-                    .labelsHidden()
-                    .onChange(of: endTime) { _, newDate in
-                        /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
-                        if newDate <= startTime {
-                            endTime = startTime + 60
-                        }
+                DatePicker(
+                    "Fim",
+                    selection: $endTime,
+                    displayedComponents: [.hourAndMinute]
+                )
+                .labelsHidden()
+                .onChange(of: endTime) { _, newDate in
+                    /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
+                    if newDate <= startTime {
+                        endTime = startTime + 60
                     }
+                }
             }
         } header: {
             Text("Horário")
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 
     // MARK: - Functions
 
-   private func addItem() {
-       withAnimation {
-           if !isRecess {
-               let existingSubjects = try? context.fetch(FetchDescriptor<Subject>(predicate: #Predicate {
-                   $0.name == name
-               }))
+    private func addItem() {
+        withAnimation {
+            if !isRecess {
+                /// Procura uma matéria no banco de dados.
+                let existingSubjects = try? context.fetch(
+                    FetchDescriptor<Subject>(
+                        predicate: #Predicate {
+                            $0.name == name
+                        }
+                    )
+                )
 
-               /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
-               /// adiciona ele na Rotina de Estudos também.
-               if let existingSubjects, existingSubjects.isEmpty {
-                   context.insert(SRStudy(
+                /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
+                /// adiciona ele na Rotina de Estudos também.
+                if let existingSubjects, existingSubjects.isEmpty {
+                    context.insert(
+                        SRStudy(
+                            name: name,
+                            studyDay: schedule
+                        )
+                    )
+                }
+            }
+
+            context.insert(
+                Subject(
                     name: name,
-                    studyDay: schedule
-                   ))
-               }
-           }
-
-           context.insert(Subject(
-            name: name,
-            teacher: teacher,
-            schedule: schedule,
-            startTime: startTime,
-            endTime: endTime,
-            place: place,
-            isRecess: isRecess
-           ))
-       }
-   }
+                    teacher: teacher,
+                    schedule: schedule,
+                    startTime: startTime,
+                    endTime: endTime,
+                    place: place,
+                    isRecess: isRecess
+                )
+            )
+        }
+    }
 }

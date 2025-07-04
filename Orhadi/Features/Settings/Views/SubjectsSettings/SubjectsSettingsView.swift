@@ -29,7 +29,7 @@ struct SubjectsSettingsView: View {
                     } label: {
                         Text("Matérias Apagadas")
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
         }
         .orhadiListStyle()

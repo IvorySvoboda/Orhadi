@@ -63,9 +63,9 @@ struct DeletedSubjectRowView: View {
                     .labelStyle(.iconOnly)
             }
         }
-        .confirmationDialog("Esta matéria será apagada. Esta ação não poderá ser desfeita.",
-                            isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-            Button("Apagar Matéria", role: .destructive) {
+        .alert("Esta matéria será apagada. Esta ação não poderá ser desfeita.", isPresented: $showDeleteConfirmation) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Apagar", role: .destructive) {
                 withAnimation {
                     context.delete(subject)
                 }

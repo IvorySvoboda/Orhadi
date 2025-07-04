@@ -72,7 +72,7 @@ struct ToDosDataSettingsView: View {
                     Text("\(pendingTodos)")
                         .foregroundStyle(.secondary)
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Exportar Tarefas") {
@@ -119,7 +119,7 @@ struct ToDosDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Apagar todas as tarefas") {
@@ -133,7 +133,7 @@ struct ToDosDataSettingsView: View {
                         deleteAllToDo()
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Tarefas")

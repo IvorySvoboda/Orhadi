@@ -25,7 +25,7 @@ struct ToDosView: View {
     @State private var todoToAdd: ToDo?
     @State private var todoToEdit: ToDo?
     @State private var selectedSection: ToDoSection = .pending
-    @State private var offsetScrollY: Int = 151
+    @State private var scrollOffsetY: Int = 151
 
     // MARK: - Computed Properties
 
@@ -38,7 +38,12 @@ struct ToDosView: View {
     var body: some View {
         NavigationStack {
             List {
-                sectionPickerBar
+                if #available(iOS 26, *) {
+                    sectionPickerBar
+                        .opacity(scrollOffsetY < 5 ? 0 : 1)
+                } else {
+                    sectionPickerBar
+                }
 
                 ForEach(visibleToDos) { todo in
                     ToDoRowView(
@@ -47,22 +52,37 @@ struct ToDosView: View {
                     )
                 }
             }
-            .id(selectedSection)
+//            .id(selectedSection)
             .orhadiPlainListStyle()
             .navigationTitle("Tarefas")
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
-                        Text("Tarefas")
-                            .font(.headline)
-                            .opacity(offsetScrollY < 115 ? 1 : 0)
-                            .offset(y: offsetScrollY <= 60 ? -8 : 0)
+                        if #available(iOS 26, *) {
+                            Text("Tarefas")
+                                .font(.headline)
+                                .opacity(scrollOffsetY < 53 ? 1 : 0)
+                                .blur(radius: scrollOffsetY < 53 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 5 ? -8 : scrollOffsetY < 53 ? 0 : 14)
 
-                        Text(selectedSection.string.uppercased())
-                            .foregroundStyle(.tint)
-                            .font(.caption)
-                            .opacity(offsetScrollY <= 60 ? 1 : 0)
-                            .offset(y: offsetScrollY <= 60 ? 8 : 14)
+                            Text(selectedSection.string.uppercased())
+                                .foregroundStyle(.tint)
+                                .font(.caption)
+                                .opacity(scrollOffsetY <= 5 ? 1 : 0)
+                                .blur(radius: scrollOffsetY <= 5 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 5 ? 8 : 14)
+                        } else {
+                            Text("Tarefas")
+                                .font(.headline)
+                                .opacity(scrollOffsetY < 115 ? 1 : 0)
+                                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
+
+                            Text(selectedSection.string.uppercased())
+                                .foregroundStyle(.tint)
+                                .font(.caption)
+                                .opacity(scrollOffsetY <= 60 ? 1 : 0)
+                                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
+                        }
                     }
                 }
 
@@ -70,8 +90,14 @@ struct ToDosView: View {
                     Button {
                         todoToAdd = ToDo()
                     } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
+                        if #available(iOS 26, *) {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
+                        } else {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title2)
+                        }
                     }
                 }
             }
@@ -94,8 +120,16 @@ struct ToDosView: View {
                     let minY = geo.frame(in: .global).minY
                     Color.clear
                         .onChange(of: minY) { _, _ in
-                            withAnimation(.smooth(duration: 0.25)) {
-                                offsetScrollY = Int(minY)
+                            if #available(iOS 26, *) {
+                                DispatchQueue.main.async {
+                                    withAnimation(.smooth(duration: 0.5)) {
+                                        scrollOffsetY = Int(minY)
+                                    }
+                                }
+                            } else {
+                                withAnimation(.smooth(duration: 0.25)) {
+                                    scrollOffsetY = Int(minY)
+                                }
                             }
                         }
                 }
@@ -104,7 +138,7 @@ struct ToDosView: View {
 
     private var overlay: some View {
         Group {
-            if visibleToDos.isEmpty, offsetScrollY < 300 {
+            if visibleToDos.isEmpty, scrollOffsetY < 300 {
                 ContentUnavailableView {
                     Label(
                         selectedSection == .pending ? "Nenhuma Tarefa Pendente" : "Nenhuma Tarefa Concluída",

@@ -170,6 +170,7 @@
       }
     },
     "Apagar Estudo" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -180,6 +181,7 @@
       }
     },
     "Apagar Matéria" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -188,9 +190,6 @@
           }
         }
       }
-    },
-    "Apagar Tarefa" : {
-
     },
     "Apagar todas as matérias" : {
       "localizations" : {
@@ -802,6 +801,9 @@
 
     },
     "Estudioso Eterno" : {
+
+    },
+    "Estudos" : {
 
     },
     "Estudos Apagados" : {

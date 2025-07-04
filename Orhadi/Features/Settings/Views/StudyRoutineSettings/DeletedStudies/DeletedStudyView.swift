@@ -22,6 +22,14 @@ struct DeletedStudiesView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
 
+    var canShowBottomBar: Bool {
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     // MARK: - Views
 
     var body: some View {
@@ -37,7 +45,7 @@ struct DeletedStudiesView: View {
                     DeletedStudyRowView(study: study)
                         .tag(study)
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
+                .orhadiListRowBackground()
             }
         }
         .orhadiListStyle()
@@ -45,14 +53,17 @@ struct DeletedStudiesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
+        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
+        /// Oculta a TabBar no iOS 26+
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
-            ToolbarItem(placement: .bottomBar) {
-                HStack {
+            ToolbarItemGroup(placement: .bottomBar) {
+//                HStack {
                     Button(selectedStudies.isEmpty ? "Restaurar Todos" : "Restaurar") {
                         selectedStudies.isEmpty ? restoreAllStudies() : restoreSelectedStudies()
                     }
@@ -62,19 +73,31 @@ struct DeletedStudiesView: View {
                     Button(selectedStudies.isEmpty ? "Apagar Tudo" : "Apagar") {
                         selectedStudies.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
                     }
-                }.padding(.bottom, 5)
+                    .confirmationDialog(
+                        "\(deletedStudies.count > 1 ? "Estes \(deletedStudies.count) estudos serão apagados" : "Este estudo será apagado"). Esta ação não poderá ser desfeita.",
+                        isPresented: $showDeleteAllConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive) {
+                            deleteAllStudies()
+                        } label: {
+                            Text("\(deletedStudies.count > 1 ? "Apagar \(deletedStudies.count) Estudos" : "Apagar Estudo")")
+                        }
+                    }
+                    .confirmationDialog(
+                        "\(selectedStudies.count > 1 ? "Estes \(selectedStudies.count) estudos serão apagados" : "Este estudo será apagado"). Esta ação não poderá ser desfeita.",
+                        isPresented: $showDeleteSelectedConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button(role: .destructive) {
+                            deleteSelectedStudies()
+                        } label: {
+                            Text("\(selectedStudies.count > 1 ? "Apagar \(selectedStudies.count) Estudos" : "Apagar Estudo")")
+                        }
+                    }
+//                }.padding(.bottom, 5)
             }
         }
-        .confirmationDialog("\(deletedStudies.count > 1 ? "Estes \(deletedStudies.count) estudos serão apagados" : "Este estudo será apagado"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteAllConfirmation, titleVisibility: .visible, actions: {
-            Button("\(deletedStudies.count > 1 ? "Apagar \(deletedStudies.count) Estudos" : "Apagar Estudo")", role: .destructive) {
-                deleteAllStudies()
-            }
-        })
-        .confirmationDialog("\(selectedStudies.count > 1 ? "Estes \(selectedStudies.count) estudos serão apagados" : "Este estudo será apagado"). Esta ação não poderá ser desfeita.", isPresented: $showDeleteSelectedConfirmation, titleVisibility: .visible, actions: {
-            Button("\(selectedStudies.count > 1 ? "Apagar \(selectedStudies.count) Estudos" : "Apagar Estudo")", role: .destructive) {
-                deleteSelectedStudies()
-            }
-        })
         .onChange(of: deletedStudies) { _, newStudies in
             if newStudies.isEmpty {
                 dismiss()

@@ -24,7 +24,7 @@ struct UserInfoView: View {
                             .foregroundStyle(Color.secondary)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Informações pessoais")

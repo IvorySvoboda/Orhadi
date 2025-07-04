@@ -26,6 +26,14 @@ struct ArchivedTodosView: View {
     @State private var showRestoreAllConfirmation = false
     @State private var showRestoreSelectedConfirmation = false
 
+    var canShowBottomBar: Bool {
+        if #available(iOS 26, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
     var body: some View {
         List(selection: $selectedTodos) {
             ForEach(archivedTodos) { todo in
@@ -38,14 +46,17 @@ struct ArchivedTodosView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
+        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
+        /// Oculta a TabBar no iOS 26+
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
-            ToolbarItem(placement: .bottomBar) {
-                HStack {
+            ToolbarItemGroup(placement: .bottomBar) {
+//                HStack {
                     Button(selectedTodos.isEmpty ? "Desarquivar Todas" : "Desarquivar") {
                         selectedTodos.isEmpty ? unarchiveAllTodos() : unarchiveSelectedTodos()
                     }
@@ -55,7 +66,7 @@ struct ArchivedTodosView: View {
                     Button(selectedTodos.isEmpty ? "Apagar Tudo" : "Apagar") {
                         selectedTodos.isEmpty ? deleteAllTodos() : deleteSelectedTodos()
                     }
-                }.padding(.bottom, 5)
+//                }.padding(.bottom, 5)
             }
         }
         .onChange(of: archivedTodos) { _, newTodos in

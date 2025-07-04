@@ -57,9 +57,9 @@ struct DeletedTodosRowView: View {
                     .labelStyle(.iconOnly)
             }
         }
-        .confirmationDialog("Esta tarefa será apagada. Esta ação não poderá ser desfeita.",
-                            isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-            Button("Apagar Tarefa", role: .destructive) {
+        .alert("Esta tarefa será apagada. Esta ação não poderá ser desfeita.", isPresented: $showDeleteConfirmation) {
+            Button("Cancelar", role: .cancel) {}
+            Button("Apagar", role: .destructive) {
                 withAnimation {
                     context.delete(todo)
                 }

@@ -55,11 +55,11 @@ struct ToDoSheetView: View {
                         MarkdownTextField(text: $info)
                             .frame(height: 200)
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
 
                 Section {
                     PriorityPickerView(priority: $priority)
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
 
                 Section {
                     DisclosureGroup {
@@ -131,22 +131,28 @@ struct ToDoSheetView: View {
                     }
                     .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
+                .orhadiListRowBackground()
             }
             .orhadiListStyle()
             .navigationTitle("\(isNew ? "Nova" : "Editar") Tarefa")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if isNew {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar", role: .cancel) {
-                            dismiss()
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.titleOnly)
                         }
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvar") {
+                    Button {
                         if isNew {
                             addItem()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -179,7 +185,17 @@ struct ToDoSheetView: View {
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
-                    }.disabled(title.isEmpty)
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.titleOnly)
+                        }
+                    }
+                    .iOS26GlassEffect(tinted: true)
+                    .disabled(title.isEmpty)
                 }
             }
         }

@@ -42,7 +42,7 @@ struct ToDosSettingsView: View {
                     "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
                 )
             }
-            .listRowBackground(Color.orhadiSecondaryBG)
+            .orhadiListRowBackground()
 
             if !archivedTodos.isEmpty {
                 Section {
@@ -51,7 +51,7 @@ struct ToDosSettingsView: View {
                     } label: {
                         Text("Tarefas Arquivadas")
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
 
             if !deletedTodos.isEmpty {
@@ -61,7 +61,7 @@ struct ToDosSettingsView: View {
                     } label: {
                         Text("Tarefas Apagadas")
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
         }
         .orhadiListStyle()

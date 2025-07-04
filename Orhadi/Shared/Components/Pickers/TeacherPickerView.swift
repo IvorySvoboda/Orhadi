@@ -85,7 +85,7 @@ struct TeacherPicker: View {
                         }.tint(Color.accentColor)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button {
@@ -104,7 +104,7 @@ struct TeacherPicker: View {
                         }
                     }
                 }.tint(.font)
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button {
@@ -113,7 +113,7 @@ struct TeacherPicker: View {
                     CustomLabel("Novo Professor", systemImage: "plus")
                 }
                 .tint(Color.accentColor)
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Professor(a)")
