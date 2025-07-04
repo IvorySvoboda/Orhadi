@@ -37,7 +37,7 @@ struct DeletedSubjectsView: View {
                     DeletedSubjectRowView(subject: subject)
                         .tag(subject)
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
+                .orhadiListRowBackground()
             }
         }
         .orhadiListStyle()

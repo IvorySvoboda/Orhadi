@@ -13,9 +13,11 @@ struct BadgeView: View {
 
     var body: some View {
             ZStack {
+                /// Fundo Preto, talvez não o ideal. <- Revisar
                 Circle()
                     .fill(.black)
                     .frame(width: 250)
+
                 Circle()
                     .fill(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8), .accentColor.opacity(0.6), .accentColor.opacity(0.4), .accentColor.opacity(0.2)], startPoint: .topTrailing, endPoint: .bottomLeading))
                     .frame(width: 250)
@@ -39,6 +41,7 @@ struct BadgeView: View {
                     .frame(width: 235)
                     .blur(radius: 5)
 
+                /// Imagem da Badge
                 Image(systemName: imageName)
                     .font(.system(size: 97))
                     .foregroundStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.2)], startPoint: .topTrailing, endPoint: .bottomLeading).opacity(0.5))
@@ -49,6 +52,7 @@ struct BadgeView: View {
                     .font(.system(size: 100))
                     .foregroundStyle(LinearGradient(colors: [.accentColor, .accentColor.opacity(0.8), .accentColor.opacity(0.6), .accentColor.opacity(0.4), .accentColor.opacity(0.2)], startPoint: .topTrailing, endPoint: .bottomLeading))
                     .shadow(color: .black, radius: 5)
+
             }.frame(width: 250, height: 250)
         }
 }

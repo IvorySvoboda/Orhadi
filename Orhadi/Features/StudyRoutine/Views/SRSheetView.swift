@@ -37,7 +37,7 @@ struct SRSheetView: View {
                         TextField("Português", text: $name)
                             .autocorrectionDisabled()
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
 
                 Section {
                     CustomDayPickerView(date: $studyDay)
@@ -46,22 +46,28 @@ struct SRSheetView: View {
                         selection: $studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
             .orhadiListStyle()
             .navigationTitle("\(isNew ? String(localized: "Novo") : String(localized: "Editar")) Estudo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if isNew {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar") {
-                            dismiss()
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.titleOnly)
                         }
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvar") {
+                    Button {
                         if isNew {
                             addStudy()
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -72,7 +78,17 @@ struct SRSheetView: View {
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
                         dismiss()
-                    }.disabled(name.isEmpty)
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.titleOnly)
+                        }
+                    }
+                    .iOS26GlassEffect(tinted: true)
+                    .disabled(name.isEmpty)
                 }
             }
         }

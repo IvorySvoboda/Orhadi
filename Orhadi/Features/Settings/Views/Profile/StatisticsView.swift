@@ -38,7 +38,7 @@ struct StatisticsView: View {
                     Text("\(user.completedToDos)")
                         .foregroundStyle(Color.secondary)
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Estatísticas")

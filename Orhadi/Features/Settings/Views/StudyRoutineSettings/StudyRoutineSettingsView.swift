@@ -24,7 +24,7 @@ struct StudyRoutineSettingsView: View {
         Form {
             Section {
                 BreakTimePickerView()
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             if !deletedStudies.isEmpty {
                 Section {
@@ -33,7 +33,7 @@ struct StudyRoutineSettingsView: View {
                     } label: {
                         Text("Estudos Apagados")
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
         }
         .orhadiListStyle()

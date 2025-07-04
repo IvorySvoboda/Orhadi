@@ -46,7 +46,7 @@ struct BreakTimePicker: View {
                         }
                     }.tint(Color.font)
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Tempo de Descanso")

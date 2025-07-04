@@ -109,12 +109,24 @@ struct StudyingView: View {
         Button {
             isRunning.toggle()
         } label: {
-            if isRunning && !studyFinished {
-                Image(systemName: "pause.circle.fill")
-                    .font(.title2)
+            if #available(iOS 26, *) {
+                if isRunning && !studyFinished {
+                    Image(systemName: "pause")
+                        .font(.title2)
+                        .foregroundStyle(Color.accentColor)
+                } else {
+                    Image(systemName: "play.fill")
+                        .font(.title2)
+                        .foregroundStyle(Color.accentColor)
+                }
             } else {
-                Image(systemName: "play.circle.fill")
-                    .font(.title2)
+                if isRunning && !studyFinished {
+                    Image(systemName: "pause.circle.fill")
+                        .font(.title2)
+                } else {
+                    Image(systemName: "play.circle.fill")
+                        .font(.title2)
+                }
             }
         }
         .disabled(studyFinished)

@@ -22,7 +22,7 @@ struct SettingsView: View {
 
                 Section {
                     ThemePickerView()
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
 
                 Section {
                     NavigationLink {
@@ -30,7 +30,7 @@ struct SettingsView: View {
                     } label: {
                         Label("Dados", systemImage: "square.stack.3d.down.right.fill")
                     }
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
 
                 aboutSection
             }
@@ -67,7 +67,7 @@ struct SettingsView: View {
                     }
                 }.frame(height: 40)
             }
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 
     private var mainSettingsSection: some View {
@@ -92,7 +92,7 @@ struct SettingsView: View {
             } label: {
                 Label("Professores", systemImage: "person.2.fill")
             }
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 
     private var aboutSection: some View {
@@ -121,7 +121,7 @@ struct SettingsView: View {
                     top: 5, leading: 10, bottom: 5, trailing: 10))
         } header: {
             Text("Sobre")
-        }.listRowBackground(Color.orhadiSecondaryBG)
+        }.orhadiListRowBackground()
     }
 }
 

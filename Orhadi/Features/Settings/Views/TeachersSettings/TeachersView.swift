@@ -28,7 +28,7 @@ struct TeachersView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .listRowBackground(Color.orhadiSecondaryBG)
+            .orhadiListRowBackground()
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
                     Button {
@@ -85,8 +85,14 @@ struct TeachersView: View {
                 Button {
                     teacherToAdd = Teacher()
                 } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title2)
+                    if #available(iOS 26, *) {
+                        Image(systemName: "plus")
+                            .font(.title2)
+                            .foregroundStyle(Color.accentColor)
+                    } else {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                    }
                 }
             }
         }

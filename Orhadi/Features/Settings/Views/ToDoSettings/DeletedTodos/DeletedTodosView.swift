@@ -37,7 +37,7 @@ struct DeletedTodosView: View {
                     DeletedTodosRowView(todo: todo)
                         .tag(todo)
                 }
-                .listRowBackground(Color.orhadiSecondaryBG)
+                .orhadiListRowBackground()
             }
         }
         .orhadiListStyle()

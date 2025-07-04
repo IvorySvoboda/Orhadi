@@ -45,7 +45,7 @@ struct ArchivedTodoRowView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .listRowBackground(Color.orhadiSecondaryBG)
+        .orhadiListRowBackground()
         .swipeActions(edge: .leading) {
             Button(role: .destructive) {
                 Task {

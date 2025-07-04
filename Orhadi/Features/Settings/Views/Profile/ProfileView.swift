@@ -70,7 +70,7 @@ struct ProfileView: View {
                 } label: {
                     Label("Conquistas", systemImage: "medal.star.fill")
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 NavigationLink {
@@ -83,7 +83,7 @@ struct ProfileView: View {
                 } label: {
                     Label("Estatísticas", systemImage: "chart.bar.xaxis")
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .toolbar {

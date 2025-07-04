@@ -14,7 +14,7 @@ struct TeacherSheetView: View {
 
     @State private var name: String
     @State private var email: String
-    @State private var preventSave: Bool = false
+    @State private var preventSave: Bool = true
 
     @Bindable var teacher: Teacher
     var isNew: Bool
@@ -58,22 +58,28 @@ struct TeacherSheetView: View {
                         }
                     TextField("\(String(localized: "email@exemple.com"))", text: $email)
                         .autocorrectionDisabled()
-                }.listRowBackground(Color.orhadiSecondaryBG)
+                }.orhadiListRowBackground()
             }
             .orhadiListStyle()
             .navigationTitle("\(isNew ? "Novo" : "Editar") Professor(a)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if isNew {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancelar") {
-                            dismiss()
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .cancel) {
+                        dismiss()
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Cancelar", systemImage: "xmark")
+                                .labelStyle(.titleOnly)
                         }
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvar") {
+                    Button {
                         withAnimation {
                             /// Atualiza as informações do professor
                             teacher.name = name.trimmingCharacters(in: .whitespaces)
@@ -88,7 +94,17 @@ struct TeacherSheetView: View {
                             }
                         }
                         dismiss()
-                    }.disabled(preventSave)
+                    } label: {
+                        if #available(iOS 26, *) {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.iconOnly)
+                        } else {
+                            Label("Salvar", systemImage: "checkmark")
+                                .labelStyle(.titleOnly)
+                        }
+                    }
+                    .iOS26GlassEffect(tinted: true)
+                    .disabled(preventSave)
                 }
             }
         }

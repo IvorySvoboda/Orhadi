@@ -49,7 +49,12 @@ struct SRView: View {
     var body: some View {
         NavigationStack {
             List {
-                weekdayPickerBar
+                if #available(iOS 26, *) {
+                    weekdayPickerBar
+                        .opacity(scrollOffsetY < 5 ? 0 : 1)
+                } else {
+                    weekdayPickerBar
+                }
 
                 ForEach(studies.filter {
                     Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
@@ -71,25 +76,46 @@ struct SRView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
-                        Text("Rotina de Estudos")
-                            .font(.headline)
-                            .opacity(scrollOffsetY < 115 ? 1 : 0)
-                            .offset(y: scrollOffsetY <= 60 ? -8 : 0)
+                        if #available(iOS 26, *) {
+                            Text("Rotina de Estudos")
+                                .font(.headline)
+                                .opacity(scrollOffsetY < 53 ? 1 : 0)
+                                .blur(radius: scrollOffsetY < 53 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 5 ? -8 : scrollOffsetY < 53 ? 0 : 14)
 
-                        Text(toolbarTitle)
-                            .foregroundStyle(.tint)
-                            .font(.caption)
-                            .opacity(scrollOffsetY <= 60 ? 1 : 0)
-                            .offset(y: scrollOffsetY <= 60 ? 8 : 14)
+                            Text(toolbarTitle)
+                                .foregroundStyle(.tint)
+                                .font(.caption)
+                                .opacity(scrollOffsetY <= 5 ? 1 : 0)
+                                .blur(radius: scrollOffsetY <= 5 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 5 ? 8 : 14)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else {
+                            Text("Rotina de Estudos")
+                                .font(.headline)
+                                .opacity(scrollOffsetY < 115 ? 1 : 0)
+                                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
+
+                            Text(toolbarTitle)
+                                .foregroundStyle(.tint)
+                                .font(.caption)
+                                .opacity(scrollOffsetY <= 60 ? 1 : 0)
+                                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         studyToAdd = SRStudy()
                     } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                            .foregroundStyle(Color.accentColor)
+                        if #available(iOS 26, *) {
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
+                        } else {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title2)
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -99,8 +125,14 @@ struct SRView: View {
                             navigateToStudyingView = true
                         }
                     } label: {
-                        Image(systemName: "play.circle.fill")
-                            .font(.title2)
+                        if #available(iOS 26, *) {
+                            Image(systemName: "play.fill")
+                                .font(.title2)
+                                .foregroundStyle(Color.accentColor)
+                        } else {
+                            Image(systemName: "play.circle.fill")
+                                .font(.title2)
+                        }
                     }
                     .disabled(!canStartStudying)
                 }
@@ -125,8 +157,14 @@ struct SRView: View {
                 GeometryReader { geo in
                     Color.clear
                         .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                            withAnimation(.smooth(duration: 0.25)) {
-                                scrollOffsetY = Int(newY)
+                            if #available(iOS 26, *) {
+                                withAnimation(.smooth(duration: 0.5)) {
+                                    scrollOffsetY = Int(newY)
+                                }
+                            } else {
+                                withAnimation(.smooth(duration: 0.25)) {
+                                    scrollOffsetY = Int(newY)
+                                }
                             }
                         }
                 }

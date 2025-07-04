@@ -55,7 +55,7 @@ struct PriorityPicker: View {
                         .tint(.font)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button {
@@ -74,7 +74,7 @@ struct PriorityPicker: View {
                         }
                     }
                 }.tint(.font)
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Prioridade")

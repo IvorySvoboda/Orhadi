@@ -28,7 +28,7 @@ struct UserNameEditView: View {
                     TextField("Obrigatório", text: $userName)
                         .autocorrectionDisabled()
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Nome")

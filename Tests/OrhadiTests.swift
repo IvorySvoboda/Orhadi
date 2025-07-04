@@ -11,6 +11,14 @@ import Testing
 
 @testable import Orhadi
 
+/// As funções aqui devem ser praticamente uma copia
+/// exata das funções de exportação/importação que
+/// está no DataSettings.
+///
+/// OBS: Talvez seja melhor encontrar uma maneira de
+/// usar as próprias funções de exportação/importação
+/// presentes nas View?
+
 struct DataTests {
 
     // MARK: - Subject & Teacher Tests
@@ -62,11 +70,13 @@ struct DataTests {
             var teacher: Teacher?
 
             if let subjectTeacher = subject.teacher {
+                /// Procuramos o professor da matéria no banco de dados.
                 let existingTeacher = try context.fetch(
                     FetchDescriptor<Teacher>(
                         predicate: #Predicate { $0.name == subjectTeacher.name }
                     )
                 ).first
+
                 /// Como as matérias exportadas estão com os
                 /// mesmos professores que estão no banco de
                 /// dados, esperamos que existing teacher não

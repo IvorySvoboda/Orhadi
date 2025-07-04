@@ -63,7 +63,7 @@ struct SubjectsDataSettingsView: View {
                     Text("\(allRecess)")
                         .foregroundStyle(.secondary)
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Exportar Matérias") {
@@ -110,7 +110,7 @@ struct SubjectsDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Apagar todas as matérias") {
@@ -124,7 +124,7 @@ struct SubjectsDataSettingsView: View {
                         deleteAllSubjects()
                     }
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Matérias")

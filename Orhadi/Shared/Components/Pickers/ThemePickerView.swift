@@ -37,11 +37,17 @@ struct ThemePickerView: View {
                         .resizable()
                         .frame(width: 13, height: 13)
                         .foregroundStyle(Color.accentColor)
-                        .background(
-                            Color.orhadiBG
-                                .frame(width: 12, height: 12)
-                                .clipShape(Circle())
-                        )
+                        .background {
+                            if #available(iOS 26, *) {
+                                Color.orhadiSecondaryBGiOS26
+                                    .frame(width: 12, height: 12)
+                                    .clipShape(Circle())
+                            } else {
+                                Color.orhadiBG
+                                    .frame(width: 12, height: 12)
+                                    .clipShape(Circle())
+                            }
+                        }
                 )
         }.padding(.trailing, 10)
     }
@@ -70,7 +76,7 @@ struct ThemePicker: View {
                     }.tint(.font)
                 }
             }
-            .listRowBackground(Color.orhadiSecondaryBG)
+            .orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Tema")

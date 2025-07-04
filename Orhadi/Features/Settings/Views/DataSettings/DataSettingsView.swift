@@ -37,7 +37,7 @@ struct DataSettingsView: View {
                 } label: {
                     Label("Rotina de Estudos", systemImage: "graduationcap.fill")
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
 
             Section {
                 Button("Redefinir todos os dados") {
@@ -54,7 +54,7 @@ struct DataSettingsView: View {
                 } message: {
                     Text("Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperar os dados após redefinir. Tem certeza que deseja continuar?")
                 }
-            }.listRowBackground(Color.orhadiSecondaryBG)
+            }.orhadiListRowBackground()
         }
         .orhadiListStyle()
         .navigationTitle("Dados")

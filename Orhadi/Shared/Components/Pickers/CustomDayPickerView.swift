@@ -58,7 +58,7 @@ struct CustomDayPicker: View {
                     }.tint(Color.font)
                 }
             }
-            .listRowBackground(Color.orhadiSecondaryBG)
+            .orhadiListRowBackground()
             .onChange(of: selectedWeekday) { oldWeekday, newWeekday in
                 if let newDate = Calendar.current.date(
                     byAdding: .day,
