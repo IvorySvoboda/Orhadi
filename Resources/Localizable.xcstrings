@@ -169,28 +169,6 @@
         }
       }
     },
-    "Apagar Estudo" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Study"
-          }
-        }
-      }
-    },
-    "Apagar Matéria" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Delete Subject"
-          }
-        }
-      }
-    },
     "Apagar todas as matérias" : {
       "localizations" : {
         "en" : {
@@ -1036,17 +1014,6 @@
     "Informações pessoais" : {
 
     },
-    "Iniciar" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start"
-          }
-        }
-      }
-    },
     "Inicio" : {
       "localizations" : {
         "en" : {
@@ -1182,6 +1149,9 @@
 
     },
     "Mítico" : {
+
+    },
+    "Mostrar indicador da matéria atual" : {
 
     },
     "Nada para estudar hoje. Que tal aproveitar pra descansar um pouco?" : {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 struct ToDoSheetView: View {
     @Environment(\.modelContext) private var modelContext
@@ -14,7 +15,7 @@ struct ToDoSheetView: View {
 
     @State private var isHourPickerExpanded = false
     @State private var title: String
-    @State private var info: String
+    @State private var info: AttributedString
     @State private var priority: Priority
     @State private var dueDate: Date
     @State private var withHour: Bool
@@ -40,20 +41,41 @@ struct ToDoSheetView: View {
                     TextField("Trabalho de...", text: $title)
                         .autocorrectionDisabled()
 
-                    ZStack {
-                        VStack {
-                            if info.isEmpty {
-                                Text("Fazer ... ")
-                                    .foregroundStyle(Color.secondary)
-                                    .opacity(0.5)
+                    if #available(iOS 26, *) {
+                        ZStack {
+                            VStack {
+                                if info.characters.isEmpty {
+                                    Text("Fazer ... ")
+                                        .foregroundStyle(Color.secondary)
+                                        .opacity(0.5)
+                                }
                             }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                        .padding(.top)
-                        .padding(.leading, 5)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .padding(.top, 10)
+                            .padding(.leading, 5)
 
-                        MarkdownTextField(text: $info)
+                            TextEditor(text: $info)
+                                .frame(height: 200)
+                        }
+                    } else {
+                        ZStack {
+                            VStack {
+                                if info.characters.isEmpty {
+                                    Text("Fazer ... ")
+                                        .foregroundStyle(Color.secondary)
+                                        .opacity(0.5)
+                                }
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                            .padding(.top)
+                            .padding(.leading, 5)
+
+                            MarkdownTextField(text: Binding(
+                                get: { String("\(info.characters)") },
+                                set: { info = AttributedString("\($0)") }
+                            ))
                             .frame(height: 200)
+                        }
                     }
                 }.orhadiListRowBackground()
 
@@ -184,6 +206,9 @@ struct ToDoSheetView: View {
 
                             UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                         }
+
+                        WidgetCenter.shared.reloadAllTimelines()
+
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {

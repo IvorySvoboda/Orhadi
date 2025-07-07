@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct DeletedSubjectsView: View {
     @Environment(\.modelContext) private var context
@@ -96,6 +97,8 @@ struct DeletedSubjectsView: View {
             }
         }
         .onChange(of: deletedSubjects) { _, newSubjects in
+            WidgetCenter.shared.reloadAllTimelines()
+
             if newSubjects.isEmpty {
                 dismiss()
             }

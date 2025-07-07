@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct ToDosView: View {
     @Query(filter: #Predicate<ToDo> {
@@ -110,6 +111,12 @@ struct ToDosView: View {
                 ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
             }
+            .onChange(of: completedToDos) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+            .onChange(of: pendingToDos) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
+            }
         }
     }
 
@@ -121,7 +128,7 @@ struct ToDosView: View {
                     Color.clear
                         .onChange(of: minY) { _, _ in
                             if #available(iOS 26, *) {
-                                DispatchQueue.main.async {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                                     withAnimation(.smooth(duration: 0.5)) {
                                         scrollOffsetY = Int(minY)
                                     }

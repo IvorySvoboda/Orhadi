@@ -158,7 +158,7 @@ struct SRView: View {
                     Color.clear
                         .onChange(of: geo.frame(in: .global).minY) { _, newY in
                             if #available(iOS 26, *) {
-                                DispatchQueue.main.async {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                                     withAnimation(.smooth(duration: 0.5)) {
                                         scrollOffsetY = Int(newY)
                                     }

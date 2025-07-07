@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct DeletedTodosView: View {
     @Environment(\.modelContext) private var context
@@ -102,6 +103,8 @@ struct DeletedTodosView: View {
             if newTodos.isEmpty {
                 dismiss()
             }
+
+            WidgetCenter.shared.reloadAllTimelines()
         }
         .onAppear {
             cleanExpiredTodos()

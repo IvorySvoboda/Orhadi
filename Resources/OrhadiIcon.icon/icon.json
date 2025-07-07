@@ -2,88 +2,43 @@
   "fill" : "system-dark",
   "groups" : [
     {
-      "blend-mode-specializations" : [
-        {
-          "appearance" : "dark",
-          "value" : "screen"
-        }
-      ],
-      "blur-material" : null,
+      "blend-mode" : "normal",
+      "blur-material" : 0.25,
       "layers" : [
         {
-          "blend-mode-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : "hard-light"
-            }
-          ],
-          "fill-specializations" : [
-            {
-              "value" : {
-                "linear-gradient" : [
-                  "extended-srgb:0.15686,0.80392,0.25490,1.00000",
-                  "extended-srgb:0.00000,0.78039,0.74510,1.00000"
-                ]
-              }
-            },
-            {
-              "appearance" : "dark",
-              "value" : {
-                "linear-gradient" : [
-                  "extended-srgb:0.15686,0.80392,0.25490,1.00000",
-                  "extended-srgb:0.00000,0.78039,0.74510,1.00000"
-                ]
-              }
-            }
-          ],
-          "image-name" : "CHECK.png",
-          "name" : "CHECK",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              212.08677029273244,
-              160.46294918915794
-            ]
-          }
-        },
-        {
-          "blend-mode-specializations" : [
-            {
-              "appearance" : "dark",
-              "value" : "soft-light"
-            }
-          ],
-          "fill-specializations" : [
-            {
-              "value" : {
-                "solid" : "extended-gray:1.00000,1.00000"
-              }
-            },
-            {
-              "appearance" : "dark",
-              "value" : {
-                "automatic-gradient" : "srgb:1.00000,1.00000,1.00000,1.00000"
-              }
-            }
-          ],
-          "glass" : true,
-          "image-name" : "Group 2.png",
-          "name" : "Group 2",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              -0.667724609375,
-              -85.41925048828125
-            ]
-          }
+          "image-name" : "CheckMark.png",
+          "name" : "CheckMark"
         }
       ],
-      "lighting" : "individual",
       "shadow" : {
         "kind" : "layer-color",
         "opacity" : 0.25
       },
       "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.75
+      }
+    },
+    {
+      "blend-mode" : "normal",
+      "blur-material" : null,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "extended-gray:1.00000,1.00000",
+              "srgb:1.00000,1.00000,1.00000,0.54902"
+            ]
+          },
+          "image-name" : "Cap.png",
+          "name" : "Cap"
+        }
+      ],
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 1
+      },
       "translucency" : {
         "enabled" : true,
         "value" : 0.5

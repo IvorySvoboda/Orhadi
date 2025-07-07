@@ -8,6 +8,15 @@
 import Foundation
 import SwiftData
 
+typealias CurrentSchema = OrhadiSchemaV1
+typealias Subject = CurrentSchema.Subject
+typealias SRStudy = CurrentSchema.SRStudy
+typealias ToDo = CurrentSchema.ToDo
+typealias Settings = CurrentSchema.Settings
+typealias Teacher = CurrentSchema.Teacher
+typealias UserProfile = CurrentSchema.UserProfile
+typealias Achievement = CurrentSchema.Achievement
+
 enum OrhadiSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
 
@@ -58,7 +67,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - Subject
 
     @Model
-    class Subject: Codable {
+    class Subject: Codable, @unchecked Sendable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var teacher: Teacher?
@@ -69,6 +78,27 @@ enum OrhadiSchemaV1: VersionedSchema {
         var isRecess: Bool = false
         var isSubjectDeleted: Bool = false
         var deletedAt: Date?
+
+        var isOngoing: Bool {
+            let calendar = Calendar.current
+            let now = Date()
+
+            let todayStart = calendar.date(
+                bySettingHour: calendar.component(.hour, from: startTime),
+                minute: calendar.component(.minute, from: startTime),
+                second: 0,
+                of: now
+            ) ?? .distantPast
+
+            let todayEnd = calendar.date(
+                bySettingHour: calendar.component(.hour, from: endTime),
+                minute: calendar.component(.minute, from: endTime),
+                second: 0,
+                of: now
+            ) ?? .distantFuture
+
+            return now >= todayStart && now < todayEnd
+        }
 
         init(
             name: String = "",
@@ -163,10 +193,10 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - ToDo
 
     @Model
-    class ToDo: Codable {
+    class ToDo: Codable, @unchecked Sendable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var title: String = ""
-        var info: String = ""
+        private var infoData: Data = Data()
         var dueDate: Date = Calendar.current.startOfDay(for: Date())
         var withHour: Bool = false
         var createdAt: Date = Date()
@@ -177,9 +207,14 @@ enum OrhadiSchemaV1: VersionedSchema {
         var isToDoDeleted: Bool = false
         var deletedAt: Date?
 
+        var info: AttributedString {
+            get { (try? JSONDecoder().decode(AttributedString.self, from: infoData)) ?? AttributedString("") }
+            set { infoData = (try? JSONEncoder().encode(newValue)) ?? Data() }
+        }
+
         init(
             title: String = "",
-            info: String = "",
+            info: AttributedString = "",
             dueDate: Date = Calendar.current.startOfDay(for: Date()),
             withHour: Bool = false,
             createdAt: Date = Date(),
@@ -269,7 +304,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         required init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             title = try container.decode(String.self, forKey: .title)
-            info = try container.decode(String.self, forKey: .info)
+            info = try container.decode(AttributedString.self, forKey: .info)
             dueDate = try container.decode(Date.self, forKey: .dueDate)
             withHour = try container.decode(Bool.self, forKey: .withHour)
             createdAt = try container.decode(Date.self, forKey: .createdAt)
@@ -296,7 +331,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - SRStudy
 
     @Model
-    class SRStudy: Codable {
+    class SRStudy: Codable, @unchecked Sendable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var studyDay: Date = Date(timeIntervalSince1970: 0)
@@ -417,6 +452,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         var breakTime: TimeInterval
 
         /// Subjects
+        var showCurrentSubjectIndicator: Bool = true
 
         /// ToDos
         var scheduleNotifications: Bool
@@ -424,10 +460,12 @@ enum OrhadiSchemaV1: VersionedSchema {
         init(
             theme: Theme = .auto,
             breakTime: TimeInterval = 600,
+            showCurrentSubjectIndicator: Bool = true,
             scheduleNotifications: Bool = true,
         ) {
             self.theme = theme
             self.breakTime = breakTime
+            self.showCurrentSubjectIndicator = showCurrentSubjectIndicator
             self.scheduleNotifications = scheduleNotifications
         }
     }

@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct SubjectsView: View {
     @Environment(Settings.self) private var settings
@@ -169,6 +170,9 @@ struct SubjectsView: View {
                 .presentationDetents([.height(135)])
                 .presentationDragIndicator(.visible)
             }
+            .onChange(of: subjects) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
+            }
         }
     }
 
@@ -179,7 +183,7 @@ struct SubjectsView: View {
                     Color.clear
                         .onChange(of: geo.frame(in: .global).minY) { _, newY in
                             if #available(iOS 26, *) {
-                                DispatchQueue.main.async {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                                     withAnimation(.smooth(duration: 0.5)) {
                                         scrollOffsetY = Int(newY)
                                     }

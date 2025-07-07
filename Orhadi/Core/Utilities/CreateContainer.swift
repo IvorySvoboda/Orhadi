@@ -9,13 +9,9 @@ import SwiftData
 import Foundation
 
 func createContainer() throws -> ModelContainer {
-    let path = URL.documentsDirectory.appending(path: "database.store")
-    let config = ModelConfiguration(url: path)
-
-    let container = try ModelContainer.init(
+    let container = try ModelContainer(
         for: Schema(versionedSchema: CurrentSchema.self),
-        migrationPlan: MigrationPlan.self,
-        configurations: config
+        migrationPlan: MigrationPlan.self
     )
 
     return container

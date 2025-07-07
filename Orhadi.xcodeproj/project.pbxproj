@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		289291332E1B0FC200E0478F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DEBE2B2E19FEC500E9D788 /* WidgetKit.framework */; };
+		289291342E1B0FC200E0478F /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DEBE2D2E19FEC500E9D788 /* SwiftUI.framework */; };
+		2892913F2E1B0FC400E0478F /* OrhadiWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 289291322E1B0FC200E0478F /* OrhadiWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		28BD45F42DAAF6BC00B916B1 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 28BD45F32DAAF6BC00B916B1 /* MarkdownUI */; };
 		28C7B7F62DC5863900916934 /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 28C7B7F52DC5863900916934 /* PopupView */; };
 /* End PBXBuildFile section */
@@ -19,11 +22,35 @@
 			remoteGlobalIDString = 2804F4D72D92275700649FD0;
 			remoteInfo = Orhadi;
 		};
+		2892913D2E1B0FC400E0478F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2804F4D02D92275700649FD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 289291312E1B0FC200E0478F;
+			remoteInfo = OrhadiWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		28DEBE422E19FEC700E9D788 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2892913F2E1B0FC400E0478F /* OrhadiWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2804F4D82D92275700649FD0 /* Orhadi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Orhadi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28453A232DB997C400AE5079 /* OrhadiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OrhadiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		289291322E1B0FC200E0478F /* OrhadiWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OrhadiWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		28DEBE2B2E19FEC500E9D788 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		28DEBE2D2E19FEC500E9D788 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -34,6 +61,26 @@
 			);
 			target = 2804F4D72D92275700649FD0 /* Orhadi */;
 		};
+		289291432E1B0FC400E0478F /* Exceptions for "OrhadiWidget" folder in "OrhadiWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 289291312E1B0FC200E0478F /* OrhadiWidgetExtension */;
+		};
+		289291452E1B0FDA00E0478F /* Exceptions for "Orhadi" folder in "OrhadiWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Core/Extensions/Foundation+Extensions.swift",
+				"Core/Extensions/ToDo+Extensions.swift",
+				Core/Utilities/AppEnums.swift,
+				Core/Utilities/CreateContainer.swift,
+				Core/Utilities/NotificationsManager.swift,
+				Services/Persistence/MigrationPlan.swift,
+				Services/Persistence/Schemas/OrhadiSchemaV1.swift,
+			);
+			target = 289291312E1B0FC200E0478F /* OrhadiWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -41,6 +88,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				286A5F132DF9C8D80068A596 /* Exceptions for "Orhadi" folder in "Orhadi" target */,
+				289291452E1B0FDA00E0478F /* Exceptions for "Orhadi" folder in "OrhadiWidgetExtension" target */,
 			);
 			path = Orhadi;
 			sourceTree = "<group>";
@@ -53,6 +101,14 @@
 		285D39B32DBD2C5300CDC4D0 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		289291352E1B0FC200E0478F /* OrhadiWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				289291432E1B0FC400E0478F /* Exceptions for "OrhadiWidget" folder in "OrhadiWidgetExtension" target */,
+			);
+			path = OrhadiWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -74,6 +130,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2892912F2E1B0FC200E0478F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				289291342E1B0FC200E0478F /* SwiftUI.framework in Frameworks */,
+				289291332E1B0FC200E0478F /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -82,6 +147,8 @@
 			children = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
 				28453A242DB997C400AE5079 /* Tests */,
+				289291352E1B0FC200E0478F /* OrhadiWidget */,
+				28DEBE2A2E19FEC500E9D788 /* Frameworks */,
 				2804F4D92D92275700649FD0 /* Products */,
 				285D39B32DBD2C5300CDC4D0 /* Resources */,
 			);
@@ -92,8 +159,18 @@
 			children = (
 				2804F4D82D92275700649FD0 /* Orhadi.app */,
 				28453A232DB997C400AE5079 /* OrhadiTests.xctest */,
+				289291322E1B0FC200E0478F /* OrhadiWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		28DEBE2A2E19FEC500E9D788 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28DEBE2B2E19FEC500E9D788 /* WidgetKit.framework */,
+				28DEBE2D2E19FEC500E9D788 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,10 +184,12 @@
 				2804F4D42D92275700649FD0 /* Sources */,
 				2804F4D52D92275700649FD0 /* Frameworks */,
 				2804F4D62D92275700649FD0 /* Resources */,
+				28DEBE422E19FEC700E9D788 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2892913E2E1B0FC400E0478F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
@@ -148,6 +227,28 @@
 			productReference = 28453A232DB997C400AE5079 /* OrhadiTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		289291312E1B0FC200E0478F /* OrhadiWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 289291402E1B0FC400E0478F /* Build configuration list for PBXNativeTarget "OrhadiWidgetExtension" */;
+			buildPhases = (
+				2892912E2E1B0FC200E0478F /* Sources */,
+				2892912F2E1B0FC200E0478F /* Frameworks */,
+				289291302E1B0FC200E0478F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				289291352E1B0FC200E0478F /* OrhadiWidget */,
+			);
+			name = OrhadiWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = OrhadiWidgetExtension;
+			productReference = 289291322E1B0FC200E0478F /* OrhadiWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -155,7 +256,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
+				LastSwiftUpdateCheck = 2600;
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					2804F4D72D92275700649FD0 = {
@@ -164,6 +265,9 @@
 					28453A222DB997C400AE5079 = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 2804F4D72D92275700649FD0;
+					};
+					289291312E1B0FC200E0478F = {
+						CreatedOnToolsVersion = 26.0;
 					};
 				};
 			};
@@ -188,6 +292,7 @@
 			targets = (
 				2804F4D72D92275700649FD0 /* Orhadi */,
 				28453A222DB997C400AE5079 /* OrhadiTests */,
+				289291312E1B0FC200E0478F /* OrhadiWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -201,6 +306,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		28453A212DB997C400AE5079 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		289291302E1B0FC200E0478F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -246,6 +358,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2892912E2E1B0FC200E0478F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -253,6 +372,11 @@
 			isa = PBXTargetDependency;
 			target = 2804F4D72D92275700649FD0 /* Orhadi */;
 			targetProxy = 28453A272DB997C400AE5079 /* PBXContainerItemProxy */;
+		};
+		2892913E2E1B0FC400E0478F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 289291312E1B0FC200E0478F /* OrhadiWidgetExtension */;
+			targetProxy = 2892913D2E1B0FC400E0478F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -522,6 +646,68 @@
 			};
 			name = Release;
 		};
+		289291412E1B0FC400E0478F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = OrhadiWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4352;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OrhadiWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OrhadiWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi.OrhadiWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		289291422E1B0FC400E0478F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = OrhadiWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 4352;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OrhadiWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OrhadiWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 4.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.Orhadi.OrhadiWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -548,6 +734,15 @@
 			buildConfigurations = (
 				28453A292DB997C400AE5079 /* Debug */,
 				28453A2A2DB997C400AE5079 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		289291402E1B0FC400E0478F /* Build configuration list for PBXNativeTarget "OrhadiWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				289291412E1B0FC400E0478F /* Debug */,
+				289291422E1B0FC400E0478F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

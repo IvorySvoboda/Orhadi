@@ -76,6 +76,7 @@ struct StudyingView: View {
             }
         }
         .toolbarBackground(.orhadiBG, for: .navigationBar)
+        .toolbarVisibility(.hidden, for: .tabBar)
         .disableIdleTimer()
         .onAppear {
             if !isReady {
