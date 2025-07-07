@@ -227,9 +227,9 @@ struct ToDosDataSettingsView: View {
 
     private func importToDos() {
         guard let url = importedURL else { return }
-        guard url.startAccessingSecurityScopedResource() else { return }
-        defer { url.stopAccessingSecurityScopedResource() }
         Task.detached(priority: .background) {
+            guard url.startAccessingSecurityScopedResource() else { return }
+            defer { url.stopAccessingSecurityScopedResource() }
             do {
                 let context = ModelContext(try createContainer())
 
@@ -294,6 +294,7 @@ struct ToDosDataSettingsView: View {
                     errorMessage = "\(error.localizedDescription)"
                     UINotificationFeedbackGenerator().notificationOccurred(.error)
                 }
+                print(error)
             }
         }
     }

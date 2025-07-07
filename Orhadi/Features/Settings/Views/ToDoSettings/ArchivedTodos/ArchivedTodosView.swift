@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct ArchivedTodosView: View {
     @Environment(\.dismiss) private var dismiss
@@ -73,6 +74,8 @@ struct ArchivedTodosView: View {
             if newTodos.isEmpty {
                 dismiss()
             }
+
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 

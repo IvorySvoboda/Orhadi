@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct ToDosView: View {
     @Query(filter: #Predicate<ToDo> {
@@ -109,6 +110,12 @@ struct ToDosView: View {
             .sheet(item: $todoToEdit) { todo in
                 ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
+            }
+            .onChange(of: completedToDos) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
+            }
+            .onChange(of: pendingToDos) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
     }

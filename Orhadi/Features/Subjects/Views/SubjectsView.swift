@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct SubjectsView: View {
     @Environment(Settings.self) private var settings
@@ -168,6 +169,9 @@ struct SubjectsView: View {
                 .padding()
                 .presentationDetents([.height(135)])
                 .presentationDragIndicator(.visible)
+            }
+            .onChange(of: subjects) { _, _ in
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
     }

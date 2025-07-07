@@ -7,6 +7,7 @@
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct SubjectSheetView: View {
     @Environment(\.modelContext) private var context
@@ -93,6 +94,8 @@ struct SubjectSheetView: View {
                             UIImpactFeedbackGenerator(style: .soft)
                                 .impactOccurred()
                         }
+
+                        WidgetCenter.shared.reloadAllTimelines()
                     } label: {
                         if #available(iOS 26, *) {
                             Label("Salvar", systemImage: "checkmark")

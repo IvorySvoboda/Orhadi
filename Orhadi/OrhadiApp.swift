@@ -7,15 +7,7 @@
 
 import SwiftData
 import SwiftUI
-
-typealias CurrentSchema = OrhadiSchemaV1
-typealias Subject = CurrentSchema.Subject
-typealias SRStudy = CurrentSchema.SRStudy
-typealias ToDo = CurrentSchema.ToDo
-typealias Settings = CurrentSchema.Settings
-typealias Teacher = CurrentSchema.Teacher
-typealias UserProfile = CurrentSchema.UserProfile
-typealias Achievement = CurrentSchema.Achievement
+import WidgetKit
 
 @main
 struct OrhadiApp: App {
@@ -56,6 +48,8 @@ struct RootView: View {
 
                 /// Apagas itens apagados a mais de 30 dias
                 cleanOldDeleted()
+
+                WidgetCenter.shared.reloadAllTimelines()
             }
             .environment(settings.first ?? Settings())
             .environment(userProfile.first ?? UserProfile())

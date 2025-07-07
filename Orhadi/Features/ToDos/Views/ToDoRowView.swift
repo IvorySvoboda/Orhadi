@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MarkdownUI
+import WidgetKit
 
 struct ToDoRowView: View, Equatable {
     @Environment(\.modelContext) private var context
@@ -25,9 +26,13 @@ struct ToDoRowView: View, Equatable {
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
-            if !todo.info.isEmpty {
-                Markdown(todo.info)
-                    .orhadiMarkdownStyle()
+            if !todo.info.characters.isEmpty {
+                if #available(iOS 26, *) {
+                    Text(todo.info)
+                } else {
+                    Markdown("\(todo.info.characters)")
+                        .orhadiMarkdownStyle()
+                }
             } else {
                 Text("Não informado.").opacity(0.5)
             }
@@ -180,6 +185,8 @@ struct ToDoRowView: View, Equatable {
                 todo.scheduleNotification()
             }
         }
+
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func archiveTodo() {
@@ -195,6 +202,8 @@ struct ToDoRowView: View, Equatable {
         withAnimation {
             todo.isArchived = true
         }
+
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func deleteToDo() {
@@ -211,5 +220,7 @@ struct ToDoRowView: View, Equatable {
             todo.isToDoDeleted = true
             todo.deletedAt = .now
         }
+
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

@@ -22,48 +22,58 @@ struct SubjectRow: View, Equatable {
     // MARK: - Views
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
-            if subject.isRecess {
-                HStack {
-                    Text("INTERVALO")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fontWeight(.semibold)
-                    CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fontWeight(.semibold)
-                }
-            } else {
-                Text(subject.name.nilIfEmpty() ?? String(localized: "Sem Nome"))
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .lineLimit(1)
-                    .frame(maxWidth: 200, alignment: .leading)
+        HStack(spacing: 5) {
 
-                VStack(alignment: .leading, spacing: 3) {
-                    if let teacher = subject.teacher {
-                        if !teacher.name.isEmpty {
-                            CustomLabel("\(teacher.name)", systemImage: "person.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+            if subject.isOngoing && settings.showCurrentSubjectIndicator {
+                RoundedRectangle(cornerRadius: 3, style: .circular)
+                    .fill(Color.cyan)
+                    .frame(width: 5)
+                    .frame(maxHeight: .infinity)
+            }
 
-                        if !teacher.email.isEmpty {
-                            CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    if !subject.place.isEmpty {
-                        CustomLabel("\(subject.place)", systemImage: "building.2.fill")
+            VStack(alignment: .leading, spacing: 5) {
+                if subject.isRecess {
+                    HStack {
+                        Text("INTERVALO")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            .fontWeight(.semibold)
+                        CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fontWeight(.semibold)
+                    }
+                } else {
+                    Text(subject.name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
+                        .frame(maxWidth: 200, alignment: .leading)
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        if let teacher = subject.teacher {
+                            if !teacher.name.isEmpty {
+                                CustomLabel("\(teacher.name)", systemImage: "person.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            if !teacher.email.isEmpty {
+                                CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                        if !subject.place.isEmpty {
+                            CustomLabel("\(subject.place)", systemImage: "building.2.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
