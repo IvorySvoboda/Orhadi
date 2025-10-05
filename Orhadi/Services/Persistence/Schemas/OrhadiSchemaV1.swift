@@ -2,7 +2,7 @@
 //  OrhadiSchemaV1.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import Foundation
@@ -14,8 +14,6 @@ typealias SRStudy = CurrentSchema.SRStudy
 typealias ToDo = CurrentSchema.ToDo
 typealias Settings = CurrentSchema.Settings
 typealias Teacher = CurrentSchema.Teacher
-typealias UserProfile = CurrentSchema.UserProfile
-typealias Achievement = CurrentSchema.Achievement
 
 enum OrhadiSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version = Schema.Version(1, 0, 0)
@@ -25,8 +23,6 @@ enum OrhadiSchemaV1: VersionedSchema {
          Subject.self,
          ToDo.self,
          SRStudy.self,
-         UserProfile.self,
-         Achievement.self,
          Settings.self]
     }
 
@@ -67,7 +63,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - Subject
 
     @Model
-    class Subject: Codable, @unchecked Sendable {
+    class Subject: Codable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var teacher: Teacher?
@@ -120,7 +116,7 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         static let sampleData = [
             Subject(
-                name: "Português",
+                name: "English",
                 teacher: Teacher(name: "Ana Lima", email: "ana.lima@example.com"),
                 schedule: Date(),
                 startTime: Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!,
@@ -193,7 +189,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - ToDo
 
     @Model
-    class ToDo: Codable, @unchecked Sendable {
+    class ToDo: Codable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var title: String = ""
         private var infoData: Data = Data()
@@ -267,7 +263,7 @@ enum OrhadiSchemaV1: VersionedSchema {
                 isArchived: false
             ),
             .init(
-                title: "Estudar SwiftUI avançado",
+                title: "Study SwiftUI avançado",
                 info: "Terminar curso sobre animações e performance",
                 dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date(),
                 withHour: false,
@@ -331,7 +327,7 @@ enum OrhadiSchemaV1: VersionedSchema {
     // MARK: - SRStudy
 
     @Model
-    class SRStudy: Codable, @unchecked Sendable {
+    class SRStudy: Codable {
         @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var studyDay: Date = Date(timeIntervalSince1970: 0)
@@ -353,7 +349,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         }
 
         static let sampleData = [
-            SRStudy(name: "Português"),
+            SRStudy(name: "English"),
             SRStudy(name: "Matemática"),
             SRStudy(name: "História")
         ]
@@ -379,65 +375,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             try container.encode(studyDay, forKey: .studyDay)
             try container.encode(studyTime, forKey: .studyTime)
             try container.encode(lastStudied, forKey: .lastStudied)
-        }
-    }
-
-    // MARK: - UserProfile
-
-    @Model
-    class UserProfile {
-        @Attribute(.unique) var name: String
-        var photo: Data?
-        var level: Int
-        var xp: Int
-        var timeStudied: Int
-        var completedToDos: Int
-
-        init(
-            name: String = "Orhadi",
-            photo: Data? = nil,
-            level: Int = 1,
-            xp: Int = 0,
-            timeStudied: Int = 0,
-            completedToDos: Int = 0
-        ) {
-            self.name = name
-            self.photo = photo
-            self.level = level
-            self.xp = xp
-            self.timeStudied = timeStudied
-            self.completedToDos = completedToDos
-        }
-    }
-
-    // MARK: - Achievements
-
-    @Model
-    class Achievement {
-        @Attribute(.unique) var id: String
-        var name: String
-        var imageName: String
-        var descriptionText: String
-        var isUnlocked: Bool
-        var unlockedAt: Date?
-        var difficultLevel: Int
-
-        init(
-            id: String,
-            name: String,
-            imageName: String,
-            descriptionText: String,
-            isUnlocked: Bool = false,
-            unlockedAt: Date? = nil,
-            difficultLevel: Int
-        ) {
-            self.id = id
-            self.name = name
-            self.imageName = imageName
-            self.descriptionText = descriptionText
-            self.isUnlocked = isUnlocked
-            self.unlockedAt = unlockedAt
-            self.difficultLevel = difficultLevel
         }
     }
 

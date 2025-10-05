@@ -2,7 +2,7 @@
 //  PriorityPickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 28/04/25.
+//  Created by Ivory Svoboda . on 28/04/25.
 //
 
 import SwiftUI
@@ -18,7 +18,7 @@ struct PriorityPickerView: View {
             PriorityPicker(priority: $priority)
         } label: {
             HStack {
-                Label("Prioridade", systemImage: "exclamationmark.3")
+                Label("Priority", systemImage: "exclamationmark.3")
                 Spacer()
                 Text(priority.priorityString)
                     .foregroundColor(.secondary)
@@ -55,7 +55,7 @@ struct PriorityPicker: View {
                         .tint(.font)
                     }
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
                 Button {
@@ -65,7 +65,7 @@ struct PriorityPicker: View {
                     }
                 } label: {
                     HStack {
-                        Text("Nenhuma")
+                        Text(Priority.none.priorityString)
                             .foregroundStyle(Color.secondary)
                         Spacer()
                         if self.priority == .none {
@@ -74,10 +74,10 @@ struct PriorityPicker: View {
                         }
                     }
                 }.tint(.font)
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Prioridade")
+        .navigationTitle("Priority")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

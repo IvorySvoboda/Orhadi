@@ -2,7 +2,7 @@
 //  SubjectsDataSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import SwiftData
@@ -46,27 +46,27 @@ struct SubjectsDataSettingsView: View {
         Form {
             Section {
                 HStack {
-                    Text("Total de Itens")
+                    Text("All items")
                     Spacer()
                     Text("\((subjects.count))")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Matérias")
+                    Text("Subjects")
                     Spacer()
                     Text("\(allSubjects)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Intervalos")
+                    Text("Interval")
                     Spacer()
                     Text("\(allRecess)")
                         .foregroundStyle(.secondary)
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Exportar Matérias") {
+                Button("Export Subjects") {
                     exportSubjects()
                 }
                 .disabled((subjects.isEmpty))
@@ -74,7 +74,7 @@ struct SubjectsDataSettingsView: View {
                     isPresented: $showSubjectsFileExporter,
                     item: subjectsExportItem,
                     contentTypes: [.data],
-                    defaultFilename: String(localized: "Matérias")
+                    defaultFilename: String(localized: "Subjects")
                 ) { result in
                     switch result {
                     case .success:
@@ -87,16 +87,16 @@ struct SubjectsDataSettingsView: View {
                     subjectsExportItem = nil
                 }
 
-                Button("Importar Matérias") {
+                Button("Import Subjects") {
                     showSubjectsImportAlert.toggle()
                 }
-                .alert("Importar Matérias?", isPresented: $showSubjectsImportAlert) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Continuar") {
+                .alert("Import Subjects?", isPresented: $showSubjectsImportAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Continue") {
                         showSubjectsFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as matérias existentes serão apagadas. Deseja continuar?")
+                    Text("When importing, all existing subjects will be erased. Do you wish to continue?")
                 }
                 .fileImporter(
                     isPresented: $showSubjectsFileImporter,
@@ -110,24 +110,24 @@ struct SubjectsDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Apagar todas as matérias") {
+                Button("Delete all subjects") {
                     showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
                 .disabled(subjects.isEmpty)
-                .alert("Apagar todas as matérias?", isPresented: $showDeleteConfirmation) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Apagar", role: .destructive) {
+                .alert("Delete all subjects?", isPresented: $showDeleteConfirmation) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Delete", role: .destructive) {
                         deleteAllSubjects()
                     }
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Matérias")
+        .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
             if !errorMessage.isEmpty {

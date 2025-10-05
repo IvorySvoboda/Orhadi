@@ -2,7 +2,7 @@
 //  StudyingView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/04/25.
+//  Created by Ivory Svoboda . on 05/04/25.
 //
 
 import SwiftUI
@@ -16,9 +16,8 @@ struct SessionItem: Identifiable {
 }
 
 struct StudyingView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
-    @Environment(UserProfile.self) private var user
-    @Environment(GameManager.self) private var game
 
     // MARK: - Properties
 
@@ -37,7 +36,7 @@ struct StudyingView: View {
     // MARK: - Computed Properties
 
     var currentStudyName: String {
-        sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "Sem Nome")
+        sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "No Name")
     }
 
     var timeString: String {
@@ -64,15 +63,24 @@ struct StudyingView: View {
                 header
                 Divider()
                 timerSection
-                Divider()
                 nextSubjectsList
             }
         }
-        .navigationTitle("Estudando")
-        .navigationBarTitleDisplayMode(.inline)
+        .statusBarHidden(isRunning)
+        .navigationBarBackButtonHidden()
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Label("Stop Studying", systemImage: "chevron.backward")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 playPauseButton
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                skipButton
             }
         }
         .toolbarBackground(.orhadiBG, for: .navigationBar)
@@ -95,10 +103,9 @@ struct StudyingView: View {
                         .lineLimit(1)
                         .frame(width: 200, alignment: .leading)
                 } else {
-                    Text("Estudos completados! 🔥")
+                    Text("All studies completed! 🔥")
                 }
                 Spacer()
-                skipButton
             }
             .padding(.horizontal)
             .offset(y: 2)
@@ -139,6 +146,8 @@ struct StudyingView: View {
             skipToNext()
         } label: {
             Image(systemName: "forward.fill")
+                .font(.title2)
+                .foregroundStyle(Color.accentColor)
         }
         .tint(.font)
         .disabled(studyFinished)
@@ -171,7 +180,6 @@ struct StudyingView: View {
             }
         }
         .listStyle(.plain)
-        .contentMargins(.top, -4)
         .background(.orhadiBG)
         .environment(\.defaultMinListRowHeight, 20)
     }
@@ -188,9 +196,9 @@ struct StudyingView: View {
 
     private var breakSessionRow: some View {
         HStack {
-            Text("Descanso")
+            Text("Interval")
             Spacer()
-            Text(breakTime.formatToHour())
+            Text(breakTime.durationString())
         }
         .font(.system(size: 14))
         .foregroundStyle(Color.secondary)
@@ -199,10 +207,10 @@ struct StudyingView: View {
 
     private func studySessionRow(for study: SRStudy) -> some View {
         HStack {
-            Text(study.name.isEmpty ? "Sem Nome" : study.name)
+            Text(study.name.isEmpty ? "No Name" : study.name)
                 .bold()
             Spacer()
-            Text(study.studyTime.formatToHour())
+            Text(study.studyTimeInSeconds.durationString())
                 .bold()
         }
         .frame(height: 35)
@@ -239,7 +247,7 @@ struct StudyingView: View {
 
             if index != studies.count - 1 {
                 let breakEnd = currentTime.addingTimeInterval(settings.breakTime)
-                sessionSequence.append(SessionItem(name: "Descanso", endTime: breakEnd, isBreak: true, study: nil))
+                sessionSequence.append(SessionItem(name: "Interval", endTime: breakEnd, isBreak: true, study: nil))
                 currentTime = breakEnd
             }
         }
@@ -307,6 +315,9 @@ struct StudyingView: View {
         /// timer, se não, termina a seção.
         if currentSessionIndex < sessionItems.count {
             timerManager.start(with: sessionItems[currentSessionIndex].endTime)
+            if !isRunning {
+                isRunning.toggle()
+            }
         } else {
             endSession()
         }
@@ -316,18 +327,12 @@ struct StudyingView: View {
         guard !currentItem.isBreak, let study = currentItem.study else { return }
 
         updateLastStudied(for: study)
-        awardGameXP(for: study)
     }
 
     private func updateLastStudied(for study: SRStudy) {
         if let index = studies.firstIndex(of: study) {
             studies[index].lastStudied = Date()
         }
-    }
-
-    private func awardGameXP(for study: SRStudy) {
-        let studyDurationInMinutes = study.studyTimeInMinutes
-        game.addXP(50 * studyDurationInMinutes, to: user)
     }
 
     private func adjustSessionTimes() {
@@ -342,6 +347,7 @@ struct StudyingView: View {
     private func endSession() {
         isRunning = false
         studyFinished = true
+        timerManager.start(with: .now)
         timerManager.pause()
     }
 
@@ -349,11 +355,6 @@ struct StudyingView: View {
     private func handleTimeChange() {
         if timerManager.remainingTime <= 0 {
             advanceSession()
-        }
-
-        if isRunning, currentSessionIndex < sessionItems.count, !sessionItems[currentSessionIndex].isBreak {
-            user.timeStudied += 1
-            game.addXP(10, to: user)
         }
     }
 

@@ -2,7 +2,7 @@
 //  StudyRoutineSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/04/25.
+//  Created by Ivory Svoboda . on 01/04/25.
 //
 
 import SwiftData
@@ -23,21 +23,25 @@ struct StudyRoutineSettingsView: View {
     var body: some View {
         Form {
             Section {
-                BreakTimePickerView()
-            }.orhadiListRowBackground()
+                Picker("Break Time", selection: $settings.breakTime) {
+                    ForEach(1..<7, id: \.self) { index in
+                        Text("\(5 * index)min").tag(TimeInterval(300 * index))
+                    }
+                }.pickerStyle(.navigationLink)
+            }
 
             if !deletedStudies.isEmpty {
                 Section {
                     NavigationLink {
                         DeletedStudiesView()
                     } label: {
-                        Text("Estudos Apagados")
+                        Text("Deleted Studies")
                     }
-                }.orhadiListRowBackground()
+                }
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Rotina de Estudos")
+        .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -2,7 +2,7 @@
 //  NotificationsManager.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 04/04/25.
+//  Created by Ivory Svoboda . on 04/04/25.
 //
 
 import Foundation

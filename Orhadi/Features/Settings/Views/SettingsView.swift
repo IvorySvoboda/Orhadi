@@ -2,72 +2,64 @@
 //  SettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 30/03/25.
+//  Created by Ivory Svoboda . on 30/03/25.
 //
 
 import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(UserProfile.self) private var user
-
     @Bindable var settings: Settings
 
     var body: some View {
         NavigationStack {
             Form {
-//                userProfileSection
-
                 mainSettingsSection
 
                 Section {
-                    ThemePickerView()
-                }.orhadiListRowBackground()
+//                    ThemePickerView()
+                    Picker(selection: $settings.theme) {
+                        ForEach(Theme.allCases, id: \.self) { theme in
+                            Text(theme.name).tag(theme.hashValue)
+                        }
+                    } label: {
+                        HStack {
+                            ZStack {
+                                Image(systemName: "circle.righthalf.filled")
+                                    .resizable()
+                                    .frame(width: 25, height: 25)
+                                    .foregroundStyle(Color.accentColor)
+                                    .overlay(
+                                        Image(systemName: "circle.lefthalf.filled")
+                                            .resizable()
+                                            .frame(width: 13, height: 13)
+                                            .foregroundStyle(Color.accentColor)
+                                            .background {
+                                                Color.orhadiBG
+                                                    .frame(width: 12, height: 12)
+                                                    .clipShape(Circle())
+                                            }
+                                    )
+                            }.padding(.trailing, 10)
+
+                            Text("Theme")
+                        }
+                    }.pickerStyle(.navigationLink)
+                }
 
                 Section {
                     NavigationLink {
                         DataSettingsView()
                     } label: {
-                        Label("Dados", systemImage: "square.stack.3d.down.right.fill")
+                        Label("Data", systemImage: "square.stack.3d.down.right.fill")
                     }
-                }.orhadiListRowBackground()
+                }
 
                 aboutSection
             }
-            .navigationTitle("Ajustes")
+            .navigationTitle("Settings")
             .orhadiListStyle()
         }
-    }
-
-    private var userProfileSection: some View {
-        Section {
-            NavigationLink {
-                ProfileView()
-            } label: {
-                HStack {
-                    if let userPhoto = user.photo, let uiImage = UIImage(data: userPhoto) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 48, height: 48)
-                            .clipped(antialiased: true)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 48, height: 48)
-                            .foregroundStyle(.tint)
-                    }
-                    VStack(alignment: .leading) {
-                        Text(user.name)
-                            .font(.headline)
-                        Text("Level: \(user.level)")
-                            .font(.caption)
-                            .foregroundStyle(Color.secondary)
-                    }
-                }.frame(height: 40)
-            }
-        }.orhadiListRowBackground()
     }
 
     private var mainSettingsSection: some View {
@@ -75,24 +67,24 @@ struct SettingsView: View {
             NavigationLink {
                 SubjectsSettingsView(settings: settings)
             } label: {
-                Label("Matérias", systemImage: "book.fill")
+                Label("Subjects", systemImage: "book.fill")
             }
             NavigationLink {
                 ToDosSettingsView(settings: settings)
             } label: {
-                Label("Tarefas", systemImage: "list.clipboard.fill")
+                Label("To-Dos", systemImage: "list.clipboard.fill")
             }
             NavigationLink {
                 StudyRoutineSettingsView(settings: settings)
             } label: {
-                Label("Rotina de Estudos", systemImage: "graduationcap.fill")
+                Label("Study Routine", systemImage: "graduationcap.fill")
             }
             NavigationLink {
                 TeachersView()
             } label: {
-                Label("Professores", systemImage: "person.2.fill")
+                Label("Teachers", systemImage: "person.2.fill")
             }
-        }.orhadiListRowBackground()
+        }
     }
 
     private var aboutSection: some View {
@@ -107,7 +99,7 @@ struct SettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Orhadi")
                         .bold()
-                    Text("Versão: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
+                    Text("Version: \(AppInfoProvider.appVersion()) (\(AppInfoProvider.appBuild()))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Text("© Zyvoxi")
@@ -120,14 +112,12 @@ struct SettingsView: View {
                 EdgeInsets(
                     top: 5, leading: 10, bottom: 5, trailing: 10))
         } header: {
-            Text("Sobre")
-        }.orhadiListRowBackground()
+            Text("About")
+        }
     }
 }
 
 #Preview {
     SettingsView(settings: Settings())
         .modelContainer(SampleData.shared.container)
-        .environment(UserProfile())
-        .environment(GameManager(context: SampleData.shared.context))
 }

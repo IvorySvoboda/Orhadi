@@ -2,7 +2,7 @@
 //  DeletedTodosView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -23,7 +23,7 @@ struct DeletedTodosView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
 
-    var canShowBottomBar: Bool {
+    var canHideTabBar: Bool {
         if #available(iOS 26, *) {
             return false
         } else {
@@ -36,7 +36,7 @@ struct DeletedTodosView: View {
     var body: some View {
         List(selection: $selectedTodos) {
             Section {} footer: {
-                Text("As tarefas ficam disponíveis aqui por 30 dias. Após esse período, as tarefas serão apagadas definitivamente.")
+                Text("The to-dos remain available here for 30 days. After this period, they will be permanently deleted.")
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity)
             }
@@ -46,57 +46,54 @@ struct DeletedTodosView: View {
                     DeletedTodosRowView(todo: todo)
                         .tag(todo)
                 }
-                .orhadiListRowBackground()
+                
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Tarefas Apagadas")
+        .navigationTitle("Deleted To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
-        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
         /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
-//                HStack {
-                    Button(selectedTodos.isEmpty ? "Restaurar Todas" : "Restaurar") {
-                        selectedTodos.isEmpty ? restoreAllTodos() : restoreSelectedTodos()
-                    }
+                Button(selectedTodos.isEmpty ? "Restore All" : "Restore") {
+                    selectedTodos.isEmpty ? restoreAllTodos() : restoreSelectedTodos()
+                }
 
-                    Spacer()
+                Spacer()
 
-                    Button(selectedTodos.isEmpty ? "Apagar Tudo" : "Apagar") {
-                        selectedTodos.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
+                    selectedTodos.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                }
+                .confirmationDialog(
+                    deletedTodos.count > 1 ? "These \(deletedTodos.count) to-dos will be deleted. This action cannot be undone." : "This to-do will be deleted. This action cannot be undone.",
+                    isPresented: $showDeleteAllConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .destructive) {
+                        deleteAllTodos()
+                    } label: {
+                        Text(deletedTodos.count > 1 ? "Delete \(deletedTodos.count) To-Dos" : "Delete To-Do")
                     }
-                    .confirmationDialog(
-                        "\(deletedTodos.count > 1 ? "Estas \(deletedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.",
-                        isPresented: $showDeleteAllConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(role: .destructive) {
-                            deleteAllTodos()
-                        } label: {
-                            Text("\(deletedTodos.count > 1 ? "Apagar \(deletedTodos.count) Tarefas" : "Apagar Tarefa")")
-                        }
+                }
+                .confirmationDialog(
+                    selectedTodos.count > 1 ? "These \(selectedTodos.count) to-dos will be deleted. This action cannot be undone." : "This to-do will be deleted. This action cannot be undone.",
+                    isPresented: $showDeleteSelectedConfirmation,
+                    titleVisibility: .visible
+                ) {
+                    Button(role: .destructive) {
+                        deleteSelectedTodos()
+                    } label: {
+                        Text(selectedTodos.count > 1 ? "Delete \(selectedTodos.count) To-Dos" : "Delete To-Do")
                     }
-                    .confirmationDialog(
-                        "\(selectedTodos.count > 1 ? "Estas \(selectedTodos.count) tarefas serão apagadas" : "Esta tarefa será apagada"). Esta ação não poderá ser desfeita.",
-                        isPresented: $showDeleteSelectedConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button(role: .destructive) {
-                            deleteSelectedTodos()
-                        } label: {
-                            Text("\(selectedTodos.count > 1 ? "Apagar \(selectedTodos.count) Tarefas" : "Apagar Tarefa")")
-                        }
-                    }
-//                }.padding(.bottom, 5)
+                }
             }
         }
         .onChange(of: deletedTodos) { _, newTodos in

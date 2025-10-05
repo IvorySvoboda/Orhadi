@@ -2,7 +2,7 @@
 //  SubjectSheetView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 20/04/25.
+//  Created by Ivory Svoboda . on 20/04/25.
 //
 
 import SwiftData
@@ -26,9 +26,9 @@ struct SubjectSheetView: View {
 
     private var navigationTitle: String {
         if isNew {
-            return subject.isRecess ? "Novo Intervalo" : "Nova Matéria"
+            return subject.isRecess ? "New Interval" : "New Subject"
         } else {
-            return "Editar \(subject.isRecess ? "Intervalo" : "Matéria")"
+            return "Edit \(subject.isRecess ? "Interval" : "Subject")"
         }
     }
 
@@ -59,7 +59,7 @@ struct SubjectSheetView: View {
                 timeSelectionSection
             }
             .orhadiListStyle()
-            .navigationTitle(navigationTitle)
+            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -67,10 +67,10 @@ struct SubjectSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.titleOnly)
                         }
                     }
@@ -98,10 +98,10 @@ struct SubjectSheetView: View {
                         WidgetCenter.shared.reloadAllTimelines()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.titleOnly)
                         }
                     }
@@ -115,37 +115,52 @@ struct SubjectSheetView: View {
     private var subjectInfoSection: some View {
         Section {
             HStack {
-                Text("Nome")
+                Text("Name")
                     .frame(width: 50, alignment: .leading)
-                TextField("Português", text: $name)
+                TextField("English", text: $name)
                     .autocorrectionDisabled()
             }
             HStack {
-                Text("Local")
+                Text("Place")
                     .frame(width: 50, alignment: .leading)
-                TextField("Sala 101", text: $place)
+                TextField("Room 101", text: $place)
                     .autocorrectionDisabled()
             }
-        }.orhadiListRowBackground()
+        }
     }
 
     private var teacherSelectionSection: some View {
         Section {
             TeacherPickerView(teacher: $teacher)
-        }.orhadiListRowBackground()
+        }
     }
 
     private var timeSelectionSection: some View {
         Section {
-            CustomDayPickerView(date: $schedule)
+            Picker("Weekday", selection: Binding(
+                get: { Calendar.current.component(.weekday, from: schedule) },
+                set: { newWeekday in
+                    let currentWeekday = Calendar.current.component(.weekday, from: schedule)
+                    let diff = newWeekday - currentWeekday
+                    if let newDate = Calendar.current.date(byAdding: .day, value: diff, to: schedule) {
+                        schedule = newDate
+                    }
+                })
+            ) {
+                ForEach(1...7, id: \.self) { index in
+                    let name = Calendar.current.weekdaySymbols[index - 1].capitalized
+                    
+                    Text(name).tag(index)
+                }
+            }.pickerStyle(.navigationLink)
 
             HStack {
-                Text("Das")
+                Text("From – To")
 
                 Spacer()
 
                 DatePicker(
-                    "Inicio",
+                    "From",
                     selection: $startTime,
                     displayedComponents: [.hourAndMinute]
                 )
@@ -154,7 +169,7 @@ struct SubjectSheetView: View {
                 Text(" – ")
 
                 DatePicker(
-                    "Fim",
+                    "To",
                     selection: $endTime,
                     displayedComponents: [.hourAndMinute]
                 )
@@ -167,8 +182,8 @@ struct SubjectSheetView: View {
                 }
             }
         } header: {
-            Text("Horário")
-        }.orhadiListRowBackground()
+            Text("Time")
+        }
     }
 
     // MARK: - Functions
@@ -186,7 +201,7 @@ struct SubjectSheetView: View {
                 )
 
                 /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
-                /// adiciona ele na Rotina de Estudos também.
+                /// adiciona ele na Study Routine também.
                 if let existingSubjects, existingSubjects.isEmpty {
                     context.insert(
                         SRStudy(

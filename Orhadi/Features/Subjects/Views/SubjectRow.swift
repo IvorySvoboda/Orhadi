@@ -2,12 +2,12 @@
 //  SubjectRow.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/04/25.
+//  Created by Ivory Svoboda . on 26/04/25.
 //
 
 import SwiftUI
 
-struct SubjectRow: View, Equatable {
+struct SubjectRow: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
@@ -15,17 +15,10 @@ struct SubjectRow: View, Equatable {
     var onAdd: () -> Void
     var onEdit: () -> Void
 
-    static func == (lhs: SubjectRow, rhs: SubjectRow) -> Bool {
-        lhs.subject.id == rhs.subject.id
-    }
-
     // MARK: - Views
 
     var body: some View {
         TimelineView(.everyMinute) { _ in
-
-//            var _ = debugPrint("(\(subject.name)) Row: View Updated!")
-
             HStack(spacing: 5) {
 
                 if subject.isOngoing && settings.showCurrentSubjectIndicator {
@@ -38,7 +31,8 @@ struct SubjectRow: View, Equatable {
                 VStack(alignment: .leading, spacing: 5) {
                     if subject.isRecess {
                         HStack {
-                            Text("Intervalo".uppercased())
+                            Text("Interval")
+                                .textCase(.uppercase)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .fontWeight(.semibold)
@@ -48,7 +42,7 @@ struct SubjectRow: View, Equatable {
                                 .fontWeight(.semibold)
                         }
                     } else {
-                        Text(subject.name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                        Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
                             .font(.headline)
                             .fontWeight(.semibold)
                             .lineLimit(1)
@@ -91,7 +85,7 @@ struct SubjectRow: View, Equatable {
                 Button {
                     subject.openMail()
                 } label: {
-                    Label("Enviar e-mail", systemImage: "envelope.fill")
+                    Label("Send e-mail", systemImage: "envelope.fill")
                         .labelStyle(.iconOnly)
                 }.tint(.accentColor)
             }
@@ -102,21 +96,21 @@ struct SubjectRow: View, Equatable {
                     deleteSubject()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
 
             Button {
                 onAdd()
             } label: {
-                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
                     .labelStyle(.iconOnly)
             }.tint(.teal)
 
             Button {
                 onEdit()
             } label: {
-                Label("Editar", systemImage: "pencil")
+                Label("Edit", systemImage: "pencil")
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
@@ -125,20 +119,20 @@ struct SubjectRow: View, Equatable {
                 Button {
                     subject.openMail()
                 } label: {
-                    Label("Enviar e-mail", systemImage: "envelope.fill")
+                    Label("Send e-mail", systemImage: "envelope.fill")
                 }
             }
 
             Button {
                 onEdit()
             } label: {
-                Label("Editar", systemImage: "pencil")
+                Label("Edit", systemImage: "pencil")
             }
 
             Button {
                 onAdd()
             } label: {
-                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
             }
 
             Button(role: .destructive) {
@@ -146,7 +140,7 @@ struct SubjectRow: View, Equatable {
                     deleteSubject()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
             }
         }
     }

@@ -2,7 +2,7 @@
 //  TeacherPickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 16/04/25.
+//  Created by Ivory Svoboda . on 16/04/25.
 //
 
 import SwiftData
@@ -19,9 +19,9 @@ struct TeacherPickerView: View {
             TeacherPicker(teacher: $teacher)
         } label: {
             HStack {
-                Label("Professor(a)", systemImage: "person.fill")
+                Label("Teacher", systemImage: "person.fill")
                 Spacer()
-                Text(teacher?.name ?? "Nenhum")
+                Text(teacher?.name ?? "None")
                     .foregroundColor(.secondary)
             }
         }
@@ -73,19 +73,19 @@ struct TeacherPicker: View {
                                 context.delete(teacher)
                             }
                         } label: {
-                            Label("Apagar", systemImage: "trash.fill")
+                            Label("Delete", systemImage: "trash.fill")
                                 .labelStyle(.iconOnly)
                         }
 
                         Button {
                             teacherToEdit = teacher
                         } label: {
-                            Label("Editar", systemImage: "pencil")
+                            Label("Edit", systemImage: "pencil")
                                 .labelStyle(.iconOnly)
                         }.tint(Color.accentColor)
                     }
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
                 Button {
@@ -95,7 +95,7 @@ struct TeacherPicker: View {
                     }
                 } label: {
                     HStack {
-                        Text("Nenhum")
+                        Text("None")
                             .foregroundStyle(Color.secondary)
                         Spacer()
                         if self.teacher == nil {
@@ -104,19 +104,19 @@ struct TeacherPicker: View {
                         }
                     }
                 }.tint(.font)
-            }.orhadiListRowBackground()
+            }
 
             Section {
                 Button {
                     teacherToAdd = Teacher()
                 } label: {
-                    CustomLabel("Novo Professor", systemImage: "plus")
+                    CustomLabel("New Teacher", systemImage: "plus")
                 }
                 .tint(Color.accentColor)
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Professor(a)")
+        .navigationTitle("Teacher")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in
             TeacherSheetView(teacher: teacher, isNew: true)

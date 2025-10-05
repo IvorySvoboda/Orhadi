@@ -2,7 +2,7 @@
 //  AppEnums.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import Foundation
@@ -16,13 +16,13 @@ enum Priority: Int, Codable, CaseIterable {
     var priorityString: String {
         switch self {
         case .none:
-            return String(localized: "Nenhuma")
+            return String(localized: "None")
         case .low:
-            return String(localized: "Baixa")
+            return String(localized: "Low")
         case .medium:
-            return String(localized: "Média")
+            return String(localized: "Medium")
         case .high:
-            return String(localized: "Alta")
+            return String(localized: "High")
         }
     }
 }
@@ -39,9 +39,9 @@ enum Theme: Codable, CaseIterable {
     var name: String {
         switch self {
         case .light:
-            return String(localized: "Claro")
+            return String(localized: "Light")
         case .dark:
-            return String(localized: "Escuro")
+            return String(localized: "Dark")
         case .auto:
             return String(localized: "Auto")
         }
@@ -53,8 +53,8 @@ enum ToDoSection: CaseIterable {
 
     var string: String {
         switch self {
-        case .pending: return String(localized: "Pendentes")
-        case .completed: return String(localized: "Concluídas")
+        case .pending: return String(localized: "Pending")
+        case .completed: return String(localized: "Completed")
         }
     }
 }

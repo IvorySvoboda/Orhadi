@@ -2,7 +2,7 @@
 //  CustomLabel.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 22/04/25.
+//  Created by Ivory Svoboda . on 22/04/25.
 //
 
 import SwiftUI

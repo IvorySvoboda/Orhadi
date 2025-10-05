@@ -2,7 +2,7 @@
 //  TasksSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/04/25.
+//  Created by Ivory Svoboda . on 01/04/25.
 //
 
 import SwiftUI
@@ -32,26 +32,26 @@ struct ToDosSettingsView: View {
         Form {
             Section {
                 Toggle(
-                    "Agendar Notificações",
+                    "Schedule Notifications",
                     isOn: $settings.scheduleNotifications
                 ).disabled(!notificationStatus)
             } header: {
-                Text("Notificações")
+                Text("Notifications")
             } footer: {
                 Text(
-                    "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas."
+                    "When activated, notifications will be scheduled to remind you of to-dos approaching their deadlines. Disabling this option will not cancel already scheduled notifications."
                 )
             }
-            .orhadiListRowBackground()
+            
 
             if !archivedTodos.isEmpty {
                 Section {
                     NavigationLink {
                         ArchivedTodosView()
                     } label: {
-                        Text("Tarefas Arquivadas")
+                        Text("Archived To-Dos")
                     }
-                }.orhadiListRowBackground()
+                }
             }
 
             if !deletedTodos.isEmpty {
@@ -59,13 +59,13 @@ struct ToDosSettingsView: View {
                     NavigationLink {
                         DeletedTodosView()
                     } label: {
-                        Text("Tarefas Apagadas")
+                        Text("Deleted To-Dos")
                     }
-                }.orhadiListRowBackground()
+                }
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Tarefas")
+        .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in

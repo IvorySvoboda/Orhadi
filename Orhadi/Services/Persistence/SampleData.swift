@@ -2,7 +2,7 @@
 //  SampleData.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 04/04/25.
+//  Created by Ivory Svoboda . on 04/04/25.
 //
 
 import Foundation
@@ -32,8 +32,6 @@ class SampleData {
             insertSampleData()
 
             try context.save()
-
-            GameManager(context: context).setupAchievementsIfNeeded()
         } catch {
             fatalError(
                 "Could not create ModelContainer: \(error.localizedDescription)"
@@ -47,6 +45,5 @@ class SampleData {
         for study in SRStudy.sampleData { context.insert(study) }
 
         context.insert(Settings())
-        context.insert(UserProfile())
     }
 }

@@ -2,7 +2,7 @@
 //  PendingTodosWidget.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 07/07/25.
+//  Created by Ivory Svoboda . on 07/07/25.
 //
 
 import WidgetKit
@@ -26,8 +26,8 @@ struct PendingTodosWidget: Widget {
                 .containerBackground(.background, for: .widget)
                 .modelContainer(container)
         }
-        .configurationDisplayName("Tarefas Pendentes")
-        .description("Visualize as tarefas que faltam completar sem abrir o app.")
+        .configurationDisplayName("Pending To-Dos")
+        .description("See your incomplete to-dos without opening the app.")
     }
 }
 
@@ -107,7 +107,7 @@ struct PendingTodoWidgetRow: View {
                             .padding(.leading, 2.5)
                     }
 
-                    Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
+                    Text(todo.title.nilIfEmpty() ?? String(localized: "Not provided"))
                         .font(.headline)
                         .fontWeight(.semibold)
                 }.frame(maxWidth: .infinity, alignment: .leading)

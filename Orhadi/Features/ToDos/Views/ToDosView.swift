@@ -2,7 +2,7 @@
 //  ToDosView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/03/25.
+//  Created by Ivory Svoboda . on 26/03/25.
 //
 
 import SwiftData
@@ -41,7 +41,7 @@ struct ToDosView: View {
             List {
                 if #available(iOS 26, *) {
                     sectionPickerBar
-                        .opacity(scrollOffsetY < 5 ? 0 : 1)
+                        .opacity(scrollOffsetY < 56 ? 0 : 1)
                 } else {
                     sectionPickerBar
                 }
@@ -53,27 +53,26 @@ struct ToDosView: View {
                     )
                 }
             }
-//            .id(selectedSection)
             .orhadiPlainListStyle()
-            .navigationTitle("Tarefas")
+            .navigationTitle("To-Do")
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
                         if #available(iOS 26, *) {
-                            Text("Tarefas")
+                            Text("To-Do")
                                 .font(.headline)
-                                .opacity(scrollOffsetY < 53 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 53 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? -8 : scrollOffsetY < 53 ? 0 : 14)
+                                .opacity(scrollOffsetY < 108 ? 1 : 0)
+                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
 
                             Text(selectedSection.string.uppercased())
                                 .foregroundStyle(.tint)
                                 .font(.caption)
-                                .opacity(scrollOffsetY <= 5 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 5 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? 8 : 14)
+                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
+                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
                         } else {
-                            Text("Tarefas")
+                            Text("To-Do")
                                 .font(.headline)
                                 .opacity(scrollOffsetY < 115 ? 1 : 0)
                                 .offset(y: scrollOffsetY <= 60 ? -8 : 0)
@@ -148,16 +147,16 @@ struct ToDosView: View {
             if visibleToDos.isEmpty, scrollOffsetY < 300 {
                 ContentUnavailableView {
                     Label(
-                        selectedSection == .pending ? "Nenhuma Tarefa Pendente" : "Nenhuma Tarefa Concluída",
+                        selectedSection == .pending ? "No Pending To-Dos" : "No Completed To-Dos",
                         systemImage: "list.bullet.clipboard")
                 } description: {
                     Text(
                         selectedSection == .pending
-                        ? "Adicione novas tarefas para começar a se organizar."
-                        : "Conclua tarefas para vê-las aqui."
+                        ? "Add new To-Dos to start getting organized."
+                        : "Complete To-Dos to see them here."
                     )
                 } actions: {
-                    Button("Adicionar Tarefa") {
+                    Button("Add To-Do") {
                         todoToAdd = ToDo()
                     }
                     .buttonStyle(.borderedProminent)

@@ -1,5 +1,5 @@
 {
-  "sourceLanguage" : "pt-BR",
+  "sourceLanguage" : "en",
   "strings" : {
     " – " : {
       "shouldTranslate" : false
@@ -9,7 +9,7 @@
     },
     "%@ – %@" : {
       "localizations" : {
-        "pt-BR" : {
+        "en" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ – %2$@"
@@ -18,42 +18,43 @@
       },
       "shouldTranslate" : false
     },
-    "%@ Estudo" : {
+    "%@ %@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ Study"
+            "value" : "%@ Estudo"
           }
         }
       }
     },
-    "%@ Professor(a)" : {
+    "%@ Teacher" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ Teacher"
+            "value" : "%@ Professor(a)"
           }
         }
       }
     },
-    "%@ Tarefa" : {
+    "%@ To-Do" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ To-Do"
-          }
-        }
-      }
-    },
-    "%@. Esta ação não poderá ser desfeita." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. This action can not be reverted."
+            "value" : "%@ Tarefa"
           }
         }
       }
@@ -61,517 +62,262 @@
     "%lld" : {
       "shouldTranslate" : false
     },
-    "%lld/%lld" : {
+    "%lldmin" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld/%2$lld"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
-    "%lldm" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
             "state" : "translated",
-            "value" : "%lldm"
+            "value" : "%lldmin"
           }
         }
       }
     },
     "© Zyvoxi" : {
+      "shouldTranslate" : false
+    },
+    "1 day left until the to-do’s deadline." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "© Zyvoxi"
+            "value" : "Falta 1 dia para o prazo da tarefa."
           }
         }
       }
     },
-    "A Fazer" : {
+    "1 hour left until the to-do’s deadline." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To-Do"
+            "value" : "Falta 1 hora para o prazo da tarefa."
           }
         }
       }
     },
-    "A Tarefa está atrasada!" : {
-
-    },
-    "A Tarefa: %@ está atrasada!" : {
-
-    },
-    "Acumulador" : {
-
-    },
-    "Adicionar" : {
-
-    },
-    "Adicionar Tarefa" : {
-
-    },
-    "Adicione novas tarefas para começar a se organizar." : {
-
-    },
-    "Agendar Notificações" : {
+    "About" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schedule Notifications"
+            "value" : "Sobre"
           }
         }
       }
     },
-    "Ajustes" : {
+    "Add" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Settings"
+            "value" : "Adicionar"
           }
         }
       }
     },
-    "Alta" : {
+    "Add Interval" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "High"
+            "value" : "Adicionar Intervalo"
           }
         }
       }
     },
-    "Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão apagados. Deseja continuar?" : {
-
-    },
-    "Ao importar, todas as matérias existentes serão apagadas. Deseja continuar?" : {
-
-    },
-    "Ao importar, todas as tarefas existentes serão apagadas. Deseja continuar?" : {
-
-    },
-    "Apagar" : {
+    "Add new To-Dos to start getting organized." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erase"
+            "value" : "Adicione novas tarefas para começar a se organizar."
           }
         }
       }
     },
-    "Apagar todas as matérias" : {
+    "Add Subejct" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all subjects"
+            "value" : "Adicionar Matéria"
           }
         }
       }
     },
-    "Apagar todas as matérias?" : {
+    "Add To-Do" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all subjects?"
+            "value" : "Adicionar Tarefa"
           }
         }
       }
     },
-    "Apagar todas as tarefas" : {
-
-    },
-    "Apagar todas as tarefas?" : {
-
-    },
-    "Apagar todos os estudos" : {
+    "All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all studies"
+            "value" : "Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperá-los após a redefinição. Tem certeza de que deseja continuar?"
           }
         }
       }
     },
-    "Apagar todos os estudos?" : {
+    "All items" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete all studies?"
+            "value" : "Todos os itens"
           }
         }
       }
     },
-    "Apagar Tudo" : {
-
+    "All studies completed! 🔥" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos os estudos concluídos! 🔥"
+          }
+        }
+      }
     },
-    "Aprendiz" : {
-
+    "All to-dos" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todas as tarefas"
+          }
+        }
+      }
     },
-    "Aquecendo" : {
-
+    "Archive" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivar"
+          }
+        }
+      }
     },
-    "Arquivar" : {
-
-    },
-    "As matérias ficam disponíveis aqui por 30 dias. Após esse período, as matérias serão apagadas definitivamente." : {
-
-    },
-    "As tarefas ficam disponíveis aqui por 30 dias. Após esse período, as tarefas serão apagadas definitivamente." : {
-
-    },
-    "Ascendido" : {
-
-    },
-    "Atrasadas" : {
-
+    "Archived To-Dos" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefas Arquivadas"
+          }
+        }
+      }
     },
     "Auto" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto"
+            "value" : "Automático"
           }
         }
       }
     },
-    "Baixa" : {
+    "Break Time" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Low"
+            "value" : "Intervalo"
           }
         }
       }
     },
-    "Cancelar" : {
+    "Cancel" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cancel"
+            "value" : "Cancelar"
           }
         }
       }
     },
-    "Chegue ao nível 3" : {
+    "Class Schedule" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 3"
+            "value" : "Agenda de Aulas"
           }
         }
       }
     },
-    "Chegue ao nível 5" : {
+    "Complete" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 5"
+            "value" : "Concluir"
           }
         }
       }
     },
-    "Chegue ao nível 8" : {
+    "Complete To-Dos to see them here." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 8"
+            "value" : "Conclua tarefas para vê-las aqui."
           }
         }
       }
     },
-    "Chegue ao nível 10" : {
+    "Completed" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 10"
+            "value" : "Concluídas"
           }
         }
       }
     },
-    "Chegue ao nível 12" : {
+    "Continue" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 12"
+            "value" : "Continuar"
           }
         }
       }
     },
-    "Chegue ao nível 15" : {
+    "Dark" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 15"
+            "value" : "Escuro"
           }
         }
       }
     },
-    "Chegue ao nível 20" : {
+    "Data" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reach the level 20"
+            "value" : "Dados"
           }
         }
       }
     },
-    "Chegue ao nível 25" : {
+    "Date" : {
       "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 25"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 30" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 30"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 40" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 40"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 50" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 50"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 60" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 60"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 75" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 75"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 100" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 100"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 150" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 150"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 200" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 200"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 300" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 300"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 500" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 500"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 750" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 750"
-          }
-        }
-      }
-    },
-    "Chegue ao nível 1000" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reach the level 1000"
-          }
-        }
-      }
-    },
-    "Claro" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Light"
-          }
-        }
-      }
-    },
-    "Colecionador de XP" : {
-
-    },
-    "Começando a Organização" : {
-
-    },
-    "Começo Brilhante" : {
-
-    },
-    "Completar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Complete"
-          }
-        }
-      }
-    },
-    "Complete 1.000 tarefas" : {
-
-    },
-    "Complete 2.000 tarefas" : {
-
-    },
-    "Complete 3.000 tarefas" : {
-
-    },
-    "Complete 5 tarefas" : {
-
-    },
-    "Complete 5.000 tarefas" : {
-
-    },
-    "Complete 10.000 tarefas" : {
-
-    },
-    "Complete 25 tarefas" : {
-
-    },
-    "Complete 75 tarefas" : {
-
-    },
-    "Complete 200 tarefas" : {
-
-    },
-    "Complete 500 tarefas" : {
-
-    },
-    "Conclua tarefas para vê-las aqui." : {
-
-    },
-    "Concluídas" : {
-
-    },
-    "Concluído" : {
-
-    },
-    "Conquista bloqueada" : {
-
-    },
-    "Conquista desbloqueada" : {
-
-    },
-    "Conquistas" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Achievements"
-          }
-        }
-      }
-    },
-    "Consistente" : {
-
-    },
-    "Constante" : {
-
-    },
-    "Continuar" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continue"
-          }
-        }
-      }
-    },
-    "Dados" : {
-      "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data"
@@ -579,691 +325,559 @@
         }
       }
     },
-    "Das" : {
-
-    },
-    "Data" : {
+    "Delete" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Date"
+            "value" : "Excluir"
           }
         }
       }
     },
-    "Dedicado" : {
-
-    },
-    "Desarquivar" : {
-
-    },
-    "Desarquivar Todas" : {
-
-    },
-    "Desbloqueada em %@" : {
-
-    },
-    "Descanso" : {
+    "Delete %lld Studies" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Break"
+            "value" : "Excluir %lld Estudos"
           }
         }
       }
     },
-    "Descompletar" : {
+    "Delete %lld Subjects" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uncomplete"
+            "value" : "Excluir %lld Matérias"
           }
         }
       }
     },
-    "Deus do Estudo" : {
-
-    },
-    "Dia" : {
+    "Delete %lld To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Day"
+            "value" : "Excluir %lld Tarefas"
           }
         }
       }
     },
-    "Divindade do XP" : {
-
-    },
-    "Divino" : {
-
-    },
-    "Duplicar" : {
+    "Delete All" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplicate"
+            "value" : "Excluir Tudo"
           }
         }
       }
     },
-    "Duração do Estudo" : {
-
-    },
-    "Editar" : {
+    "Delete all studies" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Edit"
+            "value" : "Excluir todos os estudos"
+          }
+        }
+      }
+    },
+    "Delete all studies?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir todos os estudos?"
+          }
+        }
+      }
+    },
+    "Delete all subjects" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir todas as matérias"
+          }
+        }
+      }
+    },
+    "Delete all subjects?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir todas as matérias?"
+          }
+        }
+      }
+    },
+    "Delete All to-dos" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir todas as tarefas"
+          }
+        }
+      }
+    },
+    "Delete All to-dos?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir todas as tarefas?"
+          }
+        }
+      }
+    },
+    "Delete Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir Estudo"
+          }
+        }
+      }
+    },
+    "Delete Subject" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir Matéria"
+          }
+        }
+      }
+    },
+    "Delete To-Do" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir Tarefa"
+          }
+        }
+      }
+    },
+    "Deleted Studies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estudos Excluídos"
+          }
+        }
+      }
+    },
+    "Deleted Subjects" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matérias Excluídas"
+          }
+        }
+      }
+    },
+    "Deleted To-Dos" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefas Excluídas"
+          }
+        }
+      }
+    },
+    "Do …" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fazer …"
+          }
+        }
+      }
+    },
+    "Duplicate" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
           }
         }
       }
     },
     "email@exemple.com" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "email@exemple.com"
+            "value" : "email@exemplo.com"
           }
         }
       }
     },
-    "Energizado" : {
-
-    },
-    "Enviar e-mail" : {
+    "English" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Send e-mail"
+            "value" : "Inglês"
           }
         }
       }
     },
-    "Escuro" : {
+    "Export Study Routine" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dark"
+            "value" : "Exportar Rotina de Estudos"
           }
         }
       }
     },
-    "Esta matéria será apagada. Esta ação não poderá ser desfeita." : {
-
-    },
-    "Esta tarefa será apagada. Esta ação não poderá ser desfeita." : {
-
-    },
-    "Estatísticas" : {
-
-    },
-    "Este estudo será apagado. Esta ação não poderá ser desfeita." : {
-
-    },
-    "Estudando" : {
+    "Export Subjects" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studying"
+            "value" : "Exportar Matérias"
           }
         }
       }
     },
-    "Estudante Supremo" : {
-
-    },
-    "Estudar" : {
-
-    },
-    "Estude por 1 hora no total" : {
-
-    },
-    "Estude por 1.000 horas no total" : {
-
-    },
-    "Estude por 1.500 horas no total" : {
-
-    },
-    "Estude por 2.000 horas no total" : {
-
-    },
-    "Estude por 5 horas no total" : {
-
-    },
-    "Estude por 5.000 horas no total" : {
-
-    },
-    "Estude por 10 horas no total" : {
-
-    },
-    "Estude por 10.000 horas no total" : {
-
-    },
-    "Estude por 25 horas no total" : {
-
-    },
-    "Estude por 30 minutos no total" : {
-
-    },
-    "Estude por 50 horas no total" : {
-
-    },
-    "Estude por 100 horas no total" : {
-
-    },
-    "Estude por 200 horas no total" : {
-
-    },
-    "Estude por 300 horas no total" : {
-
-    },
-    "Estude por 500 horas no total" : {
-
-    },
-    "Estude por 750 horas no total" : {
-
-    },
-    "Estudioso" : {
-
-    },
-    "Estudioso Eterno" : {
-
-    },
-    "Estudos" : {
-
-    },
-    "Estudos Apagados" : {
-
-    },
-    "Estudos completados! 🔥" : {
+    "Export To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studies completed! 🔥"
+            "value" : "Exportar Tarefas"
           }
         }
       }
     },
-    "Excluir" : {
-      "extractionState" : "manual",
+    "From" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delete"
+            "value" : "Das"
           }
         }
       }
     },
-    "Executor de Missões" : {
-
-    },
-    "Executor Supremo" : {
-
-    },
-    "Experiente" : {
-
-    },
-    "Expert" : {
-
-    },
-    "Exportar Matérias" : {
+    "From – To" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export Subjects"
+            "value" : "Das – Até"
           }
         }
       }
     },
-    "Exportar Rotina de Estudos" : {
+    "High" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export Study Routine"
+            "value" : "Alta"
           }
         }
       }
     },
-    "Exportar Tarefas" : {
+    "Import Study Routine" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export To-Dos"
+            "value" : "Importar Rotina de Estudos"
           }
         }
       }
     },
-    "Falta 1 dia para o prazo da tarefa." : {
-
-    },
-    "Falta 1 hora para o prazo da tarefa." : {
-
-    },
-    "Fazer ... " : {
+    "Import Study Routine?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Do …"
+            "value" : "Importar rotina de estudos?"
           }
         }
       }
     },
-    "Fim" : {
+    "Import Subjects" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "End"
+            "value" : "Importar Matérias"
           }
         }
       }
     },
-    "Focado" : {
-
-    },
-    "Ganhe 1.000 XP acumulados" : {
-
-    },
-    "Ganhe 1.000.000 XP acumulados" : {
-
-    },
-    "Ganhe 1.500 XP acumulados" : {
-
-    },
-    "Ganhe 2.000 XP acumulados" : {
-
-    },
-    "Ganhe 3.000 XP acumulados" : {
-
-    },
-    "Ganhe 5.000 XP acumulados" : {
-
-    },
-    "Ganhe 10.000 XP acumulados" : {
-
-    },
-    "Ganhe 25.000 XP acumulados" : {
-
-    },
-    "Ganhe 50.000 XP acumulados" : {
-
-    },
-    "Ganhe 100.000 XP acumulados" : {
-
-    },
-    "Ganhe 250 XP acumulados" : {
-
-    },
-    "Ganhe 250.000 XP acumulados" : {
-
-    },
-    "Ganhe 500 XP" : {
-
-    },
-    "Ganhe 500.000 XP acumulados" : {
-
-    },
-    "Ganhe 750 XP acumulados" : {
-
-    },
-    "Ganhe XP pela primeira vez" : {
-
-    },
-    "General da Rotina" : {
-
-    },
-    "Hora" : {
-
-    },
-    "Horário" : {
+    "Import Subjects?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schedule"
+            "value" : "Importar matérias?"
           }
         }
       }
     },
-    "Iluminado" : {
-
-    },
-    "Imbatível" : {
-
-    },
-    "Imortal" : {
+    "Import To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Imortal"
+            "value" : "Importar Tarefas"
           }
         }
       }
     },
-    "Imortal do Conhecimento" : {
-
-    },
-    "Importar Matérias" : {
+    "Import To-Dos?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Subjects"
+            "value" : "Importar tarefas?"
           }
         }
       }
     },
-    "Importar Matérias?" : {
+    "Interval" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Subjects?"
+            "value" : "Intervalo"
           }
         }
       }
     },
-    "Importar Rotina de Estudos" : {
+    "It looks like there's nothing else here. How about taking this opportunity to study a little?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Study Routine"
+            "value" : "Parece que não há mais nada aqui. Que tal aproveitar essa oportunidade para estudar um pouco?"
           }
         }
       }
     },
-    "Importar Rotina de Estudos?" : {
+    "Light" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import Study Routine?"
+            "value" : "Claro"
           }
         }
       }
     },
-    "Importar Tarefas" : {
-
-    },
-    "Importar Tarefas?" : {
-
-    },
-    "Incansável" : {
-
-    },
-    "Informações pessoais" : {
-
-    },
-    "Inicio" : {
+    "Low" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start"
+            "value" : "Baixa"
           }
         }
       }
     },
-    "Intervalo" : {
+    "Medium" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recess"
+            "value" : "Média"
           }
         }
       }
     },
-    "INTERVALO" : {
+    "Mr. Johnson" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RECESS"
+            "value" : "Sr. Johnson"
           }
         }
       }
     },
-    "Intervalos" : {
+    "Name" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recess"
+            "value" : "Nome"
           }
         }
       }
     },
-    "Lenda da Organização" : {
-
-    },
-    "Lenda da Produtividade" : {
-
-    },
-    "Lenda dos Estudos" : {
-
-    },
-    "Lenda Viva" : {
-
-    },
-    "Lendário" : {
+    "New" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Legendary"
+            "value" : "Novo"
           }
         }
       }
     },
-    "Level" : {
+    "New Teacher" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Level"
+            "value" : "Novo Professor"
           }
         }
       }
     },
-    "Level: %lld" : {
+    "No Completed To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Level: %lld"
+            "value" : "Nenhuma Tarefa Concluída"
           }
         }
       }
     },
-    "Local" : {
+    "No Name" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Place"
+            "value" : "Sem Nome"
           }
         }
       }
     },
-    "Maratonista de XP" : {
-
-    },
-    "Matérias" : {
+    "No Pending To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Subjects"
+            "value" : "Nenhuma Tarefa Pendente"
           }
         }
       }
     },
-    "Matérias Apagadas" : {
+    "No Subjects" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deleted Subjects"
+            "value" : "Nenhuma Matéria"
           }
         }
       }
     },
-    "Média" : {
+    "No subjects today. How about taking some time to rest a little?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medium"
+            "value" : "Nenhuma matéria hoje. Que tal aproveitar para descansar um pouco?"
           }
         }
       }
     },
-    "Mente Brilhante" : {
-
-    },
-    "Mestre" : {
-
-    },
-    "Mestre do Tempo" : {
-
-    },
-    "Mítico" : {
-
-    },
-    "Mostrar indicador da matéria atual" : {
-
-    },
-    "Nada para estudar hoje. Que tal aproveitar pra descansar um pouco?" : {
-
-    },
-    "Não Informado" : {
+    "None" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not provided"
+            "value" : "Nenhum"
           }
         }
       }
     },
-    "Não informado." : {
+    "Not provided" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Not provided."
+            "value" : "Não informado"
           }
         }
       }
     },
-    "Nenhum" : {
+    "Not specified" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "None"
+            "value" : "Não especificado"
           }
         }
       }
     },
-    "Nenhuma" : {
+    "Not specified." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "None"
+            "value" : "Não especificado."
           }
         }
       }
     },
-    "Nenhuma Matéria" : {
-
-    },
-    "Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?" : {
-
-    },
-    "Nenhuma Tarefa Concluída" : {
-
-    },
-    "Nenhuma Tarefa Pendente" : {
-
-    },
-    "Nome" : {
+    "Nothing to Study" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Name"
+            "value" : "Nada para Estudar"
           }
         }
       }
     },
-    "Notificações" : {
+    "Nothing to study today. How about taking a little time to rest?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifications"
+            "value" : "Nada para estudar hoje. Que tal aproveitar para descansar um pouco?"
           }
         }
       }
     },
-    "Novo" : {
+    "Notifications" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "New"
+            "value" : "Notificações"
           }
         }
       }
-    },
-    "Novo Professor" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Teacher"
-          }
-        }
-      }
-    },
-    "O Escolhido" : {
-
-    },
-    "Obrigatório" : {
-
-    },
-    "Oráculo Acadêmico" : {
-
-    },
-    "Organização em Dia" : {
-
     },
     "Orhadi" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Orhadi"
@@ -1271,297 +885,552 @@
         }
       }
     },
-    "Os estudos ficam disponíveis aqui por 30 dias. Após esse período, os estudos serão apagados definitivamente." : {
-
-    },
-    "Pendentes" : {
-
-    },
-    "Persistente" : {
-
-    },
-    "Português" : {
-
-    },
-    "Primeiros Passos" : {
-
-    },
-    "Prioridade" : {
+    "Overdue" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Priority"
+            "value" : "Atrasado"
           }
         }
       }
     },
-    "Produtividade Total" : {
-
-    },
-    "Prof. Ivory" : {
+    "Pending" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mr. Smith"
+            "value" : "Pendente"
           }
         }
       }
     },
-    "Professor(a)" : {
+    "Pending To-Dos" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teacher"
+            "value" : "Tarefas Pendentes"
           }
         }
       }
     },
-    "Professores" : {
+    "Place" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teachers"
+            "value" : "Local"
           }
         }
       }
     },
-    "Quando ativado, notificações serão agendadas para lembrar você de tarefas próximas ao prazo final. Desativar essa opção não cancelará notificações já agendadas." : {
+    "Priority" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "When enabled, notifications will be scheduled to remind you of tasks nearing their deadline. Disabling this option will not cancel already scheduled notifications."
+            "value" : "Prioridade"
           }
         }
       }
     },
-    "Recuperar" : {
-
-    },
-    "Redefinir" : {
-
-    },
-    "Redefinir todos os dados" : {
-
-    },
-    "Redefinir todos os dados?" : {
-
-    },
-    "Restaurar" : {
-
-    },
-    "Restaurar Todas" : {
-
-    },
-    "Restaurar Todos" : {
-
-    },
-    "Rotina de Estudos" : {
+    "Reset" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Study Routine"
+            "value" : "Redefinir"
           }
         }
       }
     },
-    "Sábio" : {
-
-    },
-    "Sábio Moderno" : {
-
-    },
-    "Sala 101" : {
+    "Reset all data" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Classroom 101"
+            "value" : "Redefinir todos os dados"
           }
         }
       }
     },
-    "Salvar" : {
+    "Reset all data?" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Save"
+            "value" : "Redefinir todos os dados?"
           }
         }
       }
     },
-    "Segunda-feira" : {
-      "extractionState" : "manual",
+    "Restore" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Monday"
+            "value" : "Restaurar"
           }
         }
       }
     },
-    "Sem Nome" : {
+    "Restore All" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Name"
+            "value" : "Restaurar Tudo"
           }
         }
       }
     },
-    "Sexta-feira" : {
-      "extractionState" : "manual",
+    "Room 101" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Friday"
+            "value" : "Sala 101"
           }
         }
       }
     },
-    "Sobre" : {
+    "Save" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "About"
+            "value" : "Salvar"
           }
         }
       }
     },
-    "Sobrecarga" : {
-
-    },
-    "Subindo na Vida" : {
-
-    },
-    "Supremo" : {
-
-    },
-    "Tarefas" : {
+    "Schedule Notifications" : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To-Dos"
+            "value" : "Agendar Notificações"
           }
         }
       }
     },
-    "Tarefas Apagadas" : {
-
-    },
-    "Tarefas Arquivadas" : {
-
-    },
-    "Tarefas completadas" : {
-
-    },
-    "Tema" : {
+    "See today’s subjects without opening the app." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Theme"
+            "value" : "Veja as matérias de hoje sem abrir o aplicativo."
           }
         }
       }
     },
-    "Tempo de Descanso" : {
+    "See your incomplete to-dos without opening the app." : {
       "localizations" : {
-        "en" : {
+        "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Break Time"
+            "value" : "Veja suas tarefas pendentes sem abrir o aplicativo."
           }
         }
       }
     },
-    "Tempo estudado" : {
-
+    "Send e-mail" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar e-mail"
+          }
+        }
+      }
     },
-    "To-Do Terminator" : {
-
+    "Settings" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurações"
+          }
+        }
+      }
     },
-    "Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperar os dados após redefinir. Tem certeza que deseja continuar?" : {
-
+    "Stop Studying" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interromper Estudo"
+          }
+        }
+      }
     },
-    "Total de Estudos" : {
-
+    "Studies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estudos"
+          }
+        }
+      }
     },
-    "Total de Itens" : {
-
+    "Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estudo"
+          }
+        }
+      }
     },
-    "Total de tarefas" : {
-
+    "Study Duration" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duração do Estudo"
+          }
+        }
+      }
     },
-    "Trabalho de..." : {
-
+    "Study Routine" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotina de Estudos"
+          }
+        }
+      }
     },
-    "Transcendente" : {
-
+    "Subject" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matéria"
+          }
+        }
+      }
     },
-    "Universo XP" : {
-
+    "Subject indicator" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indicador da Matéria"
+          }
+        }
+      }
     },
-    "Versão: %@ (%@)" : {
+    "Subjects" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matérias"
+          }
+        }
+      }
+    },
+    "Teacher" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Professor"
+          }
+        }
+      }
+    },
+    "Teachers" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Professores"
+          }
+        }
+      }
+    },
+    "The studies remain available here for 30 days. After this period, they will be permanently deleted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os estudos permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídos permanentemente."
+          }
+        }
+      }
+    },
+    "The subjects remain available here for 30 days. After this period, they will be permanently deleted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As matérias permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídas permanentemente."
+          }
+        }
+      }
+    },
+    "The to-do is overdue!" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A tarefa está atrasada!"
+          }
+        }
+      }
+    },
+    "The to-do: %@ is overdue!" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A tarefa: %@ está atrasada!"
+          }
+        }
+      }
+    },
+    "The to-dos remain available here for 30 days. After this period, they will be permanently deleted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As tarefas permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídas permanentemente."
+          }
+        }
+      }
+    },
+    "Theme" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
+          }
+        }
+      }
+    },
+    "These %lld studies will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esses %lld estudos serão excluídos. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "These %lld subjects will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essas %lld matérias serão excluídas. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "These %lld to-dos will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essas %lld tarefas serão excluídas. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "This study will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este estudo será excluído. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "This subject will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta matéria será excluída. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "This to-do will be deleted. This action cannot be undone." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta tarefa será excluída. Essa ação não pode ser desfeita."
+          }
+        }
+      }
+    },
+    "Time" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora"
+          }
+        }
+      }
+    },
+    "To" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Até"
+          }
+        }
+      }
+    },
+    "To-Do" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefa"
+          }
+        }
+      }
+    },
+    "To-Dos" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarefas"
+          }
+        }
+      }
+    },
+    "Total Studies" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total de Estudos"
+          }
+        }
+      }
+    },
+    "Unarchive" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desarquivar"
+          }
+        }
+      }
+    },
+    "Unarchive All" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desarquivar Tudo"
+          }
+        }
+      }
+    },
+    "Uncomplete" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marcar como Incompleta"
+          }
+        }
+      }
+    },
+    "Version: %@ (%@)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Version: %1$@ (%2$@)"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Versão: %1$@ (%2$@)"
           }
         }
       }
     },
-    "Veterano" : {
-
+    "Weekday" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dia da Semana"
+          }
+        }
+      }
     },
-    "Veterano de Estudos" : {
-
+    "When activated, notifications will be scheduled to remind you of to-dos approaching their deadlines. Disabling this option will not cancel already scheduled notifications." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando ativado, as notificações serão agendadas para lembrar sobre tarefas próximas ao prazo. Desativar esta opção não cancelará notificações já agendadas."
+          }
+        }
+      }
     },
-    "Viciado em Conhecimento" : {
-
+    "When importing a new study routine, all existing studies in the current routine will be deleted. Do you want to continue?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao importar uma nova rotina de estudos, todos os estudos existentes na rotina atual serão excluídos. Deseja continuar?"
+          }
+        }
+      }
     },
-    "Workaholic" : {
-
+    "When importing, all existing subjects will be erased. Do you wish to continue?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao importar, todas as matérias existentes serão excluídas. Deseja continuar?"
+          }
+        }
+      }
     },
-    "XP" : {
-
+    "When importing, all existing to-dos will be deleted. Do you wish to continue?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ao importar, todas as tarefas existentes serão excluídas. Deseja continuar?"
+          }
+        }
+      }
     },
-    "XP Deus" : {
-
-    },
-    "XP Explorer" : {
-
-    },
-    "XP Hunter" : {
-
-    },
-    "XP Lord" : {
-
-    },
-    "XP Master" : {
-
-    },
-    "XP Slayer" : {
-
+    "Work of …" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabalho de …"
+          }
+        }
+      }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

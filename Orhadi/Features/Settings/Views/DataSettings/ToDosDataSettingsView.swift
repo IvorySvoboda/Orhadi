@@ -2,7 +2,7 @@
 //  ToDosDataSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import SwiftData
@@ -11,7 +11,7 @@ import PopupView
 
 struct ToDosDataSettingsView: View {
     @Query(filter: #Predicate<ToDo> {
-        !$0.isToDoDeleted && !$0.isArchived
+        !$0.isToDoDeleted
     }, animation: .smooth) private var todos: [ToDo]
 
     // MARK: - Properties
@@ -32,15 +32,15 @@ struct ToDosDataSettingsView: View {
     // MARK: - Computed Properties
 
     private var completedTodos: Int {
-        todos.filter({ $0.isCompleted }).count
+        todos.filter({ $0.isCompleted && !$0.isArchived }).count
     }
 
     private var pendingTodos: Int {
-        todos.filter({ $0.dueDate > .now && !$0.isCompleted }).count
+        todos.filter({ $0.dueDate > .now && !$0.isCompleted && !$0.isArchived }).count
     }
 
     private var overdueTodos: Int {
-        todos.filter({ $0.dueDate < .now && !$0.isCompleted }).count
+        todos.filter({ $0.dueDate < .now && !$0.isCompleted && !$0.isArchived }).count
     }
 
     // MARK: - Views
@@ -49,33 +49,33 @@ struct ToDosDataSettingsView: View {
         Form {
             Section {
                 HStack {
-                    Text("Total de tarefas")
+                    Text("All to-dos")
                     Spacer()
                     Text("\(todos.count)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Concluídas")
+                    Text("Completed")
                     Spacer()
                     Text("\(completedTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("Atrasadas")
+                    Text("Overdue")
                     Spacer()
                     Text("\(overdueTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
-                    Text("A Fazer")
+                    Text("Pending")
                     Spacer()
                     Text("\(pendingTodos)")
                         .foregroundStyle(.secondary)
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Exportar Tarefas") {
+                Button("Export To-Dos") {
                     exportToDos()
                 }
                 .disabled(todos.isEmpty)
@@ -83,7 +83,7 @@ struct ToDosDataSettingsView: View {
                     isPresented: $showToDosFileExporter,
                     item: todosExportItem,
                     contentTypes: [.data],
-                    defaultFilename: String(localized: "Tarefas")
+                    defaultFilename: String(localized: "To-Dos")
                 ) { result in
                     switch result {
                     case .success:
@@ -96,16 +96,16 @@ struct ToDosDataSettingsView: View {
                     todosExportItem = nil
                 }
 
-                Button("Importar Tarefas") {
+                Button("Import To-Dos") {
                     showToDosImportAlert.toggle()
                 }
-                .alert("Importar Tarefas?", isPresented: $showToDosImportAlert) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Continuar") {
+                .alert("Import To-Dos?", isPresented: $showToDosImportAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Continue") {
                         showToDosFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar, todas as tarefas existentes serão apagadas. Deseja continuar?")
+                    Text("When importing, all existing to-dos will be deleted. Do you wish to continue?")
                 }
                 .fileImporter(
                     isPresented: $showToDosFileImporter,
@@ -119,24 +119,24 @@ struct ToDosDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Apagar todas as tarefas") {
+                Button("Delete All to-dos") {
                     showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
                 .disabled(todos.isEmpty)
-                .alert("Apagar todas as tarefas?", isPresented: $showDeleteConfirmation) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Apagar", role: .destructive) {
+                .alert("Delete All to-dos?", isPresented: $showDeleteConfirmation) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Delete", role: .destructive) {
                         deleteAllToDo()
                     }
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Tarefas")
+        .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
             if !errorMessage.isEmpty {
@@ -173,14 +173,7 @@ struct ToDosDataSettingsView: View {
                 }))
 
                 for todo in todos {
-                    let todoID = todo.id
-                    let identifiers = [
-                        "\(todoID)-1h",
-                        "\(todoID)-24h",
-                        "\(todoID)-due"
-                    ]
-
-                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
                     todo.isToDoDeleted = true
                     todo.deletedAt = .now
@@ -244,16 +237,9 @@ struct ToDosDataSettingsView: View {
                     !$0.isToDoDeleted
                 }))
 
-                /// Marcar todas as tarefas ativas como deletadas
+                /// Marcar All to-dos ativas como deletadas
                 for todo in activeToDos {
-                    let todoID = todo.id
-                    let identifiers = [
-                        "\(todoID)-1h",
-                        "\(todoID)-24h",
-                        "\(todoID)-due"
-                    ]
-
-                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+                    NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
                     todo.isToDoDeleted = true
                     todo.deletedAt = .now
@@ -268,7 +254,7 @@ struct ToDosDataSettingsView: View {
                         Calendar.current.isDate($0.dueDate, equalTo: imported.dueDate, toGranularity: .minute) &&
                         $0.info == imported.info
                     }) {
-                        /// Restaurar a tarefa do lixo
+                        /// Restore a tarefa do lixo
                         matchInTrash.isToDoDeleted = false
                         matchInTrash.deletedAt = nil
                         matchInTrash.isCompleted = imported.isCompleted

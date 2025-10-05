@@ -2,7 +2,7 @@
 //  OrhadiWidgetBundle.swift
 //  OrhadiWidget
 //
-//  Created by Zyvoxi . on 06/07/25.
+//  Created by Ivory Svoboda . on 06/07/25.
 //
 
 import WidgetKit

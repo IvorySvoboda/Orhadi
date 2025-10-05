@@ -2,7 +2,7 @@
 //  PhotoUtils.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 17/04/25.
+//  Created by Ivory Svoboda . on 17/04/25.
 //
 
 import Foundation

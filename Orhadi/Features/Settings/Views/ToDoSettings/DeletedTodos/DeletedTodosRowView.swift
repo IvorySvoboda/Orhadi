@@ -2,7 +2,7 @@
 //  DeletedTodosRowView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -16,7 +16,7 @@ struct DeletedTodosRowView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
+                Text(todo.title.nilIfEmpty() ?? String(localized: "Not provided"))
                     .font(.headline)
                     .lineLimit(1)
 
@@ -31,14 +31,14 @@ struct DeletedTodosRowView: View {
             Button {
                 showDeleteConfirmation.toggle()
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }.tint(.red)
 
             Button(role: .destructive) {
                 recoverTodo()
             } label: {
-                Label("Recuperar", systemImage: "gobackward")
+                Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
@@ -46,20 +46,20 @@ struct DeletedTodosRowView: View {
             Button {
                 recoverTodo()
             } label: {
-                Label("Recuperar", systemImage: "gobackward")
+                Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
             }
 
             Button(role: .destructive) {
                 showDeleteConfirmation.toggle()
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
         }
-        .alert("Esta tarefa será apagada. Esta ação não poderá ser desfeita.", isPresented: $showDeleteConfirmation) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Apagar", role: .destructive) {
+        .alert("This to-do will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
                 withAnimation {
                     context.delete(todo)
                 }

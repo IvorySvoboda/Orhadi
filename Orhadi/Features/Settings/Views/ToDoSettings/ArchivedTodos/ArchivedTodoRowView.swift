@@ -2,7 +2,7 @@
 //  ArchivedTodoRowView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -33,7 +33,7 @@ struct ArchivedTodoRowView: View {
                             .padding(.leading, 2.5)
                     }
 
-                    Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
+                    Text(todo.title.nilIfEmpty() ?? String(localized: "Not provided"))
                         .font(.headline)
                         .lineLimit(1)
                         .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
@@ -45,14 +45,14 @@ struct ArchivedTodoRowView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .orhadiListRowBackground()
+        
         .swipeActions(edge: .leading) {
             Button(role: .destructive) {
                 Task {
                     unarchiveTodo()
                 }
             } label: {
-                Label("Desarquivar", systemImage: "archivebox.fill")
+                Label("Unarchive", systemImage: "archivebox.fill")
                     .labelStyle(.iconOnly)
             }.tint(.teal)
         }
@@ -62,7 +62,7 @@ struct ArchivedTodoRowView: View {
                     deleteToDo()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
         }
@@ -72,7 +72,7 @@ struct ArchivedTodoRowView: View {
                     unarchiveTodo()
                 }
             } label: {
-                Label("Desarquivar", systemImage: "archivebox.fill")
+                Label("Unarchive", systemImage: "archivebox.fill")
             }
 
             Button(role: .destructive) {
@@ -80,7 +80,7 @@ struct ArchivedTodoRowView: View {
                     deleteToDo()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
             }
         }
     }

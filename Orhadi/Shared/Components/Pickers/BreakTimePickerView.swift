@@ -2,7 +2,7 @@
 //  BreakTimePickerView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 25/04/25.
+//  Created by Ivory Svoboda . on 25/04/25.
 //
 
 import SwiftUI
@@ -15,9 +15,9 @@ struct BreakTimePickerView: View {
             BreakTimePicker()
         } label: {
             HStack {
-                Text("Tempo de Descanso")
+                Text("Break Time")
                 Spacer()
-                Text(settings.breakTime.formatToHour())
+                Text(settings.breakTime.durationString())
                     .foregroundStyle(.secondary)
             }
         }
@@ -37,7 +37,7 @@ struct BreakTimePicker: View {
                         dismiss()
                     } label: {
                         HStack {
-                            Text("\(5 * index)m")
+                            Text("\(5 * index)min")
                             Spacer()
                             if settings.breakTime == TimeInterval(300 * index) {
                                 Image(systemName: "checkmark")
@@ -46,10 +46,10 @@ struct BreakTimePicker: View {
                         }
                     }.tint(Color.font)
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Tempo de Descanso")
+        .navigationTitle("Break Time")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

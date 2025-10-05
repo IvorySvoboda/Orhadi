@@ -2,7 +2,7 @@
 //  DeletedSubjectsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -23,7 +23,7 @@ struct DeletedSubjectsView: View {
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
 
-    var canShowBottomBar: Bool {
+    var canHideTabBar: Bool {
         if #available(iOS 26, *) {
             return false
         } else {
@@ -36,7 +36,7 @@ struct DeletedSubjectsView: View {
     var body: some View {
         List(selection: $selectedSubjects) {
             Section {} footer: {
-                Text("As matérias ficam disponíveis aqui por 30 dias. Após esse período, as matérias serão apagadas definitivamente.")
+                Text("The subjects remain available here for 30 days. After this period, they will be permanently deleted.")
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity)
             }
@@ -46,52 +46,51 @@ struct DeletedSubjectsView: View {
                     DeletedSubjectRowView(subject: subject)
                         .tag(subject)
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Matérias Apagadas")
+        .navigationTitle("Deleted Subjects")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
-        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
         /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
-                Button(selectedSubjects.isEmpty ? "Restaurar Todas" : "Restaurar") {
+                Button(selectedSubjects.isEmpty ? "Restore All" : "Restore") {
                     selectedSubjects.isEmpty ? restoreAllSubjects() : restoreSelectedSubjects()
                 }
 
                 Spacer()
 
-                Button(selectedSubjects.isEmpty ? "Apagar Tudo" : "Apagar") {
+                Button(selectedSubjects.isEmpty ? "Delete All" : "Delete") {
                     selectedSubjects.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
                 }
                 .confirmationDialog(
-                    "\(deletedSubjects.count > 1 ? "Estas \(deletedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.",
+                    deletedSubjects.count > 1 ? "These \(deletedSubjects.count) subjects will be deleted. This action cannot be undone." : "This subject will be deleted. This action cannot be undone.",
                     isPresented: $showDeleteAllConfirmation,
                     titleVisibility: .visible
                 ) {
                     Button(role: .destructive) {
                         deleteAllSubjects()
                     } label: {
-                        Text("\(deletedSubjects.count > 1 ? "Apagar \(deletedSubjects.count) Matérias" : "Apagar Matéria")")
+                        Text(deletedSubjects.count > 1 ? "Delete \(deletedSubjects.count) Subjects" : "Delete Subject")
                     }
                 }
                 .confirmationDialog(
-                    "\(selectedSubjects.count > 1 ? "Estas \(selectedSubjects.count) matérias serão apagadas" : "Esta matéria será apagada"). Esta ação não poderá ser desfeita.",
+                    selectedSubjects.count > 1 ? "These \(selectedSubjects.count) subjects will be deleted. This action cannot be undone." : "This subject will be deleted. This action cannot be undone.",
                     isPresented: $showDeleteSelectedConfirmation,
                     titleVisibility: .visible
                 ) {
                     Button(role: .destructive) {
                         deleteSelectedSubjects()
                     } label: {
-                        Text("\(selectedSubjects.count > 1 ? "Apagar \(selectedSubjects.count) Matérias" : "Apagar Matéria")")
+                        Text(selectedSubjects.count > 1 ? "Delete \(selectedSubjects.count) Subjects" : "Delete Subject")
                     }
                 }
             }

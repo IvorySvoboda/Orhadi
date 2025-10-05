@@ -2,7 +2,7 @@
 //  Subjects.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/03/25.
+//  Created by Ivory Svoboda . on 26/03/25.
 //
 
 import SwiftData
@@ -23,7 +23,7 @@ struct SubjectsView: View {
     @State private var showConfirmation: Bool = false /// iOS 26+
     @State private var subjectToAdd: Subject?
     @State private var subjectToEdit: Subject?
-    @State private var scrollOffsetY: Int = 151
+    @State private var scrollOffsetY: Int = 159
 
     // MARK: - Computed Properties
 
@@ -44,7 +44,7 @@ struct SubjectsView: View {
             List {
                 if #available(iOS 26, *) {
                     weekdayPickerBar
-                        .opacity(scrollOffsetY < 5 ? 0 : 1)
+                        .opacity(scrollOffsetY < 56 ? 0 : 1)
                 } else {
                     weekdayPickerBar
                 }
@@ -60,25 +60,25 @@ struct SubjectsView: View {
                 }
             }
             .orhadiPlainListStyle()
-            .navigationTitle("Matérias")
+            .navigationTitle("Subjects")
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
                         if #available(iOS 26.0, *) {
-                            Text("Matérias")
+                            Text("Subjects")
                                 .font(.headline)
-                                .opacity(scrollOffsetY < 53 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 53 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? -8 : scrollOffsetY < 53 ? 0 : 14)
+                                .opacity(scrollOffsetY < 108 ? 1 : 0)
+                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
 
                             Text(toolbarTitle)
                                 .foregroundStyle(.tint)
                                 .font(.caption)
-                                .opacity(scrollOffsetY <= 5 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 5 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? 8 : 14)
+                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
+                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
                         } else {
-                            Text("Matérias")
+                            Text("Subjects")
                                 .font(.headline)
                                 .opacity(scrollOffsetY < 115 ? 1 : 0)
                                 .offset(y: scrollOffsetY <= 60 ? -8 : 0)
@@ -112,10 +112,10 @@ struct SubjectsView: View {
                 }
             }
             .overlay { overlay }
-            .confirmationDialog("Adicionar", isPresented: $showConfirmationDialog) {
+            .confirmationDialog("Add", isPresented: $showConfirmationDialog) {
                 ForEach([
-                    (title: "Adicionar Matéria", isRecess: false),
-                    (title: "Adicionar Intervalo", isRecess: true)
+                    (title: "Add Subejct", isRecess: false),
+                    (title: "Add Interval", isRecess: true)
                 ], id: \.title) { option in
                     Button(option.title) {
                         showConfirmationDialog.toggle()
@@ -134,34 +134,24 @@ struct SubjectsView: View {
             .sheet(isPresented: $showConfirmation) {
                 VStack {
                     VStack(spacing: 10) {
-                        Button {
-                            showConfirmation.toggle()
-                            subjectToAdd = Subject(isRecess: false)
-                        } label: {
-                            Capsule()
-                                .fill(Color.accentColor)
-                                .frame(maxWidth: .infinity, minHeight: 45)
-                                .overlay {
-                                    Text("Adicionar Matéria".uppercased())
-                                        .font(.headline)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(Color.orhadiSecondaryForeground)
-                                }
-                        }
-
-                        Button {
-                            showConfirmation.toggle()
-                            subjectToAdd = Subject(isRecess: true)
-                        } label: {
-                            Capsule()
-                                .fill(Color.accentColor)
-                                .frame(maxWidth: .infinity, minHeight: 45)
-                                .overlay {
-                                    Text("Adicionar Intervalo".uppercased())
-                                        .font(.headline)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(Color.orhadiSecondaryForeground)
-                                }
+                        ForEach([
+                            (title: String(localized: "Add Subejct"), isRecess: false),
+                            (title: String(localized: "Add Interval"), isRecess: true)
+                        ], id: \.title) { option in
+                            Button {
+                                showConfirmation.toggle()
+                                subjectToAdd = Subject(isRecess: option.isRecess)
+                            } label: {
+                                Capsule()
+                                    .fill(Color.accentColor)
+                                    .frame(maxWidth: .infinity, minHeight: 45)
+                                    .overlay {
+                                        Text(option.title.uppercased())
+                                            .font(.headline)
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(Color.orhadiSecondaryForeground)
+                                    }
+                            }
                         }
                     }
                     .offset(y: 15)
@@ -202,9 +192,9 @@ struct SubjectsView: View {
         Group {
             if isTodayEmpty && scrollOffsetY < 300 {
                 ContentUnavailableView {
-                    Label("Nenhuma Matéria", systemImage: "book")
+                    Label("No Subjects", systemImage: "book")
                 } description: {
-                    Text("Nenhuma matéria hoje. Que tal aproveitar pra descansar um pouco?")
+                    Text("No subjects today. How about taking some time to rest a little?")
                 }
             }
         }

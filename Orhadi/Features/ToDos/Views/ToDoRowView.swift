@@ -2,27 +2,21 @@
 //  ToDoRowView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/05/25.
+//  Created by Ivory Svoboda . on 01/05/25.
 //
 
 import SwiftUI
 import MarkdownUI
 import WidgetKit
 
-struct ToDoRowView: View, Equatable {
+struct ToDoRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-    @Environment(UserProfile.self) private var user
-    @Environment(GameManager.self) private var game
 
     @State private var isExpanded: Bool = false
 
     let todo: ToDo
     let onEdit: () -> Void
-
-    static func == (lhs: ToDoRowView, rhs: ToDoRowView) -> Bool {
-        lhs.todo.id == rhs.todo.id
-    }
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
@@ -34,39 +28,43 @@ struct ToDoRowView: View, Equatable {
                         .orhadiMarkdownStyle()
                 }
             } else {
-                Text("Não informado.").opacity(0.5)
+                Text("Not specified.").opacity(0.5)
             }
         } label: {
-            if todo.isCompleted {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(Color.accentColor)
-            }
-
-            if !todo.isCompleted, todo.dueDate < .now {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(.red)
-            }
-
-            VStack(alignment: .leading) {
+            TimelineView(.everyMinute) { _ in
                 HStack {
-                    if todo.priority.rawValue > 0 {
-                        Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
-                            .font(.subheadline)
-                            .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
-                            .frame(width: 5, alignment: .center)
-                            .padding(.leading, 2.5)
+                    if todo.isCompleted {
+                        Image(systemName: "checkmark")
+                            .foregroundStyle(Color.accentColor)
                     }
-
-                    Text(todo.title.nilIfEmpty() ?? String(localized: "Não Informado"))
-                        .font(.headline)
-                        .lineLimit(1)
-                        .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
+                    
+                    if !todo.isCompleted, todo.dueDate < .now {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        HStack {
+                            if todo.priority.rawValue > 0 {
+                                Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
+                                    .font(.subheadline)
+                                    .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
+                                    .frame(width: 5, alignment: .center)
+                                    .padding(.leading, 2.5)
+                            }
+                            
+                            Text(todo.title.nilIfEmpty() ?? String(localized: "Not specified"))
+                                .font(.headline)
+                                .lineLimit(1)
+                                .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
+                        }
+                        .frame(maxWidth: 300, alignment: .leading)
+                        
+                        CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                .frame(maxWidth: 300, alignment: .leading)
-
-                CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
             .swipeActions(edge: .leading) {
                 Button(role: .destructive) {
@@ -75,10 +73,10 @@ struct ToDoRowView: View, Equatable {
                     }
                 } label: {
                     if todo.isCompleted {
-                        Label("Descompletar", systemImage: "minus")
+                        Label("Uncomplete", systemImage: "minus")
                             .labelStyle(.iconOnly)
                     } else {
-                        Label("Completar", systemImage: "checkmark")
+                        Label("Complete", systemImage: "checkmark")
                             .labelStyle(.iconOnly)
                     }
                 }.tint(.accentColor)
@@ -89,7 +87,7 @@ struct ToDoRowView: View, Equatable {
                         deleteToDo()
                     }
                 } label: {
-                    Label("Apagar", systemImage: "trash.fill")
+                    Label("Delete", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)
                 }
 
@@ -98,14 +96,14 @@ struct ToDoRowView: View, Equatable {
                         archiveTodo()
                     }
                 } label: {
-                    Label("Arquivar", systemImage: "archivebox.fill")
+                    Label("Archive", systemImage: "archivebox.fill")
                         .labelStyle(.iconOnly)
                 }.tint(.teal)
 
                 Button {
                     onEdit()
                 } label: {
-                    Label("Editar", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                         .labelStyle(.iconOnly)
                 }.tint(Color.accentColor)
             }
@@ -116,16 +114,16 @@ struct ToDoRowView: View, Equatable {
                     }
                 } label: {
                     if todo.isCompleted {
-                        Label("Descompletar", systemImage: "minus")
+                        Label("Uncomplete", systemImage: "minus")
                     } else {
-                        Label("Completar", systemImage: "checkmark")
+                        Label("Complete", systemImage: "checkmark")
                     }
                 }
 
                 Button {
                     onEdit()
                 } label: {
-                    Label("Editar", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                 }
 
                 Button {
@@ -133,7 +131,7 @@ struct ToDoRowView: View, Equatable {
                         archiveTodo()
                     }
                 } label: {
-                    Label("Arquivar", systemImage: "archivebox.fill")
+                    Label("Archive", systemImage: "archivebox.fill")
                 }
 
                 Button(role: .destructive) {
@@ -141,21 +139,14 @@ struct ToDoRowView: View, Equatable {
                         deleteToDo()
                     }
                 } label: {
-                    Label("Apagar", systemImage: "trash.fill")
+                    Label("Delete", systemImage: "trash.fill")
                 }
             }
         }
     }
 
     private func completeToDo() {
-        let todoID = todo.id
-        let identifiers = [
-            "\(todoID)-1h",
-            "\(todoID)-24h",
-            "\(todoID)-due"
-        ]
-
-        /// Se a tarefas não estiver completada
+        /// Se a to-dos não estiver completada
         if !todo.isCompleted {
             /// completa a tarefa.
             withAnimation {
@@ -164,21 +155,13 @@ struct ToDoRowView: View, Equatable {
             }
 
             /// remove as notificações agendadas
-            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-            /// aumenta as tarefas completadas do usuário e adiciona 100 de xp para ele.
-            user.completedToDos += 1
-            game.addXP(100, to: user)
-        } else { /// se não
+            NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
+        } else {
             /// descompleta a tarefa.
             withAnimation {
                 todo.isCompleted = false
                 todo.completedAt = nil
             }
-
-            /// diminue as tarefas completadas do usuário e remove o xp adiciona ao usuário.
-            user.completedToDos -= 1
-            game.addXP(-100, to: user)
 
             /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
             if settings.scheduleNotifications {
@@ -190,14 +173,7 @@ struct ToDoRowView: View, Equatable {
     }
 
     private func archiveTodo() {
-        let todoID = todo.id
-        let identifiers = [
-            "\(todoID)-1h",
-            "\(todoID)-24h",
-            "\(todoID)-due"
-        ]
-
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
         withAnimation {
             todo.isArchived = true
@@ -207,14 +183,7 @@ struct ToDoRowView: View, Equatable {
     }
 
     private func deleteToDo() {
-        let todoID = todo.id
-        let identifiers = [
-            "\(todoID)-1h",
-            "\(todoID)-24h",
-            "\(todoID)-due"
-        ]
-
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
         withAnimation {
             todo.isToDoDeleted = true

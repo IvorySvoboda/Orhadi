@@ -2,12 +2,18 @@
 //  ToDo+Extensions.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 22/04/25.
+//  Created by Ivory Svoboda . on 22/04/25.
 //
 
 import Foundation
 
 extension ToDo {
+    var identifiers: [String] {[
+        "\(self.id)-1h",
+        "\(self.id)-24h",
+        "\(self.id)-due"
+    ]}
+
     func scheduleNotification() {
         let todo = self
 
@@ -19,7 +25,7 @@ extension ToDo {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-1h",
                 title: todo.title,
-                body: String(localized: "Falta 1 hora para o prazo da tarefa."),
+                body: String(localized: "1 hour left until the to-do’s deadline."),
                 date: oneHourBefore
             )
         }
@@ -32,15 +38,15 @@ extension ToDo {
             NotificationsManager.shared.addNotification(
                 identifier: "\(todo.id)-24h",
                 title: todo.title,
-                body: String(localized: "Falta 1 dia para o prazo da tarefa."),
+                body: String(localized: "1 day left until the to-do’s deadline."),
                 date: twentyFourHoursBefore
             )
         }
 
         NotificationsManager.shared.addNotification(
             identifier: "\(todo.id)-due",
-            title: String(localized: "A Tarefa está atrasada!"),
-            body: String(localized: "A Tarefa: \(todo.title) está atrasada!"),
+            title: String(localized: "The to-do is overdue!"),
+            body: String(localized: "The to-do: \(todo.title) is overdue!"),
             date: todo.dueDate
         )
     }

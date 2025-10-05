@@ -2,7 +2,7 @@
 //  Markdown+Extensions.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import MarkdownUI

@@ -2,7 +2,7 @@
 //  View+Extensions.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/04/25.
+//  Created by Ivory Svoboda . on 26/04/25.
 //
 
 import SwiftUI
@@ -37,16 +37,6 @@ extension View {
     }
 
     @ViewBuilder
-    func orhadiListRowBackground() -> some View {
-        if #available(iOS 26, *) {
-            self
-        } else {
-            self
-                .listRowBackground(Color.orhadiSecondaryBG)
-        }
-    }
-
-    @ViewBuilder
     func iOS26GlassEffect(tinted: Bool = false) -> some View {
         if #available(iOS 26, *) {
             self
@@ -62,13 +52,12 @@ extension View {
             .listRowBackground(Color.clear)
             .listRowInsets(
                 EdgeInsets(
-                    top: -1,
+                    top: 0,
                     leading: 0,
                     bottom: 0,
                     trailing: 0
                 )
             )
-            .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
     }
 
     func disableIdleTimer() -> some View {

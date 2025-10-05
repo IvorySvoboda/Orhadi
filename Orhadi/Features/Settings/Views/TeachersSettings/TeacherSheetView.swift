@@ -2,7 +2,7 @@
 //  TeacherSheetView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import SwiftData
@@ -14,7 +14,7 @@ struct TeacherSheetView: View {
 
     @State private var name: String
     @State private var email: String
-    @State private var preventSave: Bool = true
+    @State private var preventSave: Bool = false
 
     @Bindable var teacher: Teacher
     var isNew: Bool
@@ -30,10 +30,11 @@ struct TeacherSheetView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Prof. Ivory", text: $name)
+                    TextField("Mr. Johnson", text: $name)
                         .autocorrectionDisabled()
                         .onChange(of: name) { _, newName in
                             let name = newName.trimmingCharacters(in: .whitespaces)
+
                             let existingTeacher = try? context.fetch(
                                 FetchDescriptor<Teacher>(
                                     predicate: #Predicate { $0.name == name }
@@ -45,9 +46,9 @@ struct TeacherSheetView: View {
                             /// está sendo editado/adicionado ou o nome fornecido
                             /// está vazio, previne o salvamento.
                             ///
-                            /// ao adicionar um professor, o `foundTeacher` nunca
+                            /// Ao adicionar um professor, o `foundTeacher` nunca
                             /// sera igual ao professor que está sendo adicionado,
-                            /// pois ele ainda não foi adicionado ao Banco de Dados.
+                            /// pois ele ainda não foi adicionado ao Banco de Data.
                             if let foundTeacher = existingTeacher, foundTeacher != teacher {
                                 preventSave = true
                             } else if name.isEmpty {
@@ -58,10 +59,13 @@ struct TeacherSheetView: View {
                         }
                     TextField("\(String(localized: "email@exemple.com"))", text: $email)
                         .autocorrectionDisabled()
-                }.orhadiListRowBackground()
+                        .onChange(of: email) { _, newEmail in
+                            
+                        }
+                }
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? "Novo" : "Editar") Professor(a)")
+            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) Teacher")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -69,10 +73,10 @@ struct TeacherSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.titleOnly)
                         }
                     }
@@ -96,10 +100,10 @@ struct TeacherSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.titleOnly)
                         }
                     }

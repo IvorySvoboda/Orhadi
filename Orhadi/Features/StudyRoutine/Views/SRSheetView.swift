@@ -2,7 +2,7 @@
 //  SRSheetView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 21/04/25.
+//  Created by Ivory Svoboda . on 21/04/25.
 //
 
 import SwiftUI
@@ -32,24 +32,40 @@ struct SRSheetView: View {
             Form {
                 Section {
                     HStack {
-                        Text("Nome")
+                        Text("Name")
                             .frame(width: 50, alignment: .leading)
-                        TextField("Português", text: $name)
+                        TextField("English", text: $name)
                             .autocorrectionDisabled()
                     }
-                }.orhadiListRowBackground()
+                }
 
                 Section {
-                    CustomDayPickerView(date: $studyDay)
+                    Picker("Weekday", selection: Binding(
+                        get: { Calendar.current.component(.weekday, from: studyDay) },
+                        set: { newWeekday in
+                            let currentWeekday = Calendar.current.component(.weekday, from: studyDay)
+                            let diff = newWeekday - currentWeekday
+                            if let newDate = Calendar.current.date(byAdding: .day, value: diff, to: studyDay) {
+                                studyDay = newDate
+                            }
+                        })
+                    ) {
+                        ForEach(1...7, id: \.self) { index in
+                            let name = Calendar.current.weekdaySymbols[index - 1].capitalized
+                            
+                            Text(name).tag(index)
+                        }
+                    }.pickerStyle(.navigationLink)
+
                     DatePicker(
-                        "Duração do Estudo",
+                        "Study Duration",
                         selection: $studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
-                }.orhadiListRowBackground()
+                }
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? String(localized: "Novo") : String(localized: "Editar")) Estudo")
+            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) Study")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -57,10 +73,10 @@ struct SRSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.titleOnly)
                         }
                     }
@@ -80,10 +96,10 @@ struct SRSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.titleOnly)
                         }
                     }

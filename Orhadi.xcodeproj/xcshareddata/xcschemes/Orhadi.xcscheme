@@ -6,24 +6,6 @@
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES"
       buildArchitectures = "Automatic">
-      <PreActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "#!/bin/bash&#10;&#10;cd &quot;$SRCROOT/$PRODUCT_NAME&quot;&#10;&#10;previous_build_number=$(awk -F &quot;=&quot; &apos;/BUILD_NUMBER/ {print $2}&apos; Config.xcconfig | tr -d &apos; &apos;)&#10;&#10;# Build the new build number&#10;new_build_number=$((previous_build_number + 1))&#10;&#10;# Update Config.xcconfig&#10;sed -i &apos;&apos; -e &quot;/BUILD_NUMBER =/ s/= .*/= $new_build_number/&quot; Config.xcconfig&#10;">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "2804F4D72D92275700649FD0"
-                     BuildableName = "Orhadi.app"
-                     BlueprintName = "Orhadi"
-                     ReferencedContainer = "container:Orhadi.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

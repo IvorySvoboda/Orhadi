@@ -2,7 +2,7 @@
 //  ToDosSectionPickerBar.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 30/04/25.
+//  Created by Ivory Svoboda . on 30/04/25.
 //
 
 import SwiftUI
@@ -25,13 +25,8 @@ struct ToDosSectionPickerBar: View {
                 }
                 .frame(maxWidth: .infinity)
                 .background {
-                    if #available(iOS 26, *) {
-                        Capsule()
-                            .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBGiOS26)
-                    } else {
-                        Capsule()
-                            .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBG)
-                    }
+                    Capsule()
+                        .fill(selectedSection == section ? Color.accentColor : Color.orhadiSecondaryBG)
                 }
                 .scaleEffect(isPressed == section ? 1.05 : 1)
                 .onTapGesture {

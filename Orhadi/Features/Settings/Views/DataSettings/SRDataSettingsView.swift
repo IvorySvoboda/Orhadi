@@ -2,7 +2,7 @@
 //  SRDataSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import SwiftData
@@ -34,15 +34,15 @@ struct SRDataSettingsView: View {
         Form {
             Section {
                 HStack {
-                    Text("Total de Estudos")
+                    Text("Total Studies")
                     Spacer()
                     Text("\(studies.count)")
                         .foregroundStyle(.secondary)
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Exportar Rotina de Estudos") {
+                Button("Export Study Routine") {
                     exportSR()
                 }
                 .disabled(studies.isEmpty)
@@ -50,11 +50,11 @@ struct SRDataSettingsView: View {
                     isPresented: $showSRFileExporter,
                     item: srExportItem,
                     contentTypes: [.data],
-                    defaultFilename: String(localized: "Rotina de Estudos")
+                    defaultFilename: String(localized: "Study Routine")
                 ) { result in
                     switch result {
                     case .success:
-                        print("Sucesso!")
+                        print("Success!")
                         srExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
@@ -64,16 +64,16 @@ struct SRDataSettingsView: View {
                     srExportItem = nil
                 }
 
-                Button("Importar Rotina de Estudos") {
+                Button("Import Study Routine") {
                     showSRImportAlert.toggle()
                 }
-                .alert("Importar Rotina de Estudos?", isPresented: $showSRImportAlert) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Continuar") {
+                .alert("Import Study Routine?", isPresented: $showSRImportAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Continue") {
                         showSRFileImporter.toggle()
                     }
                 } message: {
-                    Text("Ao importar uma nova rotina de estudos, todas os estudos existentes na rotina atual serão apagados. Deseja continuar?")
+                    Text("When importing a new study routine, all existing studies in the current routine will be deleted. Do you want to continue?")
                 }
                 .fileImporter(
                     isPresented: $showSRFileImporter,
@@ -87,24 +87,24 @@ struct SRDataSettingsView: View {
                         print(error.localizedDescription)
                     }
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Apagar todos os estudos") {
+                Button("Delete all studies") {
                     showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
                 .disabled(studies.isEmpty)
-                .alert("Apagar todos os estudos?", isPresented: $showDeleteConfirmation) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Apagar", role: .destructive) {
+                .alert("Delete all studies?", isPresented: $showDeleteConfirmation) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Delete", role: .destructive) {
                         deleteAllStudies()
                     }
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Rotina de Estudos")
+        .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
             if !errorMessage.isEmpty {

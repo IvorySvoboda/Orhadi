@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 24/03/25.
+//  Created by Ivory Svoboda . on 24/03/25.
 //
 
 import SwiftData
@@ -23,47 +23,47 @@ struct ContentView: View {
     var body: some View {
         if #available(iOS 26, *) {
             TabView {
-                Tab("Matérias", systemImage: "book.fill") {
+                Tab("Subjects", systemImage: "book.fill") {
                     SubjectsView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
+                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
                     ToDosView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Estudos", systemImage: "graduationcap.fill") {
+                Tab("Studies", systemImage: "graduationcap.fill") {
                     SRView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Ajustes", systemImage: "gearshape.fill") {
+                Tab("Settings", systemImage: "gearshape.fill") {
                     SettingsView(settings: settings)
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
             }
-            .tabBarMinimizeBehavior(.onScrollDown)
+            .tabBarMinimizeBehavior(.automatic)
             .preferredColorScheme(getTheme(for: settings.theme))
         } else {
             TabView {
-                Tab("Matérias", systemImage: "book.fill") {
+                Tab("Subjects", systemImage: "book.fill") {
                     SubjectsView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Tarefas", systemImage: "list.bullet.clipboard.fill") {
+                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
                     ToDosView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Rotina de Estudos", systemImage: "graduationcap.fill") {
+                Tab("Study Routine", systemImage: "graduationcap.fill") {
                     SRView()
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)
                 }
-                Tab("Ajustes", systemImage: "gearshape.fill") {
+                Tab("Settings", systemImage: "gearshape.fill") {
                     SettingsView(settings: settings)
                         .toolbarBackground(.visible, for: .tabBar)
                         .toolbarBackground(Color.orhadiBG, for: .tabBar)

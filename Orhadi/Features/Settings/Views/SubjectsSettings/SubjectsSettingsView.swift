@@ -2,7 +2,7 @@
 //  SubjectsSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 01/04/25.
+//  Created by Ivory Svoboda . on 01/04/25.
 //
 
 import SwiftUI
@@ -24,7 +24,7 @@ struct SubjectsSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("Mostrar indicador da matéria atual", isOn: $settings.showCurrentSubjectIndicator)
+                Toggle("Subject indicator", isOn: $settings.showCurrentSubjectIndicator)
                     .onChange(of: settings.showCurrentSubjectIndicator) { _, _ in
                         WidgetCenter.shared.reloadAllTimelines()
                     }
@@ -35,13 +35,13 @@ struct SubjectsSettingsView: View {
                     NavigationLink {
                         DeletedSubjectsView()
                     } label: {
-                        Text("Matérias Apagadas")
+                        Text("Deleted Subjects")
                     }
-                }.orhadiListRowBackground()
+                }
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Matérias")
+        .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
     }
 }

@@ -2,7 +2,7 @@
 //  DataSettingsView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 02/04/25.
+//  Created by Ivory Svoboda . on 02/04/25.
 //
 
 import SwiftData
@@ -25,39 +25,39 @@ struct DataSettingsView: View {
                 NavigationLink {
                     SubjectsDataSettingsView()
                 } label: {
-                    Label("Matérias", systemImage: "book.fill")
+                    Label("Subjects", systemImage: "book.fill")
                 }
                 NavigationLink {
                     ToDosDataSettingsView()
                 } label: {
-                    Label("Tarefas", systemImage: "list.clipboard.fill")
+                    Label("To-Dos", systemImage: "list.clipboard.fill")
                 }
                 NavigationLink {
                     SRDataSettingsView()
                 } label: {
-                    Label("Rotina de Estudos", systemImage: "graduationcap.fill")
+                    Label("Study Routine", systemImage: "graduationcap.fill")
                 }
-            }.orhadiListRowBackground()
+            }
 
             Section {
-                Button("Redefinir todos os dados") {
+                Button("Reset all data") {
                     showEraseDataAlert.toggle()
                 }.tint(.red)
                 .alert(
-                    "Redefinir todos os dados?",
+                    "Reset all data?",
                     isPresented: $showEraseDataAlert
                 ) {
-                    Button("Cancelar", role: .cancel) {}
-                    Button("Redefinir", role: .destructive) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Reset", role: .destructive) {
                         eraseAllData()
                     }
                 } message: {
-                    Text("Todos os dados, incluindo matérias, tarefas e estudos, serão apagados. Não será possível recuperar os dados após redefinir. Tem certeza que deseja continuar?")
+                    Text("All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?")
                 }
-            }.orhadiListRowBackground()
+            }
         }
         .orhadiListStyle()
-        .navigationTitle("Dados")
+        .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
             if !errorMessage.isEmpty {
@@ -93,24 +93,17 @@ struct DataSettingsView: View {
                 let subjects = try context.fetch(FetchDescriptor<Subject>())
                 let todos = try context.fetch(FetchDescriptor<ToDo>())
                 let studies = try context.fetch(FetchDescriptor<SRStudy>())
-                let users = try context.fetch(FetchDescriptor<UserProfile>())
-                let achievements = try context.fetch(FetchDescriptor<Achievement>())
                 let settings = try context.fetch(FetchDescriptor<Settings>())
 
                 for teacher in teachers { context.delete(teacher) }
                 for subject in subjects { context.delete(subject) }
                 for todo in todos { context.delete(todo) }
                 for study in studies { context.delete(study) }
-                for user in users { context.delete(user) }
-                for achievement in achievements { context.delete(achievement) }
                 for setting in settings { context.delete(setting) }
 
-                context.insert(UserProfile())
                 context.insert(Settings())
 
                 try context.save()
-
-                GameManager(context: context).setupAchievementsIfNeeded()
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {

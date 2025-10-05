@@ -2,7 +2,7 @@
 //  WeekdayPickerBar.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/04/25.
+//  Created by Ivory Svoboda . on 05/04/25.
 //
 
 import SwiftUI
@@ -22,20 +22,15 @@ struct WeekdayPickerBar: View {
                         let isSelected = index == selectedDay
 
                         ZStack {
-                            Text(name.prefix(3).capitalized)
+                            Text(isSelected ? name.capitalized : name.prefix(3).capitalized)
                                 .font(.callout)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
                                 .foregroundColor(isSelected ? Color.orhadiBG : .primary)
                         }
                         .background {
-                            if #available(iOS 26, *) {
-                                Capsule()
-                                    .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBGiOS26)
-                            } else {
-                                Capsule()
-                                    .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBG)
-                            }
+                            Capsule()
+                                .fill(isSelected ? Color.accentColor : Color.orhadiSecondaryBG)
                         }
                         .scaleEffect(isPressed == index ? 1.05 : 1)
                         .onTapGesture {

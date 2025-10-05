@@ -2,7 +2,7 @@
 //  SRView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 31/03/25.
+//  Created by Ivory Svoboda . on 31/03/25.
 //
 
 import SwiftData
@@ -51,7 +51,7 @@ struct SRView: View {
             List {
                 if #available(iOS 26, *) {
                     weekdayPickerBar
-                        .opacity(scrollOffsetY < 5 ? 0 : 1)
+                        .opacity(scrollOffsetY < 56 ? 0 : 1)
                 } else {
                     weekdayPickerBar
                 }
@@ -71,27 +71,27 @@ struct SRView: View {
                 }
             }
             .orhadiPlainListStyle()
-            .navigationTitle("Rotina de Estudos")
+            .navigationTitle("Study Routine")
             .overlay { overlay }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
                         if #available(iOS 26, *) {
-                            Text("Rotina de Estudos")
+                            Text("Study Routine")
                                 .font(.headline)
-                                .opacity(scrollOffsetY < 53 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 53 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? -8 : scrollOffsetY < 53 ? 0 : 14)
+                                .opacity(scrollOffsetY < 108 ? 1 : 0)
+                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
 
                             Text(toolbarTitle)
                                 .foregroundStyle(.tint)
                                 .font(.caption)
-                                .opacity(scrollOffsetY <= 5 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 5 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 5 ? 8 : 14)
+                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
+                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
+                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         } else {
-                            Text("Rotina de Estudos")
+                            Text("Study Routine")
                                 .font(.headline)
                                 .opacity(scrollOffsetY < 115 ? 1 : 0)
                                 .offset(y: scrollOffsetY <= 60 ? -8 : 0)
@@ -177,9 +177,9 @@ struct SRView: View {
         Group {
             if isTodayEmpty && scrollOffsetY < 300 {
                 ContentUnavailableView {
-                    Label("Nenhuma Matéria", systemImage: "graduationcap")
+                    Label("Nothing to Study", systemImage: "graduationcap")
                 } description: {
-                    Text("Nada para estudar hoje. Que tal aproveitar pra descansar um pouco?")
+                    Text("Nothing to study today. How about taking a little time to rest?")
                 }
             }
         }

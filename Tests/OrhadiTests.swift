@@ -2,7 +2,7 @@
 //  OrhadiTests.swift
 //  OrhadiTests
 //
-//  Created by Zyvoxi . on 23/04/25.
+//  Created by Ivory Svoboda . on 23/04/25.
 //
 
 import Foundation
@@ -144,31 +144,31 @@ struct DataTests {
         todos = try context.fetch(FetchDescriptor<ToDo>())
 
         /// O `sampleData` do `ToDo` fornece `3`
-        /// tarefas, sendo assim, deve-se existir
-        /// um total de `3` tarefas, se não, o
+        /// to-dos, sendo assim, deve-se existir
+        /// um total de `3` to-dos, se não, o
         /// teste para aqui.
         try #require(todos.count == 3)
 
         // MARK: - Teste de Exportação
 
         let exportItem = ToDoTransferable(todos: todos)
-        /// Deve conter `3` tarefas dentro de `exportItem`
+        /// Deve conter `3` to-dos dentro de `exportItem`
         #expect(exportItem.todos.count == 3)
         let data = try JSONEncoder().encode(exportItem.todos)
 
         // MARK: - Teste de Importação
 
-        /// Decodifica as tarefas presentes no `data`
+        /// Decodifica as to-dos presentes no `data`
         let allToDos = try JSONDecoder().decode([ToDo].self, from: data)
-        /// Deve existir `3` tarefas nas tarefas importadas
+        /// Deve existir `3` to-dos nas to-dos importadas
         #expect(allToDos.count == 3)
 
-        /// Remove as tarefas existentes
+        /// Remove as to-dos existentes
         for todo in todos { context.delete(todo) }
-        /// Insere as tarefas importadas no banco de dados.
+        /// Insere as to-dos importadas no banco de dados.
         for todo in allToDos { context.insert(todo) }
         try context.save()
-        /// Atualiza as tarefas para os mais recentes após a importação
+        /// Atualiza as to-dos para os mais recentes após a importação
         todos = try context.fetch(FetchDescriptor<ToDo>())
         #expect(todos.count == 3)
     }

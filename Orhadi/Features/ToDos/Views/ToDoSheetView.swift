@@ -2,7 +2,7 @@
 //  ToDoSheetView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 16/04/25.
+//  Created by Ivory Svoboda . on 16/04/25.
 //
 
 import SwiftUI
@@ -38,14 +38,14 @@ struct ToDoSheetView: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Trabalho de...", text: $title)
+                    TextField("Work of …", text: $title)
                         .autocorrectionDisabled()
 
                     if #available(iOS 26, *) {
                         ZStack {
                             VStack {
                                 if info.characters.isEmpty {
-                                    Text("Fazer ... ")
+                                    Text("Do …")
                                         .foregroundStyle(Color.secondary)
                                         .opacity(0.5)
                                 }
@@ -61,7 +61,7 @@ struct ToDoSheetView: View {
                         ZStack {
                             VStack {
                                 if info.characters.isEmpty {
-                                    Text("Fazer ... ")
+                                    Text("Do …")
                                         .foregroundStyle(Color.secondary)
                                         .opacity(0.5)
                                 }
@@ -77,16 +77,16 @@ struct ToDoSheetView: View {
                             .frame(height: 200)
                         }
                     }
-                }.orhadiListRowBackground()
+                }
 
                 Section {
                     PriorityPickerView(priority: $priority)
-                }.orhadiListRowBackground()
+                }
 
                 Section {
                     DisclosureGroup {
                         DatePicker(
-                            "Data",
+                            "Date",
                             selection: $dueDate,
                             displayedComponents: [.date]
                         )
@@ -100,7 +100,7 @@ struct ToDoSheetView: View {
                                 .padding(.trailing, 10)
                                 .padding(.leading, 2)
                             VStack(alignment: .leading) {
-                                Text("Data")
+                                Text("Date")
                                 Text(dueDate.relativeFormatted())
                                     .font(.caption)
                                     .foregroundStyle(Color.accentColor)
@@ -118,7 +118,7 @@ struct ToDoSheetView: View {
                         }
                     )) {
                         DatePicker(
-                            "Hora",
+                            "Time",
                             selection: $dueDate,
                             displayedComponents: [.hourAndMinute]
                         )
@@ -134,7 +134,7 @@ struct ToDoSheetView: View {
                                     .padding(.trailing, 10)
                                     .padding(.leading, 2)
                                 VStack(alignment: .leading) {
-                                    Text("Hora")
+                                    Text("Time")
                                     if withHour {
                                         Text("\(dueDate.formatToHour())")
                                             .font(.caption)
@@ -153,10 +153,10 @@ struct ToDoSheetView: View {
                     }
                     .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
                 }
-                .orhadiListRowBackground()
+                
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? "Nova" : "Editar") Tarefa")
+            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) To-Do")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -164,10 +164,10 @@ struct ToDoSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Cancelar", systemImage: "xmark")
+                            Label("Cancel", systemImage: "xmark")
                                 .labelStyle(.titleOnly)
                         }
                     }
@@ -186,14 +186,7 @@ struct ToDoSheetView: View {
                             todo.withHour = withHour
 
                             /// Se não for uma tarefa nova, atualiza as notificações agendadas.
-                            let todoID = todo.id
-                            let identifiers = [
-                                "\(todoID)-1h",
-                                "\(todoID)-24h",
-                                "\(todoID)-due"
-                            ]
-
-                            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+                            NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
                             if !todo.withHour {
                                 todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
@@ -212,10 +205,10 @@ struct ToDoSheetView: View {
                         dismiss()
                     } label: {
                         if #available(iOS 26, *) {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.iconOnly)
                         } else {
-                            Label("Salvar", systemImage: "checkmark")
+                            Label("Save", systemImage: "checkmark")
                                 .labelStyle(.titleOnly)
                         }
                     }

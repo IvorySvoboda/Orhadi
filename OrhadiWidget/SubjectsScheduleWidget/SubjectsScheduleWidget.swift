@@ -2,7 +2,7 @@
 //  SubjectsScheduleWidget.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 07/07/25.
+//  Created by Ivory Svoboda . on 07/07/25.
 //
 
 import WidgetKit
@@ -26,8 +26,8 @@ struct SubjectsScheduleWidget: Widget {
                 .containerBackground(.background, for: .widget)
                 .modelContainer(container)
         }
-        .configurationDisplayName("Agenda de Aulas")
-        .description("Visualize as matérias do dia sem abrir o app.")
+        .configurationDisplayName("Class Schedule")
+        .description("See today’s subjects without opening the app.")
     }
 }
 
@@ -157,11 +157,11 @@ struct SubjectScheduleWidgetRow: View {
 
             VStack(alignment: .leading) {
                 if !subject.isRecess {
-                    Text(subject.name.nilIfEmpty() ?? String(localized: "Sem Nome"))
+                    Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
                         .font(.headline)
                         .fontWeight(.semibold)
                 } else {
-                    Text("Intervalo".uppercased())
+                    Text("Interval".uppercased())
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)

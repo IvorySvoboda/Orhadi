@@ -2,7 +2,7 @@
 //  TeachersView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 16/04/25.
+//  Created by Ivory Svoboda . on 16/04/25.
 //
 
 import SwiftData
@@ -28,13 +28,13 @@ struct TeachersView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .orhadiListRowBackground()
+            
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
                     Button {
                         teacher.openMail()
                     } label: {
-                        Label("Enviar e-mail", systemImage: "envelope.fill")
+                        Label("Send e-mail", systemImage: "envelope.fill")
                             .labelStyle(.iconOnly)
                     }.tint(.accentColor)
                 }
@@ -45,14 +45,14 @@ struct TeachersView: View {
                         context.delete(teacher)
                     }
                 } label: {
-                    Label("Apagar", systemImage: "trash.fill")
+                    Label("Delete", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)
                 }
 
                 Button {
                     teacherToEdit = teacher
                 } label: {
-                    Label("Editar", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                         .labelStyle(.iconOnly)
                 }.tint(.accentColor)
             }
@@ -61,14 +61,14 @@ struct TeachersView: View {
                     Button {
                         teacher.openMail()
                     } label: {
-                        Label("Enviar e-mail", systemImage: "envelope.fill")
+                        Label("Send e-mail", systemImage: "envelope.fill")
                     }
                 }
 
                 Button {
                     teacherToEdit = teacher
                 } label: {
-                    Label("Editar", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                 }
 
                 Button(role: .destructive) {
@@ -76,7 +76,7 @@ struct TeachersView: View {
                         context.delete(teacher)
                     }
                 } label: {
-                    Label("Apagar", systemImage: "trash.fill")
+                    Label("Delete", systemImage: "trash.fill")
                 }
             }
         }
@@ -97,7 +97,7 @@ struct TeachersView: View {
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Professores")
+        .navigationTitle("Teachers")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in
             TeacherSheetView(teacher: teacher, isNew: true)

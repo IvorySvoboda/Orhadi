@@ -2,7 +2,7 @@
 //  DeletedSubjectRowView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -17,11 +17,11 @@ struct DeletedSubjectRowView: View {
         HStack {
             VStack(alignment: .leading) {
                 if subject.isRecess {
-                    Text("Intervalo")
+                    Text("Interval")
                         .font(.headline)
                         .lineLimit(1)
                 } else {
-                    Text(subject.name.nilIfEmpty() ?? "Sem Nome")
+                    Text(subject.name.nilIfEmpty() ?? "No Name")
                         .font(.headline)
                         .lineLimit(1)
                 }
@@ -37,14 +37,14 @@ struct DeletedSubjectRowView: View {
             Button {
                 showDeleteConfirmation.toggle()
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }.tint(.red)
 
             Button(role: .destructive) {
                 recoverSubject()
             } label: {
-                Label("Recuperar", systemImage: "gobackward")
+                Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
@@ -52,20 +52,20 @@ struct DeletedSubjectRowView: View {
             Button {
                 recoverSubject()
             } label: {
-                Label("Recuperar", systemImage: "gobackward")
+                Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
             }
 
             Button(role: .destructive) {
                 showDeleteConfirmation.toggle()
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
         }
-        .alert("Esta matéria será apagada. Esta ação não poderá ser desfeita.", isPresented: $showDeleteConfirmation) {
-            Button("Cancelar", role: .cancel) {}
-            Button("Apagar", role: .destructive) {
+        .alert("This subject will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
                 withAnimation {
                     context.delete(subject)
                 }

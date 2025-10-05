@@ -2,12 +2,12 @@
 //  SRRow.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/04/25.
+//  Created by Ivory Svoboda . on 26/04/25.
 //
 
 import SwiftUI
 
-struct SRRow: View, Equatable {
+struct SRRow: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
@@ -15,10 +15,6 @@ struct SRRow: View, Equatable {
     var onStudy: () -> Void
     var onAdd: () -> Void
     var onEdit: () -> Void
-
-    static func == (lhs: SRRow, rhs: SRRow) -> Bool {
-        lhs.study.id == rhs.study.id
-    }
 
     // MARK: - Views
 
@@ -29,13 +25,13 @@ struct SRRow: View, Equatable {
                     .foregroundStyle(.tint)
             }
 
-            Text(study.name.nilIfEmpty() ?? "Sem Nome")
+            Text(study.name.nilIfEmpty() ?? "No Name")
                 .lineLimit(1)
                 .frame(maxWidth: 200, alignment: .leading)
 
             Spacer()
 
-            Text(study.studyTime.formatToHour())
+            Text(study.studyTimeInSeconds.durationString())
                 .bold()
         }
         .listRowBackground(Color.clear)
@@ -43,7 +39,7 @@ struct SRRow: View, Equatable {
             Button {
                 onStudy()
             } label: {
-                Label("Estudar", systemImage: "play.circle.fill")
+                Label("Study", systemImage: "play.circle.fill")
             }.tint(.accentColor)
         }
         .swipeActions(edge: .trailing) {
@@ -52,21 +48,21 @@ struct SRRow: View, Equatable {
                     deleteStudy()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }
 
             Button {
                 onAdd()
             } label: {
-                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
                     .labelStyle(.iconOnly)
             }.tint(.teal)
 
             Button {
                 onEdit()
             } label: {
-                Label("Editar", systemImage: "pencil")
+                Label("Edit", systemImage: "pencil")
                     .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
@@ -74,19 +70,19 @@ struct SRRow: View, Equatable {
             Button {
                 onStudy()
             } label: {
-                Label("Estudar", systemImage: "play.circle.fill")
+                Label("Study", systemImage: "play.circle.fill")
             }
 
             Button {
                 onEdit()
             } label: {
-                Label("Editar", systemImage: "pencil")
+                Label("Edit", systemImage: "pencil")
             }
 
             Button {
                 onAdd()
             } label: {
-                Label("Duplicar", systemImage: "rectangle.fill.on.rectangle.angled.fill")
+                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
             }
 
             Button(role: .destructive) {
@@ -94,7 +90,7 @@ struct SRRow: View, Equatable {
                     deleteStudy()
                 }
             } label: {
-                Label("Apagar", systemImage: "trash.fill")
+                Label("Delete", systemImage: "trash.fill")
             }
         }
     }

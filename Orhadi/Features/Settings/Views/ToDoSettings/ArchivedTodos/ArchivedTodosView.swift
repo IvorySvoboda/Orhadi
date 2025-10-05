@@ -2,7 +2,7 @@
 //  ArchivedTodosView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 05/05/25.
+//  Created by Ivory Svoboda . on 05/05/25.
 //
 
 import SwiftUI
@@ -27,7 +27,7 @@ struct ArchivedTodosView: View {
     @State private var showRestoreAllConfirmation = false
     @State private var showRestoreSelectedConfirmation = false
 
-    var canShowBottomBar: Bool {
+    var canHideTabBar: Bool {
         if #available(iOS 26, *) {
             return false
         } else {
@@ -43,14 +43,13 @@ struct ArchivedTodosView: View {
             }
         }
         .orhadiListStyle()
-        .navigationTitle("Tarefas Arquivadas")
+        .navigationTitle("Archived To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
-        /// BottomBar é apenas para o iOS 18
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
         /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canShowBottomBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
@@ -58,13 +57,13 @@ struct ArchivedTodosView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
 //                HStack {
-                    Button(selectedTodos.isEmpty ? "Desarquivar Todas" : "Desarquivar") {
+                    Button(selectedTodos.isEmpty ? "Unarchive All" : "Unarchive") {
                         selectedTodos.isEmpty ? unarchiveAllTodos() : unarchiveSelectedTodos()
                     }
 
                     Spacer()
 
-                    Button(selectedTodos.isEmpty ? "Apagar Tudo" : "Apagar") {
+                    Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
                         selectedTodos.isEmpty ? deleteAllTodos() : deleteSelectedTodos()
                     }
 //                }.padding(.bottom, 5)

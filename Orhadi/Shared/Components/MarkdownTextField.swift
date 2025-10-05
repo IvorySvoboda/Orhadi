@@ -2,7 +2,7 @@
 //  MarkdownTextView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 26/03/25.
+//  Created by Ivory Svoboda . on 26/03/25.
 //
 
 import SwiftUI

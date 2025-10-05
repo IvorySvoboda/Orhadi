@@ -2,7 +2,7 @@
 //  BadgeView.swift
 //  Orhadi
 //
-//  Created by Zyvoxi . on 18/04/25.
+//  Created by Ivory Svoboda . on 18/04/25.
 //
 
 import SwiftUI
