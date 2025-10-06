@@ -21,7 +21,7 @@ struct ToDosDataSettingsView: View {
     @State private var errorMessage: String = ""
 
     /// Exporter
-    @State private var todosExportItem: ToDoTransferable?
+    @State private var todosExportItem: DataTransferable?
     @State private var showToDosFileExporter: Bool = false
 
     /// Importer
@@ -201,7 +201,8 @@ struct ToDosDataSettingsView: View {
                 })
 
                 let allObjects = try context.fetch(descriptor)
-                let exportItem = ToDoTransferable(todos: allObjects)
+                let data = try JSONEncoder().encode(allObjects)
+                let exportItem = DataTransferable(data: data)
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
 

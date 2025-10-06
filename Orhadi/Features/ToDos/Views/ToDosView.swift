@@ -26,7 +26,9 @@ struct ToDosView: View {
     @State private var todoToAdd: ToDo?
     @State private var todoToEdit: ToDo?
     @State private var selectedSection: ToDoSection = .pending
-    @State private var scrollOffsetY: Int = 151
+    @State private var showTitle: Bool = false
+    @State private var showSelectedSection: Bool = false
+    @State private var hideOverlay: Bool = false
 
     // MARK: - Computed Properties
 
@@ -39,12 +41,8 @@ struct ToDosView: View {
     var body: some View {
         NavigationStack {
             List {
-                if #available(iOS 26, *) {
-                    sectionPickerBar
-                        .opacity(scrollOffsetY < 56 ? 0 : 1)
-                } else {
-                    sectionPickerBar
-                }
+                ToDosSectionPickerBar(selectedSection: $selectedSection)
+                    .opacity(showSelectedSection ? 0 : 1)
 
                 ForEach(visibleToDos) { todo in
                     ToDoRowView(
@@ -55,34 +53,49 @@ struct ToDosView: View {
             }
             .orhadiPlainListStyle()
             .navigationTitle("To-Do")
+            .onScrollGeometryChange(for: CGFloat.self, of: { geo in
+                geo.contentOffset.y
+            }, action: { _, scrollOffset in
+                debugPrint(scrollOffset)
+                
+                let shouldShowTitle = scrollOffset >= -101
+                if shouldShowTitle != showTitle {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showTitle = shouldShowTitle
+                    }
+                }
+                
+                let shouldShowWeekday = scrollOffset >= -56
+                if shouldShowWeekday != showSelectedSection {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showSelectedSection = shouldShowWeekday
+                    }
+                }
+                
+                let shouldHideOverlay = scrollOffset < -300
+                if shouldHideOverlay != hideOverlay {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        hideOverlay = shouldHideOverlay
+                    }
+                }
+            })
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
-                        if #available(iOS 26, *) {
-                            Text("To-Do")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 108 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
-
-                            Text(selectedSection.string.uppercased())
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
-                        } else {
-                            Text("To-Do")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 115 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
-
-                            Text(selectedSection.string.uppercased())
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 60 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
-                        }
+                        Text("To-Do")
+                            .font(.headline)
+                            .frame(height: 30)
+                            .opacity(showTitle ? 1 : 0)
+                            .blur(radius: showTitle ? 0 : 3)
+                            .offset(y: showSelectedSection ? -8 : showTitle ? 0 : 14)
+                        
+                        Text(selectedSection.string.uppercased())
+                            .foregroundStyle(.tint)
+                            .font(.caption)
+                            .frame(height: 30)
+                            .opacity(showSelectedSection ? 1 : 0)
+                            .blur(radius: showSelectedSection ? 0 : 3)
+                            .offset(y: showSelectedSection ? 8 : 14)
                     }
                 }
 
@@ -119,32 +132,9 @@ struct ToDosView: View {
         }
     }
 
-    private var sectionPickerBar: some View {
-        ToDosSectionPickerBar(selectedSection: $selectedSection)
-            .background(
-                GeometryReader { geo in
-                    let minY = geo.frame(in: .global).minY
-                    Color.clear
-                        .onChange(of: minY) { _, _ in
-                            if #available(iOS 26, *) {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                    withAnimation(.smooth(duration: 0.5)) {
-                                        scrollOffsetY = Int(minY)
-                                    }
-                                }
-                            } else {
-                                withAnimation(.smooth(duration: 0.25)) {
-                                    scrollOffsetY = Int(minY)
-                                }
-                            }
-                        }
-                }
-            )
-    }
-
     private var overlay: some View {
         Group {
-            if visibleToDos.isEmpty, scrollOffsetY < 300 {
+            if visibleToDos.isEmpty, !hideOverlay {
                 ContentUnavailableView {
                     Label(
                         selectedSection == .pending ? "No Pending To-Dos" : "No Completed To-Dos",

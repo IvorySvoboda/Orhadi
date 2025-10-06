@@ -22,7 +22,7 @@ struct SubjectsDataSettingsView: View {
     @State private var errorMessage: String = ""
 
     /// Exporter
-    @State private var subjectsExportItem: SubjectTransferable?
+    @State private var subjectsExportItem: DataTransferable?
     @State private var showSubjectsFileExporter: Bool = false
 
     /// Importer
@@ -192,7 +192,8 @@ struct SubjectsDataSettingsView: View {
                 })
 
                 let allObjects = try context.fetch(descriptor)
-                let exportItem = SubjectTransferable(subjects: allObjects)
+                let data = try JSONEncoder().encode(allObjects)
+                let exportItem = DataTransferable(data: data)
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
 
@@ -292,3 +293,4 @@ struct SubjectsDataSettingsView: View {
         }
     }
 }
+

@@ -22,7 +22,9 @@ struct SRView: View {
     @State private var studiesToStudy: [SRStudy] = []
     @State private var navigateToStudyingView: Bool = false
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
-    @State private var scrollOffsetY: Int = 151
+    @State private var showTitle: Bool = false
+    @State private var showSelectedWeekday: Bool = false
+    @State private var hideOverlay: Bool = false
 
     // MARK: - Computed Properties
 
@@ -49,12 +51,8 @@ struct SRView: View {
     var body: some View {
         NavigationStack {
             List {
-                if #available(iOS 26, *) {
-                    weekdayPickerBar
-                        .opacity(scrollOffsetY < 56 ? 0 : 1)
-                } else {
-                    weekdayPickerBar
-                }
+                WeekdayPickerBar(selectedDay: $selectedDay)
+                    .opacity(showSelectedWeekday ? 0 : 1)
 
                 ForEach(studies.filter {
                     Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
@@ -72,38 +70,54 @@ struct SRView: View {
             }
             .orhadiPlainListStyle()
             .navigationTitle("Study Routine")
+            .onScrollGeometryChange(for: CGFloat.self, of: { geo in
+                geo.contentOffset.y
+            }, action: { _, scrollOffset in
+                debugPrint(scrollOffset)
+                
+                let shouldShowTitle = scrollOffset >= -101
+                if shouldShowTitle != showTitle {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showTitle = shouldShowTitle
+                    }
+                }
+                
+                let shouldShowWeekday = scrollOffset >= -56
+                if shouldShowWeekday != showSelectedWeekday {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showSelectedWeekday = shouldShowWeekday
+                    }
+                }
+                
+                let shouldHideOverlay = scrollOffset < -300
+                if shouldHideOverlay != hideOverlay {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        hideOverlay = shouldHideOverlay
+                    }
+                }
+            })
             .overlay { overlay }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
-                        if #available(iOS 26, *) {
-                            Text("Study Routine")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 108 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
-
-                            Text(toolbarTitle)
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        } else {
-                            Text("Study Routine")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 115 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
-
-                            Text(toolbarTitle)
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 60 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
-                        }
+                        Text("Study Routine")
+                            .font(.headline)
+                            .frame(height: 30)
+                            .opacity(showTitle ? 1 : 0)
+                            .blur(radius: showTitle ? 0 : 3)
+                            .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
+                        
+                        Text(toolbarTitle)
+                            .foregroundStyle(.tint)
+                            .font(.caption)
+                            .frame(height: 30)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .opacity(showSelectedWeekday ? 1 : 0)
+                            .blur(radius: showSelectedWeekday ? 0 : 3)
+                            .offset(y: showSelectedWeekday ? 8 : 14)
                     }
                 }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         studyToAdd = SRStudy()
@@ -151,31 +165,9 @@ struct SRView: View {
         }
     }
 
-    private var weekdayPickerBar: some View {
-        WeekdayPickerBar(selectedDay: $selectedDay)
-            .background(
-                GeometryReader { geo in
-                    Color.clear
-                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                            if #available(iOS 26, *) {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                    withAnimation(.smooth(duration: 0.5)) {
-                                        scrollOffsetY = Int(newY)
-                                    }
-                                }
-                            } else {
-                                withAnimation(.smooth(duration: 0.25)) {
-                                    scrollOffsetY = Int(newY)
-                                }
-                            }
-                        }
-                }
-            )
-    }
-
     private var overlay: some View {
         Group {
-            if isTodayEmpty && scrollOffsetY < 300 {
+            if isTodayEmpty, !hideOverlay {
                 ContentUnavailableView {
                     Label("Nothing to Study", systemImage: "graduationcap")
                 } description: {

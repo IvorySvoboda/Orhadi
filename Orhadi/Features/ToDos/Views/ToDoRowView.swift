@@ -13,13 +13,13 @@ struct ToDoRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
-    @State private var isExpanded: Bool = false
-
     let todo: ToDo
     let onEdit: () -> Void
 
+    // MARK: - Views
+    
     var body: some View {
-        DisclosureGroup(isExpanded: $isExpanded) {
+        DisclosureGroup {
             if !todo.info.characters.isEmpty {
                 if #available(iOS 26, *) {
                     Text(todo.info)
@@ -28,7 +28,8 @@ struct ToDoRowView: View {
                         .orhadiMarkdownStyle()
                 }
             } else {
-                Text("Not specified.").opacity(0.5)
+                Text("Not specified.")
+                    .foregroundStyle(Color.secondary)
             }
         } label: {
             TimelineView(.everyMinute) { _ in
@@ -43,27 +44,7 @@ struct ToDoRowView: View {
                             .foregroundStyle(.red)
                     }
                     
-                    VStack(alignment: .leading) {
-                        HStack {
-                            if todo.priority.rawValue > 0 {
-                                Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
-                                    .font(.subheadline)
-                                    .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
-                                    .frame(width: 5, alignment: .center)
-                                    .padding(.leading, 2.5)
-                            }
-                            
-                            Text(todo.title.nilIfEmpty() ?? String(localized: "Not specified"))
-                                .font(.headline)
-                                .lineLimit(1)
-                                .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
-                        }
-                        .frame(maxWidth: 300, alignment: .leading)
-                        
-                        CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                    todoBaseInfos
                 }
             }
             .swipeActions(edge: .leading) {
@@ -145,6 +126,32 @@ struct ToDoRowView: View {
         }
     }
 
+    private var todoBaseInfos: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                if todo.priority.rawValue > 0 {
+                    Image(systemName: "exclamationmark\(todo.priority.rawValue > 1 ? ".\(todo.priority.rawValue)" : "")")
+                        .font(.subheadline)
+                        .foregroundStyle(todo.isCompleted ? Color.secondary : Color.orange)
+                        .frame(width: 5, alignment: .center)
+                        .padding(.leading, 2.5)
+                }
+                
+                Text(todo.title.nilIfEmpty() ?? String(localized: "Not specified"))
+                    .font(.headline)
+                    .lineLimit(1)
+                    .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
+            }
+            .frame(maxWidth: 300, alignment: .leading)
+            
+            CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+    
+    // MARK: - Actions
+    
     private func completeToDo() {
         /// Se a to-dos não estiver completada
         if !todo.isCompleted {

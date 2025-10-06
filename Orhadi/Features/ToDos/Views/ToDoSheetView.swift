@@ -22,6 +22,14 @@ struct ToDoSheetView: View {
 
     @Bindable var todo: ToDo
     var isNew: Bool
+    
+    private var navigationTitle: String {
+        if isNew {
+            return "New To-Do"
+        } else {
+            return "Edit To-Do"
+        }
+    }
 
     init(todo: ToDo, isNew: Bool) {
         self.todo = todo
@@ -156,7 +164,7 @@ struct ToDoSheetView: View {
                 
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) To-Do")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

@@ -21,56 +21,29 @@ struct ContentView: View {
     // MARK: - Views
 
     var body: some View {
-        if #available(iOS 26, *) {
-            TabView {
-                Tab("Subjects", systemImage: "book.fill") {
-                    SubjectsView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                    ToDosView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("Studies", systemImage: "graduationcap.fill") {
-                    SRView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("Settings", systemImage: "gearshape.fill") {
-                    SettingsView(settings: settings)
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
+        TabView {
+            Tab("Subjects", systemImage: "book.fill") {
+                SubjectsView()
+                    .toolbarBackground(.visible, for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
-            .tabBarMinimizeBehavior(.automatic)
-            .preferredColorScheme(getTheme(for: settings.theme))
-        } else {
-            TabView {
-                Tab("Subjects", systemImage: "book.fill") {
-                    SubjectsView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                    ToDosView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("Study Routine", systemImage: "graduationcap.fill") {
-                    SRView()
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
-                Tab("Settings", systemImage: "gearshape.fill") {
-                    SettingsView(settings: settings)
-                        .toolbarBackground(.visible, for: .tabBar)
-                        .toolbarBackground(Color.orhadiBG, for: .tabBar)
-                }
+            Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
+                ToDosView()
+                    .toolbarBackground(.visible, for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
             }
-            .preferredColorScheme(getTheme(for: settings.theme))
+            Tab("Studies", systemImage: "graduationcap.fill") {
+                SRView()
+                    .toolbarBackground(.visible, for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
+            }
+            Tab("Settings", systemImage: "gearshape.fill") {
+                SettingsView(settings: settings)
+                    .toolbarBackground(.visible, for: .tabBar)
+                    .toolbarBackground(Color.orhadiBG, for: .tabBar)
+            }
         }
+        .preferredColorScheme(getTheme(for: settings.theme))
     }
 
     func getTheme(for theme: Theme) -> ColorScheme? {

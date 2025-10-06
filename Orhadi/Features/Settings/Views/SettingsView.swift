@@ -17,36 +17,9 @@ struct SettingsView: View {
                 mainSettingsSection
 
                 Section {
-//                    ThemePickerView()
-                    Picker(selection: $settings.theme) {
-                        ForEach(Theme.allCases, id: \.self) { theme in
-                            Text(theme.name).tag(theme.hashValue)
-                        }
-                    } label: {
-                        HStack {
-                            ZStack {
-                                Image(systemName: "circle.righthalf.filled")
-                                    .resizable()
-                                    .frame(width: 25, height: 25)
-                                    .foregroundStyle(Color.accentColor)
-                                    .overlay(
-                                        Image(systemName: "circle.lefthalf.filled")
-                                            .resizable()
-                                            .frame(width: 13, height: 13)
-                                            .foregroundStyle(Color.accentColor)
-                                            .background {
-                                                Color.orhadiBG
-                                                    .frame(width: 12, height: 12)
-                                                    .clipShape(Circle())
-                                            }
-                                    )
-                            }.padding(.trailing, 10)
-
-                            Text("Theme")
-                        }
-                    }.pickerStyle(.navigationLink)
+                    themePicker
                 }
-
+                
                 Section {
                     NavigationLink {
                         DataSettingsView()
@@ -87,6 +60,36 @@ struct SettingsView: View {
         }
     }
 
+    private var themePicker: some View {
+        Picker(selection: $settings.theme) {
+            ForEach(Theme.allCases, id: \.self) { theme in
+                Text(theme.name).tag(theme.hashValue)
+            }
+        } label: {
+            HStack {
+                ZStack {
+                    Image(systemName: "circle.righthalf.filled")
+                        .resizable()
+                        .frame(width: 25, height: 25)
+                        .foregroundStyle(Color.accentColor)
+                        .overlay(
+                            Image(systemName: "circle.lefthalf.filled")
+                                .resizable()
+                                .frame(width: 13, height: 13)
+                                .foregroundStyle(Color.accentColor)
+                                .background {
+                                    Color.orhadiBG
+                                        .frame(width: 12, height: 12)
+                                        .clipShape(Circle())
+                                }
+                        )
+                }.padding(.trailing, 10)
+
+                Text("Theme")
+            }
+        }.pickerStyle(.navigationLink)
+    }
+    
     private var aboutSection: some View {
         Section {
             HStack {

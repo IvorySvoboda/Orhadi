@@ -77,23 +77,24 @@ enum OrhadiSchemaV1: VersionedSchema {
 
         var isOngoing: Bool {
             let calendar = Calendar.current
-            let now = Date()
-
-            let todayStart = calendar.date(
+            let todayWeekday = calendar.component(.weekday, from: .now)
+            let subjectWeekday = calendar.component(.weekday, from: schedule)
+            
+            let subjectStart = calendar.date(
                 bySettingHour: calendar.component(.hour, from: startTime),
                 minute: calendar.component(.minute, from: startTime),
                 second: 0,
-                of: now
+                of: .now
             ) ?? .distantPast
 
-            let todayEnd = calendar.date(
+            let subjectEnd = calendar.date(
                 bySettingHour: calendar.component(.hour, from: endTime),
                 minute: calendar.component(.minute, from: endTime),
                 second: 0,
-                of: now
+                of: .now
             ) ?? .distantFuture
 
-            return now >= todayStart && now < todayEnd
+            return .now >= subjectStart && .now < subjectEnd && todayWeekday == subjectWeekday
         }
 
         init(

@@ -22,7 +22,7 @@ struct SRDataSettingsView: View {
     @State private var errorMessage: String = ""
 
     /// Exporter
-    @State private var srExportItem: SRStudyTransferable?
+    @State private var srExportItem: DataTransferable?
     @State private var showSRFileExporter: Bool = false
 
     /// Importer
@@ -167,7 +167,8 @@ struct SRDataSettingsView: View {
                 })
 
                 let allObjects = try context.fetch(descriptor)
-                let exportItem = SRStudyTransferable(studies: allObjects)
+                let data = try JSONEncoder().encode(allObjects)
+                let exportItem = DataTransferable(data: data)
 
                 await UINotificationFeedbackGenerator().notificationOccurred(.success)
 

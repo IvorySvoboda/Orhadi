@@ -27,6 +27,7 @@ struct WeekdayPickerBar: View {
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 16)
                                 .foregroundColor(isSelected ? Color.orhadiBG : .primary)
+                                .help(name)
                         }
                         .background {
                             Capsule()

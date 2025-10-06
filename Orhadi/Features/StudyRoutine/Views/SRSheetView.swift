@@ -17,6 +17,14 @@ struct SRSheetView: View {
 
     @Bindable var study: SRStudy
     var isNew: Bool
+    
+    private var navigationTitle: String {
+        if isNew {
+            return "New Study"
+        } else {
+            return "Edit Study"
+        }
+    }
 
     init(study: SRStudy, isNew: Bool) {
         self.study = study

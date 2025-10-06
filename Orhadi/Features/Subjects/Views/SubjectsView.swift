@@ -23,7 +23,9 @@ struct SubjectsView: View {
     @State private var showConfirmation: Bool = false /// iOS 26+
     @State private var subjectToAdd: Subject?
     @State private var subjectToEdit: Subject?
-    @State private var scrollOffsetY: Int = 159
+    @State private var showTitle: Bool = false
+    @State private var showSelectedWeekday: Bool = false
+    @State private var hideOverlay: Bool = false
 
     // MARK: - Computed Properties
 
@@ -42,13 +44,9 @@ struct SubjectsView: View {
     var body: some View {
         NavigationStack {
             List {
-                if #available(iOS 26, *) {
-                    weekdayPickerBar
-                        .opacity(scrollOffsetY < 56 ? 0 : 1)
-                } else {
-                    weekdayPickerBar
-                }
-
+                WeekdayPickerBar(selectedDay: $selectedDay)
+                    .opacity(showSelectedWeekday ? 0 : 1)
+                
                 ForEach(subjects.filter {
                     Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
                 }) { subject in
@@ -61,34 +59,49 @@ struct SubjectsView: View {
             }
             .orhadiPlainListStyle()
             .navigationTitle("Subjects")
+            .onScrollGeometryChange(for: CGFloat.self, of: { geo in
+                geo.contentOffset.y
+            }, action: { _, scrollOffset in
+                debugPrint(scrollOffset)
+                
+                let shouldShowTitle = scrollOffset >= -101
+                if shouldShowTitle != showTitle {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showTitle = shouldShowTitle
+                    }
+                }
+                
+                let shouldShowWeekday = scrollOffset >= -56
+                if shouldShowWeekday != showSelectedWeekday {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        showSelectedWeekday = shouldShowWeekday
+                    }
+                }
+                
+                let shouldHideOverlay = scrollOffset < -300
+                if shouldHideOverlay != hideOverlay {
+                    withAnimation(.smooth(duration: 0.5)) {
+                        hideOverlay = shouldHideOverlay
+                    }
+                }
+            })
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
-                        if #available(iOS 26.0, *) {
-                            Text("Subjects")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 108 ? 1 : 0)
-                                .blur(radius: scrollOffsetY < 108 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? -8 : scrollOffsetY < 108 ? 0 : 14)
-
-                            Text(toolbarTitle)
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 56 ? 1 : 0)
-                                .blur(radius: scrollOffsetY <= 56 ? 0 : 3)
-                                .offset(y: scrollOffsetY <= 56 ? 8 : 14)
-                        } else {
-                            Text("Subjects")
-                                .font(.headline)
-                                .opacity(scrollOffsetY < 115 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? -8 : 0)
-
-                            Text(toolbarTitle)
-                                .foregroundStyle(.tint)
-                                .font(.caption)
-                                .opacity(scrollOffsetY <= 60 ? 1 : 0)
-                                .offset(y: scrollOffsetY <= 60 ? 8 : 14)
-                        }
+                        Text("Subjects")
+                            .font(.headline)
+                            .frame(height: 30)
+                            .opacity(showTitle ? 1 : 0)
+                            .blur(radius: showTitle ? 0 : 3)
+                            .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
+                        
+                        Text(toolbarTitle)
+                            .foregroundStyle(.tint)
+                            .font(.caption)
+                            .frame(height: 30)
+                            .opacity(showSelectedWeekday ? 1 : 0)
+                            .blur(radius: showSelectedWeekday ? 0 : 3)
+                            .offset(y: showSelectedWeekday ? 8 : 14)
                     }
                 }
 
@@ -166,31 +179,9 @@ struct SubjectsView: View {
         }
     }
 
-    private var weekdayPickerBar: some View {
-        WeekdayPickerBar(selectedDay: $selectedDay)
-            .background {
-                GeometryReader { geo in
-                    Color.clear
-                        .onChange(of: geo.frame(in: .global).minY) { _, newY in
-                            if #available(iOS 26, *) {
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                                    withAnimation(.smooth(duration: 0.5)) {
-                                        scrollOffsetY = Int(newY)
-                                    }
-                                }
-                            } else {
-                                withAnimation(.smooth(duration: 0.25)) {
-                                    scrollOffsetY = Int(newY)
-                                }
-                            }
-                        }
-                }
-            }
-    }
-
     private var overlay: some View {
         Group {
-            if isTodayEmpty && scrollOffsetY < 300 {
+            if isTodayEmpty, !hideOverlay {
                 ContentUnavailableView {
                     Label("No Subjects", systemImage: "book")
                 } description: {

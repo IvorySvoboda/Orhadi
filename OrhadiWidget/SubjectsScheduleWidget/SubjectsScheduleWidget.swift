@@ -152,7 +152,7 @@ struct SubjectScheduleWidgetRow: View {
                 RoundedRectangle(cornerRadius: 3, style: .circular)
                     .fill(Color.cyan)
                     .frame(width: 5)
-                    .frame(maxHeight: .infinity)
+                    .frame(maxHeight: 40)
             }
 
             VStack(alignment: .leading) {

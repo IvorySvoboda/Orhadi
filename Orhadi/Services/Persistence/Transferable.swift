@@ -8,32 +8,12 @@
 import Foundation
 import CoreTransferable
 
-struct SubjectTransferable: Codable, Transferable {
-    var subjects: [Subject]
+struct DataTransferable: Transferable {
+    let data: Data
 
     static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .data) {
-            return try JSONEncoder().encode($0.subjects)
-        }
-    }
-}
-
-struct SRStudyTransferable: Transferable {
-    var studies: [SRStudy]
-
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .data) {
-            return try JSONEncoder().encode($0.studies)
-        }
-    }
-}
-
-struct ToDoTransferable: Transferable {
-    var todos: [ToDo]
-
-    static var transferRepresentation: some TransferRepresentation {
-        DataRepresentation(exportedContentType: .data) {
-            return try JSONEncoder().encode($0.todos)
+        DataRepresentation(exportedContentType: .data) { transferable in
+            transferable.data
         }
     }
 }

@@ -26,9 +26,9 @@ struct SubjectSheetView: View {
 
     private var navigationTitle: String {
         if isNew {
-            return subject.isRecess ? "New Interval" : "New Subject"
+            return "New \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))"
         } else {
-            return "Edit \(subject.isRecess ? "Interval" : "Subject")"
+            return "Edit \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))"
         }
     }
 
@@ -56,10 +56,11 @@ struct SubjectSheetView: View {
                     subjectInfoSection
                     teacherSelectionSection
                 }
+
                 timeSelectionSection
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -189,7 +190,6 @@ struct SubjectSheetView: View {
     // MARK: - Functions
 
     private func addItem() {
-        withAnimation {
             if !isRecess {
                 /// Procura uma matéria no banco de dados.
                 let existingSubjects = try? context.fetch(
@@ -212,6 +212,7 @@ struct SubjectSheetView: View {
                 }
             }
 
+        withAnimation {
             context.insert(
                 Subject(
                     name: name,

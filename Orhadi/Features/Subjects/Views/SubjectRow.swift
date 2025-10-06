@@ -30,49 +30,9 @@ struct SubjectRow: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     if subject.isRecess {
-                        HStack {
-                            Text("Interval")
-                                .textCase(.uppercase)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fontWeight(.semibold)
-                            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .fontWeight(.semibold)
-                        }
+                        intervalRow
                     } else {
-                        Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .lineLimit(1)
-                            .frame(maxWidth: 200, alignment: .leading)
-
-                        VStack(alignment: .leading, spacing: 3) {
-                            if let teacher = subject.teacher {
-                                if !teacher.name.isEmpty {
-                                    CustomLabel("\(teacher.name)", systemImage: "person.fill")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-
-                                if !teacher.email.isEmpty {
-                                    CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-
-                            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            if !subject.place.isEmpty {
-                                CustomLabel("\(subject.place)", systemImage: "building.2.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                        subjectRow
                     }
                 }
             }
@@ -141,6 +101,56 @@ struct SubjectRow: View {
                 }
             } label: {
                 Label("Delete", systemImage: "trash.fill")
+            }
+        }
+    }
+    
+    private var intervalRow: some View {
+        HStack {
+            Text("Interval")
+                .textCase(.uppercase)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fontWeight(.semibold)
+            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fontWeight(.semibold)
+        }
+    }
+    
+    private var subjectRow: some View {
+        Group {
+            Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
+                .font(.headline)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .frame(maxWidth: 200, alignment: .leading)
+            
+            VStack(alignment: .leading, spacing: 3) {
+                if let teacher = subject.teacher {
+                    if !teacher.name.isEmpty {
+                        CustomLabel("\(teacher.name)", systemImage: "person.fill")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    if !teacher.email.isEmpty {
+                        CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                if !subject.place.isEmpty {
+                    CustomLabel("\(subject.place)", systemImage: "building.2.fill")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }

@@ -18,17 +18,6 @@
       },
       "shouldTranslate" : false
     },
-    "%@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@"
-          }
-        }
-      },
-      "shouldTranslate" : false
-    },
     "%@ Study" : {
       "localizations" : {
         "pt-BR" : {
@@ -40,6 +29,7 @@
       }
     },
     "%@ Teacher" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -50,6 +40,7 @@
       }
     },
     "%@ To-Do" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

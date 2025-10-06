@@ -18,6 +18,14 @@ struct TeacherSheetView: View {
 
     @Bindable var teacher: Teacher
     var isNew: Bool
+    
+    private var navigationTitle: String {
+        if isNew {
+            return "New Teacher"
+        } else {
+            return "Edit Teacher"
+        }
+    }
 
     init(teacher: Teacher, isNew: Bool) {
         self.teacher = teacher
@@ -65,7 +73,7 @@ struct TeacherSheetView: View {
                 }
             }
             .orhadiListStyle()
-            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) Teacher")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
