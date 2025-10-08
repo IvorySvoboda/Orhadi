@@ -28,28 +28,6 @@
         }
       }
     },
-    "%@ Teacher" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Professor(a)"
-          }
-        }
-      }
-    },
-    "%@ To-Do" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Tarefa"
-          }
-        }
-      }
-    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -246,6 +224,16 @@
         }
       }
     },
+    "Close" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar"
+          }
+        }
+      }
+    },
     "Complete" : {
       "localizations" : {
         "pt-BR" : {
@@ -272,6 +260,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Concluídas"
+          }
+        }
+      }
+    },
+    "Conflict Detected!" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conflito Detectado!"
           }
         }
       }
@@ -315,6 +313,9 @@
           }
         }
       }
+    },
+    "Debug" : {
+      "shouldTranslate" : false
     },
     "Delete" : {
       "localizations" : {
@@ -526,16 +527,6 @@
         }
       }
     },
-    "English" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inglês"
-          }
-        }
-      }
-    },
     "Export Study Routine" : {
       "localizations" : {
         "pt-BR" : {
@@ -716,12 +707,12 @@
         }
       }
     },
-    "Name" : {
+    "Name (ex: English)" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nome"
+            "value" : "Nome (ex: Português)"
           }
         }
       }
@@ -906,12 +897,12 @@
         }
       }
     },
-    "Place" : {
+    "Place (ex: Room 101)" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Local"
+            "value" : "Local (ex: Sala 101)"
           }
         }
       }
@@ -976,16 +967,6 @@
         }
       }
     },
-    "Room 101" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sala 101"
-          }
-        }
-      }
-    },
     "Save" : {
       "localizations" : {
         "pt-BR" : {
@@ -1046,6 +1027,16 @@
         }
       }
     },
+    "Some of the subjects are conflicting with existing subjects. Please adjust them before recovering." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algumas das matérias estão em conflito com matérias existentes. Ajuste-as antes de restaurá-las."
+          }
+        }
+      }
+    },
     "Stop Studying" : {
       "localizations" : {
         "pt-BR" : {
@@ -1065,6 +1056,9 @@
           }
         }
       }
+    },
+    "Studies Flood" : {
+      "shouldTranslate" : false
     },
     "Study" : {
       "localizations" : {
@@ -1126,6 +1120,9 @@
         }
       }
     },
+    "Subjects Flood" : {
+      "shouldTranslate" : false
+    },
     "Teacher" : {
       "localizations" : {
         "pt-BR" : {
@@ -1142,6 +1139,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Professores"
+          }
+        }
+      }
+    },
+    "The selected subject conflicts with an existing subject. Please adjust it before recovering." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A matérias selecionada está em conflito com uma matéria existente. Ajuste-a antes de restaurá-la."
+          }
+        }
+      }
+    },
+    "The selected time range conflicts with an existing subject. Please adjust it before saving." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Há um conflito de horário com uma matéria existente. Ajuste antes de salvar."
           }
         }
       }
@@ -1305,6 +1322,9 @@
           }
         }
       }
+    },
+    "To-Dos Flood" : {
+      "shouldTranslate" : false
     },
     "Total Studies" : {
       "localizations" : {

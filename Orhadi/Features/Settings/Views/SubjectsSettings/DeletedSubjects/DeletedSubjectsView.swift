@@ -18,10 +18,12 @@ struct DeletedSubjectsView: View {
     private var deletedSubjects: [Subject]
 
     @State private var selectedSubjects = Set<Subject>()
-
+    @State private var conflictingSubjects: [Subject] = []
     /// Delete Confirmation
     @State private var showDeleteAllConfirmation = false
     @State private var showDeleteSelectedConfirmation = false
+    /// Conflicts Alert
+    @State private var showConflictAlert = false
 
     var canHideTabBar: Bool {
         if #available(iOS 26, *) {
@@ -48,7 +50,6 @@ struct DeletedSubjectsView: View {
                 }
             }
         }
-        .orhadiListStyle()
         .navigationTitle("Deleted Subjects")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
@@ -64,6 +65,19 @@ struct DeletedSubjectsView: View {
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(selectedSubjects.isEmpty ? "Restore All" : "Restore") {
                     selectedSubjects.isEmpty ? restoreAllSubjects() : restoreSelectedSubjects()
+                }
+                .alert("Conflict Detected!", isPresented: $showConflictAlert) {
+                    Button("Close") {
+                        conflictingSubjects = []
+                    }
+                } message: {
+                    VStack(spacing: 10) {
+                        if conflictingSubjects.count > 1 {
+                            Text("Some of the subjects are conflicting with existing subjects. Please adjust them before recovering.")
+                        } else {
+                            Text("The selected subject conflicts with an existing subject. Please adjust it before recovering.")
+                        }
+                    }
                 }
 
                 Spacer()
@@ -135,15 +149,44 @@ struct DeletedSubjectsView: View {
 
     private func restoreAllSubjects() {
         for subject in deletedSubjects {
-            restore(subject)
+            let hasConflict = hasConflictsInTime(
+                id: subject.id,
+                start: subject.startTime,
+                end: subject.endTime,
+                schedule: subject.schedule)
+            
+            if hasConflict {
+                conflictingSubjects.append(subject)
+            } else {
+                restore(subject)
+            }
+        }
+        
+        if !conflictingSubjects.isEmpty {
+            showConflictAlert.toggle()
         }
     }
 
     private func restoreSelectedSubjects() {
         for subject in selectedSubjects {
-            restore(subject)
+            let hasConflict = hasConflictsInTime(
+                id: subject.id,
+                start: subject.startTime,
+                end: subject.endTime,
+                schedule: subject.schedule)
+            
+            if hasConflict {
+                conflictingSubjects.append(subject)
+            } else {
+                restore(subject)
+            }
         }
+        
         selectedSubjects.removeAll()
+
+        if !conflictingSubjects.isEmpty {
+            showConflictAlert.toggle()
+        }
     }
 
     private func restore(_ subject: Subject) {

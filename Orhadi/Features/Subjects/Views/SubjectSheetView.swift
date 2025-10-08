@@ -13,6 +13,7 @@ struct SubjectSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
+    @State private var showAlert: Bool = false
     @State private var name: String
     @State private var teacher: Teacher?
     @State private var schedule: Date
@@ -53,13 +54,77 @@ struct SubjectSheetView: View {
         NavigationStack {
             Form {
                 if !subject.isRecess {
-                    subjectInfoSection
-                    teacherSelectionSection
+                    Section {
+                        TextField("Name (ex: English)", text: $name)
+                            .autocorrectionDisabled()
+
+                        TextField("Place (ex: Room 101)", text: $place)
+                            .autocorrectionDisabled()
+                    }
+                    
+                    Section {
+                        TeacherPickerView(teacher: $teacher)
+                    }
                 }
 
-                timeSelectionSection
+                Section {
+                    Picker("Weekday", selection: Binding(
+                        get: { Calendar.current.component(.weekday, from: schedule) },
+                        set: { newWeekday in
+                            if let newDate = Calendar.current.date(bySetting: .weekday, value: newWeekday, of: schedule) {
+                                schedule = newDate
+                            }
+                        })
+                    ) {
+                        ForEach(1...7, id: \.self) { index in
+                            let name = Calendar.current.weekdaySymbols[index - 1].capitalized
+                            
+                            Text(name).tag(index)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+
+                    HStack {
+                        Text("From – To")
+
+                        Spacer()
+
+                        DatePicker(
+                            "From",
+                            selection: $startTime,
+                            displayedComponents: [.hourAndMinute]
+                        )
+                        .labelsHidden()
+                        .onChange(of: startTime) { oldDate, newDate in
+                            if newDate >= endTime {
+                                startTime = oldDate
+                            }
+                        }
+
+                        Text(" – ")
+
+                        DatePicker(
+                            "To",
+                            selection: $endTime,
+                            displayedComponents: [.hourAndMinute]
+                        )
+                        .labelsHidden()
+                        .onChange(of: endTime) { oldDate, newDate in
+                            /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
+                            if newDate <= startTime {
+                                endTime = oldDate
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Time")
+                }
+                .alert("Conflict Detected!", isPresented: $showAlert) {
+                    Button("Close") {}
+                } message: {
+                    Text("The selected time range conflicts with an existing subject. Please adjust it before saving.")
+                }
             }
-            .orhadiListStyle()
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -79,24 +144,33 @@ struct SubjectSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        dismiss()
-
-                        if isNew {
-                            addItem()
-                            UINotificationFeedbackGenerator()
-                                .notificationOccurred(.success)
+                        let hasConflict = hasConflictsInTime(
+                            id: isNew ? nil : subject.id,
+                            start: startTime,
+                            end: endTime,
+                            schedule: schedule)
+                        
+                        if hasConflict {
+                            showAlert.toggle()
+                            UINotificationFeedbackGenerator().notificationOccurred(.error)
                         } else {
-                            subject.name = name
-                            subject.teacher = teacher
-                            subject.schedule = schedule
-                            subject.startTime = startTime
-                            subject.endTime = endTime
-                            subject.place = place
-                            UIImpactFeedbackGenerator(style: .soft)
-                                .impactOccurred()
+                            dismiss()
+                            
+                            if isNew {
+                                addItem()
+                            } else {
+                                subject.name = name
+                                subject.teacher = teacher
+                                subject.schedule = schedule
+                                subject.startTime = startTime
+                                subject.endTime = endTime
+                                subject.place = place
+                                
+                                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                            }
+                            
+                            WidgetCenter.shared.reloadAllTimelines()
                         }
-
-                        WidgetCenter.shared.reloadAllTimelines()
                     } label: {
                         if #available(iOS 26, *) {
                             Label("Save", systemImage: "checkmark")
@@ -106,111 +180,36 @@ struct SubjectSheetView: View {
                                 .labelStyle(.titleOnly)
                         }
                     }
-                    .iOS26GlassEffect(tinted: true)
                     .disabled(name.isEmpty && !isRecess)
                 }
             }
         }
     }
 
-    private var subjectInfoSection: some View {
-        Section {
-            HStack {
-                Text("Name")
-                    .frame(width: 50, alignment: .leading)
-                TextField("English", text: $name)
-                    .autocorrectionDisabled()
-            }
-            HStack {
-                Text("Place")
-                    .frame(width: 50, alignment: .leading)
-                TextField("Room 101", text: $place)
-                    .autocorrectionDisabled()
-            }
-        }
-    }
-
-    private var teacherSelectionSection: some View {
-        Section {
-            TeacherPickerView(teacher: $teacher)
-        }
-    }
-
-    private var timeSelectionSection: some View {
-        Section {
-            Picker("Weekday", selection: Binding(
-                get: { Calendar.current.component(.weekday, from: schedule) },
-                set: { newWeekday in
-                    let currentWeekday = Calendar.current.component(.weekday, from: schedule)
-                    let diff = newWeekday - currentWeekday
-                    if let newDate = Calendar.current.date(byAdding: .day, value: diff, to: schedule) {
-                        schedule = newDate
-                    }
-                })
-            ) {
-                ForEach(1...7, id: \.self) { index in
-                    let name = Calendar.current.weekdaySymbols[index - 1].capitalized
-                    
-                    Text(name).tag(index)
-                }
-            }.pickerStyle(.navigationLink)
-
-            HStack {
-                Text("From – To")
-
-                Spacer()
-
-                DatePicker(
-                    "From",
-                    selection: $startTime,
-                    displayedComponents: [.hourAndMinute]
-                )
-                .labelsHidden()
-
-                Text(" – ")
-
-                DatePicker(
-                    "To",
-                    selection: $endTime,
-                    displayedComponents: [.hourAndMinute]
-                )
-                .labelsHidden()
-                .onChange(of: endTime) { _, newDate in
-                    /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
-                    if newDate <= startTime {
-                        endTime = startTime + 60
-                    }
-                }
-            }
-        } header: {
-            Text("Time")
-        }
-    }
-
     // MARK: - Functions
 
     private func addItem() {
-            if !isRecess {
-                /// Procura uma matéria no banco de dados.
-                let existingSubjects = try? context.fetch(
-                    FetchDescriptor<Subject>(
-                        predicate: #Predicate {
-                            $0.name == name
-                        }
+        if !isRecess {
+            /// Procura uma matéria no banco de dados.
+            let existingSubjects = try? context.fetch(
+                FetchDescriptor<Subject>(
+                    predicate: #Predicate {
+                        $0.name == name
+                    }
+                )
+            )
+            
+            /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
+            /// adiciona ele na Study Routine também.
+            if let existingSubjects, existingSubjects.isEmpty {
+                context.insert(
+                    SRStudy(
+                        name: name,
+                        studyDay: schedule
                     )
                 )
-
-                /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
-                /// adiciona ele na Study Routine também.
-                if let existingSubjects, existingSubjects.isEmpty {
-                    context.insert(
-                        SRStudy(
-                            name: name,
-                            studyDay: schedule
-                        )
-                    )
-                }
             }
+        }
 
         withAnimation {
             context.insert(
@@ -225,5 +224,7 @@ struct SubjectSheetView: View {
                 )
             )
         }
+        
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }

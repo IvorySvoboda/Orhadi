@@ -51,7 +51,7 @@ struct ToDosView: View {
                     )
                 }
             }
-            .orhadiPlainListStyle()
+            .listStyle(.plain)
             .navigationTitle("To-Do")
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y

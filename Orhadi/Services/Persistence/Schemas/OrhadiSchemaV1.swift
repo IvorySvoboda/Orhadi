@@ -68,8 +68,8 @@ enum OrhadiSchemaV1: VersionedSchema {
         var name: String = ""
         var teacher: Teacher?
         var schedule: Date = Date(timeIntervalSince1970: 0)
-        var startTime: Date = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date(timeIntervalSince1970: 0))!
-        var endTime: Date = Calendar.current.date(bySettingHour: 7, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!
+        var startTime: Date = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: Date(timeIntervalSince1970: 0))!
+        var endTime: Date = Calendar.current.date(bySettingHour: 0, minute: 50, second: 0, of: Date(timeIntervalSince1970: 0))!
         var place: String = ""
         var isRecess: Bool = false
         var isSubjectDeleted: Bool = false

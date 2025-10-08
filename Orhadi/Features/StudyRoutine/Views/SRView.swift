@@ -38,12 +38,12 @@ struct SRView: View {
         Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
     }
 
-    var studiesForToday: [SRStudy] {
-        studies.filter { $0.isForToday && !$0.hasStudiedThisWeek }
+    var studiesForTheSelectedDay: [SRStudy] {
+        studies.filter { Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay && !$0.hasStudiedThisWeek }
     }
 
     var canStartStudying: Bool {
-        !studiesForToday.isEmpty
+        !studiesForTheSelectedDay.isEmpty
     }
 
     // MARK: - Views
@@ -68,7 +68,7 @@ struct SRView: View {
                     )
                 }
             }
-            .orhadiPlainListStyle()
+            .listStyle(.plain)
             .navigationTitle("Study Routine")
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
@@ -120,7 +120,7 @@ struct SRView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        studyToAdd = SRStudy()
+                        studyToAdd = SRStudy(studyDay: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!)
                     } label: {
                         if #available(iOS 26, *) {
                             Image(systemName: "plus")
@@ -135,7 +135,7 @@ struct SRView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         if canStartStudying {
-                            studiesToStudy = studiesForToday
+                            studiesToStudy = studiesForTheSelectedDay
                             navigateToStudyingView = true
                         }
                     } label: {

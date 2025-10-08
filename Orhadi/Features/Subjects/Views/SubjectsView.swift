@@ -57,7 +57,7 @@ struct SubjectsView: View {
                     )
                 }
             }
-            .orhadiPlainListStyle()
+            .listStyle(.plain)
             .navigationTitle("Subjects")
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
@@ -132,7 +132,9 @@ struct SubjectsView: View {
                 ], id: \.title) { option in
                     Button(option.title) {
                         showConfirmationDialog.toggle()
-                        subjectToAdd = Subject(isRecess: option.isRecess)
+                        subjectToAdd = Subject(
+                            schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
+                            isRecess: option.isRecess)
                     }
                 }
             }
@@ -153,7 +155,9 @@ struct SubjectsView: View {
                         ], id: \.title) { option in
                             Button {
                                 showConfirmation.toggle()
-                                subjectToAdd = Subject(isRecess: option.isRecess)
+                                subjectToAdd = Subject(
+                                    schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
+                                    isRecess: option.isRecess)
                             } label: {
                                 Capsule()
                                     .fill(Color.accentColor)
@@ -189,5 +193,26 @@ struct SubjectsView: View {
                 }
             }
         }
+    }
+    
+    private func dupeSubject(_ subject: Subject) -> Subject {
+        let name = subject.name
+        let teacher = subject.teacher
+        let schedule = subject.schedule
+        let start = subject.startTime
+        let end = subject.endTime
+        let place = subject.place
+        let isRecess = subject.isRecess
+        
+        let dupedSubject = Subject(
+            name: name,
+            teacher: teacher,
+            schedule: schedule,
+            startTime: start,
+            endTime: end,
+            place: place,
+            isRecess: isRecess)
+        
+        return dupedSubject
     }
 }

@@ -64,7 +64,7 @@ struct ToDosSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

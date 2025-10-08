@@ -135,7 +135,7 @@ struct ToDosDataSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in

@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var context
     @Bindable var settings: Settings
 
     var body: some View {
@@ -27,11 +28,39 @@ struct SettingsView: View {
                         Label("Data", systemImage: "square.stack.3d.down.right.fill")
                     }
                 }
+                
+#if DEBUG
+                Section {
+                    NavigationLink {
+                        List {
+                            Button("Subjects Flood") {
+                                for index in 1...999 {
+                                    context.insert(Subject(name: "\(index * 1000)", isRecess: index > 500))
+                                }
+                            }
+                            
+                            Button("To-Dos Flood") {
+                                for index in 1...999 {
+                                    context.insert(ToDo(title: "\(index * 1000)", isCompleted: index > 500))
+                                }
+                            }
+                            
+                            Button("Studies Flood") {
+                                for index in 1...999 {
+                                    context.insert(SRStudy(name: "\(index * 1000)"))
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("Debug", systemImage: "ant.fill")
+                    }
+                }
+#endif // DEBUG
 
                 aboutSection
             }
             .navigationTitle("Settings")
-            .orhadiListStyle()
+            
         }
     }
 

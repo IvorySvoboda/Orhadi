@@ -39,12 +39,8 @@ struct SRSheetView: View {
         NavigationStack {
             Form {
                 Section {
-                    HStack {
-                        Text("Name")
-                            .frame(width: 50, alignment: .leading)
-                        TextField("English", text: $name)
-                            .autocorrectionDisabled()
-                    }
+                    TextField("Name (ex: English)", text: $name)
+                        .autocorrectionDisabled()
                 }
 
                 Section {
@@ -72,7 +68,7 @@ struct SRSheetView: View {
                     )
                 }
             }
-            .orhadiListStyle()
+            
             .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) Study")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -111,7 +107,6 @@ struct SRSheetView: View {
                                 .labelStyle(.titleOnly)
                         }
                     }
-                    .iOS26GlassEffect(tinted: true)
                     .disabled(name.isEmpty)
                 }
             }

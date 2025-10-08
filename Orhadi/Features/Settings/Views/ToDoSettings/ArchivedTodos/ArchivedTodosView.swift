@@ -42,7 +42,7 @@ struct ArchivedTodosView: View {
                     .tag(todo)
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Archived To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)

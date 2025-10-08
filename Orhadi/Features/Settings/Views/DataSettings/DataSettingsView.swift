@@ -56,7 +56,7 @@ struct DataSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
@@ -96,6 +96,9 @@ struct DataSettingsView: View {
                 let settings = try context.fetch(FetchDescriptor<Settings>())
 
                 for teacher in teachers { context.delete(teacher) }
+                
+                try context.save()
+                
                 for subject in subjects { context.delete(subject) }
                 for todo in todos { context.delete(todo) }
                 for study in studies { context.delete(study) }

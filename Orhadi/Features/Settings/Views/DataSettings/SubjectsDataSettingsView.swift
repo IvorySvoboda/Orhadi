@@ -126,7 +126,7 @@ struct SubjectsDataSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in

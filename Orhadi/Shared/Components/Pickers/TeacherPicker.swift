@@ -21,7 +21,7 @@ struct TeacherPickerView: View {
             HStack {
                 Label("Teacher", systemImage: "person.fill")
                 Spacer()
-                Text(teacher?.name ?? "None")
+                Text(teacher?.name ?? String(localized: "None"))
                     .foregroundColor(.secondary)
             }
         }
@@ -115,7 +115,7 @@ struct TeacherPicker: View {
                 .tint(Color.accentColor)
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Teacher")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in

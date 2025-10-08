@@ -49,7 +49,7 @@ struct DeletedTodosView: View {
                 
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Deleted To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)

@@ -10,10 +10,17 @@ import SwiftUI
 struct DeletedSubjectRowView: View {
     @Environment(\.modelContext) private var context
     @State private var showDeleteConfirmation = false
+    @State private var showConflictAlert = false
 
     let subject: Subject
 
     var body: some View {
+        let hasConflict = hasConflictsInTime(
+            id: subject.id,
+            start: subject.startTime,
+            end: subject.endTime,
+            schedule: subject.schedule)
+
         HStack {
             VStack(alignment: .leading) {
                 if subject.isRecess {
@@ -40,9 +47,13 @@ struct DeletedSubjectRowView: View {
                 Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
             }.tint(.red)
-
-            Button(role: .destructive) {
-                recoverSubject()
+            
+            Button(role: hasConflict ? nil : .destructive) {
+                if hasConflict {
+                    showConflictAlert.toggle()
+                } else {
+                    recoverSubject()
+                }
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -50,7 +61,11 @@ struct DeletedSubjectRowView: View {
         }
         .contextMenu {
             Button {
-                recoverSubject()
+                if hasConflict {
+                    showConflictAlert.toggle()
+                } else {
+                    recoverSubject()
+                }
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -71,6 +86,14 @@ struct DeletedSubjectRowView: View {
                 }
             }
         }
+        .alert("Conflict Detected!", isPresented: $showConflictAlert) {
+            Button("Close") {}
+        } message: {
+            VStack(spacing: 10) {
+                Text("The selected subject conflicts with an existing subject. Please adjust it before recovering.")
+            }
+        }
+
     }
 
     private func recoverSubject() {

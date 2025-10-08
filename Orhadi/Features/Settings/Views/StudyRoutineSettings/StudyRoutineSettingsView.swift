@@ -40,7 +40,7 @@ struct StudyRoutineSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -72,7 +72,7 @@ struct TeacherSheetView: View {
                         }
                 }
             }
-            .orhadiListStyle()
+            
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -115,7 +115,6 @@ struct TeacherSheetView: View {
                                 .labelStyle(.titleOnly)
                         }
                     }
-                    .iOS26GlassEffect(tinted: true)
                     .disabled(preventSave)
                 }
             }

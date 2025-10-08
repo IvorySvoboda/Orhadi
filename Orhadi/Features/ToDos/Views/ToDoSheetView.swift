@@ -163,7 +163,7 @@ struct ToDoSheetView: View {
                 }
                 
             }
-            .orhadiListStyle()
+            
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -220,7 +220,6 @@ struct ToDoSheetView: View {
                                 .labelStyle(.titleOnly)
                         }
                     }
-                    .iOS26GlassEffect(tinted: true)
                     .disabled(title.isEmpty)
                 }
             }

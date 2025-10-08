@@ -96,7 +96,6 @@ struct TeachersView: View {
                 }
             }
         }
-        .orhadiListStyle()
         .navigationTitle("Teachers")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in

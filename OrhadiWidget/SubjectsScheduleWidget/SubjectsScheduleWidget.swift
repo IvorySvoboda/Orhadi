@@ -161,7 +161,8 @@ struct SubjectScheduleWidgetRow: View {
                         .font(.headline)
                         .fontWeight(.semibold)
                 } else {
-                    Text("Interval".uppercased())
+                    Text("Interval")
+                        .textCase(.uppercase)
                         .font(.subheadline)
                         .fontWeight(.semibold)
                         .foregroundStyle(.secondary)

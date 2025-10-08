@@ -48,7 +48,7 @@ struct DeletedStudiesView: View {
                 
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Deleted Studies")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)

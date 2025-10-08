@@ -40,7 +40,7 @@ struct SubjectsSettingsView: View {
                 }
             }
         }
-        .orhadiListStyle()
+        
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
     }
