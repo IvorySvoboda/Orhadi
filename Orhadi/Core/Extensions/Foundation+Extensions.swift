@@ -56,7 +56,7 @@ extension TimeInterval {
         formatter.zeroFormattingBehavior = .pad
         return formatter.string(from: self) ?? "00:00"
     }
-    
+
     func durationString() -> String {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = self >= 3600 ? [.hour, .minute] : [.minute]
