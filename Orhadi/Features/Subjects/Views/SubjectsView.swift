@@ -19,8 +19,7 @@ struct SubjectsView: View {
     // MARK: - Properties
 
     @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
-    @State private var showConfirmationDialog: Bool = false /// iOS 18
-    @State private var showConfirmation: Bool = false /// iOS 26+
+    @State private var showConfirmation: Bool = false
     @State private var subjectToAdd: Subject?
     @State private var subjectToEdit: Subject?
     @State private var showTitle: Bool = false
@@ -46,7 +45,7 @@ struct SubjectsView: View {
             List {
                 WeekdayPickerBar(selectedDay: $selectedDay)
                     .opacity(showSelectedWeekday ? 0 : 1)
-                
+
                 ForEach(subjects.filter {
                     Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
                 }) { subject in
@@ -63,21 +62,21 @@ struct SubjectsView: View {
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
                 debugPrint(scrollOffset)
-                
+
                 let shouldShowTitle = scrollOffset >= -101
                 if shouldShowTitle != showTitle {
                     withAnimation(.smooth(duration: 0.5)) {
                         showTitle = shouldShowTitle
                     }
                 }
-                
+
                 let shouldShowWeekday = scrollOffset >= -56
                 if shouldShowWeekday != showSelectedWeekday {
                     withAnimation(.smooth(duration: 0.5)) {
                         showSelectedWeekday = shouldShowWeekday
                     }
                 }
-                
+
                 let shouldHideOverlay = scrollOffset < -300
                 if shouldHideOverlay != hideOverlay {
                     withAnimation(.smooth(duration: 0.5)) {
@@ -94,7 +93,7 @@ struct SubjectsView: View {
                             .opacity(showTitle ? 1 : 0)
                             .blur(radius: showTitle ? 0 : 3)
                             .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
-                        
+
                         Text(toolbarTitle)
                             .foregroundStyle(.tint)
                             .font(.caption)
@@ -107,11 +106,7 @@ struct SubjectsView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        if #available(iOS 26, *) {
-                            showConfirmation.toggle()
-                        } else {
-                            showConfirmationDialog.toggle()
-                        }
+                        showConfirmation.toggle()
                     } label: {
                         if #available(iOS 26, *) {
                             Image(systemName: "plus")
@@ -124,17 +119,12 @@ struct SubjectsView: View {
                     }
                 }
             }
-            .overlay { overlay }
-            .confirmationDialog("Add", isPresented: $showConfirmationDialog) {
-                ForEach([
-                    (title: "Add Subejct", isRecess: false),
-                    (title: "Add Interval", isRecess: true)
-                ], id: \.title) { option in
-                    Button(option.title) {
-                        showConfirmationDialog.toggle()
-                        subjectToAdd = Subject(
-                            schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
-                            isRecess: option.isRecess)
+            .overlay {
+                if isTodayEmpty, !hideOverlay {
+                    ContentUnavailableView {
+                        Label("No Subjects", systemImage: "book")
+                    } description: {
+                        Text("No subjects today. How about taking some time to rest a little?")
                     }
                 }
             }
@@ -159,15 +149,27 @@ struct SubjectsView: View {
                                     schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
                                     isRecess: option.isRecess)
                             } label: {
-                                Capsule()
-                                    .fill(Color.accentColor)
-                                    .frame(maxWidth: .infinity, minHeight: 45)
-                                    .overlay {
-                                        Text(option.title.uppercased())
-                                            .font(.headline)
-                                            .fontWeight(.semibold)
-                                            .foregroundStyle(Color.orhadiSecondaryForeground)
-                                    }
+                                if #available(iOS 26, *) {
+                                    Capsule()
+                                        .fill(Color.accentColor)
+                                        .frame(maxWidth: .infinity, minHeight: 45)
+                                        .overlay {
+                                            Text(option.title.uppercased())
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(Color.orhadiSecondaryForeground)
+                                        }
+                                } else {
+                                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                        .fill(Color.accentColor)
+                                        .frame(maxWidth: .infinity, minHeight: 45)
+                                        .overlay {
+                                            Text(option.title.uppercased())
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundStyle(Color.orhadiSecondaryForeground)
+                                        }
+                                }
                             }
                         }
                     }
@@ -181,38 +183,5 @@ struct SubjectsView: View {
                 WidgetCenter.shared.reloadAllTimelines()
             }
         }
-    }
-
-    private var overlay: some View {
-        Group {
-            if isTodayEmpty, !hideOverlay {
-                ContentUnavailableView {
-                    Label("No Subjects", systemImage: "book")
-                } description: {
-                    Text("No subjects today. How about taking some time to rest a little?")
-                }
-            }
-        }
-    }
-    
-    private func dupeSubject(_ subject: Subject) -> Subject {
-        let name = subject.name
-        let teacher = subject.teacher
-        let schedule = subject.schedule
-        let start = subject.startTime
-        let end = subject.endTime
-        let place = subject.place
-        let isRecess = subject.isRecess
-        
-        let dupedSubject = Subject(
-            name: name,
-            teacher: teacher,
-            schedule: schedule,
-            startTime: start,
-            endTime: end,
-            place: place,
-            isRecess: isRecess)
-        
-        return dupedSubject
     }
 }

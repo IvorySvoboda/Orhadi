@@ -20,7 +20,7 @@ struct WeekdayPickerBar: View {
                         let isSelected = index == selectedDay
 
                         Button {
-                            withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
+                            withAnimation(.interactiveSpring(response: 0.75, dampingFraction: 0.75)) {
                                 selectedDay = index
                                 proxy.scrollTo(index, anchor: .center)
                             }
@@ -49,7 +49,7 @@ struct WeekdayPickerBar: View {
                 .padding(.horizontal)
                 .frame(height: 44)
                 .onAppear {
-                    withAnimation(.interactiveSpring(response: 0.8, dampingFraction: 0.75)) {
+                    withAnimation(.interactiveSpring(response: 0.75, dampingFraction: 0.75)) {
                         proxy.scrollTo(selectedDay, anchor: .center)
                     }
                 }

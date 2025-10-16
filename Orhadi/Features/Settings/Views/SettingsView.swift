@@ -51,6 +51,7 @@ struct SettingsView: View {
                                 }
                             }
                         }
+                        .navigationTitle("Debug")
                     } label: {
                         Label("Debug", systemImage: "ant.fill")
                     }
@@ -138,11 +139,11 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                Spacer()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .listRowInsets(
-                EdgeInsets(
-                    top: 5, leading: 10, bottom: 5, trailing: 10))
+                EdgeInsets(top: 5, leading: 10, bottom: 5, trailing: 10)
+            )
         } header: {
             Text("About")
         }

@@ -74,16 +74,6 @@
         }
       }
     },
-    "Add" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adicionar"
-          }
-        }
-      }
-    },
     "Add Interval" : {
       "localizations" : {
         "pt-BR" : {
@@ -1148,7 +1138,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A matérias selecionada está em conflito com uma matéria existente. Ajuste-a antes de restaurá-la."
+            "value" : "A matéria selecionada está em conflito com uma matéria existente. Ajuste-a antes de restaurá-la."
           }
         }
       }
