@@ -18,11 +18,11 @@ struct SRSheetView: View {
     @Bindable var study: SRStudy
     var isNew: Bool
     
-    private var navigationTitle: String {
+    private var navigationTitle: Text {
         if isNew {
-            return "New Study"
+            return Text("New Study")
         } else {
-            return "Edit Study"
+            return Text("Edit Study")
         }
     }
 
@@ -47,17 +47,17 @@ struct SRSheetView: View {
                     Picker("Weekday", selection: Binding(
                         get: { Calendar.current.component(.weekday, from: studyDay) },
                         set: { newWeekday in
-                            let currentWeekday = Calendar.current.component(.weekday, from: studyDay)
-                            let diff = newWeekday - currentWeekday
-                            if let newDate = Calendar.current.date(byAdding: .day, value: diff, to: studyDay) {
+                            if let newDate = Calendar.current.nextDate(
+                                after: studyDay,
+                                matching: DateComponents(weekday: newWeekday),
+                                matchingPolicy: .nextTimePreservingSmallerComponents
+                            ) {
                                 studyDay = newDate
                             }
                         })
                     ) {
-                        ForEach(1...7, id: \.self) { index in
-                            let name = Calendar.current.weekdaySymbols[index - 1].capitalized
-                            
-                            Text(name).tag(index)
+                        ForEach(Array(Calendar.current.weekdaySymbols.enumerated()), id: \.offset) { index, name in
+                            Text(name.capitalized).tag(index + 1)
                         }
                     }.pickerStyle(.navigationLink)
 
@@ -68,58 +68,53 @@ struct SRSheetView: View {
                     )
                 }
             }
-            
-            .navigationTitle("\(isNew ? String(localized: "New") : String(localized: "Edit")) Study")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.titleOnly)
-                        }
+                    Button(role: .cancel, action: { dismiss() }) {
+                        Label("Cancel", systemImage: "xmark")
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        if isNew {
-                            addStudy()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } else {
-                            study.name = name
-                            study.studyDay = studyDay
-                            study.studyTime = studyTime
-                            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-                        }
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.titleOnly)
-                        }
-                    }
-                    .disabled(name.isEmpty)
+                    Button(action: trySave) {
+                        Label("Save", systemImage: "checkmark")
+                    }.disabled(name.isEmpty)
                 }
             }
         }
     }
 
-    private func addStudy() {
+    // MARK: - Functions
+
+    private func trySave() {
+        if isNew {
+            insertNewStudy()
+        } else {
+            applyStudyChanges()
+        }
+
+        dismiss()
+    }
+
+    private func insertNewStudy() {
         withAnimation {
             context.insert(SRStudy(
-                name: name,
+                name: name.trimmingCharacters(in: .whitespaces),
                 studyDay: studyDay,
                 studyTime: studyTime
             ))
         }
+
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+
+    private func applyStudyChanges() {
+        study.name = name.trimmingCharacters(in: .whitespaces)
+        study.studyDay = studyDay
+        study.studyTime = studyTime
+
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

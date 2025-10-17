@@ -19,11 +19,11 @@ struct TeacherSheetView: View {
     @Bindable var teacher: Teacher
     var isNew: Bool
     
-    private var navigationTitle: String {
+    private var navigationTitle: Text {
         if isNew {
-            return "New Teacher"
+            return Text("New Teacher")
         } else {
-            return "Edit Teacher"
+            return Text("Edit Teacher")
         }
     }
 
@@ -65,59 +65,56 @@ struct TeacherSheetView: View {
                                 preventSave = false
                             }
                         }
+
                     TextField("\(String(localized: "email@exemple.com"))", text: $email)
                         .autocorrectionDisabled()
-                        .onChange(of: email) { _, newEmail in
-                            
-                        }
                 }
             }
-            
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.titleOnly)
-                        }
+                    Button(role: .cancel, action: { dismiss() }) {
+                        Label("Cancel", systemImage: "xmark")
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        withAnimation {
-                            /// Atualiza as informações do professor
-                            teacher.name = name.trimmingCharacters(in: .whitespaces)
-                            teacher.email = email.trimmingCharacters(in: .whitespaces)
-
-                            /// Se for um novo professor, adiciona ele no banco de dados.
-                            if isNew {
-                                context.insert(teacher)
-                                UINotificationFeedbackGenerator().notificationOccurred(.success)
-                            } else {
-                                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-                            }
-                        }
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.titleOnly)
-                        }
-                    }
-                    .disabled(preventSave)
+                    Button(action: trySave) {
+                        Label("Save", systemImage: "checkmark")
+                    }.disabled(preventSave)
                 }
             }
         }
+    }
+
+    // MARK: - Functions
+
+    private func trySave() {
+        if isNew {
+            insertNewTeacher()
+        } else {
+            applyTeacherChanges()
+        }
+
+        dismiss()
+    }
+
+    private func insertNewTeacher() {
+        withAnimation {
+            context.insert(Teacher(
+                name: name.trimmingCharacters(in: .whitespaces),
+                email: email.trimmingCharacters(in: .whitespaces)
+            ))
+
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
+    }
+
+    private func applyTeacherChanges() {
+        teacher.name = name.trimmingCharacters(in: .whitespaces)
+        teacher.email = email.trimmingCharacters(in: .whitespaces)
+
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

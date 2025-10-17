@@ -23,11 +23,11 @@ struct ToDoSheetView: View {
     @Bindable var todo: ToDo
     var isNew: Bool
     
-    private var navigationTitle: String {
+    private var navigationTitle: Text {
         if isNew {
-            return "New To-Do"
+            return Text("New To-Do")
         } else {
-            return "Edit To-Do"
+            return Text("Edit To-Do")
         }
     }
 
@@ -168,67 +168,36 @@ struct ToDoSheetView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.titleOnly)
-                        }
+                    Button(role: .cancel, action: { dismiss() }) {
+                        Label("Cancel", systemImage: "xmark")
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        if isNew {
-                            addItem()
-                            UINotificationFeedbackGenerator().notificationOccurred(.success)
-                        } else {
-                            todo.title = title
-                            todo.info = info
-                            todo.dueDate = dueDate
-                            todo.priority = priority
-                            todo.withHour = withHour
-
-                            /// Se não for uma tarefa nova, atualiza as notificações agendadas.
-                            NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
-
-                            if !todo.withHour {
-                                todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
-                            }
-
-                            /// Sempre respeitando as preferências do usuário.
-                            if settings.scheduleNotifications {
-                                todo.scheduleNotification()
-                            }
-
-                            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-                        }
-
-                        WidgetCenter.shared.reloadAllTimelines()
-
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.titleOnly)
-                        }
-                    }
-                    .disabled(title.isEmpty)
+                    Button(action: trySave) {
+                        Label("Save", systemImage: "checkmark")
+                    }.disabled(title.isEmpty)
                 }
             }
         }
     }
 
-    private func addItem() {
+    // MARK: - Functions
+
+    private func trySave() {
+        if isNew {
+            insertNewToDo()
+        } else {
+            applyToDoChanges()
+        }
+
+        WidgetCenter.shared.reloadAllTimelines()
+        dismiss()
+    }
+
+    private func insertNewToDo() {
         let newTodo = ToDo(
-            title: title,
+            title: title.trimmingCharacters(in: .whitespaces),
             info: info,
             dueDate: dueDate,
             withHour: withHour,
@@ -246,5 +215,29 @@ struct ToDoSheetView: View {
         withAnimation {
             modelContext.insert(newTodo)
         }
+
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+
+    private func applyToDoChanges() {
+        todo.title = title.trimmingCharacters(in: .whitespaces)
+        todo.info = info
+        todo.dueDate = dueDate
+        todo.priority = priority
+        todo.withHour = withHour
+
+        /// Se não for uma tarefa nova, atualiza as notificações agendadas.
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
+
+        if !todo.withHour {
+            todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
+        }
+
+        /// Sempre respeitando as preferências do usuário.
+        if settings.scheduleNotifications {
+            todo.scheduleNotification()
+        }
+
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

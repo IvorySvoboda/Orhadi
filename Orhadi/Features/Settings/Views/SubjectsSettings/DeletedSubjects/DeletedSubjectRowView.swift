@@ -14,13 +14,17 @@ struct DeletedSubjectRowView: View {
 
     let subject: Subject
 
-    var body: some View {
-        let hasConflict = hasConflictsInTime(
+    var hasConflictWithOthersSubjects: Bool {
+        return SubjectConflictVerifier.hasConflictWithOtherSubjects(
             id: subject.id,
             start: subject.startTime,
             end: subject.endTime,
-            schedule: subject.schedule)
+            schedule: subject.schedule,
+            context:  context
+        )
+    }
 
+    var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 if subject.isRecess {
@@ -48,8 +52,8 @@ struct DeletedSubjectRowView: View {
                     .labelStyle(.iconOnly)
             }.tint(.red)
             
-            Button(role: hasConflict ? nil : .destructive) {
-                if hasConflict {
+            Button(role: hasConflictWithOthersSubjects ? nil : .destructive) {
+                if hasConflictWithOthersSubjects {
                     showConflictAlert.toggle()
                 } else {
                     recoverSubject()
@@ -61,7 +65,7 @@ struct DeletedSubjectRowView: View {
         }
         .contextMenu {
             Button {
-                if hasConflict {
+                if hasConflictWithOthersSubjects {
                     showConflictAlert.toggle()
                 } else {
                     recoverSubject()

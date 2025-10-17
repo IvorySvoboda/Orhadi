@@ -20,16 +20,15 @@ struct SubjectSheetView: View {
     @State private var startTime: Date
     @State private var endTime: Date
     @State private var place: String
-    @State private var isRecess: Bool
 
     @Bindable var subject: Subject
     var isNew: Bool
 
-    private var navigationTitle: String {
+    private var navigationTitle: Text {
         if isNew {
-            return "New \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))"
+            return Text("New \(subject.isRecess ? Text("Interval") : Text("Subject"))")
         } else {
-            return "Edit \(subject.isRecess ? String(localized: "Interval") : String(localized: "Subject"))"
+            return Text("Edit \(subject.isRecess ? Text("Interval") : Text("Subject"))")
         }
     }
 
@@ -45,7 +44,6 @@ struct SubjectSheetView: View {
         _startTime = State(initialValue: subject.startTime)
         _endTime = State(initialValue: subject.endTime)
         _place = State(initialValue: subject.place)
-        _isRecess = State(initialValue: subject.isRecess)
     }
 
     // MARK: - Views
@@ -61,7 +59,7 @@ struct SubjectSheetView: View {
                         TextField("Place (ex: Room 101)", text: $place)
                             .autocorrectionDisabled()
                     }
-                    
+
                     Section {
                         TeacherPickerView(teacher: $teacher)
                     }
@@ -71,160 +69,103 @@ struct SubjectSheetView: View {
                     Picker("Weekday", selection: Binding(
                         get: { Calendar.current.component(.weekday, from: schedule) },
                         set: { newWeekday in
-                            if let newDate = Calendar.current.date(bySetting: .weekday, value: newWeekday, of: schedule) {
+                            if let newDate = Calendar.current.nextDate(
+                                after: schedule,
+                                matching: DateComponents(weekday: newWeekday),
+                                matchingPolicy: .nextTimePreservingSmallerComponents
+                            ) {
                                 schedule = newDate
                             }
                         })
                     ) {
-                        ForEach(1...7, id: \.self) { index in
-                            let name = Calendar.current.weekdaySymbols[index - 1].capitalized
-                            
-                            Text(name).tag(index)
+                        ForEach(Array(Calendar.current.weekdaySymbols.enumerated()), id: \.offset) { index, name in
+                            Text(name.capitalized).tag(index + 1)
                         }
-                    }
-                    .pickerStyle(.navigationLink)
+                    }.pickerStyle(.navigationLink)
 
-                    HStack {
-                        Text("From – To")
+                    DatePicker("Start", selection: $startTime, displayedComponents: [.hourAndMinute])
 
-                        Spacer()
-
-                        DatePicker(
-                            "From",
-                            selection: $startTime,
-                            displayedComponents: [.hourAndMinute]
-                        )
-                        .labelsHidden()
-                        .onChange(of: startTime) { oldDate, newDate in
-                            if newDate >= endTime {
-                                startTime = oldDate
-                            }
-                        }
-
-                        Text(" – ")
-
-                        DatePicker(
-                            "To",
-                            selection: $endTime,
-                            displayedComponents: [.hourAndMinute]
-                        )
-                        .labelsHidden()
-                        .onChange(of: endTime) { oldDate, newDate in
-                            /// se a nova data for menor que a data de inicio, define `endTime` para `startTime + 60 (1 minuto)`
-                            if newDate <= startTime {
-                                endTime = oldDate
-                            }
-                        }
-                    }
+                    DatePicker("End", selection: $endTime, displayedComponents: [.hourAndMinute])
                 } header: {
-                    Text("Time")
-                }
-                .alert("Conflict Detected!", isPresented: $showAlert) {
-                    Button("Close") {}
-                } message: {
-                    Text("The selected time range conflicts with an existing subject. Please adjust it before saving.")
+                    Text("Schedule")
                 }
             }
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel) {
-                        dismiss()
-                    } label: {
-                        if #available(iOS 26, *) {
+                    Button(role: .cancel, action: { dismiss() }) {
                             Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Cancel", systemImage: "xmark")
-                                .labelStyle(.titleOnly)
-                        }
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        let hasConflict = hasConflictsInTime(
-                            id: isNew ? nil : subject.id,
-                            start: startTime,
-                            end: endTime,
-                            schedule: schedule)
-                        
-                        if hasConflict {
-                            showAlert.toggle()
-                            UINotificationFeedbackGenerator().notificationOccurred(.error)
-                        } else {
-                            dismiss()
-                            
-                            if isNew {
-                                addItem()
-                            } else {
-                                subject.name = name
-                                subject.teacher = teacher
-                                subject.schedule = schedule
-                                subject.startTime = startTime
-                                subject.endTime = endTime
-                                subject.place = place
-                                
-                                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-                            }
-                            
-                            WidgetCenter.shared.reloadAllTimelines()
-                        }
-                    } label: {
-                        if #available(iOS 26, *) {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.iconOnly)
-                        } else {
-                            Label("Save", systemImage: "checkmark")
-                                .labelStyle(.titleOnly)
-                        }
-                    }
-                    .disabled(name.isEmpty && !isRecess)
+                    Button(action: trySave) {
+                        Label("Save", systemImage: "checkmark")
+                    }.disabled(name.isEmpty && !subject.isRecess)
                 }
+            }
+            .alert("Schedule Conflict", isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("The selected time range is invalid or overlaps with another schedule. Please adjust it before saving.")
             }
         }
     }
 
     // MARK: - Functions
 
-    private func addItem() {
-        if !isRecess {
-            /// Procura uma matéria no banco de dados.
-            let existingSubjects = try? context.fetch(
-                FetchDescriptor<Subject>(
-                    predicate: #Predicate {
-                        $0.name == name
-                    }
-                )
-            )
-            
-            /// Se não tiver nenhuma matéria com o mesmo nome da matéria a ser adicionada,
-            /// adiciona ele na Study Routine também.
-            if let existingSubjects, existingSubjects.isEmpty {
-                context.insert(
-                    SRStudy(
-                        name: name,
-                        studyDay: schedule
-                    )
-                )
-            }
+    private func trySave() {
+        let hasConflict = SubjectConflictVerifier.hasConflict(
+            id: isNew ? nil : subject.id,
+            start: startTime,
+            end: endTime,
+            schedule: schedule,
+            context: context
+        )
+
+        if hasConflict {
+            showAlert.toggle()
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+            return
         }
 
+        if isNew {
+            insertNewSubject()
+        } else {
+            applySubjectChanges()
+        }
+
+        WidgetCenter.shared.reloadAllTimelines()
+        dismiss()
+    }
+
+    private func insertNewSubject() {
         withAnimation {
             context.insert(
                 Subject(
-                    name: name,
+                    name: name.trimmingCharacters(in: .whitespaces),
                     teacher: teacher,
                     schedule: schedule,
                     startTime: startTime,
                     endTime: endTime,
-                    place: place,
-                    isRecess: isRecess
+                    place: place.trimmingCharacters(in: .whitespaces),
+                    isRecess: subject.isRecess
                 )
             )
         }
-        
+
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+
+    private func applySubjectChanges() {
+        subject.name = name.trimmingCharacters(in: .whitespaces)
+        subject.teacher = teacher
+        subject.schedule = schedule
+        subject.startTime = startTime
+        subject.endTime = endTime
+        subject.place = place.trimmingCharacters(in: .whitespaces)
+
+        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

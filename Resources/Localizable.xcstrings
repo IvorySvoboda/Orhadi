@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    " – " : {
-      "shouldTranslate" : false
-    },
     "%@" : {
       "shouldTranslate" : false
     },
@@ -19,6 +16,7 @@
       "shouldTranslate" : false
     },
     "%@ Study" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -507,12 +505,62 @@
         }
       }
     },
+    "Edit %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar %@"
+          }
+        }
+      }
+    },
+    "Edit Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Estudo"
+          }
+        }
+      }
+    },
+    "Edit Teacher" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Professor(a)"
+          }
+        }
+      }
+    },
+    "Edit To-Do" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Tarefa"
+          }
+        }
+      }
+    },
     "email@exemple.com" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "email@exemplo.com"
+          }
+        }
+      }
+    },
+    "End" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FIm"
           }
         }
       }
@@ -543,26 +591,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Exportar Tarefas"
-          }
-        }
-      }
-    },
-    "From" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das"
-          }
-        }
-      }
-    },
-    "From – To" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das – Até"
           }
         }
       }
@@ -707,12 +735,22 @@
         }
       }
     },
-    "New" : {
+    "New %@" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Novo"
+            "value" : "Nova %@"
+          }
+        }
+      }
+    },
+    "New Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Novo Estudo"
           }
         }
       }
@@ -723,6 +761,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Novo Professor"
+          }
+        }
+      }
+    },
+    "New To-Do" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova Tarefa"
           }
         }
       }
@@ -847,6 +895,16 @@
         }
       }
     },
+    "OK" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
     "Orhadi" : {
       "localizations" : {
         "pt-BR" : {
@@ -967,6 +1025,26 @@
         }
       }
     },
+    "Schedule" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horário"
+          }
+        }
+      }
+    },
+    "Schedule Conflict" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conflito de Horário"
+          }
+        }
+      }
+    },
     "Schedule Notifications" : {
       "localizations" : {
         "pt-BR" : {
@@ -1012,7 +1090,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configurações"
+            "value" : "Ajustes"
           }
         }
       }
@@ -1023,6 +1101,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Algumas das matérias estão em conflito com matérias existentes. Ajuste-as antes de restaurá-las."
+          }
+        }
+      }
+    },
+    "Start" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início"
           }
         }
       }
@@ -1143,12 +1231,12 @@
         }
       }
     },
-    "The selected time range conflicts with an existing subject. Please adjust it before saving." : {
+    "The selected time range is invalid or overlaps with another schedule. Please adjust it before saving." : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Há um conflito de horário com uma matéria existente. Ajuste antes de salvar."
+            "value" : "O intervalo de horário selecionado é inválido ou conflita com outro horário. Ajuste-o antes de salvar."
           }
         }
       }
@@ -1279,16 +1367,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hora"
-          }
-        }
-      }
-    },
-    "To" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Até"
           }
         }
       }

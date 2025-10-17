@@ -125,8 +125,9 @@ struct DeletedSubjectsView: View {
 
     private func cleanExpiredSubjects() {
         for subject in deletedSubjects {
-            guard let removalDate = Calendar.current.date(byAdding: .day, value: 30, to: subject.deletedAt ?? .now),
-                  removalDate <= .now else { continue }
+            guard let removalDate = Calendar.current.date(byAdding: .day, value: 30, to: subject.deletedAt ?? .now), removalDate <= .now else {
+                continue
+            }
 
             withTransaction(Transaction(animation: nil)) {
                 context.delete(subject)
@@ -149,13 +150,15 @@ struct DeletedSubjectsView: View {
 
     private func restoreAllSubjects() {
         for subject in deletedSubjects {
-            let hasConflict = hasConflictsInTime(
+            let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
                 id: subject.id,
                 start: subject.startTime,
                 end: subject.endTime,
-                schedule: subject.schedule)
-            
-            if hasConflict {
+                schedule: subject.schedule,
+                context:  context
+            )
+
+            if hasConflictWithOthersSubjects {
                 conflictingSubjects.append(subject)
             } else {
                 restore(subject)
@@ -169,13 +172,15 @@ struct DeletedSubjectsView: View {
 
     private func restoreSelectedSubjects() {
         for subject in selectedSubjects {
-            let hasConflict = hasConflictsInTime(
+            let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
                 id: subject.id,
                 start: subject.startTime,
                 end: subject.endTime,
-                schedule: subject.schedule)
-            
-            if hasConflict {
+                schedule: subject.schedule,
+                context:  context
+            )
+
+            if hasConflictWithOthersSubjects {
                 conflictingSubjects.append(subject)
             } else {
                 restore(subject)

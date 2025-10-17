@@ -8,55 +8,49 @@
 import SwiftData
 import Foundation
 
-func hasConflictsInTime(id: String?, start: Date, end: Date, schedule: Date) -> Bool {
-    let container = try? createContainer()
-
-    guard let container else { return false }
-
-    let context = ModelContext(container)
-
-    let subjects = try? context.fetch(FetchDescriptor<Subject>(predicate: #Predicate {
-        !$0.isSubjectDeleted
-    }))
-
-    guard let subjects else { return false }
-
-    let selectedWeekday = Calendar.current.component(.weekday, from: schedule)
-    let sameScheduleSubjects = subjects.filter { other in
-        let otherWeekday = Calendar.current.component(.weekday, from: other.schedule)
-        return otherWeekday == selectedWeekday && (id != nil ? other.id != id : true)
-    }
-
-    let conflictSubjects = sameScheduleSubjects.filter { other in
-        let conflictTest = (other.startTime <= start && other.endTime > start) ||
-        (other.startTime < end && other.endTime >= end) ||
-        (start <= other.startTime && end >= other.endTime)
-
-        if conflictTest {
-            debugPrint((other.startTime <= start && other.endTime > start))
-            debugPrint((other.startTime < end && other.endTime >= end))
-            debugPrint((start <= other.startTime && end >= other.endTime))
+class SubjectConflictVerifier {
+    static func hasConflictWithOtherSubjects(
+        id: String?,
+        start: Date,
+        end: Date,
+        schedule: Date,
+        context: ModelContext
+    ) -> Bool {
+        guard let subjects = try? context.fetch(FetchDescriptor<Subject>(predicate: #Predicate { !$0.isSubjectDeleted })) else {
+            return false
         }
 
-        return conflictTest
+        let sameScheduleSubjects = subjects.filter { other in
+            return Calendar.current.isDate(schedule, equalTo: other.schedule, toGranularity: .weekday) && (id != nil ? other.id != id : true)
+        }
+
+        let conflictSubjects = sameScheduleSubjects.filter { other in
+            (start < other.endTime) && (end > other.startTime)
+        }
+
+        return !conflictSubjects.isEmpty
     }
 
-#if DEBUG
-    debugPrint("Subjects:")
-    for subject in subjects {
-        debugPrint(subject.name)
+    static func hasInternalConflict(start: Date, end: Date) -> Bool {
+        return end <= start
     }
 
-    debugPrint("Same schedule subjects:")
-    for sameScheduleSubject in sameScheduleSubjects {
-        debugPrint(sameScheduleSubject.name)
+    static func hasConflict(
+        id: String?,
+        start: Date,
+        end: Date,
+        schedule: Date,
+        context: ModelContext
+    ) -> Bool {
+        return hasConflictWithOtherSubjects(
+            id: id,
+            start: start,
+            end: end,
+            schedule: schedule,
+            context: context
+        ) || hasInternalConflict(
+            start: start,
+            end: end
+        )
     }
-
-    debugPrint("Conflict Subjects")
-    for conflictSubject in conflictSubjects {
-        debugPrint(conflictSubject.name)
-    }
-#endif // DEBUG
-
-    return !conflictSubjects.isEmpty
 }
