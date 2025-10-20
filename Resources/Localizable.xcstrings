@@ -181,6 +181,9 @@
         }
       }
     },
+    "Bold" : {
+
+    },
     "Break Time" : {
       "localizations" : {
         "pt-BR" : {
@@ -614,6 +617,9 @@
         }
       }
     },
+    "Highlight" : {
+
+    },
     "Import Study Routine" : {
       "localizations" : {
         "pt-BR" : {
@@ -693,6 +699,9 @@
           }
         }
       }
+    },
+    "Italic" : {
+
     },
     "Light" : {
       "localizations" : {
@@ -1184,6 +1193,9 @@
         }
       }
     },
+    "Strikethrough" : {
+
+    },
     "Studies" : {
       "localizations" : {
         "pt-BR" : {
@@ -1482,6 +1494,9 @@
           }
         }
       }
+    },
+    "Underline" : {
+
     },
     "Version: %@ (%@)" : {
       "localizations" : {

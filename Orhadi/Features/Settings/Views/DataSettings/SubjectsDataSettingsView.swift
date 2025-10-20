@@ -126,7 +126,6 @@ struct SubjectsDataSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
@@ -293,4 +292,3 @@ struct SubjectsDataSettingsView: View {
         }
     }
 }
-

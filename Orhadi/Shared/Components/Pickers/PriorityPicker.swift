@@ -76,7 +76,6 @@ struct PriorityPicker: View {
                 }.tint(.font)
             }
         }
-        
         .navigationTitle("Priority")
         .navigationBarTitleDisplayMode(.inline)
     }

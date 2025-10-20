@@ -100,7 +100,7 @@ struct SubjectRow: View {
             }
         }
     }
-    
+
     private var intervalRow: some View {
         HStack {
             Text("Interval")
@@ -114,7 +114,7 @@ struct SubjectRow: View {
                 .fontWeight(.semibold)
         }
     }
-    
+
     private var subjectRow: some View {
         Group {
             Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
@@ -122,7 +122,7 @@ struct SubjectRow: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .frame(maxWidth: 200, alignment: .leading)
-            
+
             VStack(alignment: .leading, spacing: 3) {
                 if let teacher = subject.teacher {
                     if !teacher.name.isEmpty {
@@ -130,18 +130,18 @@ struct SubjectRow: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
-                    
+
                     if !teacher.email.isEmpty {
                         CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
-                
+
                 CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                
+
                 if !subject.place.isEmpty {
                     CustomLabel("\(subject.place)", systemImage: "building.2.fill")
                         .font(.caption)

@@ -40,7 +40,6 @@ struct SubjectsSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
     }

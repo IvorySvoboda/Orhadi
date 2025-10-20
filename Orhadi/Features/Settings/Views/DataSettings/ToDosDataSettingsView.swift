@@ -135,7 +135,6 @@ struct ToDosDataSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in

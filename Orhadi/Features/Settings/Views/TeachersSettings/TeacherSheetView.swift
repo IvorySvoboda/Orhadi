@@ -18,7 +18,7 @@ struct TeacherSheetView: View {
 
     @Bindable var teacher: Teacher
     var isNew: Bool
-    
+
     private var navigationTitle: LocalizedStringKey {
         if isNew {
             return "New Teacher"

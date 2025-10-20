@@ -159,7 +159,7 @@ struct DeletedSubjectsView: View {
                     start: subject.startTime,
                     end: subject.endTime,
                     schedule: subject.schedule,
-                    context:  context
+                    context: context
                 )
 
                 if hasConflictWithOthersSubjects {
@@ -179,7 +179,7 @@ struct DeletedSubjectsView: View {
                     start: subject.startTime,
                     end: subject.endTime,
                     schedule: subject.schedule,
-                    context:  context
+                    context: context
                 )
 
                 if hasConflictWithOthersSubjects {

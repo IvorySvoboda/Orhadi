@@ -74,21 +74,21 @@ struct SRView: View {
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
                 debugPrint(scrollOffset)
-                
+
                 let shouldShowTitle = scrollOffset >= -101
                 if shouldShowTitle != showTitle {
                     withAnimation(.smooth(duration: 0.5)) {
                         showTitle = shouldShowTitle
                     }
                 }
-                
+
                 let shouldShowWeekday = scrollOffset >= -56
                 if shouldShowWeekday != showSelectedWeekday {
                     withAnimation(.smooth(duration: 0.5)) {
                         showSelectedWeekday = shouldShowWeekday
                     }
                 }
-                
+
                 let shouldHideOverlay = scrollOffset < -300
                 if shouldHideOverlay != hideOverlay {
                     withAnimation(.smooth(duration: 0.5)) {
@@ -106,7 +106,7 @@ struct SRView: View {
                             .opacity(showTitle ? 1 : 0)
                             .blur(radius: showTitle ? 0 : 3)
                             .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
-                        
+
                         Text(toolbarTitle)
                             .foregroundStyle(.tint)
                             .font(.caption)

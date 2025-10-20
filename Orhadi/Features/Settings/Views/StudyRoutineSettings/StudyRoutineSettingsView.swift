@@ -40,7 +40,6 @@ struct StudyRoutineSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
     }

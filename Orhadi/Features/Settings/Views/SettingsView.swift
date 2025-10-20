@@ -20,7 +20,7 @@ struct SettingsView: View {
                 Section {
                     themePicker
                 }
-                
+
                 Section {
                     NavigationLink {
                         DataSettingsView()
@@ -28,7 +28,7 @@ struct SettingsView: View {
                         Label("Data", systemImage: "square.stack.3d.down.right.fill")
                     }
                 }
-                
+
 #if DEBUG
                 Section {
                     NavigationLink {
@@ -38,13 +38,13 @@ struct SettingsView: View {
                                     context.insert(Subject(name: "\(index * 1000)", isRecess: index > 500))
                                 }
                             }
-                            
+
                             Button("To-Dos Flood") {
                                 for index in 1...999 {
                                     context.insert(ToDo(title: "\(index * 1000)", isCompleted: index > 500))
                                 }
                             }
-                            
+
                             Button("Studies Flood") {
                                 for index in 1...999 {
                                     context.insert(SRStudy(name: "\(index * 1000)"))
@@ -59,9 +59,7 @@ struct SettingsView: View {
 #endif // DEBUG
 
                 aboutSection
-            }
-            .navigationTitle("Settings")
-            
+            }.navigationTitle("Settings")
         }
     }
 
@@ -119,7 +117,7 @@ struct SettingsView: View {
             }
         }.pickerStyle(.navigationLink)
     }
-    
+
     private var aboutSection: some View {
         Section {
             HStack {

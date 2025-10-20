@@ -103,7 +103,6 @@ struct SRDataSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in

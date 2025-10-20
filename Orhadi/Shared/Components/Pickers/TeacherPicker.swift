@@ -115,7 +115,6 @@ struct TeacherPicker: View {
                 .tint(Color.accentColor)
             }
         }
-        
         .navigationTitle("Teacher")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in

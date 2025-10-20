@@ -17,7 +17,7 @@ struct ToDoRow: View {
     let onEdit: () -> Void
 
     // MARK: - Views
-    
+
     var body: some View {
         DisclosureGroup {
             if !todo.info.characters.isEmpty {
@@ -38,12 +38,12 @@ struct ToDoRow: View {
                         Image(systemName: "checkmark")
                             .foregroundStyle(Color.accentColor)
                     }
-                    
+
                     if !todo.isCompleted, todo.dueDate < .now {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundStyle(.red)
                     }
-                    
+
                     todoBaseInfos
                 }
             }
@@ -124,13 +124,13 @@ struct ToDoRow: View {
                         .frame(width: 5, alignment: .center)
                         .padding(.leading, 2.5)
                 }
-                
+
                 Text(todo.title.nilIfEmpty() ?? String(localized: "Not specified"))
                     .font(.headline)
                     .lineLimit(1)
                     .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
             }.frame(maxWidth: 300, alignment: .leading)
-            
+
             CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                 .font(.caption)
                 .foregroundStyle(.secondary)

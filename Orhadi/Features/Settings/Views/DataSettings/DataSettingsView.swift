@@ -43,20 +43,19 @@ struct DataSettingsView: View {
                 Button("Reset all data") {
                     showEraseDataAlert.toggle()
                 }.tint(.red)
-                .alert(
-                    "Reset all data?",
-                    isPresented: $showEraseDataAlert
-                ) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Reset", role: .destructive) {
-                        eraseAllData()
+                    .alert(
+                        "Reset all data?",
+                        isPresented: $showEraseDataAlert
+                    ) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Reset", role: .destructive) {
+                            eraseAllData()
+                        }
+                    } message: {
+                        Text("All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?")
                     }
-                } message: {
-                    Text("All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?")
-                }
             }
         }
-        
         .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: errorMessage, { _, _ in
@@ -96,9 +95,9 @@ struct DataSettingsView: View {
                 let settings = try context.fetch(FetchDescriptor<Settings>())
 
                 for teacher in teachers { context.delete(teacher) }
-                
+
                 try context.save()
-                
+
                 for subject in subjects { context.delete(subject) }
                 for todo in todos { context.delete(todo) }
                 for study in studies { context.delete(study) }

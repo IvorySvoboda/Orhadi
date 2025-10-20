@@ -29,7 +29,6 @@ struct ArchivedTodosView: View {
                     .tag(todo)
             }
         }
-        
         .navigationTitle("Archived To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)

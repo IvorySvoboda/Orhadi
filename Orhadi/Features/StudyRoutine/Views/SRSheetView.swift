@@ -17,7 +17,7 @@ struct SRSheetView: View {
 
     @Bindable var study: SRStudy
     var isNew: Bool
-    
+
     private var navigationTitle: LocalizedStringKey {
         if isNew {
             return "New Study"

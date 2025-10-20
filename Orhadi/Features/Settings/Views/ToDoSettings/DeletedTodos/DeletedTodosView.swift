@@ -62,7 +62,6 @@ struct DeletedTodosView: View {
                     DeletedTodosRowView(todo: todo)
                         .tag(todo)
                 }
-                
             }
         }
         .navigationTitle("Deleted To-Dos")

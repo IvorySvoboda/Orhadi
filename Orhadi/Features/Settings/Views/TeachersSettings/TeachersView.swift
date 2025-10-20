@@ -28,7 +28,6 @@ struct TeachersView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
                     Button {

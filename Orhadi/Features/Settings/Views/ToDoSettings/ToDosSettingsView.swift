@@ -42,7 +42,6 @@ struct ToDosSettingsView: View {
                     "When activated, notifications will be scheduled to remind you of to-dos approaching their deadlines. Disabling this option will not cancel already scheduled notifications."
                 )
             }
-            
 
             if !archivedTodos.isEmpty {
                 Section {
@@ -64,7 +63,6 @@ struct ToDosSettingsView: View {
                 }
             }
         }
-        
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

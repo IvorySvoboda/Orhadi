@@ -22,7 +22,7 @@ struct ToDoSheetView: View {
 
     @Bindable var todo: ToDo
     var isNew: Bool
-    
+
     private var navigationTitle: LocalizedStringKey {
         if isNew {
             return "New To-Do"
@@ -50,21 +50,7 @@ struct ToDoSheetView: View {
                         .autocorrectionDisabled()
 
                     if #available(iOS 26, *) {
-                        ZStack {
-                            VStack {
-                                if info.characters.isEmpty {
-                                    Text("Do …")
-                                        .foregroundStyle(Color.secondary)
-                                        .opacity(0.5)
-                                }
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                            .padding(.top, 10)
-                            .padding(.leading, 5)
-
-                            TextEditor(text: $info)
-                                .frame(height: 200)
-                        }
+                        ToDoTextEditor(text: $info)
                     } else {
                         ZStack {
                             VStack {
@@ -161,9 +147,7 @@ struct ToDoSheetView: View {
                     }
                     .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
                 }
-                
             }
-            
             .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

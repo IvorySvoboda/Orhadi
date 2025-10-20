@@ -45,7 +45,6 @@ struct DeletedStudiesView: View {
         }
     }
 
-
     // MARK: - Views
 
     var body: some View {
