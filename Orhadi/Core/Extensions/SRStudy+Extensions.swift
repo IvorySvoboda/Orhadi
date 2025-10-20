@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension SRStudy {
     var isForToday: Bool {
@@ -28,5 +29,25 @@ extension SRStudy {
     var studyTimeInMinutes: Int {
         let components = Calendar.current.dateComponents([.hour, .minute], from: studyTime)
         return (components.hour ?? 0) * 60 + (components.minute ?? 0)
+    }
+
+    static let sampleData = [
+        SRStudy(name: "English"),
+        SRStudy(name: "Matemática"),
+        SRStudy(name: "História")
+    ]
+
+    func delete() {
+        withAnimation {
+            isStudyDeleted = true
+            deletedAt = .now
+        }
+    }
+
+    func restore() {
+        withAnimation {
+            isStudyDeleted = false
+            deletedAt = nil
+        }
     }
 }

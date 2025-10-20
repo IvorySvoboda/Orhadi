@@ -31,4 +31,6 @@ extension View {
                 UIApplication.shared.isIdleTimerDisabled = false
             }
     }
+
+    var backport: Backport<Self> { Backport(self) }
 }

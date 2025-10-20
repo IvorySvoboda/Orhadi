@@ -44,9 +44,7 @@ struct SRRow: View {
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                Task {
-                    deleteStudy()
-                }
+                study.delete()
             } label: {
                 Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
@@ -86,21 +84,10 @@ struct SRRow: View {
             }
 
             Button(role: .destructive) {
-                Task {
-                    deleteStudy()
-                }
+                study.delete()
             } label: {
                 Label("Delete", systemImage: "trash.fill")
             }
-        }
-    }
-
-    // MARK: - Functions
-
-    private func deleteStudy() {
-        withAnimation {
-            study.isStudyDeleted = true
-            study.deletedAt = .now
         }
     }
 }

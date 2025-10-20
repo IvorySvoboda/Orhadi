@@ -64,11 +64,14 @@
 		289291452E1B0FDA00E0478F /* Exceptions for "Orhadi" folder in "OrhadiWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Core/Extensions/Foundation+Extensions.swift",
+				"Core/Extensions/Date+Extensions.swift",
+				"Core/Extensions/String+Extensions.swift",
 				"Core/Extensions/ToDo+Extensions.swift",
 				Core/Utilities/AppEnums.swift,
+				Core/Utilities/Backport.swift,
 				Core/Utilities/CleanOldDeleted.swift,
 				Core/Utilities/CreateContainer.swift,
+				Core/Utilities/DeviceInfoProvider.swift,
 				Core/Utilities/NotificationsManager.swift,
 				Core/Utilities/SubjectConflictVerifier.swift,
 				Services/Persistence/MigrationPlan.swift,

@@ -13,21 +13,37 @@ struct DeletedTodosView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
+    @Environment(Settings.self) private var settings
 
     @Query(filter: #Predicate<ToDo> { $0.isToDoDeleted }, sort: \.deletedAt, animation: .smooth)
     private var deletedTodos: [ToDo]
 
     @State private var selectedTodos = Set<ToDo>()
+    @State private var showDeleteConfirmation = false
 
-    /// Delete Confirmation
-    @State private var showDeleteAllConfirmation = false
-    @State private var showDeleteSelectedConfirmation = false
+    // MARK: - Computed helpers
 
-    var canHideTabBar: Bool {
-        if #available(iOS 26, *) {
-            return false
+    private var countToActOn: Int {
+        selectedTodos.isEmpty ? deletedTodos.count : selectedTodos.count
+    }
+
+    private var isPlural: Bool {
+        countToActOn > 1
+    }
+
+    private var deleteActionTitle: LocalizedStringKey {
+        if isPlural {
+            return "Delete \(countToActOn) To-Dos"
         } else {
-            return true
+            return "Delete To-Do"
+        }
+    }
+
+    private var deleteMessageText: LocalizedStringKey {
+        if isPlural {
+            return "These \(countToActOn) to-dos will be deleted. This action cannot be undone."
+        } else {
+            return "This to-do will be deleted. This action cannot be undone."
         }
     }
 
@@ -49,14 +65,12 @@ struct DeletedTodosView: View {
                 
             }
         }
-        
         .navigationTitle("Deleted To-Dos")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
-        /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && .iOS26 ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
@@ -64,34 +78,17 @@ struct DeletedTodosView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(selectedTodos.isEmpty ? "Restore All" : "Restore") {
-                    selectedTodos.isEmpty ? restoreAllTodos() : restoreSelectedTodos()
+                    restoreToDos()
                 }
 
                 Spacer()
 
                 Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
-                    selectedTodos.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                    showDeleteConfirmation.toggle()
                 }
-                .confirmationDialog(
-                    deletedTodos.count > 1 ? "These \(deletedTodos.count) to-dos will be deleted. This action cannot be undone." : "This to-do will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteAllConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteAllTodos()
-                    } label: {
-                        Text(deletedTodos.count > 1 ? "Delete \(deletedTodos.count) To-Dos" : "Delete To-Do")
-                    }
-                }
-                .confirmationDialog(
-                    selectedTodos.count > 1 ? "These \(selectedTodos.count) to-dos will be deleted. This action cannot be undone." : "This to-do will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteSelectedConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteSelectedTodos()
-                    } label: {
-                        Text(selectedTodos.count > 1 ? "Delete \(selectedTodos.count) To-Dos" : "Delete To-Do")
+                .confirmationDialog(deleteMessageText, isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+                    Button(deleteActionTitle, role: .destructive) {
+                        deleteToDos()
                     }
                 }
             }
@@ -121,39 +118,29 @@ struct DeletedTodosView: View {
         }
     }
 
-    private func deleteAllTodos() {
-        for todo in deletedTodos {
-            withAnimation { context.delete(todo) }
-        }
-    }
-
-    private func deleteSelectedTodos() {
-        for todo in selectedTodos {
-            withAnimation { context.delete(todo) }
-        }
-        selectedTodos.removeAll()
-    }
-
-    private func restoreAllTodos() {
-        for todo in deletedTodos {
-            restore(todo)
-        }
-    }
-
-    private func restoreSelectedTodos() {
-        for todo in selectedTodos {
-            restore(todo)
-        }
-        selectedTodos.removeAll()
-    }
-
-    private func restore(_ todo: ToDo) {
-        withAnimation {
-            todo.isToDoDeleted = false
-            todo.deletedAt = nil
-            if !todo.isCompleted, todo.dueDate > .now, !todo.isArchived {
-                todo.scheduleNotification()
+    private func deleteToDos() {
+        if selectedTodos.isEmpty {
+            for todo in deletedTodos {
+                withAnimation { context.delete(todo) }
             }
+        } else {
+            for todo in selectedTodos {
+                withAnimation { context.delete(todo) }
+            }
+            selectedTodos.removeAll()
+        }
+    }
+
+    private func restoreToDos() {
+        if selectedTodos.isEmpty {
+            for todo in deletedTodos {
+                todo.restore(scheduleNotifications: settings.scheduleNotifications)
+            }
+        } else {
+            for todo in selectedTodos {
+                todo.restore(scheduleNotifications: settings.scheduleNotifications)
+            }
+            selectedTodos.removeAll()
         }
     }
 }

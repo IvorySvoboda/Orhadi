@@ -13,14 +13,14 @@ struct ToDosSectionPickerBar: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ForEach(ToDoSection.allCases, id: \.string) { section in
+            ForEach(ToDoSection.allCases, id: \.self) { section in
                 Button {
                     withAnimation {
                         selectedSection = section
                     }
                     UIImpactFeedbackGenerator(style: .soft).impactOccurred()
                 } label: {
-                    Text("\(section.string)")
+                    Text(section.string)
                         .font(.callout)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 16)

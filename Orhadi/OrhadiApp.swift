@@ -34,7 +34,7 @@ struct RootView: View {
     var body: some View {
         ContentView()
             .onAppear {
-                /// Verifica se `settings` e `userProfile` é nil, se for, insere eles no context.
+                /// Verifica se `settings` é nil, se for, insere ele no context.
                 if settings.first == nil {
                     modelContext.insert(Settings())
                 }

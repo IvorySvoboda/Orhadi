@@ -19,17 +19,40 @@ struct DeletedSubjectsView: View {
 
     @State private var selectedSubjects = Set<Subject>()
     @State private var conflictingSubjects: [Subject] = []
-    /// Delete Confirmation
-    @State private var showDeleteAllConfirmation = false
-    @State private var showDeleteSelectedConfirmation = false
-    /// Conflicts Alert
+    @State private var showDeleteConfirmation = false
     @State private var showConflictAlert = false
 
-    var canHideTabBar: Bool {
-        if #available(iOS 26, *) {
-            return false
+    // MARK: - Computed helpers
+
+    private var countToActOn: Int {
+        selectedSubjects.isEmpty ? deletedSubjects.count : selectedSubjects.count
+    }
+
+    private var isPlural: Bool {
+        countToActOn > 1
+    }
+
+    private var deleteActionTitle: LocalizedStringKey {
+        if isPlural {
+            return "Delete \(countToActOn) Subjects"
         } else {
-            return true
+            return "Delete Subject"
+        }
+    }
+
+    private var deleteMessageText: LocalizedStringKey {
+        if isPlural {
+            return "These \(countToActOn) subjects will be deleted. This action cannot be undone."
+        } else {
+            return "This subject will be deleted. This action cannot be undone."
+        }
+    }
+
+    private var conflictMessageText: LocalizedStringKey {
+        if conflictingSubjects.count > 1 {
+            return "Some of the subjects are conflicting with existing subjects. Please adjust them before recovering."
+        } else {
+            return "The selected subject conflicts with an existing subject. Please adjust it before recovering."
         }
     }
 
@@ -45,7 +68,7 @@ struct DeletedSubjectsView: View {
 
             Section {
                 ForEach(deletedSubjects) { subject in
-                    DeletedSubjectRowView(subject: subject)
+                    DeletedSubjectRowView(subject: subject, showConflictAlert: { showConflictAlert.toggle() })
                         .tag(subject)
                 }
             }
@@ -55,8 +78,7 @@ struct DeletedSubjectsView: View {
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
-        /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && .iOS26 ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
@@ -64,50 +86,27 @@ struct DeletedSubjectsView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(selectedSubjects.isEmpty ? "Restore All" : "Restore") {
-                    selectedSubjects.isEmpty ? restoreAllSubjects() : restoreSelectedSubjects()
-                }
-                .alert("Conflict Detected!", isPresented: $showConflictAlert) {
-                    Button("Close") {
-                        conflictingSubjects = []
-                    }
-                } message: {
-                    VStack(spacing: 10) {
-                        if conflictingSubjects.count > 1 {
-                            Text("Some of the subjects are conflicting with existing subjects. Please adjust them before recovering.")
-                        } else {
-                            Text("The selected subject conflicts with an existing subject. Please adjust it before recovering.")
-                        }
-                    }
+                    restoreSubjects()
                 }
 
                 Spacer()
 
                 Button(selectedSubjects.isEmpty ? "Delete All" : "Delete") {
-                    selectedSubjects.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                    showDeleteConfirmation.toggle()
                 }
-                .confirmationDialog(
-                    deletedSubjects.count > 1 ? "These \(deletedSubjects.count) subjects will be deleted. This action cannot be undone." : "This subject will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteAllConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteAllSubjects()
-                    } label: {
-                        Text(deletedSubjects.count > 1 ? "Delete \(deletedSubjects.count) Subjects" : "Delete Subject")
-                    }
-                }
-                .confirmationDialog(
-                    selectedSubjects.count > 1 ? "These \(selectedSubjects.count) subjects will be deleted. This action cannot be undone." : "This subject will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteSelectedConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteSelectedSubjects()
-                    } label: {
-                        Text(selectedSubjects.count > 1 ? "Delete \(selectedSubjects.count) Subjects" : "Delete Subject")
+                .confirmationDialog(deleteMessageText, isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+                    Button(deleteActionTitle, role: .destructive) {
+                        deleteSubjects()
                     }
                 }
             }
+        }
+        .alert("Conflict Detected!", isPresented: $showConflictAlert) {
+            Button("Close") {
+                conflictingSubjects = []
+            }
+        } message: {
+            Text(conflictMessageText)
         }
         .onChange(of: deletedSubjects) { _, newSubjects in
             WidgetCenter.shared.reloadAllTimelines()
@@ -135,69 +134,66 @@ struct DeletedSubjectsView: View {
         }
     }
 
-    private func deleteAllSubjects() {
-        for subject in deletedSubjects {
-            withAnimation { context.delete(subject) }
-        }
-    }
+    // MARK: Delete Actions
 
-    private func deleteSelectedSubjects() {
-        for subject in selectedSubjects {
-            withAnimation { context.delete(subject) }
-        }
-        selectedSubjects.removeAll()
-    }
-
-    private func restoreAllSubjects() {
-        for subject in deletedSubjects {
-            let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
-                id: subject.id,
-                start: subject.startTime,
-                end: subject.endTime,
-                schedule: subject.schedule,
-                context:  context
-            )
-
-            if hasConflictWithOthersSubjects {
-                conflictingSubjects.append(subject)
-            } else {
-                restore(subject)
+    private func deleteSubjects() {
+        if selectedSubjects.isEmpty {
+            for subject in deletedSubjects {
+                withAnimation { context.delete(subject) }
             }
-        }
-        
-        if !conflictingSubjects.isEmpty {
-            showConflictAlert.toggle()
-        }
-    }
-
-    private func restoreSelectedSubjects() {
-        for subject in selectedSubjects {
-            let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
-                id: subject.id,
-                start: subject.startTime,
-                end: subject.endTime,
-                schedule: subject.schedule,
-                context:  context
-            )
-
-            if hasConflictWithOthersSubjects {
-                conflictingSubjects.append(subject)
-            } else {
-                restore(subject)
+        } else {
+            for subject in selectedSubjects {
+                withAnimation { context.delete(subject) }
             }
-        }
-        
-        selectedSubjects.removeAll()
-
-        if !conflictingSubjects.isEmpty {
-            showConflictAlert.toggle()
+            selectedSubjects.removeAll()
         }
     }
 
-    private func restore(_ subject: Subject) {
-        withAnimation {
-            subject.isSubjectDeleted = false
-            subject.deletedAt = nil
+    // MARK: Restore Actions
+
+    private func restoreSubjects() {
+        if selectedSubjects.isEmpty {
+            for subject in deletedSubjects {
+                let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
+                    id: subject.id,
+                    start: subject.startTime,
+                    end: subject.endTime,
+                    schedule: subject.schedule,
+                    context:  context
+                )
+
+                if hasConflictWithOthersSubjects {
+                    conflictingSubjects.append(subject)
+                } else {
+                    subject.restore()
+                }
+            }
+
+            if !conflictingSubjects.isEmpty {
+                showConflictAlert.toggle()
+            }
+        } else {
+            for subject in selectedSubjects {
+                let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
+                    id: subject.id,
+                    start: subject.startTime,
+                    end: subject.endTime,
+                    schedule: subject.schedule,
+                    context:  context
+                )
+
+                if hasConflictWithOthersSubjects {
+                    conflictingSubjects.append(subject)
+                } else {
+                    subject.restore()
+                }
+            }
+
+            selectedSubjects.removeAll()
+
+            if !conflictingSubjects.isEmpty {
+                showConflictAlert.toggle()
+            }
         }
     }
 }

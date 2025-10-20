@@ -122,16 +122,10 @@ struct SRView: View {
                     Button {
                         studyToAdd = SRStudy(studyDay: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!)
                     } label: {
-                        if #available(iOS 26, *) {
-                            Image(systemName: "plus")
-                                .font(.title2)
-                                .foregroundStyle(Color.accentColor)
-                        } else {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                        }
-                    }
+                        Label("Add", systemImage: "plus")
+                    }.tint(.accentColor)
                 }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         if canStartStudying {
@@ -139,15 +133,9 @@ struct SRView: View {
                             navigateToStudyingView = true
                         }
                     } label: {
-                        if #available(iOS 26, *) {
-                            Image(systemName: "play.fill")
-                                .font(.title2)
-                                .foregroundStyle(Color.accentColor)
-                        } else {
-                            Image(systemName: "play.circle.fill")
-                                .font(.title2)
-                        }
+                        Label("Start Studying", systemImage: "play.fill")
                     }
+                    .tint(.accentColor)
                     .disabled(!canStartStudying)
                 }
             }

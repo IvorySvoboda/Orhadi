@@ -34,10 +34,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         var email: String = ""
         @Relationship(inverse: \Subject.teacher) var subjects: [Subject] = []
 
-        init(
-            name: String = "",
-            email: String = ""
-        ) {
+        init(name: String = "", email: String = "") {
             self.name = name
             self.email = email
         }
@@ -64,7 +61,6 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class Subject: Codable {
-        @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var teacher: Teacher?
         var schedule: Date = Date(timeIntervalSince1970: 0)
@@ -79,7 +75,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             let calendar = Calendar.current
             let todayWeekday = calendar.component(.weekday, from: .now)
             let subjectWeekday = calendar.component(.weekday, from: schedule)
-            
+
             let subjectStart = calendar.date(
                 bySettingHour: calendar.component(.hour, from: startTime),
                 minute: calendar.component(.minute, from: startTime),
@@ -114,45 +110,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.place = place
             self.isRecess = isRecess
         }
-
-        static let sampleData = [
-            Subject(
-                name: "English",
-                teacher: Teacher(name: "Ana Lima", email: "ana.lima@example.com"),
-                schedule: Date(),
-                startTime: Calendar.current.date(bySettingHour: 8, minute: 0, second: 0, of: Date())!,
-                endTime: Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date())!,
-                place: "Sala 109",
-                isRecess: false
-            ),
-            Subject(
-                name: "Matemática",
-                teacher: Teacher(name: "Carlos Mendes", email: "carlos.mendes@example.com"),
-                schedule: Date(),
-                startTime: Calendar.current.date(bySettingHour: 9, minute: 15, second: 0, of: Date())!,
-                endTime: Calendar.current.date(bySettingHour: 10, minute: 15, second: 0, of: Date())!,
-                place: "Sala 202",
-                isRecess: false
-            ),
-            Subject(
-                name: "",
-                teacher: nil,
-                schedule: Date(),
-                startTime: Calendar.current.date(bySettingHour: 10, minute: 15, second: 0, of: Date())!,
-                endTime: Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date())!,
-                place: "",
-                isRecess: true
-            ),
-            Subject(
-                name: "História",
-                teacher: Teacher(name: "Beatriz Rocha", email: "beatriz.rocha@example.com"),
-                schedule: Date(),
-                startTime: Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date())!,
-                endTime: Calendar.current.date(bySettingHour: 11, minute: 30, second: 0, of: Date())!,
-                place: "Sala 105",
-                isRecess: false
-            )
-        ]
 
         enum CodingKeys: CodingKey {
             case name
@@ -191,9 +148,9 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class ToDo: Codable {
-        @Attribute(.unique) var id: String = UUID().uuidString
-        var title: String = ""
         private var infoData: Data = Data()
+
+        var title: String = ""
         var dueDate: Date = Calendar.current.startOfDay(for: Date())
         var withHour: Bool = false
         var createdAt: Date = Date()
@@ -230,61 +187,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.priority = priority
             self.isArchived = isArchived
         }
-
-        static let sampleData: [ToDo] = [
-            .init(
-                title: "Comprar material de arte",
-                info: "Tintas, pincéis e papéis para o projeto de pintura",
-                dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
-                withHour: false,
-                createdAt: Date(),
-                isCompleted: false,
-                priority: .medium,
-                isArchived: false
-            ),
-            .init(
-                title: "Enviar relatório mensal",
-                info: "Relatório de desempenho para o gestor",
-                dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
-                withHour: true,
-                createdAt: Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date(),
-                isCompleted: true,
-                completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()),
-                priority: .high,
-                isArchived: false
-            ),
-            .init(
-                title: "Ligar para fornecedor",
-                info: "Negociar valores para a próxima remessa",
-                dueDate: Calendar.current.date(byAdding: .hour, value: 5, to: Date()) ?? Date(),
-                withHour: true,
-                createdAt: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
-                isCompleted: false,
-                priority: .low,
-                isArchived: false
-            ),
-            .init(
-                title: "Study SwiftUI avançado",
-                info: "Terminar curso sobre animações e performance",
-                dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date(),
-                withHour: false,
-                createdAt: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date(),
-                isCompleted: false,
-                priority: .medium,
-                isArchived: false
-            ),
-            .init(
-                title: "Organizar documentos antigos",
-                info: "Separar documentos para arquivar",
-                dueDate: Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date(),
-                withHour: false,
-                createdAt: Calendar.current.date(byAdding: .day, value: -40, to: Date()) ?? Date(),
-                isCompleted: true,
-                completedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()),
-                priority: .none,
-                isArchived: true
-            )
-        ]
 
         enum CodingKeys: CodingKey {
             case title
@@ -329,7 +231,6 @@ enum OrhadiSchemaV1: VersionedSchema {
 
     @Model
     class SRStudy: Codable {
-        @Attribute(.unique) var id: String = UUID().uuidString
         var name: String = ""
         var studyDay: Date = Date(timeIntervalSince1970: 0)
         var studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!
@@ -348,12 +249,6 @@ enum OrhadiSchemaV1: VersionedSchema {
             self.studyTime = studyTime
             self.lastStudied = lastStudied
         }
-
-        static let sampleData = [
-            SRStudy(name: "English"),
-            SRStudy(name: "Matemática"),
-            SRStudy(name: "História")
-        ]
 
         enum CodingKeys: CodingKey {
             case name

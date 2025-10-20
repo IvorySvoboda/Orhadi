@@ -10,7 +10,7 @@ import Foundation
 
 class SubjectConflictVerifier {
     static func hasConflictWithOtherSubjects(
-        id: String?,
+        id: PersistentIdentifier?,
         start: Date,
         end: Date,
         schedule: Date,
@@ -21,7 +21,11 @@ class SubjectConflictVerifier {
         }
 
         let sameScheduleSubjects = subjects.filter { other in
-            return Calendar.current.isDate(schedule, equalTo: other.schedule, toGranularity: .weekday) && (id != nil ? other.id != id : true)
+            let calendar = Calendar.current
+            let otherWeekday = calendar.component(.weekday, from: other.schedule)
+            let subjectWeekday = calendar.component(.weekday, from: schedule)
+
+            return otherWeekday == subjectWeekday && (id != nil ? other.id != id : true)
         }
 
         let conflictSubjects = sameScheduleSubjects.filter { other in
@@ -36,7 +40,7 @@ class SubjectConflictVerifier {
     }
 
     static func hasConflict(
-        id: String?,
+        id: PersistentIdentifier?,
         start: Date,
         end: Date,
         schedule: Date,

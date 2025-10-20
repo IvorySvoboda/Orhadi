@@ -23,11 +23,11 @@ struct ToDoSheetView: View {
     @Bindable var todo: ToDo
     var isNew: Bool
     
-    private var navigationTitle: Text {
+    private var navigationTitle: LocalizedStringKey {
         if isNew {
-            return Text("New To-Do")
+            return "New To-Do"
         } else {
-            return Text("Edit To-Do")
+            return "Edit To-Do"
         }
     }
 
@@ -182,7 +182,7 @@ struct ToDoSheetView: View {
         }
     }
 
-    // MARK: - Functions
+    // MARK: - Actions
 
     private func trySave() {
         if isNew {

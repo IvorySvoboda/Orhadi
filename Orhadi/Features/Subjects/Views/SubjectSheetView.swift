@@ -24,11 +24,11 @@ struct SubjectSheetView: View {
     @Bindable var subject: Subject
     var isNew: Bool
 
-    private var navigationTitle: Text {
+    private var navigationTitle: LocalizedStringKey {
         if isNew {
-            return Text("New \(subject.isRecess ? Text("Interval") : Text("Subject"))")
+            return subject.isRecess ? "New Interval" : "New Subject"
         } else {
-            return Text("Edit \(subject.isRecess ? Text("Interval") : Text("Subject"))")
+            return subject.isRecess ? "Edit Interval" : "Edit Subject"
         }
     }
 
@@ -113,7 +113,7 @@ struct SubjectSheetView: View {
         }
     }
 
-    // MARK: - Functions
+    // MARK: - Actions
 
     private func trySave() {
         let hasConflict = SubjectConflictVerifier.hasConflict(

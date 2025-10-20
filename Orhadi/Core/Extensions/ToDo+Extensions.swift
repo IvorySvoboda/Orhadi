@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import WidgetKit
 
 extension ToDo {
     var identifiers: [String] {[
@@ -15,40 +17,35 @@ extension ToDo {
     ]}
 
     func scheduleNotification() {
-        let todo = self
-
         if let oneHourBefore = Calendar.current.date(
             byAdding: .hour,
             value: -1,
-            to: todo.dueDate
+            to: dueDate
         ) {
             NotificationsManager.shared.addNotification(
-                identifier: "\(todo.id)-1h",
-                title: todo.title,
+                identifier: "\(id)-1h",
+                title: title,
                 body: String(localized: "1 hour left until the to-do’s deadline."),
-                date: oneHourBefore
-            )
+                date: oneHourBefore)
         }
 
         if let twentyFourHoursBefore = Calendar.current.date(
             byAdding: .hour,
             value: -24,
-            to: todo.dueDate
+            to: dueDate
         ) {
             NotificationsManager.shared.addNotification(
-                identifier: "\(todo.id)-24h",
-                title: todo.title,
+                identifier: "\(id)-24h",
+                title: title,
                 body: String(localized: "1 day left until the to-do’s deadline."),
-                date: twentyFourHoursBefore
-            )
+                date: twentyFourHoursBefore)
         }
 
         NotificationsManager.shared.addNotification(
-            identifier: "\(todo.id)-due",
+            identifier: "\(id)-due",
             title: String(localized: "The to-do is overdue!"),
-            body: String(localized: "The to-do: \(todo.title) is overdue!"),
-            date: todo.dueDate
-        )
+            body: String(localized: "The to-do: \(title) is overdue!"),
+            date: dueDate)
     }
 
     var formattedDueDate: String {
@@ -71,5 +68,124 @@ extension ToDo {
         }
 
         return formatter.string(from: dueDate)
+    }
+
+    static let sampleData: [ToDo] = [
+        .init(
+            title: "Comprar material de arte",
+            info: "Tintas, pincéis e papéis para o projeto de pintura",
+            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
+            withHour: false,
+            createdAt: Date(),
+            isCompleted: false,
+            priority: .medium,
+            isArchived: false
+        ),
+        .init(
+            title: "Enviar relatório mensal",
+            info: "Relatório de desempenho para o gestor",
+            dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
+            withHour: true,
+            createdAt: Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date(),
+            isCompleted: true,
+            completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()),
+            priority: .high,
+            isArchived: false
+        ),
+        .init(
+            title: "Ligar para fornecedor",
+            info: "Negociar valores para a próxima remessa",
+            dueDate: Calendar.current.date(byAdding: .hour, value: 5, to: Date()) ?? Date(),
+            withHour: true,
+            createdAt: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
+            isCompleted: false,
+            priority: .low,
+            isArchived: false
+        ),
+        .init(
+            title: "Study SwiftUI avançado",
+            info: "Terminar curso sobre animações e performance",
+            dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date(),
+            withHour: false,
+            createdAt: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date(),
+            isCompleted: false,
+            priority: .medium,
+            isArchived: false
+        ),
+        .init(
+            title: "Organizar documentos antigos",
+            info: "Separar documentos para arquivar",
+            dueDate: Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date(),
+            withHour: false,
+            createdAt: Calendar.current.date(byAdding: .day, value: -40, to: Date()) ?? Date(),
+            isCompleted: true,
+            completedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()),
+            priority: .none,
+            isArchived: true
+        )
+    ]
+
+    func toggleCompleted(scheduleNotifications: Bool = false) {
+        /// Se a to-dos não estiver completada
+        if !isCompleted {
+            /// completa a tarefa.
+            withAnimation {
+                isCompleted = true
+                completedAt = .now
+            }
+
+            /// remove as notificações agendadas
+            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+        } else {
+            /// descompleta a tarefa.
+            withAnimation {
+                isCompleted = false
+                completedAt = nil
+            }
+
+            /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
+            if scheduleNotifications {
+                scheduleNotification()
+            }
+        }
+
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    func archive() {
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        withAnimation { isArchived = true }
+
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    func delete() {
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        withAnimation {
+            isToDoDeleted = true
+            deletedAt = .now
+        }
+
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    func restore(scheduleNotifications: Bool = false) {
+        if !isCompleted, dueDate > .now, !isArchived, scheduleNotifications {
+            scheduleNotification()
+        }
+
+        withAnimation {
+            isToDoDeleted = false
+            deletedAt = nil
+        }
+    }
+
+    func unarchive(scheduleNotifications: Bool = false) {
+        if !isCompleted, dueDate > .now, scheduleNotifications {
+            scheduleNotification()
+        }
+        withAnimation { isArchived = false }
     }
 }

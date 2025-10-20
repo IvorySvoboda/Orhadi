@@ -23,10 +23,8 @@ struct DeletedStudyRowView: View {
                 CustomLabel("\(study.deletedAt?.formatted(date: .abbreviated, time: .shortened) ?? "")", systemImage: "trash.fill")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(maxWidth: .infinity, alignment: .leading)
         }
-        .contentShape(Rectangle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button {
                 showDeleteConfirmation.toggle()
@@ -36,11 +34,25 @@ struct DeletedStudyRowView: View {
             }.tint(.red)
 
             Button(role: .destructive) {
-                recoverStudy()
+                study.restore()
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
             }.tint(.indigo)
+        }
+        .contextMenu {
+            Button {
+                study.restore()
+            } label: {
+                Label("Restore", systemImage: "gobackward")
+                    .labelStyle(.iconOnly)
+            }
+
+            Button(role: .destructive) {
+                showDeleteConfirmation.toggle()
+            } label: {
+                Label("Delete", systemImage: "trash.fill")
+            }
         }
         .alert("This study will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
@@ -49,13 +61,6 @@ struct DeletedStudyRowView: View {
                     context.delete(study)
                 }
             }
-        }
-    }
-
-    private func recoverStudy() {
-        withAnimation {
-            study.isStudyDeleted = false
-            study.deletedAt = nil
         }
     }
 }

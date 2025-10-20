@@ -18,11 +18,11 @@ struct SRSheetView: View {
     @Bindable var study: SRStudy
     var isNew: Bool
     
-    private var navigationTitle: Text {
+    private var navigationTitle: LocalizedStringKey {
         if isNew {
-            return Text("New Study")
+            return "New Study"
         } else {
-            return Text("Edit Study")
+            return "Edit Study"
         }
     }
 
@@ -86,7 +86,7 @@ struct SRSheetView: View {
         }
     }
 
-    // MARK: - Functions
+    // MARK: - Actions
 
     private func trySave() {
         if isNew {

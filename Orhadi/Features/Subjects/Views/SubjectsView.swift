@@ -108,15 +108,8 @@ struct SubjectsView: View {
                     Button {
                         showConfirmation.toggle()
                     } label: {
-                        if #available(iOS 26, *) {
-                            Image(systemName: "plus")
-                                .font(.title2)
-                                .foregroundStyle(Color.accentColor)
-                        } else {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                        }
-                    }
+                        Label("Add", systemImage: "plus")
+                    }.tint(.accentColor)
                 }
             }
             .overlay {
@@ -140,7 +133,7 @@ struct SubjectsView: View {
                 VStack {
                     VStack(spacing: 10) {
                         ForEach([
-                            (title: String(localized: "Add Subejct"), isRecess: false),
+                            (title: String(localized: "Add Subject"), isRecess: false),
                             (title: String(localized: "Add Interval"), isRecess: true)
                         ], id: \.title) { option in
                             Button {
@@ -149,31 +142,25 @@ struct SubjectsView: View {
                                     schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
                                     isRecess: option.isRecess)
                             } label: {
+                                let buttonText = Text(option.title.uppercased())
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(Color.orhadiSecondaryForeground)
+
                                 if #available(iOS 26, *) {
                                     Capsule()
                                         .fill(Color.accentColor)
                                         .frame(maxWidth: .infinity, minHeight: 45)
-                                        .overlay {
-                                            Text(option.title.uppercased())
-                                                .font(.headline)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(Color.orhadiSecondaryForeground)
-                                        }
+                                        .overlay { buttonText }
                                 } else {
                                     RoundedRectangle(cornerRadius: 15, style: .continuous)
                                         .fill(Color.accentColor)
                                         .frame(maxWidth: .infinity, minHeight: 45)
-                                        .overlay {
-                                            Text(option.title.uppercased())
-                                                .font(.headline)
-                                                .fontWeight(.semibold)
-                                                .foregroundStyle(Color.orhadiSecondaryForeground)
-                                        }
+                                        .overlay { buttonText }
                                 }
                             }
                         }
-                    }
-                    .offset(y: 15)
+                    }.offset(y: 15)
                 }
                 .padding()
                 .presentationDetents([.height(135)])

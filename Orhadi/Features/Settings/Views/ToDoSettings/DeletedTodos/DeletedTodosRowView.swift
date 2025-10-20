@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DeletedTodosRowView: View {
     @Environment(\.modelContext) private var context
+    @Environment(Settings.self) private var settings
     @State private var showDeleteConfirmation = false
 
     let todo: ToDo
@@ -23,10 +24,8 @@ struct DeletedTodosRowView: View {
                 CustomLabel("\(todo.deletedAt?.formatted(date: .abbreviated, time: .shortened) ?? "")", systemImage: "trash.fill")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(maxWidth: .infinity, alignment: .leading)
         }
-        .contentShape(Rectangle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button {
                 showDeleteConfirmation.toggle()
@@ -36,7 +35,7 @@ struct DeletedTodosRowView: View {
             }.tint(.red)
 
             Button(role: .destructive) {
-                recoverTodo()
+                todo.restore(scheduleNotifications: settings.scheduleNotifications)
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -44,7 +43,7 @@ struct DeletedTodosRowView: View {
         }
         .contextMenu {
             Button {
-                recoverTodo()
+                todo.restore()
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -63,16 +62,6 @@ struct DeletedTodosRowView: View {
                 withAnimation {
                     context.delete(todo)
                 }
-            }
-        }
-    }
-
-    private func recoverTodo() {
-        withAnimation {
-            todo.isToDoDeleted = false
-            todo.deletedAt = nil
-            if !todo.isCompleted, todo.dueDate > .now, !todo.isArchived {
-                todo.scheduleNotification()
             }
         }
     }

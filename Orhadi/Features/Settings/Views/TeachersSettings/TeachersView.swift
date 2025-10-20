@@ -85,15 +85,8 @@ struct TeachersView: View {
                 Button {
                     teacherToAdd = Teacher()
                 } label: {
-                    if #available(iOS 26, *) {
-                        Image(systemName: "plus")
-                            .font(.title2)
-                            .foregroundStyle(Color.accentColor)
-                    } else {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title2)
-                    }
-                }
+                    Label("Add", systemImage: "plus")
+                }.tint(.accentColor)
             }
         }
         .navigationTitle("Teachers")

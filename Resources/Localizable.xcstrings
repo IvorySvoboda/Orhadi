@@ -15,17 +15,6 @@
       },
       "shouldTranslate" : false
     },
-    "%@ Study" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ Estudo"
-          }
-        }
-      }
-    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -72,6 +61,16 @@
         }
       }
     },
+    "Add" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar"
+          }
+        }
+      }
+    },
     "Add Interval" : {
       "localizations" : {
         "pt-BR" : {
@@ -92,7 +91,7 @@
         }
       }
     },
-    "Add Subejct" : {
+    "Add Subject" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -505,12 +504,12 @@
         }
       }
     },
-    "Edit %@" : {
+    "Edit Interval" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Editar %@"
+            "value" : "Editar Intervalo"
           }
         }
       }
@@ -521,6 +520,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Editar Estudo"
+          }
+        }
+      }
+    },
+    "Edit Subject" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar Matéria"
           }
         }
       }
@@ -560,7 +569,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FIm"
+            "value" : "Fim"
           }
         }
       }
@@ -735,12 +744,12 @@
         }
       }
     },
-    "New %@" : {
+    "New Interval" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nova %@"
+            "value" : "Novo Intervalo"
           }
         }
       }
@@ -751,6 +760,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Novo Estudo"
+          }
+        }
+      }
+    },
+    "New Subject" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova Matéria"
           }
         }
       }
@@ -771,6 +790,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nova Tarefa"
+          }
+        }
+      }
+    },
+    "Next" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avançar"
           }
         }
       }
@@ -925,6 +954,16 @@
         }
       }
     },
+    "Pause" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar"
+          }
+        }
+      }
+    },
     "Pending" : {
       "localizations" : {
         "pt-BR" : {
@@ -951,6 +990,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Local (ex: Sala 101)"
+          }
+        }
+      }
+    },
+    "Play" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar"
           }
         }
       }
@@ -1115,6 +1164,16 @@
         }
       }
     },
+    "Start Studying" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começar a Estudar"
+          }
+        }
+      }
+    },
     "Stop Studying" : {
       "localizations" : {
         "pt-BR" : {
@@ -1164,16 +1223,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rotina de Estudos"
-          }
-        }
-      }
-    },
-    "Subject" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Matéria"
           }
         }
       }

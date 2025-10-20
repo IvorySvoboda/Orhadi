@@ -10,9 +10,9 @@ import SwiftUI
 struct DeletedSubjectRowView: View {
     @Environment(\.modelContext) private var context
     @State private var showDeleteConfirmation = false
-    @State private var showConflictAlert = false
 
     let subject: Subject
+    let showConflictAlert: () -> Void
 
     var hasConflictWithOthersSubjects: Bool {
         return SubjectConflictVerifier.hasConflictWithOtherSubjects(
@@ -40,24 +40,18 @@ struct DeletedSubjectRowView: View {
                 CustomLabel("\(subject.deletedAt?.formatted(date: .abbreviated, time: .shortened) ?? "")", systemImage: "trash.fill")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            }.frame(maxWidth: .infinity, alignment: .leading)
         }
-        .contentShape(Rectangle())
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button {
                 showDeleteConfirmation.toggle()
             } label: {
                 Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
-            }.tint(.red)
-            
+            }
+
             Button(role: hasConflictWithOthersSubjects ? nil : .destructive) {
-                if hasConflictWithOthersSubjects {
-                    showConflictAlert.toggle()
-                } else {
-                    recoverSubject()
-                }
+                recoverSubject()
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -65,11 +59,7 @@ struct DeletedSubjectRowView: View {
         }
         .contextMenu {
             Button {
-                if hasConflictWithOthersSubjects {
-                    showConflictAlert.toggle()
-                } else {
-                    recoverSubject()
-                }
+                recoverSubject()
             } label: {
                 Label("Restore", systemImage: "gobackward")
                     .labelStyle(.iconOnly)
@@ -85,25 +75,16 @@ struct DeletedSubjectRowView: View {
         .alert("This subject will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                withAnimation {
-                    context.delete(subject)
-                }
+                withAnimation { context.delete(subject) }
             }
         }
-        .alert("Conflict Detected!", isPresented: $showConflictAlert) {
-            Button("Close") {}
-        } message: {
-            VStack(spacing: 10) {
-                Text("The selected subject conflicts with an existing subject. Please adjust it before recovering.")
-            }
-        }
-
     }
 
     private func recoverSubject() {
-        withAnimation {
-            subject.isSubjectDeleted = false
-            subject.deletedAt = nil
+        if hasConflictWithOthersSubjects {
+            showConflictAlert()
+        } else {
+            subject.restore()
         }
     }
 }

@@ -114,42 +114,23 @@ struct StudyingView: View {
 
     // MARK: - Play/Pause Button
     private var playPauseButton: some View {
-        Button {
-            isRunning.toggle()
-        } label: {
-            if #available(iOS 26, *) {
-                if isRunning && !studyFinished {
-                    Image(systemName: "pause")
-                        .font(.title2)
-                        .foregroundStyle(Color.accentColor)
-                } else {
-                    Image(systemName: "play.fill")
-                        .font(.title2)
-                        .foregroundStyle(Color.accentColor)
-                }
+        Button(action: { isRunning.toggle() }) {
+            if isRunning && !studyFinished {
+                Label("Pause", systemImage: "pause")
             } else {
-                if isRunning && !studyFinished {
-                    Image(systemName: "pause.circle.fill")
-                        .font(.title2)
-                } else {
-                    Image(systemName: "play.circle.fill")
-                        .font(.title2)
-                }
+                Label("Play", systemImage: "play.fill")
             }
         }
+        .tint(.accentColor)
         .disabled(studyFinished)
     }
 
     // MARK: - Skip Button
     private var skipButton: some View {
-        Button {
-            skipToNext()
-        } label: {
-            Image(systemName: "forward.fill")
-                .font(.title2)
-                .foregroundStyle(Color.accentColor)
+        Button(action: skipToNext) {
+            Label("Next", systemImage: "forward.fill")
         }
-        .tint(.font)
+        .tint(.accentColor)
         .disabled(studyFinished)
     }
 

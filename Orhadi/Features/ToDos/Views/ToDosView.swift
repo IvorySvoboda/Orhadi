@@ -45,7 +45,7 @@ struct ToDosView: View {
                     .opacity(showSelectedSection ? 0 : 1)
 
                 ForEach(visibleToDos) { todo in
-                    ToDoRowView(
+                    ToDoRow(
                         todo: todo,
                         onEdit: { todoToEdit = todo }
                     )
@@ -89,7 +89,8 @@ struct ToDosView: View {
                             .blur(radius: showTitle ? 0 : 3)
                             .offset(y: showSelectedSection ? -8 : showTitle ? 0 : 14)
                         
-                        Text(selectedSection.string.uppercased())
+                        Text(selectedSection.string)
+                            .textCase(.uppercase)
                             .foregroundStyle(.tint)
                             .font(.caption)
                             .frame(height: 30)
@@ -103,15 +104,8 @@ struct ToDosView: View {
                     Button {
                         todoToAdd = ToDo()
                     } label: {
-                        if #available(iOS 26, *) {
-                            Image(systemName: "plus")
-                                .font(.title2)
-                                .foregroundStyle(Color.accentColor)
-                        } else {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title2)
-                        }
-                    }
+                        Label("Add", systemImage: "plus")
+                    }.tint(.accentColor)
                 }
             }
             .overlay { overlay }

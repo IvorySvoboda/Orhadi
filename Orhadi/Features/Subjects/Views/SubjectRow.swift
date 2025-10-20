@@ -52,9 +52,7 @@ struct SubjectRow: View {
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                Task {
-                    deleteSubject()
-                }
+                subject.delete()
             } label: {
                 Label("Delete", systemImage: "trash.fill")
                     .labelStyle(.iconOnly)
@@ -96,9 +94,7 @@ struct SubjectRow: View {
             }
 
             Button(role: .destructive) {
-                Task {
-                    deleteSubject()
-                }
+                subject.delete()
             } label: {
                 Label("Delete", systemImage: "trash.fill")
             }
@@ -152,15 +148,6 @@ struct SubjectRow: View {
                         .foregroundStyle(.secondary)
                 }
             }
-        }
-    }
-
-    // MARK: - Actions
-
-    private func deleteSubject() {
-        withAnimation {
-            subject.isSubjectDeleted = true
-            subject.deletedAt = .now
         }
     }
 }

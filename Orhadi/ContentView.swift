@@ -21,40 +21,22 @@ struct ContentView: View {
     // MARK: - Views
 
     var body: some View {
-        if #available(iOS 26, *) {
-            TabView {
-                Tab("Subjects", systemImage: "book.fill") {
-                    SubjectsView()
-                }
-                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                    ToDosView()
-                }
-                Tab("Studies", systemImage: "graduationcap.fill") {
-                    SRView()
-                }
-                Tab("Settings", systemImage: "gearshape.fill") {
-                    SettingsView(settings: settings)
-                }
+        TabView {
+            Tab("Subjects", systemImage: "book.fill") {
+                SubjectsView()
             }
-            .tabBarMinimizeBehavior(.onScrollDown)
-            .preferredColorScheme(getTheme(for: settings.theme))
-        } else {
-            TabView {
-                Tab("Subjects", systemImage: "book.fill") {
-                    SubjectsView()
-                }
-                Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                    ToDosView()
-                }
-                Tab("Studies", systemImage: "graduationcap.fill") {
-                    SRView()
-                }
-                Tab("Settings", systemImage: "gearshape.fill") {
-                    SettingsView(settings: settings)
-                }
+            Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
+                ToDosView()
             }
-            .preferredColorScheme(getTheme(for: settings.theme))
+            Tab("Studies", systemImage: "graduationcap.fill") {
+                SRView()
+            }
+            Tab("Settings", systemImage: "gearshape.fill") {
+                SettingsView(settings: settings)
+            }
         }
+        .backport.tabBarMinimizeBehavior(.onScrollDown)
+        .preferredColorScheme(getTheme(for: settings.theme))
     }
 
     func getTheme(for theme: Theme) -> ColorScheme? {

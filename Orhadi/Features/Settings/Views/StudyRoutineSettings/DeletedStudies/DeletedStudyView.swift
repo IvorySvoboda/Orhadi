@@ -12,26 +12,42 @@ struct DeletedStudiesView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-    
+
     @Query(filter: #Predicate<SRStudy> { $0.isStudyDeleted }, sort: \.deletedAt, animation: .smooth)
     private var deletedStudies: [SRStudy]
-    
+
     @State private var selectedStudies = Set<SRStudy>()
-    
-    /// Delete Confirmation
-    @State private var showDeleteAllConfirmation = false
-    @State private var showDeleteSelectedConfirmation = false
-    
-    var canHideTabBar: Bool {
-        if #available(iOS 26, *) {
-            return false
+    @State private var showDeleteConfirmation = false
+
+    // MARK: - Computed helpers
+
+    private var countToActOn: Int {
+        selectedStudies.isEmpty ? deletedStudies.count : selectedStudies.count
+    }
+
+    private var isPlural: Bool {
+        countToActOn > 1
+    }
+
+    private var deleteActionTitle: LocalizedStringKey {
+        if isPlural {
+            return "Delete \(countToActOn) Studies"
         } else {
-            return true
+            return "Delete Study"
         }
     }
-    
+
+    private var deleteMessageText: LocalizedStringKey {
+        if isPlural {
+            return "These \(countToActOn) studies will be deleted. This action cannot be undone."
+        } else {
+            return "This study will be deleted. This action cannot be undone."
+        }
+    }
+
+
     // MARK: - Views
-    
+
     var body: some View {
         List(selection: $selectedStudies) {
             Section {} footer: {
@@ -39,23 +55,21 @@ struct DeletedStudiesView: View {
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity)
             }
-            
+
             Section {
                 ForEach(deletedStudies) { study in
                     DeletedStudyRowView(study: study)
                         .tag(study)
                 }
-                
+
             }
         }
-        
         .navigationTitle("Deleted Studies")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
-        /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && .iOS26 ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
@@ -63,34 +77,17 @@ struct DeletedStudiesView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(selectedStudies.isEmpty ? "Restore All" : "Restore") {
-                    selectedStudies.isEmpty ? restoreAllStudies() : restoreSelectedStudies()
+                    restoreStudies()
                 }
 
                 Spacer()
 
                 Button(selectedStudies.isEmpty ? "Delete All" : "Delete") {
-                    selectedStudies.isEmpty ? showDeleteAllConfirmation.toggle() : showDeleteSelectedConfirmation.toggle()
+                    showDeleteConfirmation.toggle()
                 }
-                .confirmationDialog(
-                    deletedStudies.count > 1 ? "These \(deletedStudies.count) studies will be deleted. This action cannot be undone." : "This study will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteAllConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteAllStudies()
-                    } label: {
-                        Text(deletedStudies.count > 1 ? "Delete \(deletedStudies.count) Studies" : "Delete Study")
-                    }
-                }
-                .confirmationDialog(
-                    selectedStudies.count > 1 ? "These \(selectedStudies.count) studies will be deleted. This action cannot be undone." : "This study will be deleted. This action cannot be undone.",
-                    isPresented: $showDeleteSelectedConfirmation,
-                    titleVisibility: .visible
-                ) {
-                    Button(role: .destructive) {
-                        deleteSelectedStudies()
-                    } label: {
-                        Text(selectedStudies.count > 1 ? "Delete \(selectedStudies.count) Studies" : "Delete Study")
+                .confirmationDialog(deleteMessageText, isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+                    Button(deleteActionTitle, role: .destructive) {
+                        deleteStudies()
                     }
                 }
             }
@@ -118,36 +115,29 @@ struct DeletedStudiesView: View {
         }
     }
 
-    private func deleteAllStudies() {
-        for study in deletedStudies {
-            withAnimation { context.delete(study) }
+    private func deleteStudies() {
+        if selectedStudies.isEmpty {
+            for study in deletedStudies {
+                withAnimation { context.delete(study) }
+            }
+        } else {
+            for study in selectedStudies {
+                withAnimation { context.delete(study) }
+            }
+            selectedStudies.removeAll()
         }
     }
 
-    private func deleteSelectedStudies() {
-        for study in selectedStudies {
-            withAnimation { context.delete(study) }
-        }
-        selectedStudies.removeAll()
-    }
-
-    private func restoreAllStudies() {
-        for study in deletedStudies {
-            restore(study)
-        }
-    }
-
-    private func restoreSelectedStudies() {
-        for study in selectedStudies {
-            restore(study)
-        }
-        selectedStudies.removeAll()
-    }
-
-    private func restore(_ study: SRStudy) {
-        withAnimation {
-            study.isStudyDeleted = false
-            study.deletedAt = nil
+    private func restoreStudies() {
+        if selectedStudies.isEmpty {
+            for study in deletedStudies {
+                study.restore()
+            }
+        } else {
+            for study in selectedStudies {
+                study.restore()
+            }
+            selectedStudies.removeAll()
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import MarkdownUI
 import WidgetKit
 
-struct ToDoRowView: View {
+struct ToDoRow: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
@@ -49,9 +49,7 @@ struct ToDoRowView: View {
             }
             .swipeActions(edge: .leading) {
                 Button(role: .destructive) {
-                    Task {
-                        completeToDo()
-                    }
+                    todo.toggleCompleted(scheduleNotifications: settings.scheduleNotifications)
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
@@ -64,18 +62,14 @@ struct ToDoRowView: View {
             }
             .swipeActions(edge: .trailing) {
                 Button(role: .destructive) {
-                    Task {
-                        deleteToDo()
-                    }
+                    todo.delete()
                 } label: {
                     Label("Delete", systemImage: "trash.fill")
                         .labelStyle(.iconOnly)
                 }
 
                 Button(role: .destructive) {
-                    Task {
-                        archiveTodo()
-                    }
+                    todo.archive()
                 } label: {
                     Label("Archive", systemImage: "archivebox.fill")
                         .labelStyle(.iconOnly)
@@ -90,9 +84,7 @@ struct ToDoRowView: View {
             }
             .contextMenu {
                 Button {
-                    Task {
-                        completeToDo()
-                    }
+                    todo.toggleCompleted(scheduleNotifications: settings.scheduleNotifications)
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
@@ -108,17 +100,13 @@ struct ToDoRowView: View {
                 }
 
                 Button {
-                    Task {
-                        archiveTodo()
-                    }
+                    todo.archive()
                 } label: {
                     Label("Archive", systemImage: "archivebox.fill")
                 }
 
                 Button(role: .destructive) {
-                    Task {
-                        deleteToDo()
-                    }
+                    todo.delete()
                 } label: {
                     Label("Delete", systemImage: "trash.fill")
                 }
@@ -141,62 +129,11 @@ struct ToDoRowView: View {
                     .font(.headline)
                     .lineLimit(1)
                     .foregroundStyle(todo.isCompleted ? Color.secondary : Color.font)
-            }
-            .frame(maxWidth: 300, alignment: .leading)
+            }.frame(maxWidth: 300, alignment: .leading)
             
             CustomLabel("\(todo.formattedDueDate)", systemImage: "calendar")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-    }
-    
-    // MARK: - Actions
-    
-    private func completeToDo() {
-        /// Se a to-dos não estiver completada
-        if !todo.isCompleted {
-            /// completa a tarefa.
-            withAnimation {
-                todo.isCompleted = true
-                todo.completedAt = .now
-            }
-
-            /// remove as notificações agendadas
-            NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
-        } else {
-            /// descompleta a tarefa.
-            withAnimation {
-                todo.isCompleted = false
-                todo.completedAt = nil
-            }
-
-            /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
-            if settings.scheduleNotifications {
-                todo.scheduleNotification()
-            }
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    private func archiveTodo() {
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
-
-        withAnimation {
-            todo.isArchived = true
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
-    }
-
-    private func deleteToDo() {
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
-
-        withAnimation {
-            todo.isToDoDeleted = true
-            todo.deletedAt = .now
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
     }
 }

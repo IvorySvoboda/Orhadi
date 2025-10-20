@@ -45,11 +45,10 @@ struct ArchivedTodoRowView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        
         .swipeActions(edge: .leading) {
             Button(role: .destructive) {
                 Task {
-                    unarchiveTodo()
+                    unarchiveToDo()
                 }
             } label: {
                 Label("Unarchive", systemImage: "archivebox.fill")
@@ -69,7 +68,7 @@ struct ArchivedTodoRowView: View {
         .contextMenu {
             Button {
                 Task {
-                    unarchiveTodo()
+                    unarchiveToDo()
                 }
             } label: {
                 Label("Unarchive", systemImage: "archivebox.fill")
@@ -85,7 +84,7 @@ struct ArchivedTodoRowView: View {
         }
     }
 
-    private func unarchiveTodo() {
+    private func unarchiveToDo() {
         if !todo.isCompleted, todo.dueDate > .now {
             todo.scheduleNotification()
         }

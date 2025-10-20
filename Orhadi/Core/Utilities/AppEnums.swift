@@ -6,23 +6,21 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum Priority: Int, Codable, CaseIterable {
-    case none = 0
-    case low = 1
-    case medium = 2
-    case high = 3
+    case none = 0, low = 1, medium = 2, high = 3
 
-    var priorityString: String {
+    var priorityString: LocalizedStringKey {
         switch self {
         case .none:
-            return String(localized: "None")
+            return "None"
         case .low:
-            return String(localized: "Low")
+            return "Low"
         case .medium:
-            return String(localized: "Medium")
+            return "Medium"
         case .high:
-            return String(localized: "High")
+            return "High"
         }
     }
 }
@@ -36,14 +34,14 @@ extension Priority: Comparable {
 enum Theme: Codable, CaseIterable {
     case light, dark, auto
 
-    var name: String {
+    var name: LocalizedStringKey {
         switch self {
         case .light:
-            return String(localized: "Light")
+            return "Light"
         case .dark:
-            return String(localized: "Dark")
+            return "Dark"
         case .auto:
-            return String(localized: "Auto")
+            return "Auto"
         }
     }
 }
@@ -51,10 +49,14 @@ enum Theme: Codable, CaseIterable {
 enum ToDoSection: CaseIterable {
     case pending, completed
 
-    var string: String {
+    var string: LocalizedStringKey {
         switch self {
-        case .pending: return String(localized: "Pending")
-        case .completed: return String(localized: "Completed")
+        case .pending: return "Pending"
+        case .completed: return "Completed"
         }
     }
+}
+
+enum MinimizeBehavior {
+    case automatic, onScrollUp, onScrollDown, never
 }

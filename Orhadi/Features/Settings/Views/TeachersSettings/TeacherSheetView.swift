@@ -19,11 +19,11 @@ struct TeacherSheetView: View {
     @Bindable var teacher: Teacher
     var isNew: Bool
     
-    private var navigationTitle: Text {
+    private var navigationTitle: LocalizedStringKey {
         if isNew {
-            return Text("New Teacher")
+            return "New Teacher"
         } else {
-            return Text("Edit Teacher")
+            return "Edit Teacher"
         }
     }
 
@@ -88,7 +88,7 @@ struct TeacherSheetView: View {
         }
     }
 
-    // MARK: - Functions
+    // MARK: - Actions
 
     private func trySave() {
         if isNew {

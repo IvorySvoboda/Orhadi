@@ -10,6 +10,7 @@ import SwiftData
 import WidgetKit
 
 struct ArchivedTodosView: View {
+    @Environment(Settings.self) private var settings
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
 
@@ -19,21 +20,7 @@ struct ArchivedTodosView: View {
 
     @State private var selectedTodos = Set<ToDo>()
 
-    /// Delete Confirmation
-    @State private var showDeleteAllConfirmation = false
-    @State private var showDeleteSelectedConfirmation = false
-
-    /// Restore Confirmation
-    @State private var showRestoreAllConfirmation = false
-    @State private var showRestoreSelectedConfirmation = false
-
-    var canHideTabBar: Bool {
-        if #available(iOS 26, *) {
-            return false
-        } else {
-            return true
-        }
-    }
+    // MARK: - Views
 
     var body: some View {
         List(selection: $selectedTodos) {
@@ -48,25 +35,22 @@ struct ArchivedTodosView: View {
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
         .toolbarBackground(Color.orhadiBG, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
-        /// Oculta a TabBar no iOS 26+
-        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && !canHideTabBar ? .hidden : .visible, for: .tabBar)
+        .toolbarVisibility(editMode?.wrappedValue.isEditing == true && .iOS26 ? .hidden : .visible, for: .tabBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
-//                HStack {
-                    Button(selectedTodos.isEmpty ? "Unarchive All" : "Unarchive") {
-                        selectedTodos.isEmpty ? unarchiveAllTodos() : unarchiveSelectedTodos()
-                    }
+                Button(selectedTodos.isEmpty ? "Unarchive All" : "Unarchive") {
+                    unarchiveToDos()
+                }
 
-                    Spacer()
+                Spacer()
 
-                    Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
-                        selectedTodos.isEmpty ? deleteAllTodos() : deleteSelectedTodos()
-                    }
-//                }.padding(.bottom, 5)
+                Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
+                    deleteToDos()
+                }
             }
         }
         .onChange(of: archivedTodos) { _, newTodos in
@@ -78,45 +62,38 @@ struct ArchivedTodosView: View {
         }
     }
 
-    private func deleteSelectedTodos() {
-        for todo in selectedTodos {
-            withAnimation {
-                todo.isToDoDeleted = true
-                todo.deletedAt = .now
+    // MARK: - Actions
+
+    private func deleteToDos() {
+        if selectedTodos.isEmpty {
+            for todo in archivedTodos {
+                withAnimation {
+                    todo.isToDoDeleted = true
+                    todo.deletedAt = .now
+                }
             }
+        } else {
+            for todo in selectedTodos {
+                withAnimation {
+                    todo.isToDoDeleted = true
+                    todo.deletedAt = .now
+                }
+            }
+            selectedTodos.removeAll()
+
         }
-        selectedTodos.removeAll()
     }
 
-    private func deleteAllTodos() {
-        for todo in archivedTodos {
-            withAnimation {
-                todo.isToDoDeleted = true
-                todo.deletedAt = .now
+    private func unarchiveToDos() {
+        if selectedTodos.isEmpty {
+            for todo in archivedTodos {
+                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
             }
-        }
-    }
-
-    private func unarchiveSelectedTodos() {
-        for todo in selectedTodos {
-            if !todo.isCompleted, todo.dueDate > .now {
-                todo.scheduleNotification()
+        } else {
+            for todo in selectedTodos {
+                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
             }
-            withAnimation {
-                todo.isArchived = false
-            }
-        }
-        selectedTodos.removeAll()
-    }
-
-    private func unarchiveAllTodos() {
-        for todo in archivedTodos {
-            if !todo.isCompleted, todo.dueDate > .now {
-                todo.scheduleNotification()
-            }
-            withAnimation {
-                todo.isArchived = false
-            }
+            selectedTodos.removeAll()
         }
     }
 }
