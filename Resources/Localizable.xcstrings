@@ -182,7 +182,14 @@
       }
     },
     "Bold" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negrito"
+          }
+        }
+      }
     },
     "Break Time" : {
       "localizations" : {
@@ -618,7 +625,14 @@
       }
     },
     "Highlight" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destacar"
+          }
+        }
+      }
     },
     "Import Study Routine" : {
       "localizations" : {
@@ -701,7 +715,14 @@
       }
     },
     "Italic" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itálico"
+          }
+        }
+      }
     },
     "Light" : {
       "localizations" : {
@@ -709,6 +730,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claro"
+          }
+        }
+      }
+    },
+    "List" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista"
           }
         }
       }
@@ -1194,7 +1225,14 @@
       }
     },
     "Strikethrough" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riscado"
+          }
+        }
+      }
     },
     "Studies" : {
       "localizations" : {
@@ -1496,7 +1534,14 @@
       }
     },
     "Underline" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sublinhado"
+          }
+        }
+      }
     },
     "Version: %@ (%@)" : {
       "localizations" : {
