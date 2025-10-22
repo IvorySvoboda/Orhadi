@@ -61,25 +61,16 @@ struct ToDoRow: View {
                 }.tint(.accentColor)
             }
             .swipeActions(edge: .trailing) {
-                Button(role: .destructive) {
+                Button("Delete", systemImage: "trash.fill", role: .destructive) {
                     todo.delete()
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
-                        .labelStyle(.iconOnly)
                 }
 
-                Button(role: .destructive) {
+                Button("Archive", systemImage: "archivebox.fill") {
                     todo.archive()
-                } label: {
-                    Label("Archive", systemImage: "archivebox.fill")
-                        .labelStyle(.iconOnly)
                 }.tint(.teal)
 
-                Button {
+                Button("Edit", systemImage: "pencil") {
                     onEdit()
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                        .labelStyle(.iconOnly)
                 }.tint(Color.accentColor)
             }
             .contextMenu {
@@ -93,22 +84,16 @@ struct ToDoRow: View {
                     }
                 }
 
-                Button {
+                Button("Edit", systemImage: "pencil") {
                     onEdit()
-                } label: {
-                    Label("Edit", systemImage: "pencil")
                 }
 
-                Button {
+                Button("Archive", systemImage: "archivebox.fill") {
                     todo.archive()
-                } label: {
-                    Label("Archive", systemImage: "archivebox.fill")
                 }
 
-                Button(role: .destructive) {
+                Button("Delete", systemImage: "trash.fill", role: .destructive) {
                     todo.delete()
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
                 }
             }
         }

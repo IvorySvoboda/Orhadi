@@ -119,21 +119,20 @@ struct SRView: View {
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        studyToAdd = SRStudy(studyDay: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!)
-                    } label: {
-                        Label("Add", systemImage: "plus")
+                    Button("Add", systemImage: "plus") {
+                        studyToAdd = SRStudy(studyDay: Calendar.current.date(
+                            bySetting: .weekday,
+                            value: selectedDay,
+                            of: Date(timeIntervalSince1970: 0))!)
                     }.tint(.accentColor)
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    Button("Start Studying", systemImage: "play.fill") {
                         if canStartStudying {
                             studiesToStudy = studiesForTheSelectedDay
                             navigateToStudyingView = true
                         }
-                    } label: {
-                        Label("Start Studying", systemImage: "play.fill")
                     }
                     .tint(.accentColor)
                     .disabled(!canStartStudying)

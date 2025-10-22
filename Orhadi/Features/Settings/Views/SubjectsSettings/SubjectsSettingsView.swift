@@ -32,10 +32,8 @@ struct SubjectsSettingsView: View {
 
             if !deletedSubjects.isEmpty {
                 Section {
-                    NavigationLink {
+                    NavigationLink("Deleted Subjects") {
                         DeletedSubjectsView()
-                    } label: {
-                        Text("Deleted Subjects")
                     }
                 }
             }

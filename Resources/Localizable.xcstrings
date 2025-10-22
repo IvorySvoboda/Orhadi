@@ -319,7 +319,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir"
+            "value" : "Apagar"
           }
         }
       }
@@ -329,7 +329,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir %lld Estudos"
+            "value" : "Apagar %lld Estudos"
           }
         }
       }
@@ -339,7 +339,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir %lld Matérias"
+            "value" : "Apagar %lld Matérias"
           }
         }
       }
@@ -349,7 +349,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir %lld Tarefas"
+            "value" : "Apagar %lld Tarefas"
           }
         }
       }
@@ -359,7 +359,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir Tudo"
+            "value" : "Apagar Tudo"
           }
         }
       }
@@ -369,7 +369,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todos os estudos"
+            "value" : "Apagar todos os estudos"
           }
         }
       }
@@ -379,7 +379,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todos os estudos?"
+            "value" : "Apagar todos os estudos?"
           }
         }
       }
@@ -389,7 +389,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todas as matérias"
+            "value" : "Apagar todas as matérias"
           }
         }
       }
@@ -399,7 +399,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todas as matérias?"
+            "value" : "Apagar todas as matérias?"
           }
         }
       }
@@ -409,7 +409,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todas as tarefas"
+            "value" : "Apagar todas as tarefas"
           }
         }
       }
@@ -419,7 +419,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir todas as tarefas?"
+            "value" : "Apagar todas as tarefas?"
           }
         }
       }
@@ -429,7 +429,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir Estudo"
+            "value" : "Apagar Estudo"
           }
         }
       }
@@ -439,7 +439,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir Matéria"
+            "value" : "Apagar Matéria"
           }
         }
       }
@@ -449,7 +449,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Excluir Tarefa"
+            "value" : "Apagar Tarefa"
           }
         }
       }
@@ -459,7 +459,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Estudos Excluídos"
+            "value" : "Estudos Apagados"
           }
         }
       }
@@ -469,7 +469,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Matérias Excluídas"
+            "value" : "Matérias Apagadas"
           }
         }
       }
@@ -479,7 +479,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tarefas Excluídas"
+            "value" : "Tarefas Apagadas"
           }
         }
       }
@@ -730,16 +730,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Claro"
-          }
-        }
-      }
-    },
-    "List" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lista"
           }
         }
       }
@@ -1345,7 +1335,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Os estudos permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídos permanentemente."
+            "value" : "Os estudos permanecem disponíveis aqui por 30 dias. Após esse período, serão apagados permanentemente."
           }
         }
       }
@@ -1355,7 +1345,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As matérias permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídas permanentemente."
+            "value" : "As matérias permanecem disponíveis aqui por 30 dias. Após esse período, serão apagadas permanentemente."
           }
         }
       }
@@ -1385,7 +1375,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As tarefas permanecem disponíveis aqui por 30 dias. Após esse período, serão excluídas permanentemente."
+            "value" : "As tarefas permanecem disponíveis aqui por 30 dias. Após esse período, serão apagadas permanentemente."
           }
         }
       }
@@ -1405,7 +1395,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esses %lld estudos serão excluídos. Essa ação não pode ser desfeita."
+            "value" : "Esses %lld estudos serão apagados. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1415,7 +1405,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essas %lld matérias serão excluídas. Essa ação não pode ser desfeita."
+            "value" : "Essas %lld matérias serão apagadas. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1425,7 +1415,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essas %lld tarefas serão excluídas. Essa ação não pode ser desfeita."
+            "value" : "Essas %lld tarefas serão apagadas. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1435,7 +1425,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este estudo será excluído. Essa ação não pode ser desfeita."
+            "value" : "Este estudo será apagado. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1445,7 +1435,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta matéria será excluída. Essa ação não pode ser desfeita."
+            "value" : "Esta matéria será apagada. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1455,7 +1445,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esta tarefa será excluída. Essa ação não pode ser desfeita."
+            "value" : "Esta tarefa será apagadas. Essa ação não pode ser desfeita."
           }
         }
       }
@@ -1584,7 +1574,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ao importar uma nova rotina de estudos, todos os estudos existentes na rotina atual serão excluídos. Deseja continuar?"
+            "value" : "Ao importar uma nova rotina de estudos, todos os estudos existentes na rotina atual serão apagados. Deseja continuar?"
           }
         }
       }
@@ -1604,7 +1594,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ao importar, todas as tarefas existentes serão excluídas. Deseja continuar?"
+            "value" : "Ao importar, todas as tarefas existentes serão apagadas. Deseja continuar?"
           }
         }
       }

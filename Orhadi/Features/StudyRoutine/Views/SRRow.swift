@@ -36,57 +36,38 @@ struct SRRow: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            Button {
+            Button("Study", systemImage: "play.circle.fill") {
                 onStudy()
-            } label: {
-                Label("Study", systemImage: "play.circle.fill")
             }.tint(.accentColor)
         }
         .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 study.delete()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }
 
-            Button {
+            Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
                 onAdd()
-            } label: {
-                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
-                    .labelStyle(.iconOnly)
             }.tint(.teal)
 
-            Button {
+            Button("Edit", systemImage: "pencil") {
                 onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
-                    .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
         .contextMenu {
-            Button {
+            Button("Study", systemImage: "play.circle.fill") {
                 onStudy()
-            } label: {
-                Label("Study", systemImage: "play.circle.fill")
             }
 
-            Button {
+            Button("Edit", systemImage: "pencil") {
                 onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
             }
 
-            Button {
+            Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
                 onAdd()
-            } label: {
-                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
             }
 
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 study.delete()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
             }
         }
     }

@@ -26,6 +26,8 @@ struct SubjectsView: View {
     @State private var showSelectedWeekday: Bool = false
     @State private var hideOverlay: Bool = false
 
+    @Namespace private var animation
+
     // MARK: - Computed Properties
 
     var isTodayEmpty: Bool {
@@ -104,12 +106,18 @@ struct SubjectsView: View {
                     }
                 }
 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showConfirmation.toggle()
-                    } label: {
-                        Label("Add", systemImage: "plus")
-                    }.tint(.accentColor)
+                if #available(iOS 26, *) {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Add", systemImage: "plus") {
+                            showConfirmation.toggle()
+                        }.tint(.accentColor)
+                    }.matchedTransitionSource(id: "Add", in: animation)
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Add", systemImage: "plus") {
+                            showConfirmation.toggle()
+                        }.tint(.accentColor)
+                    }
                 }
             }
             .overlay {
@@ -142,7 +150,8 @@ struct SubjectsView: View {
                                     schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
                                     isRecess: option.isRecess)
                             } label: {
-                                let buttonText = Text(option.title.uppercased())
+                                let buttonText = Text(option.title)
+                                    .textCase(.uppercase)
                                     .font(.headline)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(Color.orhadiSecondaryForeground)
@@ -163,8 +172,8 @@ struct SubjectsView: View {
                     }.offset(y: 15)
                 }
                 .padding()
+                .navigationTransition(.zoom(sourceID: "Add", in: animation))
                 .presentationDetents([.height(135)])
-                .presentationDragIndicator(.visible)
             }
             .onChange(of: subjects) { _, _ in
                 WidgetCenter.shared.reloadAllTimelines()

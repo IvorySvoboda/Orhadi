@@ -43,33 +43,21 @@ struct DeletedSubjectRowView: View {
             }.frame(maxWidth: .infinity, alignment: .leading)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button {
+            Button("Delete", systemImage: "trash.fill") {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
-            }
+            }.tint(.red)
 
-            Button(role: hasConflictWithOthersSubjects ? nil : .destructive) {
+            Button("Restore", systemImage: "gobackward", role: hasConflictWithOthersSubjects ? nil : .destructive) {
                 recoverSubject()
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
         .contextMenu {
-            Button {
+            Button("Restore", systemImage: "gobackward") {
                 recoverSubject()
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
             }
 
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }
         }
         .alert("This subject will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {

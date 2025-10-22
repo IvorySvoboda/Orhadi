@@ -30,61 +30,44 @@ struct TeachersView: View {
             }
             .swipeActions(edge: .leading) {
                 if !teacher.email.isEmpty {
-                    Button {
+                    Button("Send e-mail", systemImage: "envelope.fill") {
                         teacher.openMail()
-                    } label: {
-                        Label("Send e-mail", systemImage: "envelope.fill")
-                            .labelStyle(.iconOnly)
                     }.tint(.accentColor)
                 }
             }
             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                Button(role: .destructive) {
+                Button("Delete", systemImage: "trash.fill", role: .destructive) {
                     withAnimation {
                         context.delete(teacher)
                     }
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
-                        .labelStyle(.iconOnly)
                 }
 
-                Button {
+                Button("Edit", systemImage: "pencil") {
                     teacherToEdit = teacher
-                } label: {
-                    Label("Edit", systemImage: "pencil")
-                        .labelStyle(.iconOnly)
                 }.tint(.accentColor)
             }
             .contextMenu {
                 if !teacher.email.isEmpty {
-                    Button {
+                    Button("Send e-mail", systemImage: "envelope.fill") {
                         teacher.openMail()
-                    } label: {
-                        Label("Send e-mail", systemImage: "envelope.fill")
                     }
                 }
 
-                Button {
+                Button("Edit", systemImage: "pencil") {
                     teacherToEdit = teacher
-                } label: {
-                    Label("Edit", systemImage: "pencil")
                 }
 
-                Button(role: .destructive) {
+                Button("Delete", systemImage: "trash.fill", role: .destructive) {
                     withAnimation {
                         context.delete(teacher)
                     }
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
                 }
             }
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button {
+                Button("Add", systemImage: "plus") {
                     teacherToAdd = Teacher()
-                } label: {
-                    Label("Add", systemImage: "plus")
                 }.tint(.accentColor)
             }
         }

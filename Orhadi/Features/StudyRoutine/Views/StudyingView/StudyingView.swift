@@ -55,48 +55,9 @@ struct StudyingView: View {
     // MARK: - Views
 
     var body: some View {
-        ZStack {
-            Color.orhadiBG
-                .ignoresSafeArea()
-
-            VStack {
-                header
-                Divider()
-                timerSection
-                nextSubjectsList
-            }
-        }
-        .statusBarHidden(isRunning)
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Label("Stop Studying", systemImage: "chevron.backward")
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                playPauseButton
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                skipButton
-            }
-        }
-        .toolbarBackground(.orhadiBG, for: .navigationBar)
-        .toolbarVisibility(.hidden, for: .tabBar)
-        .disableIdleTimer()
-        .onAppear {
-            if !isReady {
-                prepareSession(for: studies)
-            }
-        }
-    }
-
-    // MARK: - Header
-    private var header: some View {
-        Group {
+        VStack {
             Divider()
+
             HStack {
                 if currentSessionIndex < sessionItems.count {
                     Text(currentStudyName)
@@ -109,93 +70,90 @@ struct StudyingView: View {
             }
             .padding(.horizontal)
             .offset(y: 2)
-        }
-    }
 
-    // MARK: - Play/Pause Button
-    private var playPauseButton: some View {
-        Button(action: { isRunning.toggle() }) {
-            if isRunning && !studyFinished {
-                Label("Pause", systemImage: "pause")
-            } else {
-                Label("Play", systemImage: "play.fill")
-            }
-        }
-        .tint(.accentColor)
-        .disabled(studyFinished)
-    }
+            Divider()
 
-    // MARK: - Skip Button
-    private var skipButton: some View {
-        Button(action: skipToNext) {
-            Label("Next", systemImage: "forward.fill")
-        }
-        .tint(.accentColor)
-        .disabled(studyFinished)
-    }
+            VStack {
+                HStack {
+                    RollingTextView(text: timeString)
+                        .font(.system(size: 40, weight: .bold, design: .monospaced))
+                }
+                .onChange(of: timerManager.remainingTime) { _, _ in
+                    handleTimeChange()
+                }
+                .onChange(of: isRunning) { _, _ in
+                    handleRunningChange()
+                }
+            }.frame(height: 200)
 
-    // MARK: - Timer Section
-    private var timerSection: some View {
-        VStack {
-            HStack {
-                RollingTextView(text: timeString)
-                    .font(.system(size: 40, weight: .bold, design: .monospaced))
-            }
-            .onChange(of: timerManager.remainingTime) { _, _ in
-                handleTimeChange()
-            }
-            .onChange(of: isRunning) { _, _ in
-                handleRunningChange()
-            }
-        }
-        .frame(height: 200)
-    }
+            List {
+                if currentSessionIndex < sessionItems.count {
+                    ForEach(filteredSessionItems) { sessionItem in
+                        if sessionItem.isBreak {
+                            HStack {
+                                Text("Interval")
+                                Spacer()
+                                Text(breakTime.durationString())
+                            }
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.secondary)
+                            .plainListRow()
+                        } else if let study = sessionItem.study {
+                            HStack {
+                                Text(study.name.isEmpty ? "No Name" : study.name)
+                                    .bold()
+                                Spacer()
+                                Text(study.studyTimeInSeconds.durationString())
+                                    .bold()
+                            }
+                            .frame(height: 35)
+                            .plainListRow()
+                        }
 
-    // MARK: - Next Subjects List
-    private var nextSubjectsList: some View {
-        List {
-            if currentSessionIndex < sessionItems.count {
-                ForEach(filteredSessionItems) { sessionItem in
-                    sessionRow(for: sessionItem)
+                    }
                 }
             }
+            .listStyle(.plain)
+            .background(.orhadiBG)
+            .environment(\.defaultMinListRowHeight, 20)
         }
-        .listStyle(.plain)
-        .background(.orhadiBG)
-        .environment(\.defaultMinListRowHeight, 20)
-    }
-
-    private func sessionRow(for sessionItem: SessionItem) -> some View {
-        Group {
-            if sessionItem.isBreak {
-                breakSessionRow
-            } else if let study = sessionItem.study {
-                studySessionRow(for: study)
+        .statusBarHidden(isRunning)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Stop Studying", systemImage: "chevron.backward") {
+                    dismiss()
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isRunning.toggle()
+                } label: {
+                    if isRunning && !studyFinished {
+                        Label("Pause", systemImage: "pause")
+                    } else {
+                        Label("Play", systemImage: "play.fill")
+                    }
+                }
+                .tint(.accentColor)
+                .disabled(studyFinished)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Next", systemImage: "forward.fill") {
+                    skipToNext()
+                }
+                .tint(.accentColor)
+                .disabled(studyFinished)
             }
         }
-    }
-
-    private var breakSessionRow: some View {
-        HStack {
-            Text("Interval")
-            Spacer()
-            Text(breakTime.durationString())
+        .toolbarBackground(.orhadiBG, for: .navigationBar)
+        .toolbarVisibility(.hidden, for: .tabBar)
+        .disableIdleTimer()
+        .onAppear {
+            if !isReady {
+                prepareSession(for: studies)
+            }
         }
-        .font(.system(size: 14))
-        .foregroundStyle(Color.secondary)
-        .plainListRow()
-    }
-
-    private func studySessionRow(for study: SRStudy) -> some View {
-        HStack {
-            Text(study.name.isEmpty ? "No Name" : study.name)
-                .bold()
-            Spacer()
-            Text(study.studyTimeInSeconds.durationString())
-                .bold()
-        }
-        .frame(height: 35)
-        .plainListRow()
     }
 
     // MARK: - Actions

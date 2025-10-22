@@ -248,7 +248,10 @@ struct SubjectsDataSettingsView: View {
                         if let existingTeacher {
                             teacher = existingTeacher
                         } else {
-                            teacher = subjectTeacher
+                            teacher = Teacher(
+                                name: subjectTeacher.name,
+                                email: subjectTeacher.email
+                            )
                         }
                     }
 

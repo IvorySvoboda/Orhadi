@@ -30,9 +30,49 @@ struct SubjectRow: View {
 
                 VStack(alignment: .leading, spacing: 5) {
                     if subject.isRecess {
-                        intervalRow
+                        HStack {
+                            Text("Interval")
+                                .textCase(.uppercase)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fontWeight(.semibold)
+                            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fontWeight(.semibold)
+                        }
                     } else {
-                        subjectRow
+                        Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .lineLimit(1)
+                            .frame(maxWidth: 200, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: 3) {
+                            if let teacher = subject.teacher {
+                                if !teacher.name.isEmpty {
+                                    CustomLabel("\(teacher.name)", systemImage: "person.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                if !teacher.email.isEmpty {
+                                    CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+
+                            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+
+                            if !subject.place.isEmpty {
+                                CustomLabel("\(subject.place)", systemImage: "building.2.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
             }
@@ -42,111 +82,41 @@ struct SubjectRow: View {
             /// se existe um professor na matéria e o email do professor não está vazio
             /// crie o botão para enviar um email
             if let teacher = subject.teacher, !teacher.email.isEmpty {
-                Button {
+                Button("Send e-mail", systemImage: "envelope.fill") {
                     subject.openMail()
-                } label: {
-                    Label("Send e-mail", systemImage: "envelope.fill")
-                        .labelStyle(.iconOnly)
                 }.tint(.accentColor)
             }
         }
         .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 subject.delete()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }
 
-            Button {
+            Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
                 onAdd()
-            } label: {
-                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
-                    .labelStyle(.iconOnly)
             }.tint(.teal)
 
-            Button {
+            Button("Edit", systemImage: "pencil") {
                 onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
-                    .labelStyle(.iconOnly)
             }.tint(.accentColor)
         }
         .contextMenu {
             if let teacher = subject.teacher, !teacher.email.isEmpty {
-                Button {
+                Button("Send e-mail", systemImage: "envelope.fill") {
                     subject.openMail()
-                } label: {
-                    Label("Send e-mail", systemImage: "envelope.fill")
                 }
             }
 
-            Button {
+            Button("Edit", systemImage: "pencil") {
                 onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
             }
 
-            Button {
+            Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
                 onAdd()
-            } label: {
-                Label("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill")
             }
 
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 subject.delete()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-            }
-        }
-    }
-
-    private var intervalRow: some View {
-        HStack {
-            Text("Interval")
-                .textCase(.uppercase)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fontWeight(.semibold)
-            CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .fontWeight(.semibold)
-        }
-    }
-
-    private var subjectRow: some View {
-        Group {
-            Text(subject.name.nilIfEmpty() ?? String(localized: "No Name"))
-                .font(.headline)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-                .frame(maxWidth: 200, alignment: .leading)
-
-            VStack(alignment: .leading, spacing: 3) {
-                if let teacher = subject.teacher {
-                    if !teacher.name.isEmpty {
-                        CustomLabel("\(teacher.name)", systemImage: "person.fill")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    if !teacher.email.isEmpty {
-                        CustomLabel("\(teacher.email)", systemImage: "envelope.fill")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                CustomLabel("\(subject.startTime.formatToHour()) – \(subject.endTime.formatToHour())", systemImage: "clock.fill")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                if !subject.place.isEmpty {
-                    CustomLabel("\(subject.place)", systemImage: "building.2.fill")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
             }
         }
     }

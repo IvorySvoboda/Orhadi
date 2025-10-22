@@ -26,32 +26,21 @@ struct DeletedStudyRowView: View {
             }.frame(maxWidth: .infinity, alignment: .leading)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button {
+            Button("Delete", systemImage: "trash.fill") {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }.tint(.red)
 
-            Button(role: .destructive) {
+            Button("Restore", systemImage: "gobackward", role: .destructive) {
                 study.restore()
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
         .contextMenu {
-            Button {
+            Button("Restore", systemImage: "gobackward") {
                 study.restore()
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
             }
 
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
             }
         }
         .alert("This study will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {

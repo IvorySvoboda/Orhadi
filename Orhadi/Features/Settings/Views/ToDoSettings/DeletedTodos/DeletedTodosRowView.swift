@@ -27,33 +27,21 @@ struct DeletedTodosRowView: View {
             }.frame(maxWidth: .infinity, alignment: .leading)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button {
+            Button("Delete", systemImage: "trash.fill") {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }.tint(.red)
 
-            Button(role: .destructive) {
+            Button("Restore", systemImage: "gobackward", role: .destructive) {
                 todo.restore(scheduleNotifications: settings.scheduleNotifications)
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
             }.tint(.indigo)
         }
         .contextMenu {
-            Button {
-                todo.restore()
-            } label: {
-                Label("Restore", systemImage: "gobackward")
-                    .labelStyle(.iconOnly)
+            Button("Restore", systemImage: "gobackward") {
+                todo.restore(scheduleNotifications: settings.scheduleNotifications)
             }
 
-            Button(role: .destructive) {
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 showDeleteConfirmation.toggle()
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
             }
         }
         .alert("This to-do will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {

@@ -101,10 +101,8 @@ struct ToDosView: View {
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
+                    Button("Add", systemImage: "plus") {
                         todoToAdd = ToDo()
-                    } label: {
-                        Label("Add", systemImage: "plus")
                     }.tint(.accentColor)
                 }
             }

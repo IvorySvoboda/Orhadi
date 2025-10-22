@@ -32,10 +32,8 @@ struct StudyRoutineSettingsView: View {
 
             if !deletedStudies.isEmpty {
                 Section {
-                    NavigationLink {
+                    NavigationLink("Deleted Studies") {
                         DeletedStudiesView()
-                    } label: {
-                        Text("Deleted Studies")
                     }
                 }
             }

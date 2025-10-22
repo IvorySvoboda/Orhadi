@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ArchivedTodoRowView: View {
+    @Environment(Settings.self) private var settings
 
     var todo: ToDo
 
@@ -46,58 +47,23 @@ struct ArchivedTodoRowView: View {
             }
         }
         .swipeActions(edge: .leading) {
-            Button(role: .destructive) {
-                Task {
-                    unarchiveToDo()
-                }
-            } label: {
-                Label("Unarchive", systemImage: "archivebox.fill")
-                    .labelStyle(.iconOnly)
+            Button("Unarchive", systemImage: "archivebox.fill", role: .destructive) {
+                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
             }.tint(.teal)
         }
         .swipeActions(edge: .trailing) {
-            Button(role: .destructive) {
-                Task {
-                    deleteToDo()
-                }
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
-                    .labelStyle(.iconOnly)
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
+                todo.delete()
             }
         }
         .contextMenu {
-            Button {
-                Task {
-                    unarchiveToDo()
-                }
-            } label: {
-                Label("Unarchive", systemImage: "archivebox.fill")
+            Button("Unarchive", systemImage: "archivebox.fill") {
+                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
             }
 
-            Button(role: .destructive) {
-                Task {
-                    deleteToDo()
-                }
-            } label: {
-                Label("Delete", systemImage: "trash.fill")
+            Button("Delete", systemImage: "trash.fill", role: .destructive) {
+                todo.delete()
             }
-        }
-    }
-
-    private func unarchiveToDo() {
-        if !todo.isCompleted, todo.dueDate > .now {
-            todo.scheduleNotification()
-        }
-
-        withAnimation {
-            todo.isArchived = false
-        }
-    }
-
-    private func deleteToDo() {
-        withAnimation {
-            todo.isToDoDeleted = true
-            todo.deletedAt = .now
         }
     }
 }

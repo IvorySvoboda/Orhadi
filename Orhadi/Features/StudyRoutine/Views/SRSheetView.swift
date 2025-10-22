@@ -72,14 +72,14 @@ struct SRSheetView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(role: .cancel, action: { dismiss() }) {
-                        Label("Cancel", systemImage: "xmark")
+                    Button("Cancel", systemImage: "xmark", role: .cancel) {
+                        dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: trySave) {
-                        Label("Save", systemImage: "checkmark")
+                    Button("Save", systemImage: "checkmark") {
+                        trySave()
                     }.disabled(name.isEmpty)
                 }
             }
