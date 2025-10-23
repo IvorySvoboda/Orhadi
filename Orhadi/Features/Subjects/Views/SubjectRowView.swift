@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SubjectRow: View {
+struct SubjectRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 

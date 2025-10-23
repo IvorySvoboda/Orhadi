@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum Priority: Int, Codable, CaseIterable {
+enum Priority: Int, Codable, CaseIterable, Comparable {
     case none = 0, low = 1, medium = 2, high = 3
 
     var priorityString: LocalizedStringKey {
@@ -23,9 +23,7 @@ enum Priority: Int, Codable, CaseIterable {
             return "High"
         }
     }
-}
 
-extension Priority: Comparable {
     static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue < rhs.rawValue
     }

@@ -311,9 +311,6 @@
         }
       }
     },
-    "Debug" : {
-      "shouldTranslate" : false
-    },
     "Delete" : {
       "localizations" : {
         "pt-BR" : {
@@ -1194,6 +1191,16 @@
         }
       }
     },
+    "Start Study" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começar Estudo"
+          }
+        }
+      }
+    },
     "Start Studying" : {
       "localizations" : {
         "pt-BR" : {
@@ -1230,19 +1237,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Estudos"
-          }
-        }
-      }
-    },
-    "Studies Flood" : {
-      "shouldTranslate" : false
-    },
-    "Study" : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estudo"
           }
         }
       }
@@ -1286,9 +1280,6 @@
           }
         }
       }
-    },
-    "Subjects Flood" : {
-      "shouldTranslate" : false
     },
     "Teacher" : {
       "localizations" : {
@@ -1479,9 +1470,6 @@
           }
         }
       }
-    },
-    "To-Dos Flood" : {
-      "shouldTranslate" : false
     },
     "Total Studies" : {
       "localizations" : {

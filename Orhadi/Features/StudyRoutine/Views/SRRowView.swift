@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SRRow: View {
+struct SRRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
@@ -36,25 +36,31 @@ struct SRRow: View {
         }
         .listRowBackground(Color.clear)
         .swipeActions(edge: .leading) {
-            Button("Study", systemImage: "play.circle.fill") {
+            Button("Start Study", systemImage: "play.circle.fill") {
                 onStudy()
-            }.tint(.accentColor)
+            }
+            .tint(.accentColor)
+            .labelStyle(.iconOnly)
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
                 study.delete()
-            }
+            }.labelStyle(.iconOnly)
 
             Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
                 onAdd()
-            }.tint(.teal)
+            }
+            .tint(.teal)
+            .labelStyle(.iconOnly)
 
             Button("Edit", systemImage: "pencil") {
                 onEdit()
-            }.tint(.accentColor)
+            }
+            .tint(.accentColor)
+            .labelStyle(.iconOnly)
         }
         .contextMenu {
-            Button("Study", systemImage: "play.circle.fill") {
+            Button("Start Study", systemImage: "play.circle.fill") {
                 onStudy()
             }
 

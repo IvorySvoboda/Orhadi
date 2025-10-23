@@ -71,7 +71,6 @@
 				Core/Utilities/Backport.swift,
 				Core/Utilities/CleanOldDeleted.swift,
 				Core/Utilities/CreateContainer.swift,
-				Core/Utilities/DeviceInfoProvider.swift,
 				Core/Utilities/NotificationsManager.swift,
 				Core/Utilities/SubjectConflictVerifier.swift,
 				Services/Persistence/MigrationPlan.swift,

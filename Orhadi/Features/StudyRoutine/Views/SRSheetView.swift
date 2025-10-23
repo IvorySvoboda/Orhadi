@@ -11,48 +11,30 @@ struct SRSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
-    @State private var name: String
-    @State private var studyDay: Date
-    @State private var studyTime: Date
-
-    @Bindable var study: SRStudy
-    var isNew: Bool
-
-    private var navigationTitle: LocalizedStringKey {
-        if isNew {
-            return "New Study"
-        } else {
-            return "Edit Study"
-        }
-    }
+    @State private var viewModel: ViewModel
 
     init(study: SRStudy, isNew: Bool) {
-        self.study = study
-        self.isNew = isNew
-
-        _name = State(initialValue: study.name)
-        _studyDay = State(initialValue: study.studyDay)
-        _studyTime = State(initialValue: study.studyTime)
+        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew))
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Name (ex: English)", text: $name)
+                    TextField("Name (ex: English)", text: $viewModel.draftStudy.name)
                         .autocorrectionDisabled()
                 }
 
                 Section {
                     Picker("Weekday", selection: Binding(
-                        get: { Calendar.current.component(.weekday, from: studyDay) },
+                        get: { Calendar.current.component(.weekday, from: viewModel.draftStudy.studyDay) },
                         set: { newWeekday in
                             if let newDate = Calendar.current.nextDate(
-                                after: studyDay,
+                                after: viewModel.draftStudy.studyDay,
                                 matching: DateComponents(weekday: newWeekday),
                                 matchingPolicy: .nextTimePreservingSmallerComponents
                             ) {
-                                studyDay = newDate
+                                viewModel.draftStudy.studyDay = newDate
                             }
                         })
                     ) {
@@ -63,12 +45,12 @@ struct SRSheetView: View {
 
                     DatePicker(
                         "Study Duration",
-                        selection: $studyTime,
+                        selection: $viewModel.draftStudy.studyTime,
                         displayedComponents: [.hourAndMinute]
                     )
                 }
             }
-            .navigationTitle(navigationTitle)
+            .navigationTitle(viewModel.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -79,42 +61,12 @@ struct SRSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        trySave()
-                    }.disabled(name.isEmpty)
+                        viewModel.trySave(using: context) {
+                            dismiss()
+                        }
+                    }.disabled(viewModel.draftStudy.name.isEmpty)
                 }
             }
         }
-    }
-
-    // MARK: - Actions
-
-    private func trySave() {
-        if isNew {
-            insertNewStudy()
-        } else {
-            applyStudyChanges()
-        }
-
-        dismiss()
-    }
-
-    private func insertNewStudy() {
-        withAnimation {
-            context.insert(SRStudy(
-                name: name.trimmingCharacters(in: .whitespaces),
-                studyDay: studyDay,
-                studyTime: studyTime
-            ))
-        }
-
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-    }
-
-    private func applyStudyChanges() {
-        study.name = name.trimmingCharacters(in: .whitespaces)
-        study.studyDay = studyDay
-        study.studyTime = studyTime
-
-        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

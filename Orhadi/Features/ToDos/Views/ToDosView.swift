@@ -21,19 +21,10 @@ struct ToDosView: View {
         !$0.isArchived && !$0.isToDoDeleted && $0.isCompleted
     }, sort: \ToDo.completedAt, order: .reverse) private var completedToDos: [ToDo]
 
-    // MARK: - Properties
-
-    @State private var todoToAdd: ToDo?
-    @State private var todoToEdit: ToDo?
-    @State private var selectedSection: ToDoSection = .pending
-    @State private var showTitle: Bool = false
-    @State private var showSelectedSection: Bool = false
-    @State private var hideOverlay: Bool = false
-
-    // MARK: - Computed Properties
+    @State private var viewModel = ViewModel()
 
     var visibleToDos: [ToDo] {
-        selectedSection == .pending ? pendingToDos : completedToDos
+        viewModel.selectedSection == .pending ? pendingToDos : completedToDos
     }
 
     // MARK: - Views
@@ -41,13 +32,13 @@ struct ToDosView: View {
     var body: some View {
         NavigationStack {
             List {
-                ToDosSectionPickerBar(selectedSection: $selectedSection)
-                    .opacity(showSelectedSection ? 0 : 1)
+                ToDosSectionPickerBar(selectedSection: $viewModel.selectedSection)
+                    .opacity(viewModel.showSelectedSection ? 0 : 1)
 
                 ForEach(visibleToDos) { todo in
-                    ToDoRow(
+                    ToDoRowView(
                         todo: todo,
-                        onEdit: { todoToEdit = todo }
+                        onEdit: { viewModel.todoToEdit = todo }
                     )
                 }
             }
@@ -56,28 +47,7 @@ struct ToDosView: View {
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
-                debugPrint(scrollOffset)
-
-                let shouldShowTitle = scrollOffset >= -101
-                if shouldShowTitle != showTitle {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showTitle = shouldShowTitle
-                    }
-                }
-
-                let shouldShowWeekday = scrollOffset >= -56
-                if shouldShowWeekday != showSelectedSection {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showSelectedSection = shouldShowWeekday
-                    }
-                }
-
-                let shouldHideOverlay = scrollOffset < -300
-                if shouldHideOverlay != hideOverlay {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        hideOverlay = shouldHideOverlay
-                    }
-                }
+                viewModel.handleScrollGeoChange(scrollOffset)
             })
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -85,33 +55,53 @@ struct ToDosView: View {
                         Text("To-Do")
                             .font(.headline)
                             .frame(height: 30)
-                            .opacity(showTitle ? 1 : 0)
-                            .blur(radius: showTitle ? 0 : 3)
-                            .offset(y: showSelectedSection ? -8 : showTitle ? 0 : 14)
+                            .opacity(viewModel.showTitle ? 1 : 0)
+                            .blur(radius: viewModel.showTitle ? 0 : 3)
+                            .offset(y: viewModel.showSelectedSection ? -8 : viewModel.showTitle ? 0 : 14)
 
-                        Text(selectedSection.string)
+                        Text(viewModel.selectedSection.string)
                             .textCase(.uppercase)
                             .foregroundStyle(.tint)
                             .font(.caption)
                             .frame(height: 30)
-                            .opacity(showSelectedSection ? 1 : 0)
-                            .blur(radius: showSelectedSection ? 0 : 3)
-                            .offset(y: showSelectedSection ? 8 : 14)
+                            .opacity(viewModel.showSelectedSection ? 1 : 0)
+                            .blur(radius: viewModel.showSelectedSection ? 0 : 3)
+                            .offset(y: viewModel.showSelectedSection ? 8 : 14)
                     }
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add", systemImage: "plus") {
-                        todoToAdd = ToDo()
+                        viewModel.todoToAdd = ToDo()
                     }.tint(.accentColor)
                 }
             }
-            .overlay { overlay }
-            .sheet(item: $todoToAdd) { todo in
+            .overlay {
+                if visibleToDos.isEmpty, !viewModel.hideOverlay {
+                    ContentUnavailableView {
+                        Label(
+                            viewModel.selectedSection == .pending ? "No Pending To-Dos" : "No Completed To-Dos",
+                            systemImage: "list.bullet.clipboard")
+                    } description: {
+                        Text(
+                            viewModel.selectedSection == .pending
+                            ? "Add new To-Dos to start getting organized."
+                            : "Complete To-Dos to see them here."
+                        )
+                    } actions: {
+                        Button("Add To-Do") {
+                            viewModel.todoToAdd = ToDo()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .foregroundStyle(Color.orhadiBG)
+                    }
+                }
+            }
+            .sheet(item: $viewModel.todoToAdd) { todo in
                 ToDoSheetView(todo: todo, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $todoToEdit) { todo in
+            .sheet(item: $viewModel.todoToEdit) { todo in
                 ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
             }
@@ -120,30 +110,6 @@ struct ToDosView: View {
             }
             .onChange(of: pendingToDos) { _, _ in
                 WidgetCenter.shared.reloadAllTimelines()
-            }
-        }
-    }
-
-    private var overlay: some View {
-        Group {
-            if visibleToDos.isEmpty, !hideOverlay {
-                ContentUnavailableView {
-                    Label(
-                        selectedSection == .pending ? "No Pending To-Dos" : "No Completed To-Dos",
-                        systemImage: "list.bullet.clipboard")
-                } description: {
-                    Text(
-                        selectedSection == .pending
-                        ? "Add new To-Dos to start getting organized."
-                        : "Complete To-Dos to see them here."
-                    )
-                } actions: {
-                    Button("Add To-Do") {
-                        todoToAdd = ToDo()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .foregroundStyle(Color.orhadiBG)
-                }
             }
         }
     }

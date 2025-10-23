@@ -15,31 +15,18 @@ struct SRView: View {
         !$0.isStudyDeleted
     }, sort: \SRStudy.name, animation: .smooth) private var studies: [SRStudy]
 
-    // MARK: - Properties
-
-    @State private var studyToAdd: SRStudy?
-    @State private var studyToEdit: SRStudy?
-    @State private var studiesToStudy: [SRStudy] = []
-    @State private var navigateToStudyingView: Bool = false
-    @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
-    @State private var showTitle: Bool = false
-    @State private var showSelectedWeekday: Bool = false
-    @State private var hideOverlay: Bool = false
+    @State private var viewModel = ViewModel()
 
     // MARK: - Computed Properties
 
     var isTodayEmpty: Bool {
         studies.filter {
-            Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+            Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay
         }.isEmpty
     }
 
-    var toolbarTitle: String {
-        Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
-    }
-
     var studiesForTheSelectedDay: [SRStudy] {
-        studies.filter { Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay && !$0.hasStudiedThisWeek }
+        studies.filter { Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay && !$0.hasStudiedThisWeek }
     }
 
     var canStartStudying: Bool {
@@ -51,20 +38,20 @@ struct SRView: View {
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $selectedDay)
-                    .opacity(showSelectedWeekday ? 0 : 1)
+                WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
+                    .opacity(viewModel.showSelectedWeekday ? 0 : 1)
 
                 ForEach(studies.filter {
-                    Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+                    Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay
                 }) { study in
-                    SRRow(
+                    SRRowView(
                         study: study,
                         onStudy: {
-                            studiesToStudy = [study]
-                            navigateToStudyingView.toggle()
+                            viewModel.studiesToStudy = [study]
+                            viewModel.navigateToStudyingView.toggle()
                         },
-                        onAdd: { studyToAdd = study },
-                        onEdit: { studyToEdit = study }
+                        onAdd: { viewModel.studyToAdd = study },
+                        onEdit: { viewModel.studyToEdit = study }
                     )
                 }
             }
@@ -73,56 +60,43 @@ struct SRView: View {
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
-                debugPrint(scrollOffset)
-
-                let shouldShowTitle = scrollOffset >= -101
-                if shouldShowTitle != showTitle {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showTitle = shouldShowTitle
-                    }
-                }
-
-                let shouldShowWeekday = scrollOffset >= -56
-                if shouldShowWeekday != showSelectedWeekday {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showSelectedWeekday = shouldShowWeekday
-                    }
-                }
-
-                let shouldHideOverlay = scrollOffset < -300
-                if shouldHideOverlay != hideOverlay {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        hideOverlay = shouldHideOverlay
-                    }
-                }
+                viewModel.handleScrollGeoChange(scrollOffset)
             })
-            .overlay { overlay }
+            .overlay {
+                if isTodayEmpty, !viewModel.hideOverlay {
+                    ContentUnavailableView {
+                        Label("Nothing to Study", systemImage: "graduationcap")
+                    } description: {
+                        Text("Nothing to study today. How about taking a little time to rest?")
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     ZStack {
                         Text("Study Routine")
                             .font(.headline)
                             .frame(height: 30)
-                            .opacity(showTitle ? 1 : 0)
-                            .blur(radius: showTitle ? 0 : 3)
-                            .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
+                            .opacity(viewModel.showTitle ? 1 : 0)
+                            .blur(radius: viewModel.showTitle ? 0 : 3)
+                            .offset(y: viewModel.showSelectedWeekday ? -8 : viewModel.showTitle ? 0 : 14)
 
-                        Text(toolbarTitle)
+                        Text(viewModel.toolbarTitle)
                             .foregroundStyle(.tint)
                             .font(.caption)
                             .frame(height: 30)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .opacity(showSelectedWeekday ? 1 : 0)
-                            .blur(radius: showSelectedWeekday ? 0 : 3)
-                            .offset(y: showSelectedWeekday ? 8 : 14)
+                            .opacity(viewModel.showSelectedWeekday ? 1 : 0)
+                            .blur(radius: viewModel.showSelectedWeekday ? 0 : 3)
+                            .offset(y: viewModel.showSelectedWeekday ? 8 : 14)
                     }
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Add", systemImage: "plus") {
-                        studyToAdd = SRStudy(studyDay: Calendar.current.date(
+                        viewModel.studyToAdd = SRStudy(studyDay: Calendar.current.date(
                             bySetting: .weekday,
-                            value: selectedDay,
+                            value: viewModel.selectedDay,
                             of: Date(timeIntervalSince1970: 0))!)
                     }.tint(.accentColor)
                 }
@@ -130,36 +104,24 @@ struct SRView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Start Studying", systemImage: "play.fill") {
                         if canStartStudying {
-                            studiesToStudy = studiesForTheSelectedDay
-                            navigateToStudyingView = true
+                            viewModel.studiesToStudy = studiesForTheSelectedDay
+                            viewModel.navigateToStudyingView = true
                         }
                     }
                     .tint(.accentColor)
                     .disabled(!canStartStudying)
                 }
             }
-            .navigationDestination(isPresented: $navigateToStudyingView) {
-                StudyingView(studies: $studiesToStudy)
+            .navigationDestination(isPresented: $viewModel.navigateToStudyingView) {
+                StudyingView(studies: $viewModel.studiesToStudy)
             }
-            .sheet(item: $studyToAdd) { study in
+            .sheet(item: $viewModel.studyToAdd) { study in
                 SRSheetView(study: study, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $studyToEdit) { study in
+            .sheet(item: $viewModel.studyToEdit) { study in
                 SRSheetView(study: study, isNew: false)
                     .interactiveDismissDisabled()
-            }
-        }
-    }
-
-    private var overlay: some View {
-        Group {
-            if isTodayEmpty, !hideOverlay {
-                ContentUnavailableView {
-                    Label("Nothing to Study", systemImage: "graduationcap")
-                } description: {
-                    Text("Nothing to study today. How about taking a little time to rest?")
-                }
             }
         }
     }

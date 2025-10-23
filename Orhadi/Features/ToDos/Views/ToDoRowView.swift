@@ -9,7 +9,7 @@ import SwiftUI
 import MarkdownUI
 import WidgetKit
 
-struct ToDoRow: View {
+struct ToDoRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 

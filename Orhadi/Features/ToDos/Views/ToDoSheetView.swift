@@ -9,52 +9,29 @@ import SwiftUI
 import WidgetKit
 
 struct ToDoSheetView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
 
-    @State private var isHourPickerExpanded = false
-    @State private var title: String
-    @State private var info: AttributedString
-    @State private var priority: Priority
-    @State private var dueDate: Date
-    @State private var withHour: Bool
-
-    @Bindable var todo: ToDo
-    var isNew: Bool
-
-    private var navigationTitle: LocalizedStringKey {
-        if isNew {
-            return "New To-Do"
-        } else {
-            return "Edit To-Do"
-        }
-    }
+    @State private var viewModel: ViewModel
 
     init(todo: ToDo, isNew: Bool) {
-        self.todo = todo
-        self.isNew = isNew
-
-        _title = State(initialValue: todo.title)
-        _info = State(initialValue: todo.info)
-        _priority = State(initialValue: todo.priority)
-        _dueDate = State(initialValue: todo.dueDate)
-        _withHour = State(initialValue: todo.withHour)
+        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew))
     }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Work of …", text: $title)
+                    TextField("Work of …", text: $viewModel.draftToDo.title)
                         .autocorrectionDisabled()
 
                     if #available(iOS 26, *) {
-                        ToDoTextEditor(text: $info)
+                        ToDoTextEditor(text: $viewModel.draftToDo.info)
                     } else {
                         ZStack {
                             VStack {
-                                if info.characters.isEmpty {
+                                if viewModel.draftToDo.info.characters.isEmpty {
                                     Text("Do …")
                                         .foregroundStyle(Color.secondary)
                                         .opacity(0.5)
@@ -65,8 +42,8 @@ struct ToDoSheetView: View {
                             .padding(.leading, 5)
 
                             MarkdownTextField(text: Binding(
-                                get: { String("\(info.characters)") },
-                                set: { info = AttributedString("\($0)") }
+                                get: { String("\(viewModel.draftToDo.info.characters)") },
+                                set: { viewModel.draftToDo.info = AttributedString("\($0)") }
                             ))
                             .frame(height: 200)
                         }
@@ -74,14 +51,14 @@ struct ToDoSheetView: View {
                 }
 
                 Section {
-                    PriorityPickerView(priority: $priority)
+                    PriorityPickerView(priority: $viewModel.draftToDo.priority)
                 }
 
                 Section {
                     DisclosureGroup {
                         DatePicker(
                             "Date",
-                            selection: $dueDate,
+                            selection: $viewModel.draftToDo.dueDate,
                             displayedComponents: [.date]
                         )
                         .datePickerStyle(.graphical)
@@ -95,7 +72,7 @@ struct ToDoSheetView: View {
                                 .padding(.leading, 2)
                             VStack(alignment: .leading) {
                                 Text("Date")
-                                Text(dueDate.relativeFormatted())
+                                Text(viewModel.draftToDo.dueDate.relativeFormatted())
                                     .font(.caption)
                                     .foregroundStyle(Color.accentColor)
                             }
@@ -104,22 +81,22 @@ struct ToDoSheetView: View {
                     .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
 
                     DisclosureGroup(isExpanded: Binding(
-                        get: { isHourPickerExpanded },
+                        get: { viewModel.isHourPickerExpanded },
                         set: { newValue in
-                            if withHour {
-                                isHourPickerExpanded = newValue
+                            if viewModel.draftToDo.withHour {
+                                viewModel.isHourPickerExpanded = newValue
                             }
                         }
                     )) {
                         DatePicker(
                             "Time",
-                            selection: $dueDate,
+                            selection: $viewModel.draftToDo.dueDate,
                             displayedComponents: [.hourAndMinute]
                         )
                         .labelsHidden()
                         .datePickerStyle(.wheel)
                     } label: {
-                        Toggle(isOn: $withHour) {
+                        Toggle(isOn: $viewModel.draftToDo.withHour) {
                             HStack {
                                 Image(systemName: "clock")
                                     .resizable()
@@ -129,8 +106,8 @@ struct ToDoSheetView: View {
                                     .padding(.leading, 2)
                                 VStack(alignment: .leading) {
                                     Text("Time")
-                                    if withHour {
-                                        Text("\(dueDate.formatToHour())")
+                                    if viewModel.draftToDo.withHour {
+                                        Text("\(viewModel.draftToDo.dueDate.formatToHour())")
                                             .font(.caption)
                                             .foregroundStyle(Color.accentColor)
                                     }
@@ -138,17 +115,17 @@ struct ToDoSheetView: View {
                             }
                         }
                     }
-                    .onChange(of: withHour) { _, newValue in
+                    .onChange(of: viewModel.draftToDo.withHour) { _, newValue in
                         if !newValue {
                             withAnimation {
-                                isHourPickerExpanded = false
+                                viewModel.isHourPickerExpanded = false
                             }
                         }
                     }
                     .disclosureGroupStyle(OrhadiDisclosureGroupStyle(addPadding: false))
                 }
             }
-            .navigationTitle(navigationTitle)
+            .navigationTitle(viewModel.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -159,69 +136,12 @@ struct ToDoSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        trySave()
-                    }.disabled(title.isEmpty)
+                        viewModel.trySave(using: context, scheduleNotifications: settings.scheduleNotifications) {
+                            dismiss()
+                        }
+                    }.disabled(viewModel.draftToDo.title.isEmpty)
                 }
             }
         }
-    }
-
-    // MARK: - Actions
-
-    private func trySave() {
-        if isNew {
-            insertNewToDo()
-        } else {
-            applyToDoChanges()
-        }
-
-        WidgetCenter.shared.reloadAllTimelines()
-        dismiss()
-    }
-
-    private func insertNewToDo() {
-        let newTodo = ToDo(
-            title: title.trimmingCharacters(in: .whitespaces),
-            info: info,
-            dueDate: dueDate,
-            withHour: withHour,
-            priority: priority
-        )
-
-        if settings.scheduleNotifications {
-            newTodo.scheduleNotification()
-        }
-
-        if !newTodo.withHour {
-            newTodo.dueDate = Calendar.current.startOfDay(for: newTodo.dueDate)
-        }
-
-        withAnimation {
-            modelContext.insert(newTodo)
-        }
-
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-    }
-
-    private func applyToDoChanges() {
-        todo.title = title.trimmingCharacters(in: .whitespaces)
-        todo.info = info
-        todo.dueDate = dueDate
-        todo.priority = priority
-        todo.withHour = withHour
-
-        /// Se não for uma tarefa nova, atualiza as notificações agendadas.
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
-
-        if !todo.withHour {
-            todo.dueDate = Calendar.current.startOfDay(for: todo.dueDate)
-        }
-
-        /// Sempre respeitando as preferências do usuário.
-        if settings.scheduleNotifications {
-            todo.scheduleNotification()
-        }
-
-        UIImpactFeedbackGenerator(style: .soft).impactOccurred()
     }
 }

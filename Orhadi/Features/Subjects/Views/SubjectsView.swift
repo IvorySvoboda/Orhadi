@@ -16,45 +16,25 @@ struct SubjectsView: View {
         !$0.isSubjectDeleted
     }, sort: \Subject.startTime, animation: .smooth) private var subjects: [Subject]
 
-    // MARK: - Properties
-
-    @State private var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
-    @State private var showConfirmation: Bool = false
-    @State private var subjectToAdd: Subject?
-    @State private var subjectToEdit: Subject?
-    @State private var showTitle: Bool = false
-    @State private var showSelectedWeekday: Bool = false
-    @State private var hideOverlay: Bool = false
-
     @Namespace private var animation
 
-    // MARK: - Computed Properties
-
-    var isTodayEmpty: Bool {
-        subjects.filter {
-            Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
-        }.isEmpty
-    }
-
-    var toolbarTitle: String {
-        Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
-    }
+    @State private var viewModel = ViewModel()
 
     // MARK: - Views
 
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $selectedDay)
-                    .opacity(showSelectedWeekday ? 0 : 1)
+                WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
+                    .opacity(viewModel.showSelectedWeekday ? 0 : 1)
 
                 ForEach(subjects.filter {
-                    Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
+                    Calendar.current.component(.weekday, from: $0.schedule) == viewModel.selectedDay
                 }) { subject in
-                    SubjectRow(
+                    SubjectRowView(
                         subject: subject,
-                        onAdd: { subjectToAdd = subject },
-                        onEdit: { subjectToEdit = subject }
+                        onAdd: { viewModel.subjectToAdd = subject },
+                        onEdit: { viewModel.subjectToEdit = subject }
                     )
                 }
             }
@@ -63,28 +43,7 @@ struct SubjectsView: View {
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
-                debugPrint(scrollOffset)
-
-                let shouldShowTitle = scrollOffset >= -101
-                if shouldShowTitle != showTitle {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showTitle = shouldShowTitle
-                    }
-                }
-
-                let shouldShowWeekday = scrollOffset >= -56
-                if shouldShowWeekday != showSelectedWeekday {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        showSelectedWeekday = shouldShowWeekday
-                    }
-                }
-
-                let shouldHideOverlay = scrollOffset < -300
-                if shouldHideOverlay != hideOverlay {
-                    withAnimation(.smooth(duration: 0.5)) {
-                        hideOverlay = shouldHideOverlay
-                    }
-                }
+                viewModel.handleScrollGeoChange(scrollOffset)
             })
             .toolbar {
                 ToolbarItem(placement: .principal) {
@@ -92,36 +51,38 @@ struct SubjectsView: View {
                         Text("Subjects")
                             .font(.headline)
                             .frame(height: 30)
-                            .opacity(showTitle ? 1 : 0)
-                            .blur(radius: showTitle ? 0 : 3)
-                            .offset(y: showSelectedWeekday ? -8 : showTitle ? 0 : 14)
+                            .opacity(viewModel.showTitle ? 1 : 0)
+                            .blur(radius: viewModel.showTitle ? 0 : 3)
+                            .offset(y: viewModel.showSelectedWeekday ? -8 : viewModel.showTitle ? 0 : 14)
 
-                        Text(toolbarTitle)
+                        Text(viewModel.toolbarTitle)
                             .foregroundStyle(.tint)
                             .font(.caption)
                             .frame(height: 30)
-                            .opacity(showSelectedWeekday ? 1 : 0)
-                            .blur(radius: showSelectedWeekday ? 0 : 3)
-                            .offset(y: showSelectedWeekday ? 8 : 14)
+                            .opacity(viewModel.showSelectedWeekday ? 1 : 0)
+                            .blur(radius: viewModel.showSelectedWeekday ? 0 : 3)
+                            .offset(y: viewModel.showSelectedWeekday ? 8 : 14)
                     }
                 }
 
                 if #available(iOS 26, *) {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Add", systemImage: "plus") {
-                            showConfirmation.toggle()
+                            viewModel.showConfirmation.toggle()
                         }.tint(.accentColor)
                     }.matchedTransitionSource(id: "Add", in: animation)
                 } else {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Add", systemImage: "plus") {
-                            showConfirmation.toggle()
+                            viewModel.showConfirmation.toggle()
                         }.tint(.accentColor)
                     }
                 }
             }
             .overlay {
-                if isTodayEmpty, !hideOverlay {
+                if subjects.filter({
+                    Calendar.current.component(.weekday, from: $0.schedule) == viewModel.selectedDay
+                }).isEmpty, !viewModel.hideOverlay {
                     ContentUnavailableView {
                         Label("No Subjects", systemImage: "book")
                     } description: {
@@ -129,15 +90,15 @@ struct SubjectsView: View {
                     }
                 }
             }
-            .sheet(item: $subjectToAdd) { subject in
+            .sheet(item: $viewModel.subjectToAdd) { subject in
                 SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $subjectToEdit) { subject in
+            .sheet(item: $viewModel.subjectToEdit) { subject in
                 SubjectSheetView(subject: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
-            .sheet(isPresented: $showConfirmation) {
+            .sheet(isPresented: $viewModel.showConfirmation) {
                 VStack {
                     VStack(spacing: 10) {
                         ForEach([
@@ -145,9 +106,9 @@ struct SubjectsView: View {
                             (title: String(localized: "Add Interval"), isRecess: true)
                         ], id: \.title) { option in
                             Button {
-                                showConfirmation.toggle()
-                                subjectToAdd = Subject(
-                                    schedule: Calendar.current.date(bySetting: .weekday, value: selectedDay, of: Date(timeIntervalSince1970: 0))!,
+                                viewModel.showConfirmation.toggle()
+                                viewModel.subjectToAdd = Subject(
+                                    schedule: Calendar.current.date(bySetting: .weekday, value: viewModel.selectedDay, of: Date(timeIntervalSince1970: 0))!,
                                     isRecess: option.isRecess)
                             } label: {
                                 let buttonText = Text(option.title)
