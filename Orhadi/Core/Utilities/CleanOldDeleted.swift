@@ -11,7 +11,7 @@ import SwiftData
 func cleanOldDeleted() {
     Task.detached(priority: .background) {
         do {
-            let context = ModelContext(try createContainer())
+            let context = ModelContext(createContainer())
 
             let deletedSubjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
                 $0.isSubjectDeleted

@@ -2,36 +2,16 @@
 //  SRView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 31/03/25.
+//  Created by Ivory Svoboda on 31/03/25.
 //
 
 import SwiftData
 import SwiftUI
 
 struct SRView: View {
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-
-    @Query(filter: #Predicate<SRStudy> {
-        !$0.isStudyDeleted
-    }, sort: \SRStudy.name, animation: .smooth) private var studies: [SRStudy]
-
     @State private var viewModel = ViewModel()
-
-    // MARK: - Computed Properties
-
-    var isTodayEmpty: Bool {
-        studies.filter {
-            Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay
-        }.isEmpty
-    }
-
-    var studiesForTheSelectedDay: [SRStudy] {
-        studies.filter { Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay && !$0.hasStudiedThisWeek }
-    }
-
-    var canStartStudying: Bool {
-        !studiesForTheSelectedDay.isEmpty
-    }
 
     // MARK: - Views
 
@@ -41,9 +21,7 @@ struct SRView: View {
                 WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
                     .opacity(viewModel.showSelectedWeekday ? 0 : 1)
 
-                ForEach(studies.filter {
-                    Calendar.current.component(.weekday, from: $0.studyDay) == viewModel.selectedDay
-                }) { study in
+                ForEach(viewModel.filteredStudies) { study in
                     SRRowView(
                         study: study,
                         onStudy: {
@@ -63,7 +41,7 @@ struct SRView: View {
                 viewModel.handleScrollGeoChange(scrollOffset)
             })
             .overlay {
-                if isTodayEmpty, !viewModel.hideOverlay {
+                if viewModel.filteredStudies.isEmpty, !viewModel.hideOverlay {
                     ContentUnavailableView {
                         Label("Nothing to Study", systemImage: "graduationcap")
                     } description: {
@@ -103,25 +81,34 @@ struct SRView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Start Studying", systemImage: "play.fill") {
-                        if canStartStudying {
-                            viewModel.studiesToStudy = studiesForTheSelectedDay
+                        if viewModel.canStartStudying {
+                            viewModel.studiesToStudy = viewModel.studiesForTheSelectedDay
                             viewModel.navigateToStudyingView = true
                         }
                     }
                     .tint(.accentColor)
-                    .disabled(!canStartStudying)
+                    .disabled(!viewModel.canStartStudying)
                 }
             }
             .navigationDestination(isPresented: $viewModel.navigateToStudyingView) {
-                StudyingView(studies: $viewModel.studiesToStudy)
+                StudyingView(studies: viewModel.studiesToStudy, breakTime: settings.breakTime, context: context)
             }
             .sheet(item: $viewModel.studyToAdd) { study in
-                SRSheetView(study: study, isNew: true)
+                SRSheetView(study: study, isNew: true, context: context)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.studyToEdit) { study in
-                SRSheetView(study: study, isNew: false)
+                SRSheetView(study: study, isNew: false, context: context)
                     .interactiveDismissDisabled()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+                viewModel.fetchStudies()
+            }
+            .onAppear {
+                if viewModel.context == nil {
+                    viewModel.context = context
+                    viewModel.fetchStudies()
+                }
             }
         }
     }

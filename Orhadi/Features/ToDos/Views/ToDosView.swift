@@ -2,7 +2,7 @@
 //  ToDosView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 26/03/25.
+//  Created by Ivory Svoboda on 26/03/25.
 //
 
 import SwiftData
@@ -10,22 +10,8 @@ import SwiftUI
 import WidgetKit
 
 struct ToDosView: View {
-    @Query(filter: #Predicate<ToDo> {
-        !$0.isArchived && !$0.isToDoDeleted && !$0.isCompleted
-    }, sort: [
-        .init(\.dueDate, order: .forward),
-        .init(\.title, order: .forward)
-    ]) private var pendingToDos: [ToDo]
-
-    @Query(filter: #Predicate<ToDo> {
-        !$0.isArchived && !$0.isToDoDeleted && $0.isCompleted
-    }, sort: \ToDo.completedAt, order: .reverse) private var completedToDos: [ToDo]
-
+    @Environment(\.modelContext) private var context
     @State private var viewModel = ViewModel()
-
-    var visibleToDos: [ToDo] {
-        viewModel.selectedSection == .pending ? pendingToDos : completedToDos
-    }
 
     // MARK: - Views
 
@@ -35,7 +21,7 @@ struct ToDosView: View {
                 ToDosSectionPickerBar(selectedSection: $viewModel.selectedSection)
                     .opacity(viewModel.showSelectedSection ? 0 : 1)
 
-                ForEach(visibleToDos) { todo in
+                ForEach(viewModel.visibleToDos) { todo in
                     ToDoRowView(
                         todo: todo,
                         onEdit: { viewModel.todoToEdit = todo }
@@ -77,7 +63,7 @@ struct ToDosView: View {
                 }
             }
             .overlay {
-                if visibleToDos.isEmpty, !viewModel.hideOverlay {
+                if viewModel.visibleToDos.isEmpty, !viewModel.hideOverlay {
                     ContentUnavailableView {
                         Label(
                             viewModel.selectedSection == .pending ? "No Pending To-Dos" : "No Completed To-Dos",
@@ -98,18 +84,21 @@ struct ToDosView: View {
                 }
             }
             .sheet(item: $viewModel.todoToAdd) { todo in
-                ToDoSheetView(todo: todo, isNew: true)
+                ToDoSheetView(todo: todo, isNew: true, context: context)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.todoToEdit) { todo in
-                ToDoSheetView(todo: todo, isNew: false)
+                ToDoSheetView(todo: todo, isNew: false, context: context)
                     .interactiveDismissDisabled()
             }
-            .onChange(of: completedToDos) { _, _ in
-                WidgetCenter.shared.reloadAllTimelines()
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+                viewModel.fetchToDos()
             }
-            .onChange(of: pendingToDos) { _, _ in
-                WidgetCenter.shared.reloadAllTimelines()
+            .onAppear {
+                if viewModel.context == nil {
+                    viewModel.context = context
+                    viewModel.fetchToDos()
+                }
             }
         }
     }

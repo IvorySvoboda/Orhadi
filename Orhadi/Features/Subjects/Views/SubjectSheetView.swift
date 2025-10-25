@@ -2,7 +2,7 @@
 //  SubjectSheetView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 20/04/25.
+//  Created by Ivory Svoboda on 20/04/25.
 //
 
 import SwiftData
@@ -10,15 +10,11 @@ import SwiftUI
 import WidgetKit
 
 struct SubjectSheetView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-
     @State private var viewModel: ViewModel
 
-    // MARK: - INIT
-
-    init(subject: Subject, isNew: Bool = false) {
-        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew))
+    init(subject: Subject, isNew: Bool = false, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, context: context))
     }
 
     // MARK: - Views
@@ -76,7 +72,7 @@ struct SubjectSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave(using: context) {
+                        viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.draftSubject.name.isEmpty && !viewModel.draftSubject.isRecess)

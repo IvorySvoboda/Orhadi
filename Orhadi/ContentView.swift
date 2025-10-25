@@ -2,21 +2,15 @@
 //  ContentView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 24/03/25.
+//  Created by Ivory Svoboda on 24/03/25.
 //
 
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct ContentView: View {
     @Environment(Settings.self) private var settings
-
-    /// Não remover esses `@Query`, por algum motivo
-    /// eles evitam o app de travar ao deletar algum
-    /// item dos modelos.
-    @Query private var subjects: [Subject]
-    @Query private var todos: [ToDo]
-    @Query private var study: [SRStudy]
 
     // MARK: - Views
 
@@ -37,6 +31,9 @@ struct ContentView: View {
         }
         .backport.tabBarMinimizeBehavior(.onScrollDown)
         .preferredColorScheme(getTheme(for: settings.theme))
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     func getTheme(for theme: Theme) -> ColorScheme? {

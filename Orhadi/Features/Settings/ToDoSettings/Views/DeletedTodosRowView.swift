@@ -2,7 +2,7 @@
 //  DeletedTodosRowView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
@@ -32,12 +32,12 @@ struct DeletedTodosRowView: View {
             }.tint(.red)
 
             Button("Restore", systemImage: "gobackward", role: .destructive) {
-                todo.restore(scheduleNotifications: settings.scheduleNotifications)
+                try? todo.restore(in: context, scheduleNotifications: settings.scheduleNotifications)
             }.tint(.indigo)
         }
         .contextMenu {
             Button("Restore", systemImage: "gobackward") {
-                todo.restore(scheduleNotifications: settings.scheduleNotifications)
+                try? todo.restore(in: context, scheduleNotifications: settings.scheduleNotifications)
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
@@ -47,9 +47,7 @@ struct DeletedTodosRowView: View {
         .alert("This to-do will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                withAnimation {
-                    context.delete(todo)
-                }
+                try? todo.hardDelete(in: context)
             }
         }
     }

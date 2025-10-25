@@ -2,7 +2,7 @@
 //  OrhadiApp.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 24/03/25.
+//  Created by Ivory Svoboda on 24/03/25.
 //
 
 import SwiftData
@@ -12,13 +12,7 @@ import WidgetKit
 @main
 struct OrhadiApp: App {
     /// Cria o container do SwiftData
-    var container: ModelContainer {
-        do {
-            return try createContainer()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
+    var container = createContainer()
 
     var body: some Scene {
         WindowGroup {
@@ -28,7 +22,7 @@ struct OrhadiApp: App {
 }
 
 struct RootView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(\.modelContext) private var context
     @Query private var settings: [Settings]
 
     var body: some View {
@@ -36,7 +30,7 @@ struct RootView: View {
             .onAppear {
                 /// Verifica se `settings` é nil, se for, insere ele no context.
                 if settings.first == nil {
-                    modelContext.insert(Settings())
+                    context.insert(Settings())
                 }
 
                 /// Solicita permissão para as notificações

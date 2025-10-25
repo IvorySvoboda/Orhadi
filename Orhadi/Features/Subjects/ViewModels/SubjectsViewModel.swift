@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 import Observation
 
 extension SubjectsView {
     @Observable class ViewModel {
+        var context: ModelContext?
+        var subjects: [Subject] = []
         var selectedDay: Int = Calendar.current.component(.weekday, from: Date())
         var showConfirmation: Bool = false
         var subjectToAdd: Subject?
@@ -18,8 +21,27 @@ extension SubjectsView {
         var showSelectedWeekday: Bool = false
         var hideOverlay: Bool = false
 
+        var filteredSubjects: [Subject] {
+            subjects.filter {
+                Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
+            }
+        }
+
         var toolbarTitle: String {
             Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
+        }
+
+        func fetchSubjects() {
+            guard let context else { return }
+            debugPrint("Subjects: fetching...")
+            do {
+                let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
+                    !$0.isSubjectDeleted
+                }, sortBy: [.init(\.startTime)])
+                subjects = try context.fetch(descriptor)
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {

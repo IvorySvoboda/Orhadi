@@ -8,10 +8,10 @@
 import SwiftUI
 import SwiftData
 import Observation
-import WidgetKit
 
 extension SubjectSheetView {
     @Observable class ViewModel {
+        var context: ModelContext
         var subject: Subject
         var draftSubject: DraftSubject
         var isNew: Bool
@@ -25,13 +25,14 @@ extension SubjectSheetView {
             }
         }
 
-        init(subject: Subject, isNew: Bool) {
+        init(subject: Subject, isNew: Bool, context: ModelContext) {
+            self.context = context
             self.subject = subject
             self.draftSubject = DraftSubject(from: subject)
             self.isNew = isNew
         }
 
-        func trySave(using context: ModelContext, extraAction: () -> Void = { return }) {
+        func trySave(extraAction: () -> Void = { return }) {
             let hasConflict = SubjectConflictVerifier.hasConflict(
                 id: isNew ? nil : subject.id,
                 start: draftSubject.startTime,
@@ -47,16 +48,21 @@ extension SubjectSheetView {
             }
 
             if isNew {
-                insertNewSubject(using: context)
+                insertNewSubject()
             } else {
                 applySubjectChanges()
             }
 
-            WidgetCenter.shared.reloadAllTimelines()
-            extraAction()
+            do {
+                try context.save()
+                extraAction()
+            } catch {
+                print(error.localizedDescription)
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+            }
         }
 
-        private func insertNewSubject(using context: ModelContext) {
+        func insertNewSubject() {
             withAnimation {
                 context.insert(
                     Subject(
@@ -74,7 +80,7 @@ extension SubjectSheetView {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
 
-        private func applySubjectChanges() {
+        func applySubjectChanges() {
             subject.name = draftSubject.name.trimmingCharacters(in: .whitespaces)
             subject.teacher = draftSubject.teacher
             subject.schedule = draftSubject.schedule

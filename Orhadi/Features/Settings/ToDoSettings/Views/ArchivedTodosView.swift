@@ -2,32 +2,26 @@
 //  ArchivedTodosView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
 import SwiftData
-import WidgetKit
 
 struct ArchivedTodosView: View {
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
 
-    @Query(filter: #Predicate<ToDo> {
-        $0.isArchived && !$0.isToDoDeleted
-    }, sort: \.createdAt, animation: .smooth) private var archivedTodos: [ToDo]
-
-    @State private var selectedTodos = Set<ToDo>()
+    @State private var viewModel = ViewModel()
 
     // MARK: - Views
 
     var body: some View {
-        List(selection: $selectedTodos) {
-            ForEach(archivedTodos) { todo in
-                ArchivedTodoRowView(todo: todo)
-                    .tag(todo)
-            }
+        List(viewModel.archivedToDos, selection: $viewModel.selectedToDos) { todo in
+            ArchivedTodoRowView(todo: todo)
+                .tag(todo)
         }
         .navigationTitle("Archived To-Dos")
         .navigationBarTitleDisplayMode(.inline)
@@ -41,58 +35,30 @@ struct ArchivedTodosView: View {
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
-                Button(selectedTodos.isEmpty ? "Unarchive All" : "Unarchive") {
-                    unarchiveToDos()
+                Button(viewModel.selectedToDos.isEmpty ? "Unarchive All" : "Unarchive") {
+                    viewModel.unarchiveToDos(scheduleNotifications: settings.scheduleNotifications)
                 }
 
                 Spacer()
 
-                Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
-                    deleteToDos()
+                Button(viewModel.selectedToDos.isEmpty ? "Delete All" : "Delete") {
+                    viewModel.deleteToDos()
                 }
             }
         }
-        .onChange(of: archivedTodos) { _, newTodos in
+        .onChange(of: viewModel.archivedToDos) { _, newTodos in
             if newTodos.isEmpty {
                 dismiss()
             }
-
-            WidgetCenter.shared.reloadAllTimelines()
         }
-    }
-
-    // MARK: - Actions
-
-    private func deleteToDos() {
-        if selectedTodos.isEmpty {
-            for todo in archivedTodos {
-                withAnimation {
-                    todo.isToDoDeleted = true
-                    todo.deletedAt = .now
-                }
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave), perform: { _ in
+            viewModel.fetchArchivedToDos()
+        })
+        .onAppear {
+            if viewModel.context == nil {
+                viewModel.context = context
+                viewModel.fetchArchivedToDos()
             }
-        } else {
-            for todo in selectedTodos {
-                withAnimation {
-                    todo.isToDoDeleted = true
-                    todo.deletedAt = .now
-                }
-            }
-            selectedTodos.removeAll()
-
-        }
-    }
-
-    private func unarchiveToDos() {
-        if selectedTodos.isEmpty {
-            for todo in archivedTodos {
-                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
-            }
-        } else {
-            for todo in selectedTodos {
-                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
-            }
-            selectedTodos.removeAll()
         }
     }
 }

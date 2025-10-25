@@ -2,12 +2,13 @@
 //  ArchivedTodoRowView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
 
 struct ArchivedTodoRowView: View {
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
     var todo: ToDo
@@ -48,21 +49,21 @@ struct ArchivedTodoRowView: View {
         }
         .swipeActions(edge: .leading) {
             Button("Unarchive", systemImage: "archivebox.fill", role: .destructive) {
-                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
+                try? todo.unarchive(in: context, scheduleNotifications: settings.scheduleNotifications)
             }.tint(.teal)
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                todo.delete()
+                try? todo.softDelete(in: context)
             }
         }
         .contextMenu {
             Button("Unarchive", systemImage: "archivebox.fill") {
-                todo.unarchive(scheduleNotifications: settings.scheduleNotifications)
+                try? todo.unarchive(in: context, scheduleNotifications: settings.scheduleNotifications)
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                todo.delete()
+                try? todo.softDelete(in: context)
             }
         }
     }

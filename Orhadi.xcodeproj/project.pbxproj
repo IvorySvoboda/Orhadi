@@ -96,9 +96,9 @@
 			path = Orhadi;
 			sourceTree = "<group>";
 		};
-		28453A242DB997C400AE5079 /* Tests */ = {
+		28453A242DB997C400AE5079 /* OrhadiTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Tests;
+			path = OrhadiTests;
 			sourceTree = "<group>";
 		};
 		285D39B32DBD2C5300CDC4D0 /* Resources */ = {
@@ -152,7 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				2804F4DA2D92275700649FD0 /* Orhadi */,
-				28453A242DB997C400AE5079 /* Tests */,
+				28453A242DB997C400AE5079 /* OrhadiTests */,
 				289291352E1B0FC200E0478F /* OrhadiWidget */,
 				28DEBE2A2E19FEC500E9D788 /* Frameworks */,
 				2804F4D92D92275700649FD0 /* Products */,
@@ -224,7 +224,7 @@
 				28453A282DB997C400AE5079 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				28453A242DB997C400AE5079 /* Tests */,
+				28453A242DB997C400AE5079 /* OrhadiTests */,
 			);
 			name = OrhadiTests;
 			packageProductDependencies = (
@@ -632,6 +632,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Zyvoxi-Industries.OrhadiTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TESTING";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

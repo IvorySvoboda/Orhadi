@@ -2,7 +2,7 @@
 //  EmptyViewText.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 07/07/25.
+//  Created by Ivory Svoboda on 07/07/25.
 //
 
 import SwiftUI

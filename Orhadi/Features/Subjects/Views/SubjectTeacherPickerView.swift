@@ -2,7 +2,7 @@
 //  TeacherPickerView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 16/04/25.
+//  Created by Ivory Svoboda on 16/04/25.
 //
 
 import SwiftData
@@ -118,11 +118,11 @@ struct SubjectTeacherPicker: View {
         .navigationTitle("Teacher")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: true)
+            TeacherSheetView(teacher: teacher, isNew: true, context: context)
                 .interactiveDismissDisabled()
         }
         .sheet(item: $teacherToEdit) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: false)
+            TeacherSheetView(teacher: teacher, isNew: false, context: context)
                 .interactiveDismissDisabled()
         }
     }

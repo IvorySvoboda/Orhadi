@@ -2,7 +2,7 @@
 //  SubjectRow.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 26/04/25.
+//  Created by Ivory Svoboda on 26/04/25.
 //
 
 import SwiftUI
@@ -89,7 +89,7 @@ struct SubjectRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                subject.delete()
+                try? subject.softDelete(in: context)
             }
 
             Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
@@ -116,7 +116,7 @@ struct SubjectRowView: View {
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                subject.delete()
+                try? subject.softDelete(in: context)
             }
         }
     }

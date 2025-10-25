@@ -2,7 +2,7 @@
 //  SubjectsSettingsView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 01/04/25.
+//  Created by Ivory Svoboda on 01/04/25.
 //
 
 import SwiftUI

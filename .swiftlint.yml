@@ -9,3 +9,4 @@ disabled_rules:
   - file_length
   - cyclomatic_complexity
   - nesting
+  - force_try

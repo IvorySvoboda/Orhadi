@@ -2,7 +2,7 @@
 //  Subjects.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 26/03/25.
+//  Created by Ivory Svoboda on 26/03/25.
 //
 
 import SwiftData
@@ -10,15 +10,9 @@ import SwiftUI
 import WidgetKit
 
 struct SubjectsView: View {
-    @Environment(Settings.self) private var settings
-
-    @Query(filter: #Predicate<Subject> {
-        !$0.isSubjectDeleted
-    }, sort: \Subject.startTime, animation: .smooth) private var subjects: [Subject]
-
-    @Namespace private var animation
-
+    @Environment(\.modelContext) private var context
     @State private var viewModel = ViewModel()
+    @Namespace private var animation
 
     // MARK: - Views
 
@@ -28,9 +22,7 @@ struct SubjectsView: View {
                 WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
                     .opacity(viewModel.showSelectedWeekday ? 0 : 1)
 
-                ForEach(subjects.filter {
-                    Calendar.current.component(.weekday, from: $0.schedule) == viewModel.selectedDay
-                }) { subject in
+                ForEach(viewModel.filteredSubjects) { subject in
                     SubjectRowView(
                         subject: subject,
                         onAdd: { viewModel.subjectToAdd = subject },
@@ -80,9 +72,7 @@ struct SubjectsView: View {
                 }
             }
             .overlay {
-                if subjects.filter({
-                    Calendar.current.component(.weekday, from: $0.schedule) == viewModel.selectedDay
-                }).isEmpty, !viewModel.hideOverlay {
+                if viewModel.filteredSubjects.isEmpty, !viewModel.hideOverlay {
                     ContentUnavailableView {
                         Label("No Subjects", systemImage: "book")
                     } description: {
@@ -91,11 +81,11 @@ struct SubjectsView: View {
                 }
             }
             .sheet(item: $viewModel.subjectToAdd) { subject in
-                SubjectSheetView(subject: subject, isNew: true)
+                SubjectSheetView(subject: subject, isNew: true, context: context)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.subjectToEdit) { subject in
-                SubjectSheetView(subject: subject, isNew: false)
+                SubjectSheetView(subject: subject, isNew: false, context: context)
                     .interactiveDismissDisabled()
             }
             .sheet(isPresented: $viewModel.showConfirmation) {
@@ -136,8 +126,14 @@ struct SubjectsView: View {
                 .navigationTransition(.zoom(sourceID: "Add", in: animation))
                 .presentationDetents([.height(135)])
             }
-            .onChange(of: subjects) { _, _ in
-                WidgetCenter.shared.reloadAllTimelines()
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+                viewModel.fetchSubjects()
+            }
+            .onAppear {
+                if viewModel.context == nil {
+                    viewModel.context = context
+                    viewModel.fetchSubjects()
+                }
             }
         }
     }

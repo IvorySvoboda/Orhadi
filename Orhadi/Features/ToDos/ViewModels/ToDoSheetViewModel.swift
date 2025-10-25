@@ -8,10 +8,10 @@
 import SwiftUI
 import SwiftData
 import Observation
-import WidgetKit
 
 extension ToDoSheetView {
     @Observable class ViewModel {
+        var context: ModelContext
         var todo: ToDo
         var draftToDo: DraftToDo
         var isNew: Bool
@@ -25,25 +25,30 @@ extension ToDoSheetView {
             }
         }
 
-        init(todo: ToDo, isNew: Bool) {
+        init(todo: ToDo, isNew: Bool, context: ModelContext) {
+            self.context = context
             self.todo = todo
             self.draftToDo = DraftToDo(from: todo)
             self.isNew = isNew
 
         }
 
-        func trySave(using context: ModelContext, scheduleNotifications: Bool = false, extraAction: @escaping () -> Void = { return }) {
+        func trySave(scheduleNotifications: Bool = false, extraAction: @escaping () -> Void = { return }) {
             if isNew {
-                insertNewToDo(using: context, scheduleNotifications: scheduleNotifications)
+                insertNewToDo(scheduleNotifications: scheduleNotifications)
             } else {
                 applyToDoChanges(scheduleNotifications: scheduleNotifications)
             }
 
-            WidgetCenter.shared.reloadAllTimelines()
-            extraAction()
+            do {
+                try context.save()
+                extraAction()
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
         }
 
-        private func insertNewToDo(using context: ModelContext, scheduleNotifications: Bool = false) {
+        func insertNewToDo(scheduleNotifications: Bool = false) {
             let newTodo = ToDo(
                 title: draftToDo.title.trimmingCharacters(in: .whitespaces),
                 info: draftToDo.info,
@@ -67,7 +72,7 @@ extension ToDoSheetView {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
 
-        private func applyToDoChanges(scheduleNotifications: Bool = false) {
+        func applyToDoChanges(scheduleNotifications: Bool = false) {
             todo.title = draftToDo.title.trimmingCharacters(in: .whitespaces)
             todo.info = draftToDo.info
             todo.dueDate = draftToDo.dueDate

@@ -2,11 +2,11 @@
 //  SRStudy+Extensions.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 21/04/25.
+//  Created by Ivory Svoboda on 21/04/25.
 //
 
-import Foundation
 import SwiftUI
+import SwiftData
 
 extension SRStudy {
     var isForToday: Bool {
@@ -37,17 +37,34 @@ extension SRStudy {
         SRStudy(name: "História")
     ]
 
-    func delete() {
+    func hardDelete(in context: ModelContext) throws {
+        withAnimation {
+            context.delete(self)
+        }
+
+        try context.save()
+    }
+
+    func softDelete(in context: ModelContext) throws {
         withAnimation {
             isStudyDeleted = true
             deletedAt = .now
         }
+
+        try context.save()
     }
 
-    func restore() {
+    func restore(in context: ModelContext) throws {
         withAnimation {
             isStudyDeleted = false
             deletedAt = nil
         }
+
+        try context.save()
+    }
+
+    func updateLastStudied(in context: ModelContext) throws {
+        lastStudied = .now
+        try context.save()
     }
 }

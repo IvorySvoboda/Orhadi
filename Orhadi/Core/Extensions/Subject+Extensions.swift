@@ -2,7 +2,7 @@
 //  Subject+Extensions.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 28/04/25.
+//  Created by Ivory Svoboda on 28/04/25.
 //
 
 import SwiftUI
@@ -55,17 +55,26 @@ extension Subject {
         )
     ]
 
-    func delete() {
+    func hardDelete(in context: ModelContext) throws {
+        withAnimation {
+            context.delete(self)
+        }
+        try context.save()
+    }
+
+    func softDelete(in context: ModelContext) throws {
         withAnimation {
             isSubjectDeleted = true
             deletedAt = .now
         }
+        try context.save()
     }
 
-    func restore() {
+    func restore(in context: ModelContext) throws {
         withAnimation {
             isSubjectDeleted = false
             deletedAt = nil
         }
+        try context.save()
     }
 }

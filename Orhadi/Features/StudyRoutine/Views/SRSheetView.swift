@@ -2,10 +2,11 @@
 //  SRSheetView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 21/04/25.
+//  Created by Ivory Svoboda on 21/04/25.
 //
 
 import SwiftUI
+import SwiftData
 
 struct SRSheetView: View {
     @Environment(\.modelContext) private var context
@@ -13,8 +14,8 @@ struct SRSheetView: View {
 
     @State private var viewModel: ViewModel
 
-    init(study: SRStudy, isNew: Bool) {
-        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew))
+    init(study: SRStudy, isNew: Bool, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, context: context))
     }
 
     var body: some View {
@@ -61,7 +62,7 @@ struct SRSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave(using: context) {
+                        viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.draftStudy.name.isEmpty)

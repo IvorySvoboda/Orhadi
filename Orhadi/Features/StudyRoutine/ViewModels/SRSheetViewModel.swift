@@ -11,6 +11,7 @@ import Observation
 
 extension SRSheetView {
     @Observable class ViewModel {
+        var context: ModelContext
         var study: SRStudy
         var draftStudy: DraftStudy
         var isNew: Bool
@@ -23,23 +24,29 @@ extension SRSheetView {
             }
         }
 
-        init(study: SRStudy, isNew: Bool) {
+        init(study: SRStudy, isNew: Bool, context: ModelContext) {
             self.study = study
             self.draftStudy = DraftStudy(from: study)
             self.isNew = isNew
+            self.context = context
         }
 
-        func trySave(using context: ModelContext, extraAction: @escaping () -> Void = { return }) {
+        func trySave(extraAction: @escaping () -> Void = { return }) {
             if isNew {
-                insertNewStudy(using: context)
+                insertNewStudy()
             } else {
                 applyStudyChanges()
             }
 
-            extraAction()
+            do {
+                try context.save()
+                extraAction()
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
         }
 
-        private func insertNewStudy(using context: ModelContext) {
+        func insertNewStudy() {
             withAnimation {
                 context.insert(SRStudy(
                     name: draftStudy.name.trimmingCharacters(in: .whitespaces),
@@ -51,7 +58,7 @@ extension SRSheetView {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
 
-        private func applyStudyChanges() {
+        func applyStudyChanges() {
             study.name = draftStudy.name.trimmingCharacters(in: .whitespaces)
             study.studyDay = draftStudy.studyDay
             study.studyTime = draftStudy.studyTime

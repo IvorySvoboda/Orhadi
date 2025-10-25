@@ -2,7 +2,7 @@
 //  DeletedSubjectRowView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
@@ -63,7 +63,7 @@ struct DeletedSubjectRowView: View {
         .alert("This subject will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                withAnimation { context.delete(subject) }
+                try? subject.hardDelete(in: context)
             }
         }
     }
@@ -72,7 +72,7 @@ struct DeletedSubjectRowView: View {
         if hasConflictWithOthersSubjects {
             showConflictAlert()
         } else {
-            subject.restore()
+            try? subject.restore(in: context)
         }
     }
 }

@@ -2,7 +2,7 @@
 //  View+Extensions.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 26/04/25.
+//  Created by Ivory Svoboda on 26/04/25.
 //
 
 import SwiftUI

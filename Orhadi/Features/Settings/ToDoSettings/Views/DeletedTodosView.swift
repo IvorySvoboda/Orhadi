@@ -2,7 +2,7 @@
 //  DeletedTodosView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
@@ -18,39 +18,12 @@ struct DeletedTodosView: View {
     @Query(filter: #Predicate<ToDo> { $0.isToDoDeleted }, sort: \.deletedAt, animation: .smooth)
     private var deletedTodos: [ToDo]
 
-    @State private var selectedTodos = Set<ToDo>()
-    @State private var showDeleteConfirmation = false
-
-    // MARK: - Computed helpers
-
-    private var countToActOn: Int {
-        selectedTodos.isEmpty ? deletedTodos.count : selectedTodos.count
-    }
-
-    private var isPlural: Bool {
-        countToActOn > 1
-    }
-
-    private var deleteActionTitle: LocalizedStringKey {
-        if isPlural {
-            return "Delete \(countToActOn) To-Dos"
-        } else {
-            return "Delete To-Do"
-        }
-    }
-
-    private var deleteMessageText: LocalizedStringKey {
-        if isPlural {
-            return "These \(countToActOn) to-dos will be deleted. This action cannot be undone."
-        } else {
-            return "This to-do will be deleted. This action cannot be undone."
-        }
-    }
+    @State private var viewModel = ViewModel()
 
     // MARK: - Views
 
     var body: some View {
-        List(selection: $selectedTodos) {
+        List(selection: $viewModel.selectedToDos) {
             Section {} footer: {
                 Text("The to-dos remain available here for 30 days. After this period, they will be permanently deleted.")
                     .multilineTextAlignment(.leading)
@@ -76,18 +49,18 @@ struct DeletedTodosView: View {
             }
 
             ToolbarItemGroup(placement: .bottomBar) {
-                Button(selectedTodos.isEmpty ? "Restore All" : "Restore") {
-                    restoreToDos()
+                Button(viewModel.selectedToDos.isEmpty ? "Restore All" : "Restore") {
+                    viewModel.restoreToDos(scheduleNotifications: settings.scheduleNotifications)
                 }
 
                 Spacer()
 
-                Button(selectedTodos.isEmpty ? "Delete All" : "Delete") {
-                    showDeleteConfirmation.toggle()
+                Button(viewModel.selectedToDos.isEmpty ? "Delete All" : "Delete") {
+                    viewModel.showDeleteConfirmation.toggle()
                 }
-                .confirmationDialog(deleteMessageText, isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
-                    Button(deleteActionTitle, role: .destructive) {
-                        deleteToDos()
+                .confirmationDialog(viewModel.deleteMessageText, isPresented: $viewModel.showDeleteConfirmation, titleVisibility: .visible) {
+                    Button(viewModel.deleteActionTitle, role: .destructive) {
+                        viewModel.deleteToDos()
                     }
                 }
             }
@@ -96,50 +69,15 @@ struct DeletedTodosView: View {
             if newTodos.isEmpty {
                 dismiss()
             }
-
-            WidgetCenter.shared.reloadAllTimelines()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+            viewModel.fetchDeletedToDos()
         }
         .onAppear {
-            cleanExpiredTodos()
-        }
-    }
-
-    // MARK: - Actions
-
-    private func cleanExpiredTodos() {
-        for todo in deletedTodos {
-            guard let removalDate = Calendar.current.date(byAdding: .day, value: 30, to: todo.deletedAt ?? .now),
-                  removalDate <= .now else { continue }
-
-            withTransaction(Transaction(animation: nil)) {
-                context.delete(todo)
+            if viewModel.context == nil {
+                viewModel.context = context
+                viewModel.fetchDeletedToDos()
             }
-        }
-    }
-
-    private func deleteToDos() {
-        if selectedTodos.isEmpty {
-            for todo in deletedTodos {
-                withAnimation { context.delete(todo) }
-            }
-        } else {
-            for todo in selectedTodos {
-                withAnimation { context.delete(todo) }
-            }
-            selectedTodos.removeAll()
-        }
-    }
-
-    private func restoreToDos() {
-        if selectedTodos.isEmpty {
-            for todo in deletedTodos {
-                todo.restore(scheduleNotifications: settings.scheduleNotifications)
-            }
-        } else {
-            for todo in selectedTodos {
-                todo.restore(scheduleNotifications: settings.scheduleNotifications)
-            }
-            selectedTodos.removeAll()
         }
     }
 }

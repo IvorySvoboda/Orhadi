@@ -2,11 +2,11 @@
 //  ToDo+Extensions.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 22/04/25.
+//  Created by Ivory Svoboda on 22/04/25.
 //
 
-import Foundation
 import SwiftUI
+import SwiftData
 import WidgetKit
 
 extension ToDo {
@@ -125,7 +125,7 @@ extension ToDo {
         )
     ]
 
-    func toggleCompleted(scheduleNotifications: Bool = false) {
+    func toggleCompleted(in context: ModelContext, scheduleNotifications: Bool = false) throws {
         /// Se a to-dos não estiver completada
         if !isCompleted {
             /// completa a tarefa.
@@ -149,18 +149,20 @@ extension ToDo {
             }
         }
 
-        WidgetCenter.shared.reloadAllTimelines()
+        try context.save()
     }
 
-    func archive() {
+    func hardDelete(in context: ModelContext) throws {
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
-        withAnimation { isArchived = true }
+        withAnimation {
+            context.delete(self)
+        }
 
-        WidgetCenter.shared.reloadAllTimelines()
+        try context.save()
     }
 
-    func delete() {
+    func softDelete(in context: ModelContext) throws {
         NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
 
         withAnimation {
@@ -168,10 +170,10 @@ extension ToDo {
             deletedAt = .now
         }
 
-        WidgetCenter.shared.reloadAllTimelines()
+        try context.save()
     }
 
-    func restore(scheduleNotifications: Bool = false) {
+    func restore(in context: ModelContext, scheduleNotifications: Bool = false) throws {
         if !isCompleted, dueDate > .now, !isArchived, scheduleNotifications {
             scheduleNotification()
         }
@@ -180,12 +182,25 @@ extension ToDo {
             isToDoDeleted = false
             deletedAt = nil
         }
+
+        try context.save()
     }
 
-    func unarchive(scheduleNotifications: Bool = false) {
+    func archive(in context: ModelContext) throws {
+        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
+
+        withAnimation { isArchived = true }
+
+        try context.save()
+    }
+
+    func unarchive(in context: ModelContext, scheduleNotifications: Bool = false) throws {
         if !isCompleted, dueDate > .now, scheduleNotifications {
             scheduleNotification()
         }
+
         withAnimation { isArchived = false }
+
+        try context.save()
     }
 }

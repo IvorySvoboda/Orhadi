@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 import Observation
 
 extension SRView {
     @Observable class ViewModel {
+        var context: ModelContext?
+        var studies: [SRStudy] = []
         var studyToAdd: SRStudy?
         var studyToEdit: SRStudy?
         var studiesToStudy: [SRStudy] = []
@@ -21,6 +24,33 @@ extension SRView {
 
         var toolbarTitle: String {
             Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
+        }
+
+        var filteredStudies: [SRStudy] {
+            studies.filter {
+                Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+            }
+        }
+
+        var studiesForTheSelectedDay: [SRStudy] {
+            filteredStudies.filter { !$0.hasStudiedThisWeek }
+        }
+
+        var canStartStudying: Bool {
+            !studiesForTheSelectedDay.isEmpty
+        }
+
+        func fetchStudies() {
+            guard let context else { return }
+            debugPrint("Study Routine: fetching...")
+            do {
+                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
+                    !$0.isStudyDeleted
+                })
+                studies = try context.fetch(descriptor)
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {

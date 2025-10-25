@@ -2,7 +2,7 @@
 //  SRRow.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 26/04/25.
+//  Created by Ivory Svoboda on 26/04/25.
 //
 
 import SwiftUI
@@ -44,7 +44,7 @@ struct SRRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                study.delete()
+                try? study.softDelete(in: context)
             }.labelStyle(.iconOnly)
 
             Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
@@ -73,7 +73,7 @@ struct SRRowView: View {
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                study.delete()
+                try? study.softDelete(in: context)
             }
         }
     }

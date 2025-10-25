@@ -2,13 +2,14 @@
 //  DeletedStudyRowView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/05/25.
+//  Created by Ivory Svoboda on 05/05/25.
 //
 
 import SwiftUI
 
 struct DeletedStudyRowView: View {
     @Environment(\.modelContext) private var context
+
     @State private var showDeleteConfirmation = false
 
     let study: SRStudy
@@ -31,12 +32,12 @@ struct DeletedStudyRowView: View {
             }.tint(.red)
 
             Button("Restore", systemImage: "gobackward", role: .destructive) {
-                study.restore()
+                try? study.restore(in: context)
             }.tint(.indigo)
         }
         .contextMenu {
             Button("Restore", systemImage: "gobackward") {
-                study.restore()
+                try? study.restore(in: context)
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
@@ -46,9 +47,7 @@ struct DeletedStudyRowView: View {
         .alert("This study will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                withAnimation {
-                    context.delete(study)
-                }
+                try? study.hardDelete(in: context)
             }
         }
     }

@@ -2,7 +2,7 @@
 //  PendingTodosWidget.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 07/07/25.
+//  Created by Ivory Svoboda on 07/07/25.
 //
 
 import WidgetKit
@@ -12,13 +12,7 @@ import SwiftData
 struct PendingTodosWidget: Widget {
     let kind: String = "PendingTodosWidget"
 
-    var container: ModelContainer {
-        do {
-            return try createContainer()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
+    var container = createContainer()
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in

@@ -161,6 +161,9 @@
         }
       }
     },
+    "Archived" : {
+
+    },
     "Archived To-Dos" : {
       "localizations" : {
         "pt-BR" : {
@@ -236,7 +239,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concluir"
+            "value" : "Completar"
           }
         }
       }
@@ -246,7 +249,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conclua tarefas para vê-las aqui."
+            "value" : "Complete suas tarefas para vê-las aqui."
           }
         }
       }
@@ -1506,7 +1509,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marcar como Incompleta"
+            "value" : "Incompletar"
           }
         }
       }

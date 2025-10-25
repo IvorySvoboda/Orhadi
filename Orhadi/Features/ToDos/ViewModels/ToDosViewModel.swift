@@ -6,16 +6,43 @@
 //
 
 import SwiftUI
+import SwiftData
 import Observation
 
 extension ToDosView {
     @Observable class ViewModel {
+        var context: ModelContext?
+        var pendingToDos: [ToDo] = []
+        var completedToDos: [ToDo] = []
         var todoToAdd: ToDo?
         var todoToEdit: ToDo?
         var selectedSection: ToDoSection = .pending
         var showTitle: Bool = false
         var showSelectedSection: Bool = false
         var hideOverlay: Bool = false
+
+        var visibleToDos: [ToDo] {
+            selectedSection == .pending ? pendingToDos : completedToDos
+        }
+
+        func fetchToDos() {
+            guard let context else { return }
+            debugPrint("To-Dos: fetching...")
+            do {
+                let pendingToDosDescriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
+                    !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
+                }, sortBy: [.init(\.dueDate, order: .forward), .init(\.title, order: .forward)])
+
+                let completedToDosDescriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
+                    !$0.isToDoDeleted && !$0.isArchived && $0.isCompleted
+                }, sortBy: [.init(\.completedAt, order: .reverse)])
+
+                pendingToDos = try context.fetch(pendingToDosDescriptor)
+                completedToDos = try context.fetch(completedToDosDescriptor)
+            } catch {
+                debugPrint(error.localizedDescription)
+            }
+        }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {
             debugPrint(scrollOffset)

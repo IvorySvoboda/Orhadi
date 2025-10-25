@@ -2,17 +2,18 @@
 //  StudyingViewModel.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 22/10/25.
+//  Created by Ivory Svoboda on 22/10/25.
 //
 
 import Combine
 import Observation
 import SwiftUI
+import SwiftData
 
 extension StudyingView {
     @Observable class ViewModel {
-        // MARK: - Properties
-
+        var context: ModelContext
+        var studies: [SRStudy]
         var isReady: Bool = false
         var sessionItems: [SessionItem] = []
         var currentSessionIndex = 0
@@ -20,17 +21,17 @@ extension StudyingView {
         var studyFinished: Bool = false
         var breakTime: TimeInterval = 0
 
-        private var completedItems: [SessionItem] = []
-        private var pauseDate: Date?
+        var completedItems: [SessionItem] = []
+        var pauseDate: Date?
 
         // MARK: - Timer Properties
 
         var remainingTime: TimeInterval = 0
 
-        private var cancellable: AnyCancellable?
-        private var endTime: Date?
+        var cancellable: AnyCancellable?
+        var endTime: Date?
 
-        private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+        let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
         // MARK: - Computed Helpers
 
@@ -51,9 +52,16 @@ extension StudyingView {
             }
         }
 
+        init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
+            self.context = context
+            self.studies = studies
+            self.breakTime = breakTime
+            prepareSession()
+        }
+
         // MARK: - Timer Functions
 
-        private func start(with endTime: Date) {
+        func start(with endTime: Date) {
             self.endTime = endTime
             self.remainingTime = endTime.timeIntervalSinceNow
 
@@ -63,11 +71,11 @@ extension StudyingView {
             }
         }
 
-        private func pause() {
+        func pause() {
             cancellable?.cancel()
         }
 
-        private func tick() {
+        func tick() {
             guard let end = endTime else { return }
             let time = end.timeIntervalSinceNow
 
@@ -81,9 +89,7 @@ extension StudyingView {
 
         // MARK: - Studying Functions
 
-        func prepareSession(for studies: [SRStudy], with breakTime: TimeInterval) {
-            self.breakTime = breakTime
-
+        func prepareSession() {
             let sessionSequence = generateSessionSequence(for: studies)
             isReady = true
             sessionItems = sessionSequence
@@ -95,7 +101,7 @@ extension StudyingView {
             }
         }
 
-        private func generateSessionSequence(for studies: [SRStudy]) -> [SessionItem] {
+        func generateSessionSequence(for studies: [SRStudy]) -> [SessionItem] {
             var sessionSequence: [SessionItem] = []
             var currentTime = Date()
 
@@ -117,7 +123,7 @@ extension StudyingView {
 
         // MARK: Session Progression
 
-        private func advanceSession() {
+        func advanceSession() {
             /// Proteje o app de "crashar" por `out of range`
             /// verificando se o index atual é menor que a
             /// quantidade de itens na seção atual.
@@ -184,12 +190,12 @@ extension StudyingView {
             }
         }
 
-        private func handleCompletedSession(_ currentItem: SessionItem) {
+        func handleCompletedSession(_ currentItem: SessionItem) {
             guard !currentItem.isBreak, let study = currentItem.study else { return }
-            study.lastStudied = .now
+            try? study.updateLastStudied(in: context)
         }
 
-        private func adjustSessionTimes() {
+        func adjustSessionTimes() {
             let adjustment = sessionItems[currentSessionIndex].endTime.timeIntervalSinceNow
             sessionItems[currentSessionIndex].endTime = Date()
 
@@ -198,7 +204,7 @@ extension StudyingView {
             }
         }
 
-        private func endSession() {
+        func endSession() {
             isRunning = false
             studyFinished = true
             start(with: .now)
@@ -222,7 +228,7 @@ extension StudyingView {
             }
         }
 
-        private func handleResumeSession() {
+        func handleResumeSession() {
             if let pauseDate = pauseDate {
                 let pauseDuration = Date().timeIntervalSince(pauseDate)
                 sessionItems[currentSessionIndex].endTime += pauseDuration

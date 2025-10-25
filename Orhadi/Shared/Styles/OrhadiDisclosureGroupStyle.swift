@@ -2,7 +2,7 @@
 //  OrhadiDisclosureGroupStyle.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 27/03/25.
+//  Created by Ivory Svoboda on 27/03/25.
 //
 
 import SwiftUI

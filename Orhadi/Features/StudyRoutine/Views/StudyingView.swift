@@ -2,17 +2,20 @@
 //  StudyingView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 05/04/25.
+//  Created by Ivory Svoboda on 05/04/25.
 //
 
 import SwiftUI
+import SwiftData
 
 struct StudyingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
+    @State private var viewModel: ViewModel
 
-    @Binding var studies: [SRStudy]
-    @State private var viewModel = ViewModel()
+    init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(studies: studies, breakTime: breakTime, context: context))
+    }
 
     // MARK: - Views
 
@@ -111,10 +114,5 @@ struct StudyingView: View {
         .toolbarBackground(.orhadiBG, for: .navigationBar)
         .toolbarVisibility(.hidden, for: .tabBar)
         .disableIdleTimer()
-        .onAppear {
-            if !viewModel.isReady {
-                viewModel.prepareSession(for: studies, with: settings.breakTime)
-            }
-        }
     }
 }

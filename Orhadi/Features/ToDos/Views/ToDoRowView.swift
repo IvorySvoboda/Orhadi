@@ -2,7 +2,7 @@
 //  ToDoRowView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 01/05/25.
+//  Created by Ivory Svoboda on 01/05/25.
 //
 
 import SwiftUI
@@ -49,24 +49,22 @@ struct ToDoRowView: View {
             }
             .swipeActions(edge: .leading) {
                 Button(role: .destructive) {
-                    todo.toggleCompleted(scheduleNotifications: settings.scheduleNotifications)
+                    try? todo.toggleCompleted(in: context, scheduleNotifications: settings.scheduleNotifications)
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
-                            .labelStyle(.iconOnly)
                     } else {
                         Label("Complete", systemImage: "checkmark")
-                            .labelStyle(.iconOnly)
                     }
                 }.tint(.accentColor)
             }
             .swipeActions(edge: .trailing) {
                 Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                    todo.delete()
+                    try? todo.softDelete(in: context)
                 }
 
-                Button("Archive", systemImage: "archivebox.fill") {
-                    todo.archive()
+                Button("Archive", systemImage: "archivebox.fill", role: .destructive) {
+                    try? todo.archive(in: context)
                 }.tint(.teal)
 
                 Button("Edit", systemImage: "pencil") {
@@ -75,7 +73,7 @@ struct ToDoRowView: View {
             }
             .contextMenu {
                 Button {
-                    todo.toggleCompleted(scheduleNotifications: settings.scheduleNotifications)
+                    try? todo.toggleCompleted(in: context, scheduleNotifications: settings.scheduleNotifications)
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
@@ -89,11 +87,11 @@ struct ToDoRowView: View {
                 }
 
                 Button("Archive", systemImage: "archivebox.fill") {
-                    todo.archive()
+                    try? todo.archive(in: context)
                 }
 
                 Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                    todo.delete()
+                    try? todo.softDelete(in: context)
                 }
             }
         }

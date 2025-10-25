@@ -2,7 +2,7 @@
 //  SubjectsScheduleWidget.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 07/07/25.
+//  Created by Ivory Svoboda on 07/07/25.
 //
 
 import WidgetKit
@@ -12,13 +12,7 @@ import SwiftData
 struct SubjectsScheduleWidget: Widget {
     let kind: String = "SubjectsScheduleWidget"
 
-    var container: ModelContainer {
-        do {
-            return try createContainer()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
+    var container = createContainer()
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in

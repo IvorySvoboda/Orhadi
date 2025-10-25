@@ -2,10 +2,11 @@
 //  ToDoSheetView.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 16/04/25.
+//  Created by Ivory Svoboda on 16/04/25.
 //
 
 import SwiftUI
+import SwiftData
 import WidgetKit
 
 struct ToDoSheetView: View {
@@ -15,8 +16,8 @@ struct ToDoSheetView: View {
 
     @State private var viewModel: ViewModel
 
-    init(todo: ToDo, isNew: Bool) {
-        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew))
+    init(todo: ToDo, isNew: Bool, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew, context: context))
     }
 
     var body: some View {
@@ -136,7 +137,7 @@ struct ToDoSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave(using: context, scheduleNotifications: settings.scheduleNotifications) {
+                        viewModel.trySave(scheduleNotifications: settings.scheduleNotifications) {
                             dismiss()
                         }
                     }.disabled(viewModel.draftToDo.title.isEmpty)

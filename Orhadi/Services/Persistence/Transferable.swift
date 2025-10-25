@@ -2,7 +2,7 @@
 //  Transferable.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda . on 14/04/25.
+//  Created by Ivory Svoboda on 14/04/25.
 //
 
 import Foundation
