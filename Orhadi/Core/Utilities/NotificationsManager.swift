@@ -32,7 +32,7 @@ class NotificationsManager {
     }
 
     func removePendingNotifications(withIdentifiers identifiers: [String]) {
-        debugPrint(
+        print(
             "Removendo notificações com os seguintes identifiers: \(identifiers)"
         )
 
@@ -74,7 +74,7 @@ class NotificationsManager {
                     "Erro ao agendar notificação: \(error.localizedDescription)"
                 )
             } else {
-                debugPrint("Notificação agendada para: \(identifier)")
+                print("Notificação agendada para: \(identifier)")
             }
         }
     }

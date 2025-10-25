@@ -115,7 +115,7 @@ struct SubjectsDataSettingsView: View {
                 .type(.toast)
                 .position(.top)
                 .animation(.smooth)
-                .autohideIn(2)
+                .autohideIn(5)
         }
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             viewModel.fetchSubjects()

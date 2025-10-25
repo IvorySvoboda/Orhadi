@@ -42,7 +42,7 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    ThemePickerView(theme: $settings.theme)
+                    ThemePickerView()
                 }
 
                 Section {

@@ -33,19 +33,19 @@ extension SubjectsView {
 
         func fetchSubjects() {
             guard let context else { return }
-            debugPrint("Subjects: fetching...")
+            print("Subjects: fetching...")
             do {
                 let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
                     !$0.isSubjectDeleted
                 }, sortBy: [.init(\.startTime)])
                 subjects = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {
-            debugPrint(scrollOffset)
+            print(scrollOffset)
 
             let shouldShowTitle = scrollOffset >= -101
             if shouldShowTitle != showTitle {

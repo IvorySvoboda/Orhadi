@@ -280,13 +280,10 @@ enum OrhadiSchemaV1: VersionedSchema {
     class Settings {
         /// App
         var theme: Theme
-
         /// Study Routine
         var breakTime: TimeInterval
-
         /// Subjects
         var showCurrentSubjectIndicator: Bool = true
-
         /// ToDos
         var scheduleNotifications: Bool
 

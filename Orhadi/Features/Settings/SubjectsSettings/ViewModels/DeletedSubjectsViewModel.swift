@@ -52,7 +52,7 @@ extension DeletedSubjectsView {
 
         func fetchDeletedSubjects() {
             guard let context else { return }
-            debugPrint("Deleted Subjects: fetching...")
+            print("Deleted Subjects: fetching...")
             do {
                 let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
                     $0.isSubjectDeleted

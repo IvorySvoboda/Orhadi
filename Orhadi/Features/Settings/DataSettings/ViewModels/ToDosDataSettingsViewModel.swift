@@ -48,21 +48,21 @@ extension ToDosDataSettingsView {
 
         func fetchToDos() {
             guard let context else { return }
-            debugPrint("To-Dos Data Settings: fetching...")
+            print("To-Dos Data Settings: fetching...")
             do {
                 let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     !$0.isToDoDeleted
                 })
                 todos = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 
         func handleErrorMessageChange() {
             if !errorMessage.isEmpty {
                 showErrorMessage = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                     self.errorMessage = ""
                 }
             }

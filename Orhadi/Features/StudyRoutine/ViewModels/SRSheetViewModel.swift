@@ -42,7 +42,7 @@ extension SRSheetView {
                 try context.save()
                 extraAction()
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 

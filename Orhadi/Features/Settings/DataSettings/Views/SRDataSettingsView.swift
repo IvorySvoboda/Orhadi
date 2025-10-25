@@ -37,7 +37,7 @@ struct SRDataSettingsView: View {
                 ) { result in
                     switch result {
                     case .success:
-                        debugPrint("Success!")
+                        print("Success!")
                         viewModel.srExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
@@ -102,7 +102,7 @@ struct SRDataSettingsView: View {
                 .type(.toast)
                 .position(.top)
                 .animation(.smooth)
-                .autohideIn(2)
+                .autohideIn(5)
         }
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             viewModel.fetchStudies()

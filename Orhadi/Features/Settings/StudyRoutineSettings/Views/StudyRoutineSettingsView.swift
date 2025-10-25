@@ -9,9 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct StudyRoutineSettingsView: View {
-
     @Query private var studies: [SRStudy]
-
+    @Environment(\.modelContext) private var context
     @Bindable var settings: Settings
 
     private var deletedStudies: [SRStudy] {
@@ -27,7 +26,15 @@ struct StudyRoutineSettingsView: View {
                     ForEach(1..<7, id: \.self) { index in
                         Text("\(5 * index)min").tag(TimeInterval(300 * index))
                     }
-                }.pickerStyle(.navigationLink)
+                }
+                .pickerStyle(.navigationLink)
+                .onChange(of: settings.breakTime) { _, _ in
+                    do {
+                        try context.save()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
             }
 
             if !deletedStudies.isEmpty {

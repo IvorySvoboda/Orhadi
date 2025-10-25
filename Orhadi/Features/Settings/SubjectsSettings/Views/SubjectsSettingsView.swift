@@ -10,9 +10,8 @@ import SwiftData
 import WidgetKit
 
 struct SubjectsSettingsView: View {
-
     @Query private var subjects: [Subject]
-
+    @Environment(\.modelContext) private var context
     @Bindable var settings: Settings
 
     private var deletedSubjects: [Subject] {
@@ -26,7 +25,11 @@ struct SubjectsSettingsView: View {
             Section {
                 Toggle("Subject indicator", isOn: $settings.showCurrentSubjectIndicator)
                     .onChange(of: settings.showCurrentSubjectIndicator) { _, _ in
-                        WidgetCenter.shared.reloadAllTimelines()
+                        do {
+                            try context.save()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
                     }
             }
 

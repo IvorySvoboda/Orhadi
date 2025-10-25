@@ -55,7 +55,7 @@ struct DataSettingsView: View {
         .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.errorMessage, { _, _ in
-            
+            viewModel.handleErrorMessageChange()
         })
         .popup(isPresented: $viewModel.showErrorMessage) {
             Text(viewModel.errorMessage)
@@ -68,7 +68,7 @@ struct DataSettingsView: View {
                 .type(.toast)
                 .position(.top)
                 .animation(.smooth)
-                .autohideIn(3)
+                .autohideIn(5)
         }
     }
 }

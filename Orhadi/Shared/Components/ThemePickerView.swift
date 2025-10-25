@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct ThemePickerView: View {
-    @Binding var theme: Theme
+    @Environment(\.modelContext) private var context
+    @Environment(Settings.self) private var settings
 
     var body: some View {
-        Picker(selection: $theme) {
+        Picker(selection: Binding(
+            get: { settings.theme },
+            set: { settings.theme = $0 }
+        )) {
             ForEach(Theme.allCases, id: \.self) { theme in
                 Text(theme.name).tag(theme.hashValue)
             }
@@ -22,6 +26,13 @@ struct ThemePickerView: View {
             }
         }
         .pickerStyle(.navigationLink)
+        .onChange(of: settings.theme) { _, _ in
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 

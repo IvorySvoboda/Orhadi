@@ -42,14 +42,14 @@ extension DeletedTodosView {
 
         func fetchDeletedToDos() {
             guard let context else { return }
-            debugPrint("Deleted To-Dos: fetching...")
+            print("Deleted To-Dos: fetching...")
             do {
                 let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     $0.isToDoDeleted
                 }, sortBy: [.init(\.deletedAt)])
                 deletedToDos = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 

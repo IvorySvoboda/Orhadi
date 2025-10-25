@@ -9,11 +9,9 @@ import SwiftUI
 import SwiftData
 
 struct ToDosSettingsView: View {
-
     @Query private var todos: [ToDo]
-
+    @Environment(\.modelContext) private var context
     @State private var notificationStatus: Bool = false
-
     @Bindable var settings: Settings
 
     var deletedTodos: [ToDo] {
@@ -34,7 +32,15 @@ struct ToDosSettingsView: View {
                 Toggle(
                     "Schedule Notifications",
                     isOn: $settings.scheduleNotifications
-                ).disabled(!notificationStatus)
+                )
+                .disabled(!notificationStatus)
+                .onChange(of: settings.scheduleNotifications) { _, _ in
+                    do {
+                        try context.save()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
             } header: {
                 Text("Notifications")
             } footer: {

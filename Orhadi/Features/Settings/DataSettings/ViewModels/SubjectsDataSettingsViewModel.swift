@@ -40,21 +40,21 @@ extension SubjectsDataSettingsView {
 
         func fetchSubjects() {
             guard let context else { return }
-            debugPrint("Subjects Data Settings: fetching...")
+            print("Subjects Data Settings: fetching...")
             do {
                 let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
                     !$0.isSubjectDeleted
                 })
                 subjects = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 
         func handleErrorMessageChange() {
             if !errorMessage.isEmpty {
                 showErrorMessage = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                     self.errorMessage = ""
                 }
             }

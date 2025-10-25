@@ -32,21 +32,21 @@ extension SRDataSettingsView {
 
         func fetchStudies() {
             guard let context else { return }
-            debugPrint("Study Routine: fetching...")
+            print("Study Routine: fetching...")
             do {
                 let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
                     !$0.isStudyDeleted
                 })
                 studies = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 
         func handleErrorMessageChange() {
             if !errorMessage.isEmpty {
                 showErrorMessage = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                     self.errorMessage = ""
                 }
             }

@@ -17,14 +17,14 @@ extension ArchivedTodosView {
 
         func fetchArchivedToDos() {
             guard let context else { return }
-            debugPrint("Archived To-Dos: fetching...")
+            print("Archived To-Dos: fetching...")
             do {
                 let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     $0.isArchived && !$0.isToDoDeleted
                 }, sortBy: [.init(\.createdAt)])
                 archivedToDos = try context.fetch(descriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 

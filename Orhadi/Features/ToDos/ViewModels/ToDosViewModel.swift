@@ -27,7 +27,7 @@ extension ToDosView {
 
         func fetchToDos() {
             guard let context else { return }
-            debugPrint("To-Dos: fetching...")
+            print("To-Dos: fetching...")
             do {
                 let pendingToDosDescriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
@@ -40,12 +40,12 @@ extension ToDosView {
                 pendingToDos = try context.fetch(pendingToDosDescriptor)
                 completedToDos = try context.fetch(completedToDosDescriptor)
             } catch {
-                debugPrint(error.localizedDescription)
+                print(error.localizedDescription)
             }
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {
-            debugPrint(scrollOffset)
+            print(scrollOffset)
 
             let shouldShowTitle = scrollOffset >= -101
             if shouldShowTitle != showTitle {
