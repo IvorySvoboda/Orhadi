@@ -7,7 +7,6 @@
 
 import SwiftData
 import SwiftUI
-import PopupView
 
 struct SubjectsDataSettingsView: View {
     @Environment(\.modelContext) private var context
@@ -40,7 +39,7 @@ struct SubjectsDataSettingsView: View {
 
             Section {
                 Button("Export Subjects") {
-                    viewModel.exportSubjects()
+                    try? viewModel.exportSubjects()
                 }
                 .disabled((viewModel.subjects.isEmpty))
                 .fileExporter(
@@ -78,7 +77,7 @@ struct SubjectsDataSettingsView: View {
                     switch result {
                     case .success(let url):
                         viewModel.importedURL = url
-                        viewModel.importSubject()
+                        try? viewModel.importSubjects()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -94,28 +93,17 @@ struct SubjectsDataSettingsView: View {
                 .alert("Delete all subjects?", isPresented: $viewModel.showDeleteConfirmation) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        viewModel.deleteAllSubjects()
+                        try? viewModel.deleteAllSubjects()
                     }
                 }
             }
         }
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.errorMessage, { _, _ in
-            viewModel.handleErrorMessageChange()
-        })
-        .popup(isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+            Button("OK", role: .cancel) {}
+        } message: {
             Text(viewModel.errorMessage)
-                .foregroundColor(.white)
-                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
-                .frame(maxWidth: .infinity)
-                .background(Color.red)
-        } customize: {
-            $0
-                .type(.toast)
-                .position(.top)
-                .animation(.smooth)
-                .autohideIn(5)
         }
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             viewModel.fetchSubjects()

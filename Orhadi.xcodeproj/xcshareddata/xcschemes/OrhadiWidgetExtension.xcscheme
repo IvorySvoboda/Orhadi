@@ -16,7 +16,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "289291312E1B0FC200E0478F"
+               BlueprintIdentifier = "EE56D4F42EB0150400BBA2E0"
                BuildableName = "OrhadiWidgetExtension.appex"
                BlueprintName = "OrhadiWidgetExtension"
                ReferencedContainer = "container:Orhadi.xcodeproj">

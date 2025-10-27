@@ -44,6 +44,6 @@ struct TeachersView: View {
 #Preview("TeachersView") {
     NavigationStack {
         TeachersView()
-            .modelContainer(SampleData.shared.container)
+            .modelContainer(PreviewHelper.shared.container)
     }
 }

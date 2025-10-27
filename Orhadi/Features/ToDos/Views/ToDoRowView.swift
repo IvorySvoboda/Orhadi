@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import MarkdownUI
-import WidgetKit
 
 struct ToDoRowView: View {
     @Environment(\.modelContext) private var context
@@ -21,12 +19,7 @@ struct ToDoRowView: View {
     var body: some View {
         DisclosureGroup {
             if !todo.info.characters.isEmpty {
-                if #available(iOS 26, *) {
-                    Text(todo.info)
-                } else {
-                    Markdown("\(todo.info.characters)")
-                        .orhadiMarkdownStyle()
-                }
+                Text(todo.info)
             } else {
                 Text("Not specified.")
                     .foregroundStyle(Color.secondary)

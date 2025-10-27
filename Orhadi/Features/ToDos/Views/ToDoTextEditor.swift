@@ -10,13 +10,13 @@ import SwiftUI
 @available(iOS 26, *)
 struct ToDoTextEditor: View {
     @Environment(\.fontResolutionContext) private var fontResolutionContext
-
-    @Binding var text: AttributedString
     @State private var showAddLinkSheet = false
     @State private var selection = AttributedTextSelection()
     @FocusState private var isFocused: Bool
 
-    // MARK: - Computed Helpers
+    @Binding var text: AttributedString
+
+    // MARK: - Computed Properties
 
     private var attributes: AttributeContainer {
         selection.typingAttributes(in: text)

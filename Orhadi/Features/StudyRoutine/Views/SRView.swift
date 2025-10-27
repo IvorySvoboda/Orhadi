@@ -9,9 +9,8 @@ import SwiftData
 import SwiftUI
 
 struct SRView: View {
-    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
-    @State private var viewModel = ViewModel()
+    @State private var viewModel: ViewModel
 
     // MARK: - Views
 
@@ -91,31 +90,25 @@ struct SRView: View {
                 }
             }
             .navigationDestination(isPresented: $viewModel.navigateToStudyingView) {
-                StudyingView(studies: viewModel.studiesToStudy, breakTime: settings.breakTime, context: context)
+                StudyingView(studies: viewModel.studiesToStudy, breakTime: settings.breakTime, context: viewModel.context)
             }
             .sheet(item: $viewModel.studyToAdd) { study in
-                SRSheetView(study: study, isNew: true, context: context)
+                SRSheetView(study: study, isNew: true, context: viewModel.context)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.studyToEdit) { study in
-                SRSheetView(study: study, isNew: false, context: context)
+                SRSheetView(study: study, isNew: false, context: viewModel.context)
                     .interactiveDismissDisabled()
             }
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
                 viewModel.fetchStudies()
             }
-            .onAppear {
-                if viewModel.context == nil {
-                    viewModel.context = context
-                    viewModel.fetchStudies()
-                }
-            }
         }
     }
-}
 
-#Preview("SharedStudyRoutineView") {
-    SRView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
+    // MARK: - INIT
+
+    init(context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(context: context))
+    }
 }

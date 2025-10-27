@@ -10,6 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
     // MARK: - Views
@@ -17,13 +18,13 @@ struct ContentView: View {
     var body: some View {
         TabView {
             Tab("Subjects", systemImage: "book.fill") {
-                SubjectsView()
+                SubjectsView(context: context)
             }
             Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                ToDosView()
+                ToDosView(context: context)
             }
             Tab("Studies", systemImage: "graduationcap.fill") {
-                SRView()
+                SRView(context: context)
             }
             Tab("Settings", systemImage: "gearshape.fill") {
                 SettingsView(settings: settings)
@@ -32,7 +33,7 @@ struct ContentView: View {
         .backport.tabBarMinimizeBehavior(.onScrollDown)
         .preferredColorScheme(getTheme(for: settings.theme))
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            WidgetCenter.shared.reloadAllTimelines()
+            WidgetCenter.shared.reloadAllTimelines() /// Reload all Widgets timelines when context saves.
         }
     }
 
@@ -47,6 +48,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(SampleData.shared.container)
+        .modelContainer(PreviewHelper.shared.container)
         .environment(Settings())
 }

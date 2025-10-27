@@ -12,6 +12,8 @@ import SwiftData
 
 extension StudyingView {
     @Observable class ViewModel {
+        // MARK: - Properties
+
         var context: ModelContext
         var studies: [SRStudy]
         var isReady: Bool = false
@@ -20,20 +22,17 @@ extension StudyingView {
         var isRunning: Bool = false
         var studyFinished: Bool = false
         var breakTime: TimeInterval = 0
-
         var completedItems: [SessionItem] = []
         var pauseDate: Date?
 
         // MARK: - Timer Properties
 
         var remainingTime: TimeInterval = 0
-
         var cancellable: AnyCancellable?
         var endTime: Date?
-
         let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
-        // MARK: - Computed Helpers
+        // MARK: - Computed Properties
 
         var currentStudyName: String {
             sessionItems[currentSessionIndex].name.nilIfEmpty() ?? String(localized: "No Name")
@@ -51,6 +50,8 @@ extension StudyingView {
                 && !completedItems.contains(where: { $0.id == item.id })
             }
         }
+
+        // MARK: - INIT
 
         init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
             self.context = context
@@ -84,6 +85,7 @@ extension StudyingView {
             if time <= 0 {
                 cancellable?.cancel()
                 self.remainingTime = 0
+                advanceSession()
             }
         }
 
@@ -108,12 +110,30 @@ extension StudyingView {
             for (index, study) in studies.enumerated() {
                 let studyDuration = study.studyTimeInSeconds
                 let studyEnd = currentTime.addingTimeInterval(studyDuration)
-                sessionSequence.append(SessionItem(name: study.name, endTime: studyEnd, isBreak: false, study: study))
+
+                sessionSequence.append(
+                    SessionItem(
+                        name: study.name,
+                        endTime: studyEnd,
+                        isBreak: false,
+                        study: study
+                    )
+                )
+
                 currentTime = studyEnd
 
                 if index != studies.count - 1 {
                     let breakEnd = currentTime.addingTimeInterval(breakTime)
-                    sessionSequence.append(SessionItem(name: String(localized: "Interval"), endTime: breakEnd, isBreak: true, study: nil))
+
+                    sessionSequence.append(
+                        SessionItem(
+                            name: String(localized: "Interval"),
+                            endTime: breakEnd,
+                            isBreak: true,
+                            study: nil
+                        )
+                    )
+
                     currentTime = breakEnd
                 }
             }
@@ -121,12 +141,9 @@ extension StudyingView {
             return sessionSequence
         }
 
-        // MARK: Session Progression
+        // MARK: - Session Progression
 
         func advanceSession() {
-            /// Proteje o app de "crashar" por `out of range`
-            /// verificando se o index atual é menor que a
-            /// quantidade de itens na seção atual.
             guard currentSessionIndex < sessionItems.count else { return }
 
             /// Define o item atual.
@@ -155,9 +172,6 @@ extension StudyingView {
         }
 
         func skipToNext() {
-            /// Proteje o app de "crashar" por `out of range`
-            /// verificando se o index atual é menor que a
-            /// quantidade de itens na seção atual.
             guard currentSessionIndex < sessionItems.count else { return }
 
             /// Define o item atual.
@@ -174,8 +188,6 @@ extension StudyingView {
             /// avança para o proximo item
             currentSessionIndex += 1
 
-            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-
             /// Se o index for menor que a quantidade
             /// de itens em `sessionItems`, continua
             /// os estudos normalmente, atualizando o
@@ -188,6 +200,8 @@ extension StudyingView {
             } else {
                 endSession()
             }
+
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
         }
 
         func handleCompletedSession(_ currentItem: SessionItem) {
@@ -212,12 +226,6 @@ extension StudyingView {
         }
 
         // MARK: Time and Running State Management
-
-        func handleTimeChange() {
-            if remainingTime <= 0 {
-                advanceSession()
-            }
-        }
 
         func handleRunningChange() {
             if isRunning {

@@ -1,5 +1,5 @@
 //
-//  SampleData.swift
+//  PreviewHelper.swift
 //  Orhadi
 //
 //  Created by Ivory Svoboda on 04/04/25.
@@ -9,17 +9,12 @@ import Foundation
 import SwiftData
 
 @MainActor
-class SampleData {
-    static let shared = SampleData()
+class PreviewHelper {
+    static let shared = PreviewHelper()
 
     let container: ModelContainer
 
-    var context: ModelContext {
-        container.mainContext
-    }
-
     private init() {
-
         let modelConfiguration = ModelConfiguration(
             schema: Schema(versionedSchema: CurrentSchema.self), isStoredInMemoryOnly: true
         )
@@ -29,21 +24,11 @@ class SampleData {
                 for: Schema(versionedSchema: CurrentSchema.self), configurations: [modelConfiguration]
             )
 
-            insertSampleData()
-
-            try context.save()
+            try SampleDataManager.shared.insertSampleData(in: container.mainContext)
         } catch {
             fatalError(
                 "Could not create ModelContainer: \(error.localizedDescription)"
             )
         }
-    }
-
-    private func insertSampleData() {
-        for subject in Subject.sampleData { context.insert(subject) }
-        for todo in ToDo.sampleData { context.insert(todo) }
-        for study in SRStudy.sampleData { context.insert(study) }
-
-        context.insert(Settings())
     }
 }

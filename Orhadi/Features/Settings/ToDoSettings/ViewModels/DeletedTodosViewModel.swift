@@ -42,7 +42,6 @@ extension DeletedTodosView {
 
         func fetchDeletedToDos() {
             guard let context else { return }
-            print("Deleted To-Dos: fetching...")
             do {
                 let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     $0.isToDoDeleted

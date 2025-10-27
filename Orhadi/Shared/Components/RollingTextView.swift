@@ -81,6 +81,7 @@ struct RollingCharView: View {
                 .blur(radius: animating ? 0 : 10)
                 .scaleEffect(animating ? 1 : 0.4)
         }
+        .compositingGroup()
         .frame(width: 24, height: 50)
         .onChange(of: shouldAnimate) { _, newValue in
             if newValue {

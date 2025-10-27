@@ -5,13 +5,15 @@
 //  Created by Ivory Svoboda on 22/10/25.
 //
 
-import SwiftUI
-import SwiftData
 import Observation
+import SwiftData
+import SwiftUI
 
 extension ToDosView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        var context: ModelContext
         var pendingToDos: [ToDo] = []
         var completedToDos: [ToDo] = []
         var todoToAdd: ToDo?
@@ -21,21 +23,39 @@ extension ToDosView {
         var showSelectedSection: Bool = false
         var hideOverlay: Bool = false
 
+        // MARK: - Computed Properties
+
         var visibleToDos: [ToDo] {
             selectedSection == .pending ? pendingToDos : completedToDos
         }
 
-        func fetchToDos() {
-            guard let context else { return }
-            print("To-Dos: fetching...")
-            do {
-                let pendingToDosDescriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
-                    !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
-                }, sortBy: [.init(\.dueDate, order: .forward), .init(\.title, order: .forward)])
+        // MARK: INIT
 
-                let completedToDosDescriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
-                    !$0.isToDoDeleted && !$0.isArchived && $0.isCompleted
-                }, sortBy: [.init(\.completedAt, order: .reverse)])
+        init(context: ModelContext) {
+            self.context = context
+            fetchToDos()
+        }
+
+        // MARK: - Functions
+
+        func fetchToDos() {
+            do {
+                let pendingToDosDescriptor = FetchDescriptor<ToDo>(
+                    predicate: #Predicate {
+                        !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
+                    },
+                    sortBy: [
+                        .init(\.dueDate, order: .forward),
+                        .init(\.title, order: .forward)
+                    ]
+                )
+
+                let completedToDosDescriptor = FetchDescriptor<ToDo>(
+                    predicate: #Predicate {
+                        !$0.isToDoDeleted && !$0.isArchived && $0.isCompleted
+                    },
+                    sortBy: [.init(\.completedAt, order: .reverse)]
+                )
 
                 pendingToDos = try context.fetch(pendingToDosDescriptor)
                 completedToDos = try context.fetch(completedToDosDescriptor)
@@ -45,8 +65,6 @@ extension ToDosView {
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {
-            print(scrollOffset)
-
             let shouldShowTitle = scrollOffset >= -101
             if shouldShowTitle != showTitle {
                 withAnimation(.smooth(duration: 0.5)) {
@@ -61,7 +79,7 @@ extension ToDosView {
                 }
             }
 
-            let shouldHideOverlay = scrollOffset < -300
+            let shouldHideOverlay = scrollOffset <= -300
             if shouldHideOverlay != hideOverlay {
                 withAnimation(.smooth(duration: 0.5)) {
                     hideOverlay = shouldHideOverlay

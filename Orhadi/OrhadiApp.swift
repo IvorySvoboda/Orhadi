@@ -7,7 +7,6 @@
 
 import SwiftData
 import SwiftUI
-import WidgetKit
 
 @main
 struct OrhadiApp: App {
@@ -38,8 +37,6 @@ struct RootView: View {
 
                 /// Apagas itens apagados a mais de 30 dias
                 cleanOldDeleted()
-
-                WidgetCenter.shared.reloadAllTimelines()
             }
             .environment(settings.first ?? Settings())
     }

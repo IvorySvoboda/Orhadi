@@ -13,12 +13,9 @@ struct ToDoSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
-
     @State private var viewModel: ViewModel
 
-    init(todo: ToDo, isNew: Bool, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew, context: context))
-    }
+    // MARK: - Views
 
     var body: some View {
         NavigationStack {
@@ -42,11 +39,10 @@ struct ToDoSheetView: View {
                             .padding(.top)
                             .padding(.leading, 5)
 
-                            MarkdownTextField(text: Binding(
+                            TextEditor(text: Binding(
                                 get: { String("\(viewModel.draftToDo.info.characters)") },
                                 set: { viewModel.draftToDo.info = AttributedString("\($0)") }
-                            ))
-                            .frame(height: 200)
+                            )).frame(height: 300)
                         }
                     }
                 }
@@ -144,5 +140,11 @@ struct ToDoSheetView: View {
                 }
             }
         }
+    }
+
+    // MARK: - INIT
+
+    init(todo: ToDo, isNew: Bool, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew, context: context))
     }
 }

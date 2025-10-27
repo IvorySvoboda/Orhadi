@@ -70,61 +70,6 @@ extension ToDo {
         return formatter.string(from: dueDate)
     }
 
-    static let sampleData: [ToDo] = [
-        .init(
-            title: "Comprar material de arte",
-            info: "Tintas, pincéis e papéis para o projeto de pintura",
-            dueDate: Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date(),
-            withHour: false,
-            createdAt: Date(),
-            isCompleted: false,
-            priority: .medium,
-            isArchived: false
-        ),
-        .init(
-            title: "Enviar relatório mensal",
-            info: "Relatório de desempenho para o gestor",
-            dueDate: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(),
-            withHour: true,
-            createdAt: Calendar.current.date(byAdding: .day, value: -10, to: Date()) ?? Date(),
-            isCompleted: true,
-            completedAt: Calendar.current.date(byAdding: .day, value: -1, to: Date()),
-            priority: .high,
-            isArchived: false
-        ),
-        .init(
-            title: "Ligar para fornecedor",
-            info: "Negociar valores para a próxima remessa",
-            dueDate: Calendar.current.date(byAdding: .hour, value: 5, to: Date()) ?? Date(),
-            withHour: true,
-            createdAt: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(),
-            isCompleted: false,
-            priority: .low,
-            isArchived: false
-        ),
-        .init(
-            title: "Study SwiftUI avançado",
-            info: "Terminar curso sobre animações e performance",
-            dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()) ?? Date(),
-            withHour: false,
-            createdAt: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date(),
-            isCompleted: false,
-            priority: .medium,
-            isArchived: false
-        ),
-        .init(
-            title: "Organizar documentos antigos",
-            info: "Separar documentos para arquivar",
-            dueDate: Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date(),
-            withHour: false,
-            createdAt: Calendar.current.date(byAdding: .day, value: -40, to: Date()) ?? Date(),
-            isCompleted: true,
-            completedAt: Calendar.current.date(byAdding: .day, value: -29, to: Date()),
-            priority: .none,
-            isArchived: true
-        )
-    ]
-
     func toggleCompleted(in context: ModelContext, scheduleNotifications: Bool = false) throws {
         /// Se a to-dos não estiver completada
         if !isCompleted {

@@ -11,11 +11,15 @@ import Observation
 
 extension SubjectSheetView {
     @Observable class ViewModel {
+        // MARK: - Properties
+
         var context: ModelContext
         var subject: Subject
         var draftSubject: DraftSubject
         var isNew: Bool
-        var showAlert: Bool = false
+        var showConflictAlert: Bool = false
+
+        // MARK: - Computed Properties
 
         var navigationTitle: LocalizedStringKey {
             if isNew {
@@ -25,6 +29,8 @@ extension SubjectSheetView {
             }
         }
 
+        // MARK: - INIT
+
         init(subject: Subject, isNew: Bool, context: ModelContext) {
             self.context = context
             self.subject = subject
@@ -32,7 +38,10 @@ extension SubjectSheetView {
             self.isNew = isNew
         }
 
-        func trySave(extraAction: () -> Void = { return }) {
+        // MARK: - Functions
+
+        /// `extraAction()` --> An action to be executed if the save succeeds. Can be used to dismiss the view after the save.
+        func trySave(extraAction: (() -> Void)? = nil) {
             let hasConflict = SubjectConflictVerifier.hasConflict(
                 id: isNew ? nil : subject.id,
                 start: draftSubject.startTime,
@@ -42,7 +51,7 @@ extension SubjectSheetView {
             )
 
             if hasConflict {
-                showAlert.toggle()
+                showConflictAlert.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
                 return
             }
@@ -55,7 +64,7 @@ extension SubjectSheetView {
 
             do {
                 try context.save()
-                extraAction()
+                extraAction?()
             } catch {
                 print(error.localizedDescription)
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
@@ -76,8 +85,6 @@ extension SubjectSheetView {
                     )
                 )
             }
-
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
 
         func applySubjectChanges() {
@@ -87,8 +94,6 @@ extension SubjectSheetView {
             subject.startTime = draftSubject.startTime
             subject.endTime = draftSubject.endTime
             subject.place = draftSubject.place.trimmingCharacters(in: .whitespaces)
-
-            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
         }
     }
 }

@@ -13,10 +13,6 @@ struct SubjectSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel
 
-    init(subject: Subject, isNew: Bool = false, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, context: context))
-    }
-
     // MARK: - Views
 
     var body: some View {
@@ -78,11 +74,17 @@ struct SubjectSheetView: View {
                     }.disabled(viewModel.draftSubject.name.isEmpty && !viewModel.draftSubject.isRecess)
                 }
             }
-            .alert("Schedule Conflict", isPresented: $viewModel.showAlert) {
+            .alert("Schedule Conflict", isPresented: $viewModel.showConflictAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("The selected time range is invalid or overlaps with another schedule. Please adjust it before saving.")
             }
         }
+    }
+
+    // MARK: - INIT
+
+    init(subject: Subject, isNew: Bool = false, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, context: context))
     }
 }

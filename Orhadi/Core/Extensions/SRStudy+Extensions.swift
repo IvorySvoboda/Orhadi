@@ -31,12 +31,6 @@ extension SRStudy {
         return (components.hour ?? 0) * 60 + (components.minute ?? 0)
     }
 
-    static let sampleData = [
-        SRStudy(name: "English"),
-        SRStudy(name: "Matemática"),
-        SRStudy(name: "História")
-    ]
-
     func hardDelete(in context: ModelContext) throws {
         withAnimation {
             context.delete(self)

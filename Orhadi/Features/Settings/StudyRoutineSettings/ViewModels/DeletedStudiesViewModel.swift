@@ -42,7 +42,6 @@ extension DeletedStudiesView {
 
         func fetchDeletedStudies() {
             guard let context else { return }
-            print("Deleted Studies: fetching...")
             do {
                 let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
                     $0.isStudyDeleted

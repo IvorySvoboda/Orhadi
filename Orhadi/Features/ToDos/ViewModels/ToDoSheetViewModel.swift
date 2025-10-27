@@ -11,11 +11,15 @@ import Observation
 
 extension ToDoSheetView {
     @Observable class ViewModel {
+        // MARK: - Properties
+
         var context: ModelContext
         var todo: ToDo
         var draftToDo: DraftToDo
         var isNew: Bool
         var isHourPickerExpanded = false
+
+        // MARK: Computed Properties
 
         var navigationTitle: LocalizedStringKey {
             if isNew {
@@ -25,15 +29,19 @@ extension ToDoSheetView {
             }
         }
 
+        // MARK: - INIT
+
         init(todo: ToDo, isNew: Bool, context: ModelContext) {
             self.context = context
             self.todo = todo
             self.draftToDo = DraftToDo(from: todo)
             self.isNew = isNew
-
         }
 
-        func trySave(scheduleNotifications: Bool = false, extraAction: @escaping () -> Void = { return }) {
+        // MARK: - Functions
+
+        /// `extraAction()` --> An action to be executed if the save succeeds. Can be used to dismiss the view after the save.
+        func trySave(scheduleNotifications: Bool = false, extraAction: (() -> Void)? = nil) {
             if isNew {
                 insertNewToDo(scheduleNotifications: scheduleNotifications)
             } else {
@@ -42,7 +50,7 @@ extension ToDoSheetView {
 
             do {
                 try context.save()
-                extraAction()
+                extraAction?()
             } catch {
                 print(error.localizedDescription)
             }
@@ -68,8 +76,6 @@ extension ToDoSheetView {
             withAnimation {
                 context.insert(newTodo)
             }
-
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
 
         func applyToDoChanges(scheduleNotifications: Bool = false) {
@@ -90,8 +96,6 @@ extension ToDoSheetView {
             if scheduleNotifications {
                 todo.scheduleNotification()
             }
-
-            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
         }
     }
 }

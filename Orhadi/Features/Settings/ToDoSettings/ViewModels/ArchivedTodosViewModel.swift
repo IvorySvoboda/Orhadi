@@ -17,7 +17,6 @@ extension ArchivedTodosView {
 
         func fetchArchivedToDos() {
             guard let context else { return }
-            print("Archived To-Dos: fetching...")
             do {
                 let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
                     $0.isArchived && !$0.isToDoDeleted

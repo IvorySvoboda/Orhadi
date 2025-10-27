@@ -1,0 +1,530 @@
+[
+    {
+        "endTime": -978327000,
+        "isRecess": true,
+        "startTime": -978328200,
+        "place": "",
+        "schedule": -978480000,
+        "name": ""
+    },
+    {
+        "name": "Saga Senai",
+        "endTime": -978344400,
+        "place": "Sala 109",
+        "startTime": -978347400,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "email": "",
+            "name": "Prof. A"
+        }
+    },
+    {
+        "name": "Sociologia",
+        "endTime": -978338400,
+        "place": "Sala 109",
+        "startTime": -978341400,
+        "schedule": -978220800,
+        "isRecess": false,
+        "teacher": {
+            "email": "profa@exemplo.com",
+            "name": "Prof. B"
+        }
+    },
+    {
+        "name": "Física",
+        "endTime": -978338400,
+        "place": "Sala 109",
+        "startTime": -978341400,
+        "schedule": -978134400,
+        "isRecess": false,
+        "teacher": {
+            "email": "profb@exemplo.com",
+            "name": "Prof. C"
+        }
+    },
+    {
+        "name": "Português",
+        "endTime": -978351600,
+        "place": "Sala 109",
+        "startTime": -978354600,
+        "schedule": -978393600,
+        "isRecess": false,
+        "teacher": {
+            "email": "profc@exemplo.com",
+            "name": "Prof. D"
+        }
+    },
+    {
+        "name": "Sistemas Lógicos Programáveis",
+        "endTime": -978324000,
+        "place": "Sala 109",
+        "startTime": -978327000,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "email": "profd@exemplo.com",
+            "name": "Prof. E"
+        }
+    },
+    {
+        "name": "Literatura",
+        "endTime": -978348600,
+        "place": "Sala 109",
+        "startTime": -978351600,
+        "schedule": -978134400,
+        "isRecess": false,
+        "teacher": {
+            "email": "profc@exemplo.com",
+            "name": "Prof. D"
+        }
+    },
+    {
+        "name": "Matemática",
+        "endTime": -978348600,
+        "place": "Sala 109",
+        "startTime": -978351600,
+        "schedule": -978393600,
+        "isRecess": false,
+        "teacher": {
+            "email": "profe@exemplo.com",
+            "name": "Prof. F"
+        }
+    },
+    {
+        "name": "Geografia",
+        "endTime": -978341400,
+        "place": "Sala 109",
+        "startTime": -978344400,
+        "schedule": -978220800,
+        "isRecess": false,
+        "teacher": {
+            "email": "profa@exemplo.com",
+            "name": "Prof. B"
+        }
+    },
+    {
+        "name": "Inglês",
+        "endTime": -978351600,
+        "place": "Sala 109",
+        "startTime": -978354599,
+        "schedule": -978307200,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. G",
+            "email": "proff@exemplo.com"
+        }
+    },
+    {
+        "name": "Saga Senai",
+        "endTime": -978348600,
+        "place": "Sala 109",
+        "startTime": -978351600,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. A",
+            "email": ""
+        }
+    },
+    {
+        "name": "Saga Senai",
+        "endTime": -978338400,
+        "place": "Sala 109",
+        "startTime": -978341400,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. A",
+            "email": ""
+        }
+    },
+    {
+        "name": "Matemática",
+        "endTime": -978344400,
+        "place": "Sala 109",
+        "startTime": -978347400,
+        "schedule": -978393600,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. F",
+            "email": "profe@exemplo.com"
+        }
+    },
+    {
+        "name": "Fontes",
+        "endTime": -978341400,
+        "place": "Sala 109",
+        "startTime": -978344400,
+        "schedule": -978134400,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. C",
+            "email": "profb@exemplo.com"
+        }
+    },
+    {
+        "name": "Sistemas Lógicos Programáveis",
+        "endTime": -978321000,
+        "place": "Sala 109",
+        "startTime": -978324000,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        }
+    },
+    {
+        "name": "Geografia",
+        "endTime": -978351600,
+        "place": "Sala 109",
+        "startTime": -978354600,
+        "schedule": -978134400,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. B",
+            "email": "profa@exemplo.com"
+        }
+    },
+    {
+        "startTime": -978348600,
+        "endTime": -978347400,
+        "name": "",
+        "isRecess": true,
+        "place": "",
+        "schedule": -978480000
+    },
+    {
+        "name": "Português",
+        "endTime": -978354600,
+        "place": "Sala 109",
+        "startTime": -978357600,
+        "schedule": -978307200,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. D",
+            "email": "profc@exemplo.com"
+        }
+    },
+    {
+        "startTime": -978338400,
+        "endTime": -978334200,
+        "name": "",
+        "isRecess": true,
+        "place": "",
+        "schedule": -978480000
+    },
+    {
+        "name": "Sistemas Lógicos Programáveis",
+        "endTime": -978328200,
+        "place": "Sala 109",
+        "startTime": -978331200,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        }
+    },
+    {
+        "name": "Química",
+        "endTime": -978348600,
+        "place": "Sala 109",
+        "startTime": -978351600,
+        "schedule": -978307200,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. H",
+            "email": "profg@exemplo.com"
+        }
+    },
+    {
+        "name": "Inglês",
+        "endTime": -978351600,
+        "place": "Sala 109",
+        "startTime": -978354600,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. G",
+            "email": "proff@exemplo.com"
+        }
+    },
+    {
+        "name": "História",
+        "endTime": -978341400,
+        "place": "Sala 109",
+        "startTime": -978344400,
+        "schedule": -978393600,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. I",
+            "email": "profh@exemplo.com"
+        }
+    },
+    {
+        "name": "Biologia",
+        "endTime": -978354600,
+        "place": "Sala 109",
+        "startTime": -978357600,
+        "schedule": -978480000,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. J",
+            "email": "profi@exemplo.com"
+        }
+    },
+    {
+        "endTime": -978344400,
+        "teacher": {
+            "name": "Prof. B",
+            "email": "profa@exemplo.com"
+        },
+        "place": "Sala 109",
+        "name": "Filosofia",
+        "schedule": -978134400,
+        "startTime": -978347400,
+        "isRecess": false
+    },
+    {
+        "endTime": -978338400,
+        "teacher": {
+            "name": "Prof. J",
+            "email": "profi@exemplo.com"
+        },
+        "place": "Sala 109",
+        "name": "Ecologia",
+        "schedule": -978393600,
+        "startTime": -978341400,
+        "isRecess": false
+    },
+    {
+        "endTime": -978341400,
+        "teacher": {
+            "name": "Prof. A",
+            "email": ""
+        },
+        "place": "Sala 109",
+        "name": "Saga Senai",
+        "schedule": -978480000,
+        "startTime": -978344400,
+        "isRecess": false
+    },
+    {
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        },
+        "name": "Sistemas Lógicos Programáveis",
+        "startTime": -978334200,
+        "schedule": -978480000,
+        "isRecess": false,
+        "endTime": -978331200,
+        "place": "Sala 109"
+    },
+    {
+        "teacher": {
+            "name": "Prof. C",
+            "email": "profb@exemplo.com"
+        },
+        "name": "Fontes",
+        "startTime": -978347400,
+        "schedule": -978220800,
+        "isRecess": false,
+        "endTime": -978344400,
+        "place": "Sala 109"
+    },
+    {
+        "teacher": {
+            "name": "Prof. J",
+            "email": "profi@exemplo.com"
+        },
+        "name": "Biologia",
+        "startTime": -978357600,
+        "schedule": -978296400,
+        "isRecess": false,
+        "endTime": -978354600,
+        "place": "Sala 109"
+    },
+    {
+        "teacher": {
+            "name": "Prof. C",
+            "email": "profb@exemplo.com"
+        },
+        "name": "Física",
+        "startTime": -978354600,
+        "schedule": -978296400,
+        "isRecess": false,
+        "endTime": -978351600,
+        "place": "Sala 109"
+    },
+    {
+        "place": "Sala 109",
+        "endTime": -978348600,
+        "startTime": -978351600,
+        "name": "Ecologia",
+        "schedule": -978296400,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. J",
+            "email": "profi@exemplo.com"
+        }
+    },
+    {
+        "isRecess": true,
+        "endTime": -978347400,
+        "place": "",
+        "startTime": -978348600,
+        "schedule": -978296400,
+        "name": ""
+    },
+    {
+        "place": "Sala 109",
+        "endTime": -978354600,
+        "startTime": -978357600,
+        "name": "Redação",
+        "schedule": -978210000,
+        "isRecess": false,
+        "teacher": {
+            "email": "profc@exemplo.com",
+            "name": "Prof. D"
+        }
+    },
+    {
+        "isRecess": true,
+        "endTime": -978347400,
+        "place": "",
+        "startTime": -978348600,
+        "schedule": -978210000,
+        "name": ""
+    },
+    {
+        "isRecess": true,
+        "endTime": -978347400,
+        "place": "",
+        "startTime": -978348600,
+        "schedule": -978307200,
+        "name": ""
+    },
+    {
+        "place": "Sala 109",
+        "endTime": -978344400,
+        "startTime": -978347400,
+        "name": "Matemática",
+        "schedule": -978307200,
+        "isRecess": false,
+        "teacher": {
+            "name": "Prof. F",
+            "email": "profe@exemplo.com"
+        }
+    },
+    {
+        "startTime": -978344400,
+        "schedule": -978307200,
+        "endTime": -978341400,
+        "name": "História",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. I",
+            "email": "profh@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "startTime": -978341400,
+        "schedule": -978307200,
+        "endTime": -978338400,
+        "name": "Química",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. H",
+            "email": "profg@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "isRecess": true,
+        "endTime": -978334200,
+        "place": "",
+        "startTime": -978338400,
+        "schedule": -978307200,
+        "name": ""
+    },
+    {
+        "isRecess": true,
+        "endTime": -978327000,
+        "place": "",
+        "startTime": -978328200,
+        "schedule": -978307200,
+        "name": ""
+    },
+    {
+        "isRecess": true,
+        "endTime": -978347400,
+        "place": "",
+        "startTime": -978348600,
+        "schedule": -977864400,
+        "name": ""
+    },
+    {
+        "startTime": -978357600,
+        "schedule": -977864400,
+        "endTime": -978354600,
+        "name": "Inglês",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. G",
+            "email": "proff@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "startTime": -978327000,
+        "schedule": -978382800,
+        "endTime": -978324000,
+        "name": "Sistemas Lógicos Programáveis",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "startTime": -978331200,
+        "schedule": -978382800,
+        "endTime": -978328200,
+        "name": "Sistemas Lógicos Programáveis",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "startTime": -978324000,
+        "schedule": -978382800,
+        "endTime": -978321000,
+        "name": "Sistemas Lógicos Programáveis",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        },
+        "isRecess": false
+    },
+    {
+        "startTime": -978334200,
+        "schedule": -978382800,
+        "endTime": -978331200,
+        "name": "Sistemas Lógicos Programáveis",
+        "place": "Sala 109",
+        "teacher": {
+            "name": "Prof. E",
+            "email": "profd@exemplo.com"
+        },
+        "isRecess": false
+    }
+]

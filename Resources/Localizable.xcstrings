@@ -215,6 +215,7 @@
       }
     },
     "Class Schedule" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -584,6 +585,9 @@
         }
       }
     },
+    "Error!" : {
+
+    },
     "Export Study Routine" : {
       "localizations" : {
         "pt-BR" : {
@@ -705,6 +709,7 @@
       }
     },
     "It looks like there's nothing else here. How about taking this opportunity to study a little?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1005,6 +1010,7 @@
       }
     },
     "Pending To-Dos" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1135,6 +1141,7 @@
       }
     },
     "See today’s subjects without opening the app." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1145,6 +1152,7 @@
       }
     },
     "See your incomplete to-dos without opening the app." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

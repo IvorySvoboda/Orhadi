@@ -10,8 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct ToDosView: View {
-    @Environment(\.modelContext) private var context
-    @State private var viewModel = ViewModel()
+    @State private var viewModel: ViewModel
 
     // MARK: - Views
 
@@ -84,28 +83,22 @@ struct ToDosView: View {
                 }
             }
             .sheet(item: $viewModel.todoToAdd) { todo in
-                ToDoSheetView(todo: todo, isNew: true, context: context)
+                ToDoSheetView(todo: todo, isNew: true, context: viewModel.context)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.todoToEdit) { todo in
-                ToDoSheetView(todo: todo, isNew: false, context: context)
+                ToDoSheetView(todo: todo, isNew: false, context: viewModel.context)
                     .interactiveDismissDisabled()
             }
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
                 viewModel.fetchToDos()
             }
-            .onAppear {
-                if viewModel.context == nil {
-                    viewModel.context = context
-                    viewModel.fetchToDos()
-                }
-            }
         }
     }
-}
 
-#Preview("ToDoView") {
-    ToDosView()
-        .modelContainer(SampleData.shared.container)
-        .environment(Settings())
+    // MARK: - INIT
+
+    init(context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(context: context))
+    }
 }

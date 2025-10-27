@@ -1,0 +1,987 @@
+[
+    {
+        "dueDate": 766897200,
+        "priority": 3,
+        "isCompleted": false,
+        "title": "Site Rev. News",
+        "info": [
+            "Finalizar a criação do site ",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg=="
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                }
+            },
+            "Rev. News",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": {
+                        "tag": {
+                            "platform": {}
+                        },
+                        "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                    },
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "do": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                }
+            }
+        ],
+        "withHour": false,
+        "createdAt": 767501583.837228,
+        "completedAt": 768100550.206246,
+        "isArchived": false
+    },
+    {
+        "dueDate": 768279600,
+        "priority": 2,
+        "isCompleted": false,
+        "title": "Exercícios de Química",
+        "info": [
+            "Fazer todos os exercícios do ",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg=="
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                }
+            },
+            "Cap. 8",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                }
+            },
+            " de Química.",
+            {
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                }
+            }
+        ],
+        "withHour": false,
+        "createdAt": 767740561.364644,
+        "completedAt": 773440601.504776,
+        "isArchived": false
+    },
+    {
+        "dueDate": 771130800,
+        "priority": 3,
+        "isCompleted": true,
+        "info": {
+            "runs": [
+                "Seguindo a orientação da",
+                0,
+                " ",
+                1,
+                "Prof. J",
+                2,
+                ",",
+                3,
+                " ",
+                2,
+                "faça seu processo de fermentação.",
+                0,
+                "\n",
+                1,
+                "\n",
+                4,
+                "Para a Física, determine neste processo:  ",
+                5,
+                "\n",
+                6,
+                "\n",
+                7,
+                "• Calor cedido ao alimento no preparo;  \n• Variação de temperatura, transmissão de calor;  \n• Calorias finais no alimento ao ser ingerido.",
+                8,
+                "\n\n",
+                7,
+                "Explicar isso no dia e colocar em um ",
+                9,
+                "relatório (ABNT)",
+                10,
+                ". Enviar no e-mail.",
+                9
+            ],
+            "attributeTable": [
+                {
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    },
+                    "SwiftUI.Font": {
+                        "value": "GhVCcmFkbGV5SGFuZElUQ1RULUJvbGQ9AACQQQ==",
+                        "tag": {
+                            "platform": {}
+                        }
+                    },
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    }
+                },
+                {
+                    "SwiftUI.ForegroundColor": {
+                        "tag": {
+                            "uiKitColor": {}
+                        },
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxRYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAQEBESE18QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj+AAABFMSAxIDEiP3\/\/ABACoRVVJG51bGwIERokKTI3SVhweH+HjZOgoqetsrS2AAAAAAAAAQEAAAAAAAAAFgAAAAAAAAAAAAAAAAAAALw="
+                    },
+                    "SwiftUI.Font": {
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "italic": {}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "value": {
+                                "value": {
+                                    "value":
+                                        "Kh9VSUNURm9udFRleHRTdHlsZUVtcGhhc2l6ZWRCb2R5MAKAAQA9AACQQQ==",
+                                    "tag": {
+                                        "platform": {}
+                                    }
+                                },
+                                "tag": {
+                                    "staticModifier": {
+                                        "_0": {
+                                            "undo": {
+                                                "_0": {
+                                                    "bold": {}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "tag": {
+                                "staticModifier": {
+                                    "_0": {
+                                        "do": {
+                                            "_0": {
+                                                "italic": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    }
+                },
+                {
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    },
+                    "SwiftUI.UnderlineStyle": {
+                        "style": 1
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    },
+                    "SwiftUI.Font": {
+                        "value": {
+                            "tag": {
+                                "platform": {}
+                            },
+                            "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB"
+                        },
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "SwiftUI.UnderlineStyle": {
+                        "style": 1
+                    },
+                    "SwiftUI.Font": {
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "tag": {
+                                "platform": {}
+                            },
+                            "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB"
+                        }
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    },
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    }
+                },
+                {
+                    "SwiftUI.ForegroundColor": {
+                        "tag": {
+                            "uiKitColor": {}
+                        },
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxRYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAQEBESE18QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj+AAABFMSAxIDEiP3\/\/ABACoRVVJG51bGwIERokKTI3SVhweH+HjZOgoqetsrS2AAAAAAAAAQEAAAAAAAAAFgAAAAAAAAAAAAAAAAAAALw="
+                    },
+                    "SwiftUI.TextJustification": {
+                        "full": {
+                            "_0": {
+                                "allLines": false,
+                                "flexible": false
+                            }
+                        }
+                    },
+                    "SwiftUI.Font": {
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "italic": {}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "tag": {
+                                "staticModifier": {
+                                    "_0": {
+                                        "do": {
+                                            "_0": {
+                                                "italic": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "value": {
+                                "tag": {
+                                    "staticModifier": {
+                                        "_0": {
+                                            "undo": {
+                                                "_0": {
+                                                    "bold": {}
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "value": {
+                                    "tag": {
+                                        "platform": {}
+                                    },
+                                    "value":
+                                        "Kh9VSUNURm9udFRleHRTdHlsZUVtcGhhc2l6ZWRCb2R5MAKAAQA9AACQQQ=="
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    },
+                    "SwiftUI.Font": {
+                        "value": {
+                            "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB",
+                            "tag": {
+                                "platform": {}
+                            }
+                        },
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    }
+                },
+                {
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    },
+                    "SwiftUI.Font": {
+                        "value": "GhVCcmFkbGV5SGFuZElUQ1RULUJvbGQ9AACQQQ==",
+                        "tag": {
+                            "platform": {}
+                        }
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxRYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAQEBESE18QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj+AAABFMSAxIDEiP3\/\/ABACoRVVJG51bGwIERokKTI3SVhweH+HjZOgoqetsrS2AAAAAAAAAQEAAAAAAAAAFgAAAAAAAAAAAAAAAAAAALw=",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    }
+                },
+                {
+                    "SwiftUI.Font": {
+                        "tag": {
+                            "platform": {}
+                        },
+                        "value": "GhVCcmFkbGV5SGFuZElUQ1RULUJvbGQ9AACQQQ=="
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxRYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAQEBESE18QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj+AAABFMSAxIDEiP3\/\/ABACoRVVJG51bGwIERokKTI3SVhweH+HjZOgoqetsrS2AAAAAAAAAQEAAAAAAAAAFgAAAAAAAAAAAAAAAAAAALw=",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    },
+                    "SwiftUI.TextJustification": {
+                        "full": {
+                            "_0": {
+                                "allLines": false,
+                                "flexible": false
+                            }
+                        }
+                    }
+                },
+                {
+                    "SwiftUI.TextJustification": {
+                        "full": {
+                            "_0": {
+                                "allLines": false,
+                                "flexible": false
+                            }
+                        }
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                        "tag": {
+                            "uiKitColor": {}
+                        }
+                    },
+                    "SwiftUI.Font": {
+                        "value": "GhVCcmFkbGV5SGFuZElUQ1RULUJvbGQ9AACQQQ==",
+                        "tag": {
+                            "platform": {}
+                        }
+                    }
+                },
+                {
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "tag": {
+                            "uiKitColor": {}
+                        },
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A=="
+                    },
+                    "SwiftUI.Font": {
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "do": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "tag": {
+                                "platform": {}
+                            },
+                            "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                        }
+                    }
+                },
+                {
+                    "CoreText.TextAlignment": {
+                        "center": {}
+                    },
+                    "SwiftUI.UnderlineStyle": {
+                        "style": 1
+                    },
+                    "SwiftUI.ForegroundColor": {
+                        "tag": {
+                            "uiKitColor": {}
+                        },
+                        "value":
+                            "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A=="
+                    },
+                    "SwiftUI.Font": {
+                        "value": {
+                            "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                            "tag": {
+                                "platform": {}
+                            }
+                        },
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "do": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "title": "Trabalho Interdisciplinar",
+        "withHour": false,
+        "createdAt": 767501583.837228,
+        "completedAt": 773455277.083835,
+        "isArchived": false
+    },
+    {
+        "dueDate": 770094000,
+        "priority": 0,
+        "isCompleted": true,
+        "info": [
+            "Fazer ",
+            {
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg=="
+                }
+            },
+            "10 exercícios",
+            {
+                "SwiftUI.Font": {
+                    "value": {
+                        "tag": {
+                            "platform": {}
+                        },
+                        "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                    },
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "do": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                }
+            },
+            " do capítulo ",
+            {
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                    "tag": {
+                        "platform": {}
+                    }
+                }
+            },
+            "3",
+            {
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": {
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "value": {
+                            "tag": {
+                                "staticModifier": {
+                                    "_0": {
+                                        "do": {
+                                            "_0": {
+                                                "bold": {}
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "value": {
+                                "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                                "tag": {
+                                    "platform": {}
+                                }
+                            }
+                        }
+                    },
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "do": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            " de Literatura",
+            {
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                },
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A=="
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "do": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "value": {
+                        "value": {
+                            "tag": {
+                                "platform": {}
+                            },
+                            "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB"
+                        },
+                        "tag": {
+                            "staticModifier": {
+                                "_0": {
+                                    "undo": {
+                                        "_0": {
+                                            "bold": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            " da ",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                    "tag": {
+                        "platform": {}
+                    }
+                }
+            },
+            "apostila 5",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": {
+                        "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                        "tag": {
+                            "platform": {}
+                        }
+                    },
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "do": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                }
+            },
+            ".",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg=="
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "value": "GhRDaGFsa2JvYXJkU0UtUmVndWxhcj0AAJBB",
+                    "tag": {
+                        "platform": {}
+                    }
+                }
+            }
+        ],
+        "title": "Trabalho de Literatura",
+        "withHour": false,
+        "createdAt": 767501583.837228,
+        "completedAt": 773440599.672613,
+        "isArchived": false
+    },
+    {
+        "dueDate": 768020400,
+        "createdAt": 767761319.839438,
+        "isCompleted": true,
+        "isArchived": false,
+        "priority": 3,
+        "info": [
+            "Fazer a ",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg=="
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "staticModifier": {
+                            "_0": {
+                                "undo": {
+                                    "_0": {
+                                        "bold": {}
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "value": {
+                        "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB",
+                        "tag": {
+                            "platform": {}
+                        }
+                    }
+                }
+            },
+            "Redação Nota 1000",
+            {
+                "SwiftUI.UnderlineStyle": {
+                    "style": 1
+                },
+                "SwiftUI.ForegroundColor": {
+                    "tag": {
+                        "uiKitColor": {}
+                    },
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9W1gAiP3z8ACI\/gAAATxARMC4zMjIgMC44MzkgMC45ODgiPqSkABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqesscXKzM4AAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAA1A=="
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "allLines": false,
+                            "flexible": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB"
+                }
+            },
+            "!",
+            {
+                "SwiftUI.ForegroundColor": {
+                    "value":
+                        "YnBsaXN0MDDUAQIDBAUGBxZYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctcICQoLDA0ODxAREhMUFV8QFVVJQ29sb3JDb21wb25lbnRDb3VudFdVSUdyZWVuVlVJQmx1ZVdVSUFscGhhVU5TUkdCVVVJUmVkXE5TQ29sb3JTcGFjZRAEIj9w8AAiP3\/\/ACI\/gAAATTAuNzk2IDAuOTQxIDEiP0vLABACoRdVJG51bGwIERokKTI3SVhweH+HjZOgoqessb\/ExsgAAAAAAAABAQAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAzg==",
+                    "tag": {
+                        "uiKitColor": {}
+                    }
+                },
+                "SwiftUI.TextJustification": {
+                    "full": {
+                        "_0": {
+                            "flexible": false,
+                            "allLines": false
+                        }
+                    }
+                },
+                "SwiftUI.Font": {
+                    "tag": {
+                        "platform": {}
+                    },
+                    "value": "GhFDaGFsa2JvYXJkU0UtQm9sZD0AAJBB"
+                }
+            }
+        ],
+        "withHour": false,
+        "completedAt": 768168188.074652,
+        "title": "Redação Nota 1000"
+    }
+]

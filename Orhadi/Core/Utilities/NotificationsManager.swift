@@ -32,10 +32,6 @@ class NotificationsManager {
     }
 
     func removePendingNotifications(withIdentifiers identifiers: [String]) {
-        print(
-            "Removendo notificações com os seguintes identifiers: \(identifiers)"
-        )
-
         center.removePendingNotificationRequests(
             withIdentifiers: identifiers
         )
@@ -70,9 +66,7 @@ class NotificationsManager {
 
         center.add(request) { error in
             if let error = error {
-                print(
-                    "Erro ao agendar notificação: \(error.localizedDescription)"
-                )
+                print("Erro ao agendar notificação: \(error.localizedDescription)")
             } else {
                 print("Notificação agendada para: \(identifier)")
             }

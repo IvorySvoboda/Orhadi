@@ -5,13 +5,15 @@
 //  Created by Ivory Svoboda on 22/10/25.
 //
 
-import SwiftUI
-import SwiftData
 import Observation
+import SwiftData
+import SwiftUI
 
 extension SRView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        var context: ModelContext
         var studies: [SRStudy] = []
         var studyToAdd: SRStudy?
         var studyToEdit: SRStudy?
@@ -22,13 +24,16 @@ extension SRView {
         var showSelectedWeekday: Bool = false
         var hideOverlay: Bool = false
 
+        // MARK: - Computed Properties
+
         var toolbarTitle: String {
             Calendar.current.weekdaySymbols[selectedDay - 1].uppercased()
         }
 
         var filteredStudies: [SRStudy] {
             studies.filter {
-                Calendar.current.component(.weekday, from: $0.studyDay) == selectedDay
+                Calendar.current.component(.weekday, from: $0.studyDay)
+                    == selectedDay
             }
         }
 
@@ -40,13 +45,21 @@ extension SRView {
             !studiesForTheSelectedDay.isEmpty
         }
 
+        // MARK: - INIT
+
+        init(context: ModelContext) {
+            self.context = context
+            fetchStudies()
+        }
+
+        // MARK: - Functions
+
         func fetchStudies() {
-            guard let context else { return }
-            print("Study Routine: fetching...")
             do {
-                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
-                    !$0.isStudyDeleted
-                })
+                let descriptor = FetchDescriptor<SRStudy>(
+                    predicate: #Predicate { !$0.isStudyDeleted }
+                )
+
                 studies = try context.fetch(descriptor)
             } catch {
                 print(error.localizedDescription)
@@ -54,8 +67,6 @@ extension SRView {
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {
-            print(scrollOffset)
-
             let shouldShowTitle = scrollOffset >= -101
             if shouldShowTitle != showTitle {
                 withAnimation(.smooth(duration: 0.5)) {
@@ -70,7 +81,7 @@ extension SRView {
                 }
             }
 
-            let shouldHideOverlay = scrollOffset < -300
+            let shouldHideOverlay = scrollOffset <= -300
             if shouldHideOverlay != hideOverlay {
                 withAnimation(.smooth(duration: 0.5)) {
                     hideOverlay = shouldHideOverlay

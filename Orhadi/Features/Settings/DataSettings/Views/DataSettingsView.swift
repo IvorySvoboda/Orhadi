@@ -7,7 +7,6 @@
 
 import SwiftData
 import SwiftUI
-import PopupView
 
 struct DataSettingsView: View {
 
@@ -45,7 +44,7 @@ struct DataSettingsView: View {
                     ) {
                         Button("Cancel", role: .cancel) {}
                         Button("Reset", role: .destructive) {
-                            viewModel.eraseAllData()
+                            try? viewModel.eraseAllData()
                         }
                     } message: {
                         Text("All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?")
@@ -54,21 +53,10 @@ struct DataSettingsView: View {
         }
         .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.errorMessage, { _, _ in
-            viewModel.handleErrorMessageChange()
-        })
-        .popup(isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+            Button("OK", role: .cancel) {}
+        } message: {
             Text(viewModel.errorMessage)
-                .foregroundColor(.white)
-                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
-                .frame(maxWidth: .infinity)
-                .background(Color.red)
-        } customize: {
-            $0
-                .type(.toast)
-                .position(.top)
-                .animation(.smooth)
-                .autohideIn(5)
         }
     }
 }

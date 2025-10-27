@@ -12,7 +12,6 @@ import Observation
 extension SRDataSettingsView {
     @Observable class ViewModel {
         var container: ModelContainer
-        var onCompletion: (() -> Void)?
         var context: ModelContext?
         var studies: [SRStudy] = []
         var showDeleteConfirmation: Bool = false
@@ -32,136 +31,110 @@ extension SRDataSettingsView {
 
         func fetchStudies() {
             guard let context else { return }
-            print("Study Routine: fetching...")
             do {
-                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
-                    !$0.isStudyDeleted
-                })
+                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate { !$0.isStudyDeleted })
                 studies = try context.fetch(descriptor)
             } catch {
                 print(error.localizedDescription)
             }
         }
 
-        func handleErrorMessageChange() {
-            if !errorMessage.isEmpty {
-                showErrorMessage = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                    self.errorMessage = ""
+        func deleteAllStudies() throws {
+            do {
+                let context = ModelContext(container)
+
+                let studies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                }))
+
+                for study in studies {
+                    study.isStudyDeleted = true
+                    study.deletedAt = .now
                 }
+
+                try context.save()
+
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                errorMessage = error.localizedDescription
+                showErrorMessage.toggle()
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                throw error
             }
         }
 
-        func deleteAllStudies() {
-            Task.detached(priority: .background) {
-                defer { self.onCompletion?() }
-                do {
-                    let context = ModelContext(self.container)
+        func exportSR() throws {
+            do {
+                let context = ModelContext(container)
 
-                    let studies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                        !$0.isStudyDeleted
-                    }))
+                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                })
 
-                    for study in studies {
-                        study.isStudyDeleted = true
-                        study.deletedAt = .now
-                    }
+                let allObjects = try context.fetch(descriptor)
+                let data = try JSONEncoder().encode(allObjects)
+                let exportItem = DataTransferable(data: data)
 
-                    try context.save()
+                srExportItem = exportItem
+                showSRFileExporter = true
 
-                    await UINotificationFeedbackGenerator().notificationOccurred(.success)
-                } catch {
-                    await MainActor.run {
-                        self.errorMessage = error.localizedDescription
-                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    }
-                }
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                errorMessage = error.localizedDescription
+                showErrorMessage.toggle()
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                throw error
             }
         }
 
-        func exportSR() {
-            Task.detached(priority: .background) {
-                defer { self.onCompletion?() }
-                do {
-                    let context = ModelContext(self.container)
-
-                    let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                        !$0.isStudyDeleted
-                    })
-
-                    let allObjects = try context.fetch(descriptor)
-                    let data = try JSONEncoder().encode(allObjects)
-                    let exportItem = DataTransferable(data: data)
-
-                    await UINotificationFeedbackGenerator().notificationOccurred(.success)
-
-                    await MainActor.run {
-                        self.srExportItem = exportItem
-                        self.showSRFileExporter = true
-                    }
-                } catch {
-                    await MainActor.run {
-                        self.errorMessage = error.localizedDescription
-                        UINotificationFeedbackGenerator().notificationOccurred(.error)
-                    }
-                }
-            }
-        }
-
-        func importSR() {
+        func importSR() throws {
             guard let url = importedURL else { return }
-            Task.detached(priority: .background) {
-                guard url.startAccessingSecurityScopedResource() else { return }
-                defer {
-                    url.stopAccessingSecurityScopedResource()
-                    self.onCompletion?()
+            let isInBundle = url.path.contains(Bundle.main.bundlePath)
+            guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
+            defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let context = ModelContext(container)
+
+                let data = try Data(contentsOf: url)
+                let importedStudies = try JSONDecoder().decode(
+                    [SRStudy].self, from: data)
+
+                var deletedStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    $0.isStudyDeleted
+                }))
+
+                let existingStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
+                    !$0.isStudyDeleted
+                }))
+
+                for study in existingStudies {
+                    study.isStudyDeleted = true
+                    study.deletedAt = .now
+
+                    deletedStudies.append(study)
                 }
-                do {
-                    let context = ModelContext(self.container)
 
-                    let data = try Data(contentsOf: url)
-                    let importedStudies = try JSONDecoder().decode(
-                        [SRStudy].self, from: data)
-
-                    var deletedStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                        $0.isStudyDeleted
-                    }))
-
-                    let existingStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                        !$0.isStudyDeleted
-                    }))
-
-                    for study in existingStudies {
-                        study.isStudyDeleted = true
-                        study.deletedAt = .now
-
-                        deletedStudies.append(study)
-                    }
-
-                    for study in importedStudies {
-                        if let matchInTrash = deletedStudies.first(where: {
-                            $0.name == study.name &&
-                            $0.studyDay == study.studyDay &&
-                            $0.studyTime == study.studyTime
-                        }) {
-                            matchInTrash.isStudyDeleted = false
-                            matchInTrash.deletedAt = nil
-                        } else {
-                            context.insert(study)
-                        }
-                    }
-
-                    try context.save()
-
-                    await MainActor.run {
-                        UINotificationFeedbackGenerator().notificationOccurred(.success)
-                    }
-                } catch {
-                    await MainActor.run {
-                        self.errorMessage = error.localizedDescription
-                        UINotificationFeedbackGenerator().notificationOccurred(.error)
+                for study in importedStudies {
+                    if let matchInTrash = deletedStudies.first(where: {
+                        $0.name == study.name &&
+                        $0.studyDay == study.studyDay &&
+                        $0.studyTime == study.studyTime
+                    }) {
+                        matchInTrash.isStudyDeleted = false
+                        matchInTrash.deletedAt = nil
+                    } else {
+                        context.insert(study)
                     }
                 }
+
+                try context.save()
+
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                errorMessage = error.localizedDescription
+                showErrorMessage.toggle()
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                throw error
             }
         }
     }

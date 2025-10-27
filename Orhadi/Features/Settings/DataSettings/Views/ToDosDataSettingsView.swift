@@ -7,7 +7,6 @@
 
 import SwiftData
 import SwiftUI
-import PopupView
 
 struct ToDosDataSettingsView: View {
     @Environment(\.modelContext) private var context
@@ -52,7 +51,7 @@ struct ToDosDataSettingsView: View {
 
             Section {
                 Button("Export To-Dos") {
-                    viewModel.exportToDos()
+                    try? viewModel.exportToDos()
                 }
                 .disabled(viewModel.todos.isEmpty)
                 .fileExporter(
@@ -90,7 +89,7 @@ struct ToDosDataSettingsView: View {
                     switch result {
                     case .success(let url):
                         viewModel.importedURL = url
-                        viewModel.importToDos()
+                        try? viewModel.importToDos()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -106,28 +105,17 @@ struct ToDosDataSettingsView: View {
                 .alert("Delete All to-dos?", isPresented: $viewModel.showDeleteConfirmation) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        viewModel.deleteAllToDo()
+                        try? viewModel.deleteAllToDos()
                     }
                 }
             }
         }
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
-        .onChange(of: viewModel.errorMessage, { _, _ in
-            viewModel.handleErrorMessageChange()
-        })
-        .popup(isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+            Button("OK", role: .cancel) {}
+        } message: {
             Text(viewModel.errorMessage)
-                .foregroundColor(.white)
-                .padding(EdgeInsets(top: 60, leading: 5, bottom: 16, trailing: 5))
-                .frame(maxWidth: .infinity)
-                .background(Color.red)
-        } customize: {
-            $0
-                .type(.toast)
-                .position(.top)
-                .animation(.smooth)
-                .autohideIn(5)
         }
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             viewModel.fetchToDos()

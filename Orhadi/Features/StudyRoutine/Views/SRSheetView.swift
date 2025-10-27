@@ -11,12 +11,7 @@ import SwiftData
 struct SRSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-
     @State private var viewModel: ViewModel
-
-    init(study: SRStudy, isNew: Bool, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, context: context))
-    }
 
     var body: some View {
         NavigationStack {
@@ -69,5 +64,11 @@ struct SRSheetView: View {
                 }
             }
         }
+    }
+
+    // MARK: - INIT
+
+    init(study: SRStudy, isNew: Bool, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, context: context))
     }
 }

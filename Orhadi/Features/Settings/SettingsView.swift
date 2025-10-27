@@ -86,5 +86,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView(settings: Settings())
-        .modelContainer(SampleData.shared.container)
+        .modelContainer(PreviewHelper.shared.container)
 }

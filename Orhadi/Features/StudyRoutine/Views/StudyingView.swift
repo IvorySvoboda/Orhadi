@@ -13,10 +13,6 @@ struct StudyingView: View {
     @Environment(Settings.self) private var settings
     @State private var viewModel: ViewModel
 
-    init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(studies: studies, breakTime: breakTime, context: context))
-    }
-
     // MARK: - Views
 
     var body: some View {
@@ -42,12 +38,6 @@ struct StudyingView: View {
                 HStack {
                     RollingTextView(text: viewModel.timeString)
                         .font(.system(size: 40, weight: .bold, design: .monospaced))
-                }
-                .onChange(of: viewModel.remainingTime) { _, _ in
-                    viewModel.handleTimeChange()
-                }
-                .onChange(of: viewModel.isRunning) { _, _ in
-                    viewModel.handleRunningChange()
                 }
             }.frame(height: 200)
 
@@ -113,6 +103,15 @@ struct StudyingView: View {
         }
         .toolbarBackground(.orhadiBG, for: .navigationBar)
         .toolbarVisibility(.hidden, for: .tabBar)
+        .onChange(of: viewModel.isRunning) { _, _ in
+            viewModel.handleRunningChange()
+        }
         .disableIdleTimer()
+    }
+
+    // MARK: - INIT
+
+    init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
+        _viewModel = State(initialValue: ViewModel(studies: studies, breakTime: breakTime, context: context))
     }
 }
