@@ -32,7 +32,7 @@ struct SubjectTeacherPicker: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 
-    @Query(sort: \Teacher.name, animation: .smooth) private var teachers: [Teacher]
+    @Query(sort: \Teacher.name) private var teachers: [Teacher]
 
     @State private var teacherToAdd: Teacher?
     @State private var teacherToEdit: Teacher?
@@ -118,11 +118,11 @@ struct SubjectTeacherPicker: View {
         .navigationTitle("Teacher")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(item: $teacherToAdd) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: true, context: context)
+            TeacherSheetView(teacher: teacher, isNew: true)
                 .interactiveDismissDisabled()
         }
         .sheet(item: $teacherToEdit) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: false, context: context)
+            TeacherSheetView(teacher: teacher, isNew: false)
                 .interactiveDismissDisabled()
         }
     }

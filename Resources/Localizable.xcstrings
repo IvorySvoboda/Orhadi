@@ -162,7 +162,14 @@
       }
     },
     "Archived" : {
-
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arquivado"
+          }
+        }
+      }
     },
     "Archived To-Dos" : {
       "localizations" : {
@@ -215,7 +222,6 @@
       }
     },
     "Class Schedule" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -618,6 +624,9 @@
         }
       }
     },
+    "Failed to save!" : {
+
+    },
     "High" : {
       "localizations" : {
         "pt-BR" : {
@@ -709,7 +718,6 @@
       }
     },
     "It looks like there's nothing else here. How about taking this opportunity to study a little?" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -969,6 +977,9 @@
         }
       }
     },
+    "One or more subjects conflict with existing ones. Please adjust them before recovering." : {
+
+    },
     "Orhadi" : {
       "localizations" : {
         "pt-BR" : {
@@ -1010,7 +1021,6 @@
       }
     },
     "Pending To-Dos" : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1120,12 +1130,12 @@
         }
       }
     },
-    "Schedule Conflict" : {
+    "Schedule Conflict!" : {
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conflito de Horário"
+            "value" : "Conflito de Horário!"
           }
         }
       }
@@ -1141,7 +1151,6 @@
       }
     },
     "See today’s subjects without opening the app." : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1152,7 +1161,6 @@
       }
     },
     "See your incomplete to-dos without opening the app." : {
-      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1178,16 +1186,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ajustes"
-          }
-        }
-      }
-    },
-    "Some of the subjects are conflicting with existing subjects. Please adjust them before recovering." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Algumas das matérias estão em conflito com matérias existentes. Ajuste-as antes de restaurá-las."
           }
         }
       }
@@ -1308,16 +1306,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Professores"
-          }
-        }
-      }
-    },
-    "The selected subject conflicts with an existing subject. Please adjust it before recovering." : {
-      "localizations" : {
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A matéria selecionada está em conflito com uma matéria existente. Ajuste-a antes de restaurá-la."
           }
         }
       }

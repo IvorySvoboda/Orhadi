@@ -13,10 +13,12 @@ extension SRSheetView {
     @Observable class ViewModel {
         // MARK: - Properties
 
-        var context: ModelContext
-        var study: SRStudy
+        private let dataManager: DataManager
+        let study: SRStudy
+        let isNew: Bool
         var draftStudy: DraftStudy
-        var isNew: Bool
+        var showErrorAlert = false
+        var errorAlertMessage = ""
 
         // MARK: - Computed Properties
 
@@ -30,47 +32,30 @@ extension SRSheetView {
 
         // MARK: - INIT
 
-        init(study: SRStudy, isNew: Bool, context: ModelContext) {
+        init(study: SRStudy, isNew: Bool, dataManager: DataManager) {
             self.study = study
             self.draftStudy = DraftStudy(from: study)
             self.isNew = isNew
-            self.context = context
+            self.dataManager = dataManager
         }
 
         // MARK: - Functions
 
         /// `extraAction()` --> An action to be executed if the save succeeds. Can be used to dismiss the view after the save.
-        func trySave(extraAction: (() -> Void)?) {
-            if isNew {
-                insertNewStudy()
-            } else {
-                applyStudyChanges()
-            }
-
+        func trySave(extraAction: (() -> Void)? = nil) throws {
             do {
-                try context.save()
+                if isNew {
+                    try dataManager.addStudy(SRStudy(from: draftStudy))
+                } else {
+                    try dataManager.editStudy(study, with: draftStudy)
+                }
+
                 extraAction?()
             } catch {
-                print(error.localizedDescription)
+                errorAlertMessage = error.localizedDescription
+                showErrorAlert = true
+                throw error
             }
-        }
-
-        func insertNewStudy() {
-            withAnimation {
-                context.insert(
-                    SRStudy(
-                        name: draftStudy.name.trimmingCharacters(in: .whitespaces),
-                        studyDay: draftStudy.studyDay,
-                        studyTime: draftStudy.studyTime
-                    )
-                )
-            }
-        }
-
-        func applyStudyChanges() {
-            study.name = draftStudy.name.trimmingCharacters(in: .whitespaces)
-            study.studyDay = draftStudy.studyDay
-            study.studyTime = draftStudy.studyTime
         }
     }
 }

@@ -5,16 +5,21 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import SwiftUI
-import SwiftData
 import Observation
+import Combine
+import SwiftUI
 
 extension DeletedStudiesView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var deletedStudies: [SRStudy] = []
         var selectedStudies = Set<SRStudy>()
         var showDeleteConfirmation = false
+
+        // MARK: - Computed Properties
 
         var countToActOn: Int {
             selectedStudies.isEmpty ? deletedStudies.count : selectedStudies.count
@@ -34,47 +39,66 @@ extension DeletedStudiesView {
 
         var deleteMessageText: LocalizedStringKey {
             if isPlural {
-                return "These \(countToActOn) studies will be deleted. This action cannot be undone."
+                return
+                    "These \(countToActOn) studies will be deleted. This action cannot be undone."
             } else {
-                return "This study will be deleted. This action cannot be undone."
+                return
+                    "This study will be deleted. This action cannot be undone."
             }
         }
 
-        func fetchDeletedStudies() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate {
-                    $0.isStudyDeleted
-                }, sortBy: [.init(\.deletedAt)])
-                deletedStudies = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
+        }
+
+        // MARK: - Functinos
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: SRStudy.self) { [weak self] in
+                self?.updateStudies()
             }
+            updateStudies()
+        }
+
+        private func updateStudies() {
+            deletedStudies = dataManager.fetchStudies(
+                predicate: #Predicate { $0.isStudyDeleted },
+                sortBy: [.init(\.deletedAt)]
+            )
+        }
+
+        func hardDeleteStudy(_ study: SRStudy) throws {
+            try dataManager.hardDeleteStudy(study)
+        }
+
+        func restoreStudy(_ study: SRStudy) throws {
+            try dataManager.restoreStudy(study)
         }
 
         func deleteStudies() {
-            guard let context else { return }
             if selectedStudies.isEmpty {
                 for study in deletedStudies {
-                    try? study.hardDelete(in: context)
+                    try? hardDeleteStudy(study)
                 }
             } else {
                 for study in selectedStudies {
-                    try? study.hardDelete(in: context)
+                    try? hardDeleteStudy(study)
                 }
                 selectedStudies.removeAll()
             }
         }
 
         func restoreStudies() {
-            guard let context else { return }
             if selectedStudies.isEmpty {
                 for study in deletedStudies {
-                    try? study.restore(in: context)
+                    try? restoreStudy(study)
                 }
             } else {
                 for study in selectedStudies {
-                    try? study.restore(in: context)
+                    try? restoreStudy(study)
                 }
                 selectedStudies.removeAll()
             }

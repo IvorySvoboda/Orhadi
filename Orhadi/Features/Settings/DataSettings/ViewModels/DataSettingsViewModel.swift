@@ -11,18 +11,24 @@ import Observation
 
 extension DataSettingsView {
     @Observable class ViewModel {
-        var container: ModelContainer
+        // MARK: - Properties
+
+        private let dataManager: DataManager
         var showEraseDataAlert: Bool = false
         var showErrorMessage: Bool = false
         var errorMessage: String = ""
 
-        init(container: ModelContainer = createContainer()) {
-            self.container = container
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
         }
+
+        // MARK: - Functions
 
         func eraseAllData() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let teachers = try context.fetch(FetchDescriptor<Teacher>())
                 let subjects = try context.fetch(FetchDescriptor<Subject>())
@@ -48,7 +54,7 @@ extension DataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
     }

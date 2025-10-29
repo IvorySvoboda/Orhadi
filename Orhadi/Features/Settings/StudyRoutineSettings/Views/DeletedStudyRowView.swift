@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct DeletedStudyRowView: View {
-    @Environment(\.modelContext) private var context
-
     @State private var showDeleteConfirmation = false
 
     let study: SRStudy
+    let onRestore: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
@@ -32,12 +32,12 @@ struct DeletedStudyRowView: View {
             }.tint(.red)
 
             Button("Restore", systemImage: "gobackward", role: .destructive) {
-                try? study.restore(in: context)
+                onRestore()
             }.tint(.indigo)
         }
         .contextMenu {
             Button("Restore", systemImage: "gobackward") {
-                try? study.restore(in: context)
+                onRestore()
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
@@ -47,7 +47,7 @@ struct DeletedStudyRowView: View {
         .alert("This study will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                try? study.hardDelete(in: context)
+                onDelete()
             }
         }
     }

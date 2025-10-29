@@ -8,12 +8,14 @@
 import Observation
 import SwiftData
 import SwiftUI
+import Combine
 
 extension SubjectsView {
     @Observable class ViewModel {
         // MARK: - Properties
 
-        var context: ModelContext
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var subjects: [Subject] = []
         var selectedDay = Calendar.current.component(.weekday, from: Date())
         var showConfirmation = false
@@ -27,8 +29,7 @@ extension SubjectsView {
 
         var filteredSubjects: [Subject] {
             subjects.filter {
-                Calendar.current.component(.weekday, from: $0.schedule)
-                    == selectedDay
+                Calendar.current.component(.weekday, from: $0.schedule) == selectedDay
             }
         }
 
@@ -38,24 +39,29 @@ extension SubjectsView {
 
         // MARK: - INIT
 
-        init(context: ModelContext) {
-            self.context = context
-            fetchSubjects()
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
         // MARK: - Functions
 
-        func fetchSubjects() {
-            do {
-                let descriptor = FetchDescriptor<Subject>(
-                    predicate: #Predicate { !$0.isSubjectDeleted },
-                    sortBy: [.init(\.startTime)]
-                )
-
-                subjects = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: Subject.self) { [weak self] in
+                self?.updateSubjects()
             }
+            updateSubjects()
+        }
+
+        private func updateSubjects() {
+            subjects = dataManager.fetchSubjects(
+                predicate: #Predicate { !$0.isSubjectDeleted },
+                sortBy: [.init(\.startTime)]
+            )
+        }
+
+        func softDeleteSubject(_ subject: Subject) throws {
+            try dataManager.softDeleteSubject(subject)
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {

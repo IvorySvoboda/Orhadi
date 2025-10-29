@@ -9,8 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DataSettingsView: View {
-
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 

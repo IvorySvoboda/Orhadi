@@ -12,18 +12,14 @@ struct TeacherSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel
 
-    init(teacher: Teacher, isNew: Bool, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(teacher: teacher, isNew: isNew, context: context))
-    }
-
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     TextField("Mr. Johnson", text: $viewModel.draftTeacher.name)
                         .autocorrectionDisabled()
-                        .onChange(of: viewModel.draftTeacher.name) { _, newName in
-                            viewModel.handleNameChange(newName: newName)
+                        .onChange(of: viewModel.draftTeacher.name) { _, _ in
+                            viewModel.handleNameChange()
                         }
 
                     TextField("\(String(localized: "email@exemple.com"))", text: $viewModel.draftTeacher.email)
@@ -41,12 +37,23 @@ struct TeacherSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave {
+                        try? viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.preventSave)
                 }
             }
+            .alert("Failed to save!", isPresented: $viewModel.showErrorAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorAlertMessage)
+            }
         }
+    }
+
+    // MARK: - INIT
+
+    init(teacher: Teacher, isNew: Bool) {
+        _viewModel = State(initialValue: ViewModel(teacher: teacher, isNew: isNew, dataManager: .shared))
     }
 }

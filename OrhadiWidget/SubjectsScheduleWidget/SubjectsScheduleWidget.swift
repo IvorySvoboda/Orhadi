@@ -12,13 +12,11 @@ import SwiftData
 struct SubjectsScheduleWidget: Widget {
     let kind: String = "SubjectsScheduleWidget"
 
-    var container = createContainer()
-
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             SubjectsScheduleWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
-                .modelContainer(container)
+                .modelContainer(DataManager.shared.container)
         }
         .configurationDisplayName("Class Schedule")
         .description("See today’s subjects without opening the app.")
@@ -29,6 +27,7 @@ struct SubjectsScheduleWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
 
     var entry: Provider.Entry
+    let dataManager = DataManager.shared
 
     @Query(filter: #Predicate<Subject> { !$0.isSubjectDeleted }, sort: \.startTime)
     private var subjects: [Subject]
@@ -142,7 +141,7 @@ struct SubjectScheduleWidgetRow: View {
     var body: some View {
         HStack(spacing: 5) {
 
-            if subject.isOngoing && settings.first?.showCurrentSubjectIndicator ?? Settings().showCurrentSubjectIndicator {
+            if subject.isOngoing && settings.first?.showCurrentSubjectIndicator ?? true {
                 RoundedRectangle(cornerRadius: 3, style: .circular)
                     .fill(Color.cyan)
                     .frame(width: 5)

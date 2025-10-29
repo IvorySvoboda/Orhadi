@@ -9,8 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SRDataSettingsView: View {
-    @Environment(\.modelContext) private var context
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     var body: some View {
         Form {
@@ -91,15 +90,6 @@ struct SRDataSettingsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            viewModel.fetchStudies()
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchStudies()
-            }
         }
     }
 }

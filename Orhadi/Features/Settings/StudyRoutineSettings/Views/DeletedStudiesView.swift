@@ -9,10 +9,9 @@ import SwiftUI
 import SwiftData
 
 struct DeletedStudiesView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -26,7 +25,11 @@ struct DeletedStudiesView: View {
 
             Section {
                 ForEach(viewModel.deletedStudies) { study in
-                    DeletedStudyRowView(study: study)
+                    DeletedStudyRowView(
+                        study: study,
+                        onRestore: { try? viewModel.restoreStudy(study) },
+                        onDelete: { try? viewModel.hardDeleteStudy(study) }
+                    )
                         .tag(study)
                 }
             }
@@ -62,12 +65,6 @@ struct DeletedStudiesView: View {
         .onChange(of: viewModel.deletedStudies) { _, newStudies in
             if newStudies.isEmpty {
                 dismiss()
-            }
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchDeletedStudies()
             }
         }
     }

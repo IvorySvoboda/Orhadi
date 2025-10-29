@@ -9,35 +9,26 @@ import SwiftData
 import SwiftUI
 
 struct StudyRoutineSettingsView: View {
-    @Query private var studies: [SRStudy]
-    @Environment(\.modelContext) private var context
-    @Bindable var settings: Settings
 
-    private var deletedStudies: [SRStudy] {
-        studies.filter {
-            $0.isStudyDeleted
-        }
-    }
+    @State private var viewModel = ViewModel(dataManager: .shared)
+
+    // MARK: - Views
 
     var body: some View {
         Form {
             Section {
-                Picker("Break Time", selection: $settings.breakTime) {
+                Picker("Break Time", selection: $viewModel.settings.breakTime) {
                     ForEach(1..<7, id: \.self) { index in
                         Text("\(5 * index)min").tag(TimeInterval(300 * index))
                     }
                 }
                 .pickerStyle(.navigationLink)
-                .onChange(of: settings.breakTime) { _, _ in
-                    do {
-                        try context.save()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
+                .onChange(of: viewModel.settings.breakTime) { _, _ in
+                    viewModel.save()
                 }
             }
 
-            if !deletedStudies.isEmpty {
+            if !viewModel.deletedStudies.isEmpty {
                 Section {
                     NavigationLink("Deleted Studies") {
                         DeletedStudiesView()

@@ -8,5 +8,8 @@
 import Testing
 
 extension Tag {
-    @Tag static var viewModelsTests: Self
+    @Tag static var viewModels: Self
+    @Tag static var subjects: Self
+    @Tag static var todos: Self
+    @Tag static var studies: Self
 }

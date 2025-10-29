@@ -10,6 +10,16 @@ import SwiftData
 import WidgetKit
 
 extension ToDo {
+    convenience init(from draft: DraftToDo) {
+        self.init(
+            title: draft.title.trimmingCharacters(in: .whitespaces),
+            info: draft.info,
+            dueDate: draft.dueDate,
+            withHour: draft.withHour,
+            priority: draft.priority
+        )
+    }
+
     var identifiers: [String] {[
         "\(self.id)-1h",
         "\(self.id)-24h",
@@ -68,84 +78,5 @@ extension ToDo {
         }
 
         return formatter.string(from: dueDate)
-    }
-
-    func toggleCompleted(in context: ModelContext, scheduleNotifications: Bool = false) throws {
-        /// Se a to-dos não estiver completada
-        if !isCompleted {
-            /// completa a tarefa.
-            withAnimation {
-                isCompleted = true
-                completedAt = .now
-            }
-
-            /// remove as notificações agendadas
-            NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-        } else {
-            /// descompleta a tarefa.
-            withAnimation {
-                isCompleted = false
-                completedAt = nil
-            }
-
-            /// Agenda as notificações novamente, sempre respeitando as preferências do usuário.
-            if scheduleNotifications {
-                scheduleNotification()
-            }
-        }
-
-        try context.save()
-    }
-
-    func hardDelete(in context: ModelContext) throws {
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-        withAnimation {
-            context.delete(self)
-        }
-
-        try context.save()
-    }
-
-    func softDelete(in context: ModelContext) throws {
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-        withAnimation {
-            isToDoDeleted = true
-            deletedAt = .now
-        }
-
-        try context.save()
-    }
-
-    func restore(in context: ModelContext, scheduleNotifications: Bool = false) throws {
-        if !isCompleted, dueDate > .now, !isArchived, scheduleNotifications {
-            scheduleNotification()
-        }
-
-        withAnimation {
-            isToDoDeleted = false
-            deletedAt = nil
-        }
-
-        try context.save()
-    }
-
-    func archive(in context: ModelContext) throws {
-        NotificationsManager.shared.removePendingNotifications(withIdentifiers: identifiers)
-
-        withAnimation { isArchived = true }
-
-        try context.save()
-    }
-
-    func unarchive(in context: ModelContext, scheduleNotifications: Bool = false) throws {
-        if !isCompleted, dueDate > .now, scheduleNotifications {
-            scheduleNotification()
-        }
-
-        withAnimation { isArchived = false }
-
-        try context.save()
     }
 }

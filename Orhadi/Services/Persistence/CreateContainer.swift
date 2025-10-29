@@ -8,16 +8,21 @@
 import SwiftData
 import Foundation
 
-func createContainer(testing: Bool = false) -> ModelContainer {
+func createContainer() -> ModelContainer {
     do {
-        let config = ModelConfiguration(isStoredInMemoryOnly: testing)
+        #if DEBUG
         let container = try ModelContainer(
             for: Schema(versionedSchema: CurrentSchema.self),
             migrationPlan: MigrationPlan.self,
-            configurations: config
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
-
-        Task { await MainActor.run { container.mainContext.autosaveEnabled = false } }
+        #else
+        let container = try ModelContainer(
+            for: Schema(versionedSchema: CurrentSchema.self),
+            migrationPlan: MigrationPlan.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: false)
+        )
+        #endif
 
         return container
     } catch {

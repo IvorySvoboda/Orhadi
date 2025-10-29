@@ -9,33 +9,32 @@ import SwiftData
 import SwiftUI
 
 struct TeachersView: View {
-    @Query(sort: \Teacher.name) private var teachers: [Teacher]
-    @Environment(\.modelContext) private var context
-    @State private var teacherToAdd: Teacher?
-    @State private var teacherToEdit: Teacher?
+
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     var body: some View {
-        List(teachers) { teacher in
+        List(viewModel.teachers) { teacher in
             TeacherRowView(
                 teacher: teacher,
-                onEdit: { teacherToEdit = teacher }
+                onEdit: { viewModel.teacherToEdit = teacher },
+                onDelete: { try? viewModel.hardDeleteTeacher(teacher) }
             )
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Add", systemImage: "plus") {
-                    teacherToAdd = Teacher()
+                    viewModel.teacherToAdd = Teacher()
                 }.tint(.accentColor)
             }
         }
         .navigationTitle("Teachers")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $teacherToAdd) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: true, context: context)
+        .sheet(item: $viewModel.teacherToAdd) { teacher in
+            TeacherSheetView(teacher: teacher, isNew: true)
                 .interactiveDismissDisabled()
         }
-        .sheet(item: $teacherToEdit) { teacher in
-            TeacherSheetView(teacher: teacher, isNew: false, context: context)
+        .sheet(item: $viewModel.teacherToEdit) { teacher in
+            TeacherSheetView(teacher: teacher, isNew: false)
                 .interactiveDismissDisabled()
         }
     }
@@ -44,6 +43,6 @@ struct TeachersView: View {
 #Preview("TeachersView") {
     NavigationStack {
         TeachersView()
-            .modelContainer(PreviewHelper.shared.container)
+            .modelContainer(DataManager.shared.container)
     }
 }

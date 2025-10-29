@@ -5,14 +5,17 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import UIKit
+import SwiftUI
 import SwiftData
 import Observation
+import Combine
 
 extension SubjectsDataSettingsView {
     @Observable class ViewModel {
-        var container: ModelContainer
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var subjects: [Subject] = []
         var showDeleteConfirmation: Bool = false
         var showErrorMessage: Bool = false
@@ -25,6 +28,8 @@ extension SubjectsDataSettingsView {
         var showSubjectsFileImporter: Bool = false
         var importedURL: URL?
 
+        // MARK: - Computed Properties
+
         var allSubjects: Int {
             subjects.filter({ !$0.isRecess }).count
         }
@@ -33,25 +38,31 @@ extension SubjectsDataSettingsView {
             subjects.filter({ $0.isRecess }).count
         }
 
-        init(container: ModelContainer = createContainer()) {
-            self.container = container
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
-        func fetchSubjects() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
-                    !$0.isSubjectDeleted
-                })
-                subjects = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: Subject.self) { [weak self] in
+                self?.updateSubjects()
             }
+            updateSubjects()
+        }
+
+        private func updateSubjects() {
+            subjects = dataManager.fetchSubjects(
+                predicate: #Predicate { !$0.isSubjectDeleted }
+            )
         }
 
         func deleteAllSubjects() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let subjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
                     !$0.isSubjectDeleted
@@ -69,14 +80,14 @@ extension SubjectsDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
         /// Exporter
         func exportSubjects() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let descriptor = FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
                     !$0.isSubjectDeleted
@@ -94,7 +105,7 @@ extension SubjectsDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
@@ -105,7 +116,7 @@ extension SubjectsDataSettingsView {
             guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
             defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let data = try Data(contentsOf: url)
                 let importedSubjects = try JSONDecoder().decode(
@@ -177,7 +188,7 @@ extension SubjectsDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
     }

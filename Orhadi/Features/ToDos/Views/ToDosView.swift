@@ -10,7 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct ToDosView: View {
-    @State private var viewModel: ViewModel
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -23,7 +23,10 @@ struct ToDosView: View {
                 ForEach(viewModel.visibleToDos) { todo in
                     ToDoRowView(
                         todo: todo,
-                        onEdit: { viewModel.todoToEdit = todo }
+                        onEdit: { viewModel.todoToEdit = todo },
+                        onComplete: { try? viewModel.toggleToDoCompleted(todo) },
+                        onArchive: { try? viewModel.archiveToDo(todo) },
+                        onDelete: { try? viewModel.softDeleteToDo(todo) }
                     )
                 }
             }
@@ -83,22 +86,13 @@ struct ToDosView: View {
                 }
             }
             .sheet(item: $viewModel.todoToAdd) { todo in
-                ToDoSheetView(todo: todo, isNew: true, context: viewModel.context)
+                ToDoSheetView(todo: todo, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.todoToEdit) { todo in
-                ToDoSheetView(todo: todo, isNew: false, context: viewModel.context)
+                ToDoSheetView(todo: todo, isNew: false)
                     .interactiveDismissDisabled()
             }
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-                viewModel.fetchToDos()
-            }
         }
-    }
-
-    // MARK: - INIT
-
-    init(context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(context: context))
     }
 }

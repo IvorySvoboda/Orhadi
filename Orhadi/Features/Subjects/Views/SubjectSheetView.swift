@@ -68,23 +68,28 @@ struct SubjectSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave {
+                        try? viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.draftSubject.name.isEmpty && !viewModel.draftSubject.isRecess)
                 }
             }
-            .alert("Schedule Conflict", isPresented: $viewModel.showConflictAlert) {
+            .alert("Schedule Conflict!", isPresented: $viewModel.showConflictAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("The selected time range is invalid or overlaps with another schedule. Please adjust it before saving.")
+            }
+            .alert("Failed to save!", isPresented: $viewModel.showErrorAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(viewModel.errorAlertMessage)
             }
         }
     }
 
     // MARK: - INIT
 
-    init(subject: Subject, isNew: Bool = false, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, context: context))
+    init(subject: Subject, isNew: Bool = false) {
+        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, dataManager: .shared))
     }
 }

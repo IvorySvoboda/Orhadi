@@ -14,14 +14,14 @@ extension StudyingView {
     @Observable class ViewModel {
         // MARK: - Properties
 
-        var context: ModelContext
+        private let dataManager: DataManager
         var studies: [SRStudy]
         var isReady: Bool = false
         var sessionItems: [SessionItem] = []
         var currentSessionIndex = 0
         var isRunning: Bool = false
         var studyFinished: Bool = false
-        var breakTime: TimeInterval = 0
+        var breakTime: TimeInterval
         var completedItems: [SessionItem] = []
         var pauseDate: Date?
 
@@ -53,10 +53,10 @@ extension StudyingView {
 
         // MARK: - INIT
 
-        init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
-            self.context = context
+        init(studies: [SRStudy], dataManager: DataManager) {
+            self.dataManager = dataManager
             self.studies = studies
-            self.breakTime = breakTime
+            self.breakTime = dataManager.settings.breakTime
             prepareSession()
         }
 
@@ -206,7 +206,7 @@ extension StudyingView {
 
         func handleCompletedSession(_ currentItem: SessionItem) {
             guard !currentItem.isBreak, let study = currentItem.study else { return }
-            try? study.updateLastStudied(in: context)
+            try? dataManager.updateStudyLastStudied(study)
         }
 
         func adjustSessionTimes() {

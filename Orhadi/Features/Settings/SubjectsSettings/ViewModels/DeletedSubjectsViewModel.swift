@@ -2,21 +2,26 @@
 //  DeletedSubjectsViewModel.swift
 //  Orhadi
 //
-//  Created by Ivory Svoboda on 23/10/25.
+//  Created by Ivory Svoboda on 29/10/25.
 //
 
 import SwiftUI
-import SwiftData
 import Observation
+import Combine
 
 extension DeletedSubjectsView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var deletedSubjects: [Subject] = []
         var selectedSubjects = Set<Subject>()
         var conflictingSubjects: [Subject] = []
         var showDeleteConfirmation = false
         var showConflictAlert = false
+
+        // MARK: - Computed Properties
 
         var countToActOn: Int {
             selectedSubjects.isEmpty ? deletedSubjects.count : selectedSubjects.count
@@ -42,90 +47,65 @@ extension DeletedSubjectsView {
             }
         }
 
-        var conflictMessageText: LocalizedStringKey {
-            if conflictingSubjects.count > 1 {
-                return "Some of the subjects are conflicting with existing subjects. Please adjust them before recovering."
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
+        }
+
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: Subject.self) { [weak self] in
+                self?.updateSubjects()
+            }
+            updateSubjects()
+        }
+
+        private func updateSubjects() {
+            deletedSubjects = dataManager.fetchSubjects(
+                predicate: #Predicate { $0.isSubjectDeleted }
+            )
+        }
+
+        func hardDeleteSubject(_ subject: Subject) throws {
+            try dataManager.hardDeleteSubject(subject)
+        }
+
+        func restoreSubject(_ subject: Subject) throws {
+            let hasConflictWithOthersSubjects = dataManager.subjectHasConflict(subject)
+
+            if hasConflictWithOthersSubjects {
+                showConflictAlert = true
             } else {
-                return "The selected subject conflicts with an existing subject. Please adjust it before recovering."
+                try dataManager.restoreSubject(subject)
             }
         }
-
-        func fetchDeletedSubjects() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<Subject>(predicate: #Predicate {
-                    $0.isSubjectDeleted
-                }, sortBy: [.init(\.deletedAt)])
-                deletedSubjects = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-
-        // MARK: Delete Actions
 
         func deleteSubjects() {
-            guard let context else { return }
-
             if selectedSubjects.isEmpty {
                 for subject in deletedSubjects {
-                    try? subject.hardDelete(in: context)
+                    try? hardDeleteSubject(subject)
                 }
             } else {
                 for subject in selectedSubjects {
-                    try? subject.hardDelete(in: context)
+                    try? hardDeleteSubject(subject)
                 }
                 selectedSubjects.removeAll()
             }
         }
 
-        // MARK: Restore Actions
-
         func restoreSubjects() {
-            guard let context else { return }
-
             if selectedSubjects.isEmpty {
                 for subject in deletedSubjects {
-                    let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
-                        id: subject.id,
-                        start: subject.startTime,
-                        end: subject.endTime,
-                        schedule: subject.schedule,
-                        context: context
-                    )
-
-                    if hasConflictWithOthersSubjects {
-                        conflictingSubjects.append(subject)
-                    } else {
-                        try? subject.restore(in: context)
-                    }
-                }
-
-                if !conflictingSubjects.isEmpty {
-                    showConflictAlert.toggle()
+                    try? restoreSubject(subject)
                 }
             } else {
                 for subject in selectedSubjects {
-                    let hasConflictWithOthersSubjects = SubjectConflictVerifier.hasConflictWithOtherSubjects(
-                        id: subject.id,
-                        start: subject.startTime,
-                        end: subject.endTime,
-                        schedule: subject.schedule,
-                        context: context
-                    )
-
-                    if hasConflictWithOthersSubjects {
-                        conflictingSubjects.append(subject)
-                    } else {
-                        try? subject.restore(in: context)
-                    }
+                    try? restoreSubject(subject)
                 }
-
                 selectedSubjects.removeAll()
-
-                if !conflictingSubjects.isEmpty {
-                    showConflictAlert.toggle()
-                }
             }
         }
     }

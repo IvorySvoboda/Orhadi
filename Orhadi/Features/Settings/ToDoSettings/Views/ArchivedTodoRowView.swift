@@ -8,10 +8,10 @@
 import SwiftUI
 
 struct ArchivedTodoRowView: View {
-    @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
 
-    var todo: ToDo
+    let todo: ToDo
+    let onUnarchive: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
@@ -49,21 +49,21 @@ struct ArchivedTodoRowView: View {
         }
         .swipeActions(edge: .leading) {
             Button("Unarchive", systemImage: "archivebox.fill", role: .destructive) {
-                try? todo.unarchive(in: context, scheduleNotifications: settings.scheduleNotifications)
+                onUnarchive()
             }.tint(.teal)
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? todo.softDelete(in: context)
+                onDelete()
             }
         }
         .contextMenu {
             Button("Unarchive", systemImage: "archivebox.fill") {
-                try? todo.unarchive(in: context, scheduleNotifications: settings.scheduleNotifications)
+                onUnarchive()
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? todo.softDelete(in: context)
+                onDelete()
             }
         }
     }

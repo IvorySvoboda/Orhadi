@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct DeletedTodosRowView: View {
-    @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
     @State private var showDeleteConfirmation = false
 
     let todo: ToDo
+    let onRestore: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
@@ -32,12 +32,12 @@ struct DeletedTodosRowView: View {
             }.tint(.red)
 
             Button("Restore", systemImage: "gobackward", role: .destructive) {
-                try? todo.restore(in: context, scheduleNotifications: settings.scheduleNotifications)
+                onRestore()
             }.tint(.indigo)
         }
         .contextMenu {
             Button("Restore", systemImage: "gobackward") {
-                try? todo.restore(in: context, scheduleNotifications: settings.scheduleNotifications)
+                onRestore()
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
@@ -47,7 +47,7 @@ struct DeletedTodosRowView: View {
         .alert("This to-do will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                try? todo.hardDelete(in: context)
+                onDelete()
             }
         }
     }

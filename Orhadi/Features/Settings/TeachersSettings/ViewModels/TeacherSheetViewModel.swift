@@ -5,17 +5,23 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import SwiftUI
-import SwiftData
 import Observation
+import SwiftData
+import SwiftUI
 
 extension TeacherSheetView {
     @Observable class ViewModel {
-        var context: ModelContext
+        // MARK: - Properties
+
+        private let dataManager: DataManager
         var teacher: Teacher
         var draftTeacher: DraftTeacher
         var isNew: Bool
         var preventSave: Bool = false
+        var showErrorAlert = false
+        var errorAlertMessage = ""
+
+        // MARK: - Computed Properties
 
         var navigationTitle: LocalizedStringKey {
             if isNew {
@@ -25,20 +31,22 @@ extension TeacherSheetView {
             }
         }
 
-        init(teacher: Teacher, isNew: Bool, context: ModelContext) {
-            self.context = context
+        // MARK: - INIT
+
+        init(teacher: Teacher, isNew: Bool, dataManager: DataManager) {
+            self.dataManager = dataManager
             self.teacher = teacher
             self.draftTeacher = DraftTeacher(from: teacher)
             self.isNew = isNew
         }
 
-        func handleNameChange(newName: String) {
-            let name = newName.trimmingCharacters(in: .whitespaces)
+        // MARK: - Functions
 
-            let existingTeacher = try? context.fetch(
-                FetchDescriptor<Teacher>(
-                    predicate: #Predicate { $0.name == name }
-                )
+        func handleNameChange() {
+            let name = draftTeacher.name.trimmingCharacters(in: .whitespaces)
+
+            let existingTeacher = dataManager.fetchTeachers(
+                predicate: #Predicate { $0.name == name }
             ).first
 
             /// Se ja existe um professor com o nome fornecido e
@@ -58,37 +66,21 @@ extension TeacherSheetView {
             }
         }
 
-        func trySave(extraAction: @escaping () -> Void) {
-            if isNew {
-                insertNewTeacher()
-            } else {
-                applyTeacherChanges()
-            }
-
+        /// `extraAction()` --> An action to be executed if the save succeeds. Can be used to dismiss the view after the save.
+        func trySave(extraAction: @escaping () -> Void) throws {
             do {
-                try context.save()
+                if isNew {
+                    try dataManager.addTeacher(Teacher(from: draftTeacher))
+                } else {
+                    try dataManager.editTeacher(teacher, with: draftTeacher)
+                }
+
                 extraAction()
             } catch {
-                print(error.localizedDescription)
+                errorAlertMessage = error.localizedDescription
+                showErrorAlert = true
+                throw error /// Useful for unit tests.
             }
-        }
-
-        func insertNewTeacher() {
-            withAnimation {
-                context.insert(Teacher(
-                    name: draftTeacher.name.trimmingCharacters(in: .whitespaces),
-                    email: draftTeacher.email.trimmingCharacters(in: .whitespaces)
-                ))
-
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            }
-        }
-
-        func applyTeacherChanges() {
-            teacher.name = draftTeacher.name.trimmingCharacters(in: .whitespaces)
-            teacher.email = draftTeacher.email.trimmingCharacters(in: .whitespaces)
-
-            UIImpactFeedbackGenerator(style: .soft).impactOccurred()
         }
     }
 }

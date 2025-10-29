@@ -9,8 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SubjectsDataSettingsView: View {
-    @Environment(\.modelContext) private var context
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -104,15 +103,6 @@ struct SubjectsDataSettingsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            viewModel.fetchSubjects()
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchSubjects()
-            }
         }
     }
 }

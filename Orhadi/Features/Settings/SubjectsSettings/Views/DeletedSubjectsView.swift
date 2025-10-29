@@ -10,10 +10,9 @@ import SwiftData
 import WidgetKit
 
 struct DeletedSubjectsView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -27,8 +26,12 @@ struct DeletedSubjectsView: View {
 
             Section {
                 ForEach(viewModel.deletedSubjects) { subject in
-                    DeletedSubjectRowView(subject: subject, showConflictAlert: { viewModel.showConflictAlert.toggle() })
-                        .tag(subject)
+                    DeletedSubjectRowView(
+                        subject: subject,
+                        onRestore: { try? viewModel.restoreSubject(subject) },
+                        onDelete: { try? viewModel.hardDeleteSubject(subject) }
+                    )
+                    .tag(subject)
                 }
             }
         }
@@ -65,20 +68,11 @@ struct DeletedSubjectsView: View {
                 viewModel.conflictingSubjects = []
             }
         } message: {
-            Text(viewModel.conflictMessageText)
+            Text("One or more subjects conflict with existing ones. Please adjust them before recovering.")
         }
         .onChange(of: viewModel.deletedSubjects) { _, _ in
             if viewModel.deletedSubjects.isEmpty {
                 dismiss()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            viewModel.fetchDeletedSubjects()
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchDeletedSubjects()
             }
         }
     }

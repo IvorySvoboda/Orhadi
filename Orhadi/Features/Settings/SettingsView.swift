@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
-    @Environment(\.modelContext) private var context
     @Bindable var settings: Settings
 
     var body: some View {
@@ -17,19 +16,19 @@ struct SettingsView: View {
             Form {
                 Section {
                     NavigationLink {
-                        SubjectsSettingsView(settings: settings)
+                        SubjectsSettingsView()
                     } label: {
                         Label("Subjects", systemImage: "book.fill")
                     }
 
                     NavigationLink {
-                        ToDosSettingsView(settings: settings)
+                        ToDosSettingsView()
                     } label: {
                         Label("To-Dos", systemImage: "list.clipboard.fill")
                     }
 
                     NavigationLink {
-                        StudyRoutineSettingsView(settings: settings)
+                        StudyRoutineSettingsView()
                     } label: {
                         Label("Study Routine", systemImage: "graduationcap.fill")
                     }
@@ -86,5 +85,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView(settings: Settings())
-        .modelContainer(PreviewHelper.shared.container)
+        .modelContainer(DataManager.shared.container)
 }

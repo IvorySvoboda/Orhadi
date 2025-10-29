@@ -9,37 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct ToDosSettingsView: View {
-    @Query private var todos: [ToDo]
-    @Environment(\.modelContext) private var context
-    @State private var notificationStatus: Bool = false
-    @Bindable var settings: Settings
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
-    var deletedTodos: [ToDo] {
-        todos.filter {
-            $0.isToDoDeleted
-        }
-    }
-
-    var archivedTodos: [ToDo] {
-        todos.filter {
-            $0.isArchived && !$0.isToDoDeleted
-        }
-    }
+    // MARK: - Views
 
     var body: some View {
         Form {
             Section {
                 Toggle(
                     "Schedule Notifications",
-                    isOn: $settings.scheduleNotifications
+                    isOn: $viewModel.settings.scheduleNotifications
                 )
-                .disabled(!notificationStatus)
-                .onChange(of: settings.scheduleNotifications) { _, _ in
-                    do {
-                        try context.save()
-                    } catch {
-                        print(error.localizedDescription)
-                    }
+                .disabled(!viewModel.notificationStatus)
+                .onChange(of: viewModel.settings.scheduleNotifications) { _, _ in
+                    viewModel.save()
                 }
             } header: {
                 Text("Notifications")
@@ -49,7 +32,7 @@ struct ToDosSettingsView: View {
                 )
             }
 
-            if !archivedTodos.isEmpty {
+            if !viewModel.archivedTodos.isEmpty {
                 Section {
                     NavigationLink {
                         ArchivedTodosView()
@@ -59,7 +42,7 @@ struct ToDosSettingsView: View {
                 }
             }
 
-            if !deletedTodos.isEmpty {
+            if !viewModel.deletedTodos.isEmpty {
                 Section {
                     NavigationLink {
                         DeletedTodosView()
@@ -73,9 +56,9 @@ struct ToDosSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in
-                self.notificationStatus = authorizedStatus
-                if !notificationStatus {
-                    settings.scheduleNotifications = false
+                viewModel.notificationStatus = authorizedStatus
+                if !viewModel.notificationStatus {
+                    viewModel.settings.scheduleNotifications = false
                 }
             }
         }

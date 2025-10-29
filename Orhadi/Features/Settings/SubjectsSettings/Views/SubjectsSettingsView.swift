@@ -10,30 +10,20 @@ import SwiftData
 import WidgetKit
 
 struct SubjectsSettingsView: View {
-    @Query private var subjects: [Subject]
-    @Environment(\.modelContext) private var context
-    @Bindable var settings: Settings
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
-    private var deletedSubjects: [Subject] {
-        subjects.filter {
-            $0.isSubjectDeleted
-        }
-    }
+    // MARK: - Views
 
     var body: some View {
         Form {
             Section {
-                Toggle("Subject indicator", isOn: $settings.showCurrentSubjectIndicator)
-                    .onChange(of: settings.showCurrentSubjectIndicator) { _, _ in
-                        do {
-                            try context.save()
-                        } catch {
-                            print(error.localizedDescription)
-                        }
+                Toggle("Subject indicator", isOn: $viewModel.settings.showCurrentSubjectIndicator)
+                    .onChange(of: viewModel.settings.showCurrentSubjectIndicator) { _, _ in
+                        viewModel.save()
                     }
             }
 
-            if !deletedSubjects.isEmpty {
+            if !viewModel.deletedSubjects.isEmpty {
                 Section {
                     NavigationLink("Deleted Subjects") {
                         DeletedSubjectsView()

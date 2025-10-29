@@ -5,14 +5,17 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import UIKit
+import SwiftUI
 import SwiftData
 import Observation
+import Combine
 
 extension ToDosDataSettingsView {
     @Observable class ViewModel {
-        var container: ModelContainer
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var todos: [ToDo] = []
         var showDeleteConfirmation: Bool = false
         var showErrorMessage: Bool = false
@@ -24,6 +27,8 @@ extension ToDosDataSettingsView {
         var showToDosImportAlert: Bool = false
         var showToDosFileImporter: Bool = false
         var importedURL: URL?
+
+        // MARK: - Computed Properties
 
         var completedTodos: Int {
             todos.filter({ $0.isCompleted && !$0.isArchived }).count
@@ -41,25 +46,31 @@ extension ToDosDataSettingsView {
             todos.filter({ !$0.isToDoDeleted && $0.isArchived }).count
         }
 
-        init(container: ModelContainer = createContainer()) {
-            self.container = container
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
-        func fetchToDos() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
-                    !$0.isToDoDeleted
-                })
-                todos = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: ToDo.self) { [weak self] in
+                self?.updateToDos()
             }
+            updateToDos()
+        }
+
+        private func updateToDos() {
+            todos = dataManager.fetchToDos(
+                predicate: #Predicate { !$0.isToDoDeleted }
+            )
         }
 
         func deleteAllToDos() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let todos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate {
                     !$0.isToDoDeleted
@@ -79,13 +90,13 @@ extension ToDosDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
         func exportToDos() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let descriptor = FetchDescriptor(predicate: #Predicate<ToDo> {
                     !$0.isToDoDeleted
@@ -103,7 +114,7 @@ extension ToDosDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
@@ -113,7 +124,7 @@ extension ToDosDataSettingsView {
             guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
             defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let data = try Data(contentsOf: url)
                 let importedTodos = try JSONDecoder().decode([ToDo].self, from: data)
@@ -166,7 +177,7 @@ extension ToDosDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
     }

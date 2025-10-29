@@ -11,9 +11,10 @@ struct SubjectRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
-    var subject: Subject
-    var onAdd: () -> Void
-    var onEdit: () -> Void
+    let subject: Subject
+    let onAdd: () -> Void
+    let onEdit: () -> Void
+    let onDelete: () -> Void
 
     // MARK: - Views
 
@@ -89,7 +90,7 @@ struct SubjectRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? subject.softDelete(in: context)
+                onDelete()
             }
 
             Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
@@ -116,7 +117,7 @@ struct SubjectRowView: View {
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? subject.softDelete(in: context)
+                onDelete()
             }
         }
     }

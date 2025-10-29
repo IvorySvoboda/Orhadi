@@ -5,52 +5,72 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import SwiftUI
-import SwiftData
+import Foundation
 import Observation
+import Combine
 
 extension ArchivedTodosView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var archivedToDos: [ToDo] = []
         var selectedToDos = Set<ToDo>()
 
-        func fetchArchivedToDos() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
-                    $0.isArchived && !$0.isToDoDeleted
-                }, sortBy: [.init(\.createdAt)])
-                archivedToDos = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
+        }
+
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: ToDo.self) { [weak self] in
+                self?.updateToDos()
             }
+            updateToDos()
+        }
+
+        private func updateToDos() {
+            archivedToDos = dataManager.fetchToDos(
+                predicate: #Predicate { !$0.isToDoDeleted && $0.isArchived },
+                sortBy: [.init(\.title), .init(\.dueDate)]
+            )
+        }
+
+        func unarchiveToDo(_ todo: ToDo) throws {
+            try dataManager.unarchive(todo)
+        }
+
+        func softDeleteToDo(_ todo: ToDo) throws {
+            try dataManager.softDelete(todo)
         }
 
         func deleteToDos() {
-            guard let context else { return }
             if selectedToDos.isEmpty {
-                for archivedToDo in archivedToDos {
-                    try? archivedToDo.softDelete(in: context)
+                for todo in archivedToDos {
+                    try? softDeleteToDo(todo)
                 }
             } else {
-                for selectedToDo in selectedToDos {
-                    try? selectedToDo.softDelete(in: context)
+                for todo in selectedToDos {
+                    try? softDeleteToDo(todo)
                 }
                 selectedToDos.removeAll()
 
             }
         }
 
-        func unarchiveToDos(scheduleNotifications: Bool = false) {
-            guard let context else { return }
+        func unarchiveToDos() {
             if selectedToDos.isEmpty {
-                for archivedToDo in archivedToDos {
-                    try? archivedToDo.unarchive(in: context, scheduleNotifications: scheduleNotifications)
+                for todo in archivedToDos {
+                    try? unarchiveToDo(todo)
                 }
             } else {
-                for selectedToDo in selectedToDos {
-                    try? selectedToDo.unarchive(in: context, scheduleNotifications: scheduleNotifications)
+                for todo in selectedToDos {
+                    try? unarchiveToDo(todo)
                 }
                 selectedToDos.removeAll()
             }

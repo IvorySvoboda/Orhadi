@@ -10,7 +10,7 @@ import SwiftUI
 
 struct SRView: View {
     @Environment(Settings.self) private var settings
-    @State private var viewModel: ViewModel
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -28,7 +28,8 @@ struct SRView: View {
                             viewModel.navigateToStudyingView.toggle()
                         },
                         onAdd: { viewModel.studyToAdd = study },
-                        onEdit: { viewModel.studyToEdit = study }
+                        onEdit: { viewModel.studyToEdit = study },
+                        onDelete: { try? viewModel.softDeleteStudy(study) }
                     )
                 }
             }
@@ -90,25 +91,16 @@ struct SRView: View {
                 }
             }
             .navigationDestination(isPresented: $viewModel.navigateToStudyingView) {
-                StudyingView(studies: viewModel.studiesToStudy, breakTime: settings.breakTime, context: viewModel.context)
+                StudyingView(studies: viewModel.studiesToStudy)
             }
             .sheet(item: $viewModel.studyToAdd) { study in
-                SRSheetView(study: study, isNew: true, context: viewModel.context)
+                SRSheetView(study: study, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.studyToEdit) { study in
-                SRSheetView(study: study, isNew: false, context: viewModel.context)
+                SRSheetView(study: study, isNew: false)
                     .interactiveDismissDisabled()
             }
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-                viewModel.fetchStudies()
-            }
         }
-    }
-
-    // MARK: - INIT
-
-    init(context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(context: context))
     }
 }

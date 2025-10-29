@@ -9,8 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct ToDosDataSettingsView: View {
-    @Environment(\.modelContext) private var context
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -116,15 +115,6 @@ struct ToDosDataSettingsView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            viewModel.fetchToDos()
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchToDos()
-            }
         }
     }
 }

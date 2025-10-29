@@ -11,27 +11,31 @@ import WidgetKit
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
 
     // MARK: - Views
 
     var body: some View {
         TabView {
             Tab("Subjects", systemImage: "book.fill") {
-                SubjectsView(context: context)
+                SubjectsView()
             }
             Tab("To-Dos", systemImage: "list.bullet.clipboard.fill") {
-                ToDosView(context: context)
+                ToDosView()
             }
             Tab("Studies", systemImage: "graduationcap.fill") {
-                SRView(context: context)
+                SRView()
             }
             Tab("Settings", systemImage: "gearshape.fill") {
-                SettingsView(settings: settings)
+                SettingsView(settings: DataManager.shared.settings)
             }
         }
         .backport.tabBarMinimizeBehavior(.onScrollDown)
-        .preferredColorScheme(getTheme(for: settings.theme))
+        .preferredColorScheme(getTheme(for: DataManager.shared.settings.theme))
+        .onAppear {
+            /// Solicita permissão para as notificações
+            NotificationsManager.shared.requestNotificationAuthorization()
+        }
+        .environment(DataManager.shared.settings)
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             WidgetCenter.shared.reloadAllTimelines() /// Reload all Widgets timelines when context saves.
         }
@@ -48,6 +52,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(PreviewHelper.shared.container)
+        .modelContainer(DataManager.shared.container)
         .environment(Settings())
 }

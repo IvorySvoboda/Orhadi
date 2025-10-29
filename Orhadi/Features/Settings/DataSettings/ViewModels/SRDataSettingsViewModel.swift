@@ -5,14 +5,17 @@
 //  Created by Ivory Svoboda on 23/10/25.
 //
 
-import UIKit
+import SwiftUI
 import SwiftData
 import Observation
+import Combine
 
 extension SRDataSettingsView {
     @Observable class ViewModel {
-        var container: ModelContainer
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var studies: [SRStudy] = []
         var showDeleteConfirmation: Bool = false
         var showErrorMessage: Bool = false
@@ -25,23 +28,31 @@ extension SRDataSettingsView {
         var showSRFileImporter: Bool = false
         var importedURL: URL?
 
-        init(container: ModelContainer = createContainer()) {
-            self.container = container
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
-        func fetchStudies() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate { !$0.isStudyDeleted })
-                studies = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: SRStudy.self) { [weak self] in
+                self?.updateStudies()
             }
+            updateStudies()
+        }
+
+        private func updateStudies() {
+            studies = dataManager.fetchStudies(
+                predicate: #Predicate { !$0.isStudyDeleted }
+            )
         }
 
         func deleteAllStudies() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let studies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
                     !$0.isStudyDeleted
@@ -59,13 +70,13 @@ extension SRDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
         func exportSR() throws {
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let descriptor = FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
                     !$0.isStudyDeleted
@@ -83,7 +94,7 @@ extension SRDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
 
@@ -93,7 +104,7 @@ extension SRDataSettingsView {
             guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
             defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
             do {
-                let context = ModelContext(container)
+                let context = ModelContext(dataManager.container)
 
                 let data = try Data(contentsOf: url)
                 let importedStudies = try JSONDecoder().decode(
@@ -134,7 +145,7 @@ extension SRDataSettingsView {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                throw error
+                throw error /// Useful for unit tests.
             }
         }
     }

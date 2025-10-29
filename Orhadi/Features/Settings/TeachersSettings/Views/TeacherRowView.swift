@@ -10,8 +10,9 @@ import SwiftUI
 struct TeacherRowView: View {
     @Environment(\.modelContext) private var context
 
-    var teacher: Teacher
-    var onEdit: () -> Void
+    let teacher: Teacher
+    let onEdit: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -32,7 +33,7 @@ struct TeacherRowView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? teacher.hardDelete(in: context)
+                onDelete()
             }
 
             Button("Edit", systemImage: "pencil") {
@@ -51,7 +52,7 @@ struct TeacherRowView: View {
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? teacher.hardDelete(in: context)
+                onDelete()
             }
         }
     }

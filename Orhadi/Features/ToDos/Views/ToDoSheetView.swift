@@ -12,7 +12,6 @@ import WidgetKit
 struct ToDoSheetView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Environment(Settings.self) private var settings
     @State private var viewModel: ViewModel
 
     // MARK: - Views
@@ -133,7 +132,7 @@ struct ToDoSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave(scheduleNotifications: settings.scheduleNotifications) {
+                        try? viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.draftToDo.title.isEmpty)
@@ -144,7 +143,7 @@ struct ToDoSheetView: View {
 
     // MARK: - INIT
 
-    init(todo: ToDo, isNew: Bool, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew, context: context))
+    init(todo: ToDo, isNew: Bool) {
+        _viewModel = State(initialValue: ViewModel(todo: todo, isNew: isNew, dataManager: .shared))
     }
 }

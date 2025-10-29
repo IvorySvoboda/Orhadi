@@ -70,8 +70,24 @@
 				Core/Utilities/AppEnums.swift,
 				Core/Utilities/NotificationsManager.swift,
 				Services/Persistence/CreateContainer.swift,
+				Services/Persistence/DataManager.swift,
+				Services/Persistence/DraftModels/DraftStudy.swift,
+				Services/Persistence/DraftModels/DraftSubject.swift,
+				Services/Persistence/DraftModels/DraftTeacher.swift,
+				Services/Persistence/DraftModels/DraftToDo.swift,
 				Services/Persistence/MigrationPlan.swift,
+				Services/Persistence/SampleDataManager.swift,
+				Services/Persistence/SampleDatas/StudyRoutine.json,
+				Services/Persistence/SampleDatas/Subjects.json,
+				Services/Persistence/SampleDatas/ToDos.json,
 				Services/Persistence/Schemas/OrhadiSchemaV1.swift,
+			);
+			target = EE56D4F42EB0150400BBA2E0 /* OrhadiWidgetExtension */;
+		};
+		EE5B6B162EB22FD6006FA5FB /* Exceptions for "Resources" folder in "OrhadiWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Localizable.xcstrings,
 			);
 			target = EE56D4F42EB0150400BBA2E0 /* OrhadiWidgetExtension */;
 		};
@@ -93,6 +109,9 @@
 		};
 		285D39B32DBD2C5300CDC4D0 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EE5B6B162EB22FD6006FA5FB /* Exceptions for "Resources" folder in "OrhadiWidgetExtension" target */,
+			);
 			path = Resources;
 			sourceTree = "<group>";
 		};

@@ -9,15 +9,15 @@ import SwiftUI
 import SwiftData
 
 extension Teacher {
+    convenience init(from draft: DraftTeacher) {
+        self.init(
+            name: draft.name,
+            email: draft.email
+        )
+    }
+
     func openMail() {
         guard let url = URL(string: "mailto:\(self.email)") else { return }
         UIApplication.shared.open(url)
-    }
-
-    func hardDelete(in context: ModelContext) throws {
-        withAnimation {
-            context.delete(self)
-        }
-        try context.save()
     }
 }

@@ -8,12 +8,14 @@
 import Observation
 import SwiftData
 import SwiftUI
+import Combine
 
 extension SRView {
     @Observable class ViewModel {
         // MARK: - Properties
 
-        var context: ModelContext
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var studies: [SRStudy] = []
         var studyToAdd: SRStudy?
         var studyToEdit: SRStudy?
@@ -47,23 +49,28 @@ extension SRView {
 
         // MARK: - INIT
 
-        init(context: ModelContext) {
-            self.context = context
-            fetchStudies()
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
         // MARK: - Functions
 
-        func fetchStudies() {
-            do {
-                let descriptor = FetchDescriptor<SRStudy>(
-                    predicate: #Predicate { !$0.isStudyDeleted }
-                )
-
-                studies = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: SRStudy.self) { [weak self] in
+                self?.updateStudies()
             }
+            updateStudies()
+        }
+
+        private func updateStudies() {
+            studies = dataManager.fetchStudies(
+                predicate: #Predicate { !$0.isStudyDeleted }
+            )
+        }
+
+        func softDeleteStudy(_ study: SRStudy) throws {
+            try dataManager.softDeleteStudy(study)
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {

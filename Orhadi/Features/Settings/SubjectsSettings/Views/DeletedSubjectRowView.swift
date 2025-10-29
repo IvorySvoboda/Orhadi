@@ -8,21 +8,11 @@
 import SwiftUI
 
 struct DeletedSubjectRowView: View {
-    @Environment(\.modelContext) private var context
     @State private var showDeleteConfirmation = false
 
     let subject: Subject
-    let showConflictAlert: () -> Void
-
-    var hasConflictWithOthersSubjects: Bool {
-        return SubjectConflictVerifier.hasConflictWithOtherSubjects(
-            id: subject.id,
-            start: subject.startTime,
-            end: subject.endTime,
-            schedule: subject.schedule,
-            context: context
-        )
-    }
+    let onRestore: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
         HStack {
@@ -47,13 +37,13 @@ struct DeletedSubjectRowView: View {
                 showDeleteConfirmation.toggle()
             }.tint(.red)
 
-            Button("Restore", systemImage: "gobackward", role: hasConflictWithOthersSubjects ? nil : .destructive) {
-                recoverSubject()
+            Button("Restore", systemImage: "gobackward", role: .destructive) {
+                onRestore()
             }.tint(.indigo)
         }
         .contextMenu {
             Button("Restore", systemImage: "gobackward") {
-                recoverSubject()
+                onRestore()
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
@@ -63,16 +53,8 @@ struct DeletedSubjectRowView: View {
         .alert("This subject will be deleted. This action cannot be undone.", isPresented: $showDeleteConfirmation) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
-                try? subject.hardDelete(in: context)
+                onDelete()
             }
-        }
-    }
-
-    private func recoverSubject() {
-        if hasConflictWithOthersSubjects {
-            showConflictAlert()
-        } else {
-            try? subject.restore(in: context)
         }
     }
 }

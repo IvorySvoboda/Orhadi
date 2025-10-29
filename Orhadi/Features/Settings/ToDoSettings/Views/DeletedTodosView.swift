@@ -10,15 +10,9 @@ import SwiftData
 import WidgetKit
 
 struct DeletedTodosView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-    @Environment(Settings.self) private var settings
-
-    @Query(filter: #Predicate<ToDo> { $0.isToDoDeleted }, sort: \.deletedAt, animation: .smooth)
-    private var deletedTodos: [ToDo]
-
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -31,9 +25,13 @@ struct DeletedTodosView: View {
             }
 
             Section {
-                ForEach(deletedTodos) { todo in
-                    DeletedTodosRowView(todo: todo)
-                        .tag(todo)
+                ForEach(viewModel.deletedToDos) { todo in
+                    DeletedTodosRowView(
+                        todo: todo,
+                        onRestore: { try? viewModel.restoreToDo(todo) },
+                        onDelete: { try? viewModel.hardDeleteToDo(todo) }
+                    )
+                    .tag(todo)
                 }
             }
         }
@@ -50,7 +48,7 @@ struct DeletedTodosView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(viewModel.selectedToDos.isEmpty ? "Restore All" : "Restore") {
-                    viewModel.restoreToDos(scheduleNotifications: settings.scheduleNotifications)
+                    viewModel.restoreToDos()
                 }
 
                 Spacer()
@@ -65,18 +63,9 @@ struct DeletedTodosView: View {
                 }
             }
         }
-        .onChange(of: deletedTodos) { _, newTodos in
+        .onChange(of: viewModel.deletedToDos) { _, newTodos in
             if newTodos.isEmpty {
                 dismiss()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-            viewModel.fetchDeletedToDos()
-        }
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchDeletedToDos()
             }
         }
     }

@@ -111,7 +111,7 @@ struct StudyingView: View {
 
     // MARK: - INIT
 
-    init(studies: [SRStudy], breakTime: TimeInterval, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(studies: studies, breakTime: breakTime, context: context))
+    init(studies: [SRStudy]) {
+        _viewModel = State(initialValue: ViewModel(studies: studies, dataManager: .shared))
     }
 }

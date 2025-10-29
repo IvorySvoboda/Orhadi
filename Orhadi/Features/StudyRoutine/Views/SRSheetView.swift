@@ -9,7 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct SRSheetView: View {
-    @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: ViewModel
 
@@ -57,7 +56,7 @@ struct SRSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        viewModel.trySave {
+                        try? viewModel.trySave {
                             dismiss()
                         }
                     }.disabled(viewModel.draftStudy.name.isEmpty)
@@ -68,7 +67,7 @@ struct SRSheetView: View {
 
     // MARK: - INIT
 
-    init(study: SRStudy, isNew: Bool, context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, context: context))
+    init(study: SRStudy, isNew: Bool) {
+        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, dataManager: .shared))
     }
 }

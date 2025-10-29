@@ -11,7 +11,7 @@ import WidgetKit
 
 struct SubjectsView: View {
     @Namespace private var animation
-    @State private var viewModel: ViewModel
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -25,7 +25,8 @@ struct SubjectsView: View {
                     SubjectRowView(
                         subject: subject,
                         onAdd: { viewModel.subjectToAdd = subject },
-                        onEdit: { viewModel.subjectToEdit = subject }
+                        onEdit: { viewModel.subjectToEdit = subject },
+                        onDelete: { try? viewModel.softDeleteSubject(subject) }
                     )
                 }
             }
@@ -80,18 +81,15 @@ struct SubjectsView: View {
                 }
             }
             .sheet(item: $viewModel.subjectToAdd) { subject in
-                SubjectSheetView(subject: subject, isNew: true, context: viewModel.context)
+                SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
             .sheet(item: $viewModel.subjectToEdit) { subject in
-                SubjectSheetView(subject: subject, isNew: false, context: viewModel.context)
+                SubjectSheetView(subject: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
             .sheet(isPresented: $viewModel.showConfirmation) {
                 subjectAddOptions
-            }
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
-                viewModel.fetchSubjects()
             }
         }
     }
@@ -133,11 +131,5 @@ struct SubjectsView: View {
         .padding()
         .navigationTransition(.zoom(sourceID: "Add", in: animation))
         .presentationDetents([.height(135)])
-    }
-
-    // MARK: - INIT
-
-    init(context: ModelContext) {
-        _viewModel = State(initialValue: ViewModel(context: context))
     }
 }

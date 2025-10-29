@@ -8,12 +8,14 @@
 import Observation
 import SwiftData
 import SwiftUI
+import Combine
 
 extension ToDosView {
     @Observable class ViewModel {
         // MARK: - Properties
 
-        var context: ModelContext
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var pendingToDos: [ToDo] = []
         var completedToDos: [ToDo] = []
         var todoToAdd: ToDo?
@@ -31,37 +33,51 @@ extension ToDosView {
 
         // MARK: INIT
 
-        init(context: ModelContext) {
-            self.context = context
-            fetchToDos()
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
         }
 
         // MARK: - Functions
 
-        func fetchToDos() {
-            do {
-                let pendingToDosDescriptor = FetchDescriptor<ToDo>(
-                    predicate: #Predicate {
-                        !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
-                    },
-                    sortBy: [
-                        .init(\.dueDate, order: .forward),
-                        .init(\.title, order: .forward)
-                    ]
-                )
-
-                let completedToDosDescriptor = FetchDescriptor<ToDo>(
-                    predicate: #Predicate {
-                        !$0.isToDoDeleted && !$0.isArchived && $0.isCompleted
-                    },
-                    sortBy: [.init(\.completedAt, order: .reverse)]
-                )
-
-                pendingToDos = try context.fetch(pendingToDosDescriptor)
-                completedToDos = try context.fetch(completedToDosDescriptor)
-            } catch {
-                print(error.localizedDescription)
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: ToDo.self) { [weak self] in
+                self?.updateToDos()
             }
+            updateToDos()
+        }
+
+        private func updateToDos() {
+            pendingToDos = dataManager.fetchToDos(
+                predicate: #Predicate {
+                    !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted
+                },
+                sortBy: [
+                    .init(\.dueDate, order: .forward),
+                    .init(\.title, order: .forward)
+                ]
+            )
+
+            completedToDos = dataManager.fetchToDos(
+                predicate: #Predicate {
+                    !$0.isToDoDeleted && !$0.isArchived && $0.isCompleted
+                },
+                sortBy: [
+                    .init(\.completedAt, order: .reverse)
+                ]
+            )
+        }
+
+        func toggleToDoCompleted(_ todo: ToDo) throws {
+            try dataManager.toggleToDoCompleted(todo)
+        }
+
+        func archiveToDo(_ todo: ToDo) throws {
+            try dataManager.archive(todo)
+        }
+
+        func softDeleteToDo(_ todo: ToDo) throws {
+            try dataManager.softDelete(todo)
         }
 
         func handleScrollGeoChange(_ scrollOffset: CGFloat) {

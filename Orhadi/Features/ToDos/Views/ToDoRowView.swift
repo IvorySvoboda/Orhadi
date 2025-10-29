@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct ToDoRowView: View {
-    @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
 
     let todo: ToDo
     let onEdit: () -> Void
+    let onComplete: () -> Void
+    let onArchive: () -> Void
+    let onDelete: () -> Void
 
     // MARK: - Views
 
@@ -42,7 +43,7 @@ struct ToDoRowView: View {
             }
             .swipeActions(edge: .leading) {
                 Button(role: .destructive) {
-                    try? todo.toggleCompleted(in: context, scheduleNotifications: settings.scheduleNotifications)
+                    onComplete()
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
@@ -53,11 +54,11 @@ struct ToDoRowView: View {
             }
             .swipeActions(edge: .trailing) {
                 Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                    try? todo.softDelete(in: context)
+                    onDelete()
                 }
 
                 Button("Archive", systemImage: "archivebox.fill", role: .destructive) {
-                    try? todo.archive(in: context)
+                    onArchive()
                 }.tint(.teal)
 
                 Button("Edit", systemImage: "pencil") {
@@ -66,7 +67,7 @@ struct ToDoRowView: View {
             }
             .contextMenu {
                 Button {
-                    try? todo.toggleCompleted(in: context, scheduleNotifications: settings.scheduleNotifications)
+                    onComplete()
                 } label: {
                     if todo.isCompleted {
                         Label("Uncomplete", systemImage: "minus")
@@ -80,11 +81,11 @@ struct ToDoRowView: View {
                 }
 
                 Button("Archive", systemImage: "archivebox.fill") {
-                    try? todo.archive(in: context)
+                    onArchive()
                 }
 
                 Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                    try? todo.softDelete(in: context)
+                    onDelete()
                 }
             }
         }

@@ -9,6 +9,14 @@ import SwiftUI
 import SwiftData
 
 extension SRStudy {
+    convenience init(from draft: DraftStudy) {
+        self.init(
+            name: draft.name.trimmingCharacters(in: .whitespaces),
+            studyDay: draft.studyDay,
+            studyTime: draft.studyTime
+        )
+    }
+
     var isForToday: Bool {
         let todayWeekday = Calendar.current.component(.weekday, from: Date())
         let studyWeekday = Calendar.current.component(.weekday, from: studyDay)
@@ -29,36 +37,5 @@ extension SRStudy {
     var studyTimeInMinutes: Int {
         let components = Calendar.current.dateComponents([.hour, .minute], from: studyTime)
         return (components.hour ?? 0) * 60 + (components.minute ?? 0)
-    }
-
-    func hardDelete(in context: ModelContext) throws {
-        withAnimation {
-            context.delete(self)
-        }
-
-        try context.save()
-    }
-
-    func softDelete(in context: ModelContext) throws {
-        withAnimation {
-            isStudyDeleted = true
-            deletedAt = .now
-        }
-
-        try context.save()
-    }
-
-    func restore(in context: ModelContext) throws {
-        withAnimation {
-            isStudyDeleted = false
-            deletedAt = nil
-        }
-
-        try context.save()
-    }
-
-    func updateLastStudied(in context: ModelContext) throws {
-        lastStudied = .now
-        try context.save()
     }
 }

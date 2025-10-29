@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
-import SwiftData
 import Observation
+import Combine
 
 extension DeletedTodosView {
     @Observable class ViewModel {
-        var context: ModelContext?
+        // MARK: - Properties
+
+        private let dataManager: DataManager
+        private var cancellable: AnyCancellable?
         var deletedToDos: [ToDo] = []
         var selectedToDos = Set<ToDo>()
         var showDeleteConfirmation = false
+
+        // MARK: - Computed Properties
 
         var countToActOn: Int {
             selectedToDos.isEmpty ? deletedToDos.count : selectedToDos.count
@@ -40,42 +45,58 @@ extension DeletedTodosView {
             }
         }
 
-        func fetchDeletedToDos() {
-            guard let context else { return }
-            do {
-                let descriptor = FetchDescriptor<ToDo>(predicate: #Predicate {
-                    $0.isToDoDeleted
-                }, sortBy: [.init(\.deletedAt)])
-                deletedToDos = try context.fetch(descriptor)
-            } catch {
-                print(error.localizedDescription)
+        // MARK: - INIT
+
+        init(dataManager: DataManager) {
+            self.dataManager = dataManager
+            setup()
+        }
+
+        // MARK: - Functions
+
+        private func setup() {
+            cancellable = dataManager.observeContextChanges(of: ToDo.self) { [weak self] in
+                self?.updateToDos()
             }
+            updateToDos()
+        }
+
+        private func updateToDos() {
+            deletedToDos = dataManager.fetchToDos(
+                predicate: #Predicate { $0.isToDoDeleted },
+                sortBy: [.init(\.deletedAt)]
+            )
+        }
+
+        func hardDeleteToDo(_ todo: ToDo) throws {
+            try dataManager.hardDeleteToDo(todo)
+        }
+
+        func restoreToDo(_ todo: ToDo) throws {
+            try dataManager.restoreToDo(todo)
         }
 
         func deleteToDos() {
-            guard let context else { return }
-
             if selectedToDos.isEmpty {
                 for todo in deletedToDos {
-                    try? todo.hardDelete(in: context)
+                    try? hardDeleteToDo(todo)
                 }
             } else {
                 for todo in selectedToDos {
-                    try? todo.hardDelete(in: context)
+                    try? hardDeleteToDo(todo)
                 }
                 selectedToDos.removeAll()
             }
         }
 
-        func restoreToDos(scheduleNotifications: Bool = false) {
-            guard let context else { return }
+        func restoreToDos() {
             if selectedToDos.isEmpty {
                 for todo in deletedToDos {
-                    try? todo.restore(in: context, scheduleNotifications: scheduleNotifications)
+                    try? restoreToDo(todo)
                 }
             } else {
                 for todo in selectedToDos {
-                    try? todo.restore(in: context, scheduleNotifications: scheduleNotifications)
+                    try? restoreToDo(todo)
                 }
                 selectedToDos.removeAll()
             }

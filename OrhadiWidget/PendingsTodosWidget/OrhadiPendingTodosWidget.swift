@@ -18,7 +18,7 @@ struct PendingTodosWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             PendingTodosWidgetEntryView(entry: entry)
                 .containerBackground(.background, for: .widget)
-                .modelContainer(container)
+                .modelContainer(DataManager.shared.container)
         }
         .configurationDisplayName("Pending To-Dos")
         .description("See your incomplete to-dos without opening the app.")
@@ -30,14 +30,13 @@ struct PendingTodosWidgetEntryView: View {
 
     var entry: Provider.Entry
 
-    @Query(filter: #Predicate<ToDo> { !$0.isToDoDeleted && !$0.isArchived }, sort: \.dueDate)
-    private var todos: [ToDo]
+    @Query(filter: #Predicate<ToDo> { !$0.isToDoDeleted && !$0.isArchived && !$0.isCompleted }, sort: \.dueDate) private var todos: [ToDo]
 
     var body: some View {
         switch widgetFamily {
         case .systemSmall:
             VStack {
-                if todos.filter({ !$0.isCompleted }).isEmpty {
+                if todos.isEmpty {
                     EmptyViewText()
                 } else {
                     ForEach(todos.filter({ !$0.isCompleted }).prefix(3)) { todo in

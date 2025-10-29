@@ -11,10 +11,11 @@ struct SRRowView: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 
-    var study: SRStudy
-    var onStudy: () -> Void
-    var onAdd: () -> Void
-    var onEdit: () -> Void
+    let study: SRStudy
+    let onStudy: () -> Void
+    let onAdd: () -> Void
+    let onEdit: () -> Void
+    let onDelete: () -> Void
 
     // MARK: - Views
 
@@ -44,7 +45,7 @@ struct SRRowView: View {
         }
         .swipeActions(edge: .trailing) {
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? study.softDelete(in: context)
+                onDelete()
             }.labelStyle(.iconOnly)
 
             Button("Duplicate", systemImage: "rectangle.fill.on.rectangle.angled.fill") {
@@ -73,7 +74,7 @@ struct SRRowView: View {
             }
 
             Button("Delete", systemImage: "trash.fill", role: .destructive) {
-                try? study.softDelete(in: context)
+                onDelete()
             }
         }
     }

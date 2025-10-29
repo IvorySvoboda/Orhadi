@@ -9,19 +9,20 @@ import SwiftUI
 import SwiftData
 
 struct ArchivedTodosView: View {
-    @Environment(\.modelContext) private var context
-    @Environment(Settings.self) private var settings
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
     var body: some View {
         List(viewModel.archivedToDos, selection: $viewModel.selectedToDos) { todo in
-            ArchivedTodoRowView(todo: todo)
-                .tag(todo)
+            ArchivedTodoRowView(
+                todo: todo,
+                onUnarchive: { try? viewModel.unarchiveToDo(todo) },
+                onDelete: { try? viewModel.softDeleteToDo(todo) }
+            )
+            .tag(todo)
         }
         .navigationTitle("Archived To-Dos")
         .navigationBarTitleDisplayMode(.inline)
@@ -36,7 +37,7 @@ struct ArchivedTodosView: View {
 
             ToolbarItemGroup(placement: .bottomBar) {
                 Button(viewModel.selectedToDos.isEmpty ? "Unarchive All" : "Unarchive") {
-                    viewModel.unarchiveToDos(scheduleNotifications: settings.scheduleNotifications)
+                    viewModel.unarchiveToDos()
                 }
 
                 Spacer()
@@ -49,15 +50,6 @@ struct ArchivedTodosView: View {
         .onChange(of: viewModel.archivedToDos) { _, newTodos in
             if newTodos.isEmpty {
                 dismiss()
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave), perform: { _ in
-            viewModel.fetchArchivedToDos()
-        })
-        .onAppear {
-            if viewModel.context == nil {
-                viewModel.context = context
-                viewModel.fetchArchivedToDos()
             }
         }
     }
