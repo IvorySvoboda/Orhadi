@@ -13,7 +13,11 @@ final class DataManager {
     var container: ModelContainer
     var context: ModelContext
 
-    var settings: Settings
+    private var priveteSettings: Settings?
+
+    var settings: Settings {
+        priveteSettings ?? Settings()
+    }
 
     @MainActor
     static let shared = DataManager()
@@ -22,7 +26,6 @@ final class DataManager {
     private init() {
         do {
             self.container = createContainer()
-
             self.container.mainContext.autosaveEnabled = false
             self.context = container.mainContext
 
@@ -31,9 +34,9 @@ final class DataManager {
 #endif
 
             if let settings = try context.fetch(FetchDescriptor<Settings>()).first {
-                self.settings = settings
+                self.priveteSettings = settings
             } else {
-                self.settings = Settings()
+                self.priveteSettings = Settings()
                 context.insert(self.settings)
                 try save()
             }
@@ -333,31 +336,49 @@ final class DataManager {
         try context.save()
     }
 
-    @MainActor
-    func prepareForTests(withSampleData: Bool = true) {
-        do {
-            self.container = createContainer()
+    // MARK: DEBUG
 
+#if DEBUG
+    @MainActor
+    func reset(withSampleData: Bool = true) {
+        do {
+            try cleanContext() /// Clean the `context`
+
+            try container.erase() /// Destroy the `container`
+
+            self.container = createContainer() /// Create a new `container`
             self.container.mainContext.autosaveEnabled = false
             self.context = container.mainContext
 
-#if DEBUG
+            self.priveteSettings = nil
+
             if withSampleData {
                 try SampleDataManager.shared.insertSampleData(in: context)
             }
-#endif
 
             if let settings = try context.fetch(FetchDescriptor<Settings>()).first {
-                self.settings = settings
-            } else {
-#if !DEBUG
-                self.settings = Settings()
-                context.insert(self.settings)
-                try save()
-#endif
+                self.priveteSettings = settings
             }
         } catch {
             fatalError(error.localizedDescription)
         }
     }
+
+    func cleanContext() throws {
+        do {
+            fetchSubjects().forEach { context.delete($0) }
+            fetchTeachers().forEach { context.delete($0) }
+            fetchToDos().forEach { context.delete($0) }
+            fetchStudies().forEach { context.delete($0) }
+
+            if let priveteSettings {
+                context.delete(priveteSettings)
+            }
+
+            try save()
+        } catch {
+            throw error
+        }
+    }
+#endif
 }

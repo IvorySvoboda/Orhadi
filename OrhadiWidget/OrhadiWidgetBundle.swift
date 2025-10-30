@@ -12,6 +12,6 @@ import SwiftUI
 struct OrhadiWidgetBundle: WidgetBundle {
     var body: some Widget {
         SubjectsScheduleWidget()
-        PendingTodosWidget()
+//        PendingTodosWidget()
     }
 }

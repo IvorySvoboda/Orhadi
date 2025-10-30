@@ -55,6 +55,10 @@ enum ToDoSection: CaseIterable {
     }
 }
 
+enum ModelsErrors: Error {
+    case conflicting
+}
+
 enum MinimizeBehavior {
     case automatic, onScrollUp, onScrollDown, never
 }

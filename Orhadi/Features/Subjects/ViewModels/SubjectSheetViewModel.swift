@@ -50,8 +50,8 @@ extension SubjectSheetView {
 
             if hasConflict {
                 showConflictAlert.toggle()
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                return
+                FeedbackGenerator().notificationOccurred(.error)
+                throw ModelsErrors.conflicting /// Useful for unit tests.
             }
 
             do {

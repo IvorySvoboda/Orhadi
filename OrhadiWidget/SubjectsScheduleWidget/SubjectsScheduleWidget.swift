@@ -27,7 +27,6 @@ struct SubjectsScheduleWidgetEntryView: View {
     @Environment(\.widgetFamily) var widgetFamily
 
     var entry: Provider.Entry
-    let dataManager = DataManager.shared
 
     @Query(filter: #Predicate<Subject> { !$0.isSubjectDeleted }, sort: \.startTime)
     private var subjects: [Subject]

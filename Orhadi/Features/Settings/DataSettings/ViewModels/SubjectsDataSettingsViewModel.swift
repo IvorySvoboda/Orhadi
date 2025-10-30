@@ -75,11 +75,11 @@ extension SubjectsDataSettingsView {
 
                 try context.save()
 
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                FeedbackGenerator().notificationOccurred(.success)
             } catch {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                FeedbackGenerator().notificationOccurred(.error)
                 throw error /// Useful for unit tests.
             }
         }
@@ -100,11 +100,11 @@ extension SubjectsDataSettingsView {
                 subjectsExportItem = exportItem
                 showSubjectsFileExporter = true
 
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                FeedbackGenerator().notificationOccurred(.success)
             } catch {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                FeedbackGenerator().notificationOccurred(.error)
                 throw error /// Useful for unit tests.
             }
         }
@@ -183,11 +183,11 @@ extension SubjectsDataSettingsView {
 
                 try context.save()
 
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                FeedbackGenerator().notificationOccurred(.success)
             } catch {
                 errorMessage = error.localizedDescription
                 showErrorMessage.toggle()
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                FeedbackGenerator().notificationOccurred(.error)
                 throw error /// Useful for unit tests.
             }
         }
