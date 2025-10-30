@@ -285,7 +285,7 @@ final class DataManager {
 
     // MARK: - Helpers
 
-    func observeContextChanges<T: PersistentModel>(of type: T.Type, _ onChange: @escaping () -> Void) -> AnyCancellable {
+    func observeContextChanges<T: PersistentModel>(of _: T.Type, _ onChange: @escaping () -> Void) -> AnyCancellable {
         NotificationCenter.default.publisher(for: ModelContext.didSave)
             .receive(on: RunLoop.main)
             .sink { [weak self] notification in

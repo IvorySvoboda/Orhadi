@@ -10,7 +10,7 @@ import UIKit
 class FeedbackGenerator {
     func notificationOccurred(_ notificationType: UINotificationFeedbackGenerator.FeedbackType) {
         #if !DEBUG
-        FeedbackGenerator().notificationOccurred(notificationType)
+        UINotificationFeedbackGenerator().notificationOccurred(notificationType)
         #endif
     }
 }

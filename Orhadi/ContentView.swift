@@ -26,11 +26,11 @@ struct ContentView: View {
                 SRView()
             }
             Tab("Settings", systemImage: "gearshape.fill") {
-                SettingsView(settings: DataManager.shared.settings)
+                SettingsView()
             }
         }
         .backport.tabBarMinimizeBehavior(.onScrollDown)
-        .preferredColorScheme(getTheme(for: DataManager.shared.settings.theme))
+        .preferredColorScheme(DataManager.shared.settings.theme.colorScheme)
         .onAppear {
             /// Solicita permissão para as notificações
             NotificationsManager.shared.requestNotificationAuthorization()
@@ -38,14 +38,6 @@ struct ContentView: View {
         .environment(DataManager.shared.settings)
         .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
             WidgetCenter.shared.reloadAllTimelines() /// Reload all Widgets timelines when context saves.
-        }
-    }
-
-    func getTheme(for theme: Theme) -> ColorScheme? {
-        switch theme {
-        case .auto: return nil
-        case .light: return .light
-        case .dark: return .dark
         }
     }
 }

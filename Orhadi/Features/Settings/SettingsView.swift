@@ -9,8 +9,6 @@ import SwiftData
 import SwiftUI
 
 struct SettingsView: View {
-    @Bindable var settings: Settings
-
     var body: some View {
         NavigationStack {
             Form {
@@ -84,6 +82,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(settings: Settings())
+    SettingsView()
         .modelContainer(DataManager.shared.container)
 }
