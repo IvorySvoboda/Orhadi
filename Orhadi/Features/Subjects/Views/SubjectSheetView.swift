@@ -11,85 +11,87 @@ import WidgetKit
 
 struct SubjectSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel: ViewModel
-
-    // MARK: - Views
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                if !viewModel.subject.isRecess {
-                    Section {
-                        TextField("Name (ex: English)", text: $viewModel.draftSubject.name)
-                            .autocorrectionDisabled()
-
-                        TextField("Place (ex: Room 101)", text: $viewModel.draftSubject.place)
-                            .autocorrectionDisabled()
-                    }
-
-                    Section {
-                        SubjectTeacherPickerView(teacher: $viewModel.draftSubject.teacher)
-                    }
-                }
-
-                Section {
-                    Picker("Weekday", selection: Binding(
-                        get: { Calendar.current.component(.weekday, from: viewModel.draftSubject.schedule) },
-                        set: { newWeekday in
-                            if let newDate = Calendar.current.nextDate(
-                                after: viewModel.draftSubject.schedule,
-                                matching: DateComponents(weekday: newWeekday),
-                                matchingPolicy: .nextTimePreservingSmallerComponents
-                            ) {
-                                viewModel.draftSubject.schedule = newDate
-                            }
-                        })
-                    ) {
-                        ForEach(Array(Calendar.current.weekdaySymbols.enumerated()), id: \.offset) { index, name in
-                            Text(name.capitalized).tag(index + 1)
-                        }
-                    }.pickerStyle(.navigationLink)
-
-                    DatePicker("Start", selection: $viewModel.draftSubject.startTime, displayedComponents: [.hourAndMinute])
-
-                    DatePicker("End", selection: $viewModel.draftSubject.endTime, displayedComponents: [.hourAndMinute])
-                } header: {
-                    Text("Schedule")
-                }
-            }
-            .navigationTitle(viewModel.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", systemImage: "xmark", role: .cancel) {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", systemImage: "checkmark") {
-                        try? viewModel.trySave {
-                            dismiss()
-                        }
-                    }.disabled(viewModel.draftSubject.name.isEmpty && !viewModel.draftSubject.isRecess)
-                }
-            }
-            .alert("Schedule Conflict!", isPresented: $viewModel.showConflictAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("The selected time range is invalid or overlaps with another schedule. Please adjust it before saving.")
-            }
-            .alert("Failed to save!", isPresented: $viewModel.showErrorAlert) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text(viewModel.errorAlertMessage)
-            }
-        }
-    }
+    @State private var vm: ViewModel
 
     // MARK: - INIT
 
     init(subject: Subject, isNew: Bool = false) {
-        _viewModel = State(initialValue: ViewModel(subject: subject, isNew: isNew, dataManager: .shared))
+        _vm = State(initialValue: ViewModel(subject: subject, isNew: isNew, dataManager: .shared))
+    }
+
+    // MARK: - Body
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                subjectInfoSection
+                subjectTeacherSection
+                scheduleSection
+            }
+            .navigationTitle(vm.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { toolbarComponents }
+            .alert("Failed to save!", isPresented: $vm.showErrorAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(vm.errorAlertMessage)
+            }
+        }
+    }
+
+    // Form Components
+
+    @ViewBuilder private var subjectInfoSection: some View {
+        if !vm.subject.isRecess {
+            Section {
+                TextField("Name (ex: English)", text: $vm.draftSubject.name)
+                    .autocorrectionDisabled()
+
+                TextField("Place (ex: Room 101)", text: $vm.draftSubject.place)
+                    .autocorrectionDisabled()
+            }
+        }
+    }
+
+    @ViewBuilder private var subjectTeacherSection: some View {
+        if !vm.subject.isRecess {
+            Section {
+                TeacherPicker(teacher: $vm.draftSubject.teacher)
+            } header: {
+                Text("Teacher")
+            }
+        }
+    }
+
+    private var scheduleSection: some View {
+        Section {
+            WeekdayPicker(selection: $vm.draftSubject.schedule)
+
+            DatePicker("Start", selection: $vm.draftSubject.startTime, displayedComponents: [.hourAndMinute])
+
+            DatePicker("End", selection: $vm.draftSubject.endTime, displayedComponents: [.hourAndMinute])
+        } header: {
+            Text("Schedule")
+        }
+    }
+
+    // MARK: - Toolbar
+
+    private var toolbarComponents: some ToolbarContent {
+        Group {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel", systemImage: "xmark", role: .cancel) {
+                    dismiss()
+                }
+            }
+
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save", systemImage: "checkmark") {
+                    try? vm.trySave {
+                        dismiss()
+                    }
+                }.disabled(!vm.canSave)
+            }
+        }
     }
 }

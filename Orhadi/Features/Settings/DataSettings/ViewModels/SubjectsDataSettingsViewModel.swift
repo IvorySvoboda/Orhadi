@@ -116,28 +116,25 @@ extension SubjectsDataSettingsView {
             guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
             defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
             do {
+                let data = try Data(contentsOf: url)
+                let subjectsToImport = try JSONDecoder().decode([Subject].self, from: data)
+
                 let context = ModelContext(dataManager.container)
 
-                let data = try Data(contentsOf: url)
-                let importedSubjects = try JSONDecoder().decode(
-                    [Subject].self, from: data)
-
-                var deletedSubjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate {
-                    $0.isSubjectDeleted
-                }))
-
-                let existingSubjects = try context.fetch(FetchDescriptor<Subject>(predicate: #Predicate<Subject> {
-                    !$0.isSubjectDeleted
-                }))
+                let existingSubjects = try context.fetch(FetchDescriptor<Subject>(
+                    predicate: #Predicate<Subject> { !$0.isSubjectDeleted }
+                ))
 
                 for subject in existingSubjects {
                     subject.isSubjectDeleted = true
                     subject.deletedAt = .now
-
-                    deletedSubjects.append(subject)
                 }
 
-                for subject in importedSubjects {
+                let deletedSubjects = try context.fetch(FetchDescriptor<Subject>(
+                    predicate: #Predicate { $0.isSubjectDeleted }
+                ))
+
+                for subject in subjectsToImport {
                     var teacher: Teacher?
 
                     if let subjectTeacher = subject.teacher {
@@ -155,29 +152,29 @@ extension SubjectsDataSettingsView {
                         }
                     }
 
+                    let subjectToImport = Subject(
+                        name: subject.name,
+                        teacher: teacher,
+                        schedule: subject.schedule,
+                        startTime: subject.startTime,
+                        endTime: subject.endTime,
+                        place: subject.place,
+                        isRecess: subject.isRecess
+                    )
+
                     if let matchInTrash = deletedSubjects.first(where: {
-                        $0.name == subject.name &&
-                        Calendar.current.isDate($0.startTime, equalTo: subject.startTime, toGranularity: .minute) &&
-                        Calendar.current.isDate($0.endTime, equalTo: subject.endTime, toGranularity: .minute) &&
-                        Calendar.current.isDate($0.schedule, equalTo: subject.schedule, toGranularity: .minute) &&
-                        $0.isRecess == subject.isRecess &&
-                        $0.teacher == teacher &&
-                        $0.place == subject.place
+                        $0.name == subjectToImport.name &&
+                        Calendar.current.isDate($0.startTime, equalTo: subjectToImport.startTime, toGranularity: .minute) &&
+                        Calendar.current.isDate($0.endTime, equalTo: subjectToImport.endTime, toGranularity: .minute) &&
+                        Calendar.current.isDate($0.schedule, equalTo: subjectToImport.schedule, toGranularity: .minute) &&
+                        $0.isRecess == subjectToImport.isRecess &&
+                        $0.teacher == subjectToImport.teacher &&
+                        $0.place == subjectToImport.place
                     }) {
                         matchInTrash.isSubjectDeleted = false
                         matchInTrash.deletedAt = nil
                     } else {
-                        context.insert(
-                            Subject(
-                                name: subject.name,
-                                teacher: teacher,
-                                schedule: subject.schedule,
-                                startTime: subject.startTime,
-                                endTime: subject.endTime,
-                                place: subject.place,
-                                isRecess: subject.isRecess
-                            )
-                        )
+                        context.insert(subjectToImport)
                     }
                 }
 

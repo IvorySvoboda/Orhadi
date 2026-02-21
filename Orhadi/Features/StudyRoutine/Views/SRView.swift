@@ -9,97 +9,96 @@ import SwiftData
 import SwiftUI
 
 struct SRView: View {
-    @Environment(Settings.self) private var settings
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
-    // MARK: - Views
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
-                    .opacity(viewModel.showSelectedWeekday ? 0 : 1)
+                WeekdayPickerBar(selectedDay: $vm.selectedDay)
+                    .opacity(vm.showSelectedWeekday ? 0 : 1)
 
-                ForEach(viewModel.filteredStudies) { study in
-                    SRRowView(
-                        study: study,
-                        onStudy: {
-                            viewModel.studiesToStudy = [study]
-                            viewModel.navigateToStudyingView.toggle()
-                        },
-                        onAdd: { viewModel.studyToAdd = study },
-                        onEdit: { viewModel.studyToEdit = study },
-                        onDelete: { try? viewModel.softDeleteStudy(study) }
-                    )
-                }
+                ForEach(vm.filteredStudies, content: SRRow.init)
             }
+            .environment(vm)
             .listStyle(.plain)
             .navigationTitle("Study Routine")
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
-                viewModel.handleScrollGeoChange(scrollOffset)
+                vm.handleScrollGeoChange(scrollOffset)
             })
-            .overlay {
-                if viewModel.filteredStudies.isEmpty, !viewModel.hideOverlay {
-                    ContentUnavailableView {
-                        Label("Nothing to Study", systemImage: "graduationcap")
-                    } description: {
-                        Text("Nothing to study today. How about taking a little time to rest?")
-                    }
-                }
+            .overlay { emptyStateOverlay }
+            .toolbar { toolbarComponents }
+            .navigationDestination(isPresented: $vm.navigateToStudyingView) {
+                StudyingView(studies: vm.studiesToStudy)
             }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    ZStack {
-                        Text("Study Routine")
-                            .font(.headline)
-                            .frame(height: 30)
-                            .opacity(viewModel.showTitle ? 1 : 0)
-                            .blur(radius: viewModel.showTitle ? 0 : 3)
-                            .offset(y: viewModel.showSelectedWeekday ? -8 : viewModel.showTitle ? 0 : 14)
-
-                        Text(viewModel.toolbarTitle)
-                            .foregroundStyle(.tint)
-                            .font(.caption)
-                            .frame(height: 30)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .opacity(viewModel.showSelectedWeekday ? 1 : 0)
-                            .blur(radius: viewModel.showSelectedWeekday ? 0 : 3)
-                            .offset(y: viewModel.showSelectedWeekday ? 8 : 14)
-                    }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add", systemImage: "plus") {
-                        viewModel.studyToAdd = SRStudy(studyDay: Calendar.current.date(
-                            bySetting: .weekday,
-                            value: viewModel.selectedDay,
-                            of: Date(timeIntervalSince1970: 0))!)
-                    }.tint(.accentColor)
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Start Studying", systemImage: "play.fill") {
-                        if viewModel.canStartStudying {
-                            viewModel.studiesToStudy = viewModel.studiesForTheSelectedDay
-                            viewModel.navigateToStudyingView = true
-                        }
-                    }
-                    .tint(.accentColor)
-                    .disabled(!viewModel.canStartStudying)
-                }
-            }
-            .navigationDestination(isPresented: $viewModel.navigateToStudyingView) {
-                StudyingView(studies: viewModel.studiesToStudy)
-            }
-            .sheet(item: $viewModel.studyToAdd) { study in
+            .sheet(item: $vm.studyToAdd) { study in
                 SRSheetView(study: study, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $viewModel.studyToEdit) { study in
+            .sheet(item: $vm.studyToEdit) { study in
                 SRSheetView(study: study, isNew: false)
                     .interactiveDismissDisabled()
+            }
+        }
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarComponents: some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            ZStack {
+                Text("Study Routine")
+                    .font(.headline)
+                    .frame(height: 30)
+                    .opacity(vm.showTitle ? 1 : 0)
+                    .blur(radius: vm.showTitle ? 0 : 3)
+                    .offset(y: vm.showSelectedWeekday ? -8 : vm.showTitle ? 0 : 14)
+
+                Text(vm.toolbarTitle)
+                    .foregroundStyle(.tint)
+                    .font(.caption)
+                    .frame(height: 30)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .opacity(vm.showSelectedWeekday ? 1 : 0)
+                    .blur(radius: vm.showSelectedWeekday ? 0 : 3)
+                    .offset(y: vm.showSelectedWeekday ? 8 : 14)
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Add", systemImage: "plus") {
+                vm.studyToAdd = SRStudy(studyDay: Calendar.current.date(
+                    bySetting: .weekday,
+                    value: vm.selectedDay,
+                    of: Date(timeIntervalSince1970: 0))!)
+            }.tint(.accentColor)
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Start Studying", systemImage: "play.fill") {
+                if vm.canStartStudying {
+                    vm.studiesToStudy = vm.studiesForTheSelectedDay
+                    vm.navigateToStudyingView = true
+                }
+            }
+            .tint(.accentColor)
+            .disabled(!vm.canStartStudying)
+        }
+    }
+
+    // MARK: - Overlay
+
+    @ViewBuilder
+    private var emptyStateOverlay: some View {
+        if vm.filteredStudies.isEmpty, !vm.hideOverlay {
+            ContentUnavailableView {
+                Label("Nothing to Study", systemImage: "graduationcap")
+            } description: {
+                Text("Nothing to study today. How about taking a little time to rest?")
             }
         }
     }

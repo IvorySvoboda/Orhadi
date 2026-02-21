@@ -18,8 +18,8 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = DataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.eraseAllData()
+            let vm = DataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.eraseAllData()
 
             let subjects = dataManager.fetchSubjects()
             let teachers = dataManager.fetchTeachers()
@@ -41,14 +41,14 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.deleteAllSubjects()
+            let vm = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.deleteAllSubjects()
 
             let subjects = dataManager.fetchSubjects(predicate: #Predicate { !$0.isSubjectDeleted })
             let deletedSubjects = dataManager.fetchSubjects(predicate: #Predicate { $0.isSubjectDeleted })
             let teachers = dataManager.fetchTeachers()
 
-            #expect(viewModel.errorMessage.isEmpty)
+            #expect(vm.errorMessage.isEmpty)
             #expect(subjects.isEmpty)
             #expect(deletedSubjects.count == SampleDataManager.shared.expectedSubjectsCount)
             #expect(!teachers.isEmpty)
@@ -58,10 +58,10 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.exportSubjects()
+            let vm = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.exportSubjects()
 
-            let subjectsExportItem = try #require(viewModel.subjectsExportItem)
+            let subjectsExportItem = try #require(vm.subjectsExportItem)
             let subjects = try JSONDecoder().decode([Subject].self, from: subjectsExportItem.data)
             #expect(subjects.count == SampleDataManager.shared.expectedSubjectsCount)
         }
@@ -73,9 +73,9 @@ struct ViewModelsTests {
             let subjectsPath = try #require(Bundle.main.path(forResource: "Subjects", ofType: "json"))
             let subjectsURL = URL(filePath: subjectsPath)
 
-            let viewModel = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
-            viewModel.importedURL = subjectsURL
-            try viewModel.importSubjects()
+            let vm = SubjectsDataSettingsView.ViewModel(dataManager: dataManager)
+            vm.importedURL = subjectsURL
+            try vm.importSubjects()
 
             let subjects = dataManager.fetchSubjects()
 
@@ -89,8 +89,8 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.deleteAllToDos()
+            let vm = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.deleteAllToDos()
 
             let todos = dataManager.fetchToDos(predicate: #Predicate { !$0.isToDoDeleted })
             let deletedToDos = dataManager.fetchToDos(predicate: #Predicate { $0.isToDoDeleted })
@@ -102,10 +102,10 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.exportToDos()
+            let vm = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.exportToDos()
 
-            let todosExportItem = try #require(viewModel.todosExportItem)
+            let todosExportItem = try #require(vm.todosExportItem)
             let todos = try JSONDecoder().decode([ToDo].self, from: todosExportItem.data)
             #expect(todos.count == SampleDataManager.shared.expectedToDosCount)
         }
@@ -117,9 +117,9 @@ struct ViewModelsTests {
             let todosPath = try #require(Bundle.main.path(forResource: "ToDos", ofType: "json"))
             let todosURL = URL(filePath: todosPath)
 
-            let viewModel = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
-            viewModel.importedURL = todosURL
-            try viewModel.importToDos()
+            let vm = ToDosDataSettingsView.ViewModel(dataManager: dataManager)
+            vm.importedURL = todosURL
+            try vm.importToDos()
 
             let todos = dataManager.fetchToDos()
             #expect(todos.count == SampleDataManager.shared.expectedToDosCount)
@@ -132,8 +132,8 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SRDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.deleteAllStudies()
+            let vm = SRDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.deleteAllStudies()
 
             let studies = dataManager.fetchStudies(predicate: #Predicate { !$0.isStudyDeleted })
             let deletedStudies = dataManager.fetchStudies(predicate: #Predicate { $0.isStudyDeleted })
@@ -145,10 +145,10 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SRDataSettingsView.ViewModel(dataManager: dataManager)
-            try viewModel.exportSR()
+            let vm = SRDataSettingsView.ViewModel(dataManager: dataManager)
+            try vm.exportSR()
 
-            let studiesExportItem = try #require(viewModel.srExportItem)
+            let studiesExportItem = try #require(vm.srExportItem)
             let studies = try JSONDecoder().decode([SRStudy].self, from: studiesExportItem.data)
             #expect(studies.count == SampleDataManager.shared.expectedStudiesCount)
         }
@@ -160,9 +160,9 @@ struct ViewModelsTests {
             let studiesPath = try #require(Bundle.main.path(forResource: "StudyRoutine", ofType: "json"))
             let studiesURL = URL(filePath: studiesPath)
 
-            let viewModel = SRDataSettingsView.ViewModel(dataManager: dataManager)
-            viewModel.importedURL = studiesURL
-            try viewModel.importSR()
+            let vm = SRDataSettingsView.ViewModel(dataManager: dataManager)
+            vm.importedURL = studiesURL
+            try vm.importSR()
 
             let studies = dataManager.fetchStudies()
             #expect(studies.count == SampleDataManager.shared.expectedStudiesCount)
@@ -175,55 +175,55 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SubjectsView.ViewModel(dataManager: dataManager)
-            #expect(viewModel.subjects.count == SampleDataManager.shared.expectedSubjectsCount)
+            let vm = SubjectsView.ViewModel(dataManager: dataManager)
+            #expect(vm.subjects.count == SampleDataManager.shared.expectedSubjectsCount)
 
-            viewModel.handleScrollGeoChange(-150)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-150)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-100)
-            #expect(viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-100)
+            #expect(vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(0)
-            #expect(viewModel.showTitle)
-            #expect(viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(0)
+            #expect(vm.showTitle)
+            #expect(vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-300)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-300)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(vm.hideOverlay)
         }
 
         @Test func `Subjects Sheet ViewModel – Conflict, Insert & Edit Tests`() throws {
             let dataManager = DataManager.shared
             dataManager.reset(withSampleData: false) /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            var viewModel = SubjectSheetView.ViewModel(subject: Subject(isRecess: false), isNew: true, dataManager: dataManager)
-            viewModel.draftSubject.name = "TestSubject"
-            try viewModel.trySave()
+            var vm = SubjectSheetView.ViewModel(subject: Subject(isRecess: false), isNew: true, dataManager: dataManager)
+            vm.draftSubject.name = "TestSubject"
+            #expect(vm.canSave)
+            try vm.trySave()
 
             var subjects = dataManager.fetchSubjects()
             #expect(subjects.count == 1)
 
             let testSubject = try #require(subjects.filter({ $0.name == "TestSubject" }).first)
-            viewModel = SubjectSheetView.ViewModel(subject: testSubject, isNew: false, dataManager: dataManager)
-            viewModel.draftSubject.name = "EditedTestSubject"
-            try viewModel.trySave()
+            vm = SubjectSheetView.ViewModel(subject: testSubject, isNew: false, dataManager: dataManager)
+            vm.draftSubject.name = "EditedTestSubject"
+            #expect(vm.canSave)
+            try vm.trySave()
 
             subjects = dataManager.fetchSubjects()
             #expect(subjects.count == 1)
             #expect(subjects.filter({ $0.name == "EditedTestSubject" }).first != nil)
 
-            viewModel = SubjectSheetView.ViewModel(subject: Subject(isRecess: false), isNew: true, dataManager: dataManager)
-            viewModel.draftSubject.name = "ConflictingTestSubject"
-            #expect(throws: ModelsErrors.conflicting) {
-                try viewModel.trySave()
-            }
+            vm = SubjectSheetView.ViewModel(subject: Subject(isRecess: false), isNew: true, dataManager: dataManager)
+            vm.draftSubject.name = "ConflictingTestSubject"
+            #expect(!vm.canSave)
         }
     }
 
@@ -233,45 +233,45 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = ToDosView.ViewModel(dataManager: dataManager)
-            #expect(viewModel.pendingToDos.count + viewModel.completedToDos.count == SampleDataManager.shared.expectedToDosCount)
+            let vm = ToDosView.ViewModel(dataManager: dataManager)
+            #expect(vm.pendingToDos.count + vm.completedToDos.count == SampleDataManager.shared.expectedToDosCount)
 
-            viewModel.handleScrollGeoChange(-150)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedSection)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-150)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedSection)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-100)
-            #expect(viewModel.showTitle)
-            #expect(!viewModel.showSelectedSection)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-100)
+            #expect(vm.showTitle)
+            #expect(!vm.showSelectedSection)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(0)
-            #expect(viewModel.showTitle)
-            #expect(viewModel.showSelectedSection)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(0)
+            #expect(vm.showTitle)
+            #expect(vm.showSelectedSection)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-300)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedSection)
-            #expect(viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-300)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedSection)
+            #expect(vm.hideOverlay)
         }
 
         @Test func `To-Dos Sheet ViewModel – Insert & Edit Tests`() throws {
             let dataManager = DataManager.shared
             dataManager.reset(withSampleData: false) /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            var viewModel = ToDoSheetView.ViewModel(todo: ToDo(), isNew: true, dataManager: dataManager)
-            viewModel.draftToDo.title = "TestToDo"
-            try viewModel.trySave()
+            var vm = ToDoSheetView.ViewModel(todo: ToDo(), isNew: true, dataManager: dataManager)
+            vm.draftToDo.title = "TestToDo"
+            try vm.trySave()
 
             var todos = dataManager.fetchToDos()
             #expect(todos.count == 1)
 
             let testToDo = try #require(todos.filter({ $0.title == "TestToDo" }).first)
-            viewModel = ToDoSheetView.ViewModel(todo: testToDo, isNew: false, dataManager: dataManager)
-            viewModel.draftToDo.title = "EditedTestToDo"
-            try viewModel.trySave()
+            vm = ToDoSheetView.ViewModel(todo: testToDo, isNew: false, dataManager: dataManager)
+            vm.draftToDo.title = "EditedTestToDo"
+            try vm.trySave()
 
             todos = dataManager.fetchToDos()
             #expect(todos.count == 1)
@@ -285,45 +285,45 @@ struct ViewModelsTests {
             let dataManager = DataManager.shared
             dataManager.reset() /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            let viewModel = SRView.ViewModel(dataManager: dataManager)
-            #expect(viewModel.studies.count == SampleDataManager.shared.expectedStudiesCount)
+            let vm = SRView.ViewModel(dataManager: dataManager)
+            #expect(vm.studies.count == SampleDataManager.shared.expectedStudiesCount)
 
-            viewModel.handleScrollGeoChange(-150)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-150)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-100)
-            #expect(viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-100)
+            #expect(vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(0)
-            #expect(viewModel.showTitle)
-            #expect(viewModel.showSelectedWeekday)
-            #expect(!viewModel.hideOverlay)
+            vm.handleScrollGeoChange(0)
+            #expect(vm.showTitle)
+            #expect(vm.showSelectedWeekday)
+            #expect(!vm.hideOverlay)
 
-            viewModel.handleScrollGeoChange(-300)
-            #expect(!viewModel.showTitle)
-            #expect(!viewModel.showSelectedWeekday)
-            #expect(viewModel.hideOverlay)
+            vm.handleScrollGeoChange(-300)
+            #expect(!vm.showTitle)
+            #expect(!vm.showSelectedWeekday)
+            #expect(vm.hideOverlay)
         }
 
         @Test func `Study Routine Study Sheet ViewModel – Insert & Edit Tests`() throws {
             let dataManager = DataManager.shared
             dataManager.reset(withSampleData: false) /// `reset()` Changes the manager container to a brand new `inMemoryOnly` container.
 
-            var viewModel = SRSheetView.ViewModel(study: SRStudy(), isNew: true, dataManager: dataManager)
-            viewModel.draftStudy.name = "TestStudy"
-            try viewModel.trySave()
+            var vm = SRSheetView.ViewModel(study: SRStudy(), isNew: true, dataManager: dataManager)
+            vm.draftStudy.name = "TestStudy"
+            try vm.trySave()
 
             var studies = dataManager.fetchStudies()
             #expect(studies.count == 1)
 
             let testStudy = try #require(studies.filter({ $0.name == "TestStudy" }).first)
-            viewModel = SRSheetView.ViewModel(study: testStudy, isNew: false, dataManager: dataManager)
-            viewModel.draftStudy.name = "EditedTestStudy"
-            try viewModel.trySave()
+            vm = SRSheetView.ViewModel(study: testStudy, isNew: false, dataManager: dataManager)
+            vm.draftStudy.name = "EditedTestStudy"
+            try vm.trySave()
 
             studies = dataManager.fetchStudies()
             #expect(studies.count == 1)

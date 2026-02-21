@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ToDosSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -18,11 +18,11 @@ struct ToDosSettingsView: View {
             Section {
                 Toggle(
                     "Schedule Notifications",
-                    isOn: $viewModel.settings.scheduleNotifications
+                    isOn: $vm.settings.scheduleNotifications
                 )
-                .disabled(!viewModel.notificationStatus)
-                .onChange(of: viewModel.settings.scheduleNotifications) { _, _ in
-                    viewModel.save()
+                .disabled(!vm.notificationStatus)
+                .onChange(of: vm.settings.scheduleNotifications) { _, _ in
+                    vm.save()
                 }
             } header: {
                 Text("Notifications")
@@ -32,7 +32,7 @@ struct ToDosSettingsView: View {
                 )
             }
 
-            if !viewModel.archivedTodos.isEmpty {
+            if !vm.archivedTodos.isEmpty {
                 Section {
                     NavigationLink {
                         ArchivedTodosView()
@@ -42,7 +42,7 @@ struct ToDosSettingsView: View {
                 }
             }
 
-            if !viewModel.deletedTodos.isEmpty {
+            if !vm.deletedTodos.isEmpty {
                 Section {
                     NavigationLink {
                         DeletedTodosView()
@@ -56,9 +56,9 @@ struct ToDosSettingsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             NotificationsManager.shared.notificationStatus { authorizedStatus in
-                viewModel.notificationStatus = authorizedStatus
-                if !viewModel.notificationStatus {
-                    viewModel.settings.scheduleNotifications = false
+                vm.notificationStatus = authorizedStatus
+                if !vm.notificationStatus {
+                    vm.settings.scheduleNotifications = false
                 }
             }
         }

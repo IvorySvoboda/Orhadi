@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct DataSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -35,15 +35,15 @@ struct DataSettingsView: View {
 
             Section {
                 Button("Reset all data") {
-                    viewModel.showEraseDataAlert.toggle()
+                    vm.showEraseDataAlert.toggle()
                 }.tint(.red)
                     .alert(
                         "Reset all data?",
-                        isPresented: $viewModel.showEraseDataAlert
+                        isPresented: $vm.showEraseDataAlert
                     ) {
                         Button("Cancel", role: .cancel) {}
                         Button("Reset", role: .destructive) {
-                            try? viewModel.eraseAllData()
+                            try? vm.eraseAllData()
                         }
                     } message: {
                         Text("All data, including subjects, to-dos, and studies, will be deleted. It will not be possible to recover the data after resetting. Are you sure you want to continue?")
@@ -52,10 +52,10 @@ struct DataSettingsView: View {
         }
         .navigationTitle("Data")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $vm.showErrorMessage) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(vm.errorMessage)
         }
     }
 }

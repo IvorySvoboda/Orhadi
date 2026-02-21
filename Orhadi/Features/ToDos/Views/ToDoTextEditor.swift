@@ -57,83 +57,72 @@ struct ToDoTextEditor: View {
     // MARK: - Views
 
     var body: some View {
-        ZStack {
-            if text.characters.isEmpty {
-                Text("Do …")
-                    .foregroundStyle(Color.secondary)
-                    .opacity(0.5)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .padding(.top, 10)
-                    .padding(.leading, 5)
-            }
-
-            TextEditor(text: $text, selection: $selection)
-                .frame(height: 300)
-                .focused($isFocused)
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        if isFocused {
-                            ZStack {
-                                HStack(spacing: 40) {
-                                    toolBarButton("Bold", systemImage: "bold", isActive: isBold) {
-                                        text.transformAttributes(in: &selection) { container in
-                                            let currentFont = container.font ?? .default
-                                            let resolved = currentFont.resolve(in: fontResolutionContext)
-                                            container.font = currentFont.bold(!resolved.isBold)
-                                        }
+        TextEditor(text: $text, selection: $selection)
+            .frame(height: 300)
+            .focused($isFocused)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    if isFocused {
+                        ZStack {
+                            HStack(spacing: 40) {
+                                toolBarButton("Bold", systemImage: "bold", isActive: isBold) {
+                                    text.transformAttributes(in: &selection) { container in
+                                        let currentFont = container.font ?? .default
+                                        let resolved = currentFont.resolve(in: fontResolutionContext)
+                                        container.font = currentFont.bold(!resolved.isBold)
                                     }
+                                }
 
-                                    toolBarButton("Italic", systemImage: "italic", isActive: isItalic) {
-                                        text.transformAttributes(in: &selection) { container in
-                                            let currentFont = container.font ?? .default
-                                            let resolved = currentFont.resolve(in: fontResolutionContext)
-                                            container.font = currentFont.italic(!resolved.isItalic)
-                                        }
+                                toolBarButton("Italic", systemImage: "italic", isActive: isItalic) {
+                                    text.transformAttributes(in: &selection) { container in
+                                        let currentFont = container.font ?? .default
+                                        let resolved = currentFont.resolve(in: fontResolutionContext)
+                                        container.font = currentFont.italic(!resolved.isItalic)
                                     }
+                                }
 
-                                    toolBarButton("Underline", systemImage: "underline", isActive: isUnderline) {
-                                        text.transformAttributes(in: &selection) { container in
-                                            if container.underlineStyle == .single {
-                                                container.underlineStyle = .none
-                                            } else {
-                                                container.underlineStyle = .single
-                                            }
-                                        }
-                                    }
-
-                                    toolBarButton("Strikethrough", systemImage: "strikethrough", isActive: isStrikethrough) {
-                                        text.transformAttributes(in: &selection) { container in
-                                            if container.strikethroughStyle == .single {
-                                                container.strikethroughStyle = .none
-                                            } else {
-                                                container.strikethroughStyle = .single
-                                            }
-                                        }
-                                    }
-
-                                    toolBarButton("Highlight", systemImage: "highlighter", isActive: isHighlighted) {
-                                        text.transformAttributes(in: &selection) { container in
-                                            if isHighlighted {
-                                                container.backgroundColor = .clear
-                                                container.foregroundColor = .font
-                                            } else {
-                                                container.backgroundColor = .accentColor.opacity(0.25)
-                                                container.foregroundColor = .cyan
-                                            }
+                                toolBarButton("Underline", systemImage: "underline", isActive: isUnderline) {
+                                    text.transformAttributes(in: &selection) { container in
+                                        if container.underlineStyle == .single {
+                                            container.underlineStyle = .none
+                                        } else {
+                                            container.underlineStyle = .single
                                         }
                                     }
                                 }
-                                .padding(.horizontal, 10)
-                                .frame(height: 50)
-                                .glassEffect(.regular.interactive())
-                            }.offset(y: -10)
-                        }
-                    }.sharedBackgroundVisibility(.hidden)
-                }
-        }
+
+                                toolBarButton("Strikethrough", systemImage: "strikethrough", isActive: isStrikethrough) {
+                                    text.transformAttributes(in: &selection) { container in
+                                        if container.strikethroughStyle == .single {
+                                            container.strikethroughStyle = .none
+                                        } else {
+                                            container.strikethroughStyle = .single
+                                        }
+                                    }
+                                }
+
+                                toolBarButton("Highlight", systemImage: "highlighter", isActive: isHighlighted) {
+                                    text.transformAttributes(in: &selection) { container in
+                                        if isHighlighted {
+                                            container.backgroundColor = .clear
+                                            container.foregroundColor = .font
+                                        } else {
+                                            container.backgroundColor = .accentColor.opacity(0.25)
+                                            container.foregroundColor = .cyan
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 10)
+                            .frame(height: 50)
+                            .glassEffect(.regular.interactive())
+                        }.offset(y: -10)
+                    }
+                }.sharedBackgroundVisibility(.hidden)
+            }
     }
 
-    @ViewBuilder private func toolBarButton(
+    private func toolBarButton(
         _ label: LocalizedStringKey,
         systemImage: String,
         isActive: Bool = false,

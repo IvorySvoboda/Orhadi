@@ -501,6 +501,9 @@
         }
       }
     },
+    "Due" : {
+
+    },
     "Duplicate" : {
       "localizations" : {
         "pt-BR" : {
@@ -918,6 +921,7 @@
       }
     },
     "Not specified" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1131,6 +1135,7 @@
       }
     },
     "Schedule Conflict!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {
@@ -1270,6 +1275,9 @@
         }
       }
     },
+    "Study Schedule" : {
+
+    },
     "Subject indicator" : {
       "localizations" : {
         "pt-BR" : {
@@ -1311,6 +1319,7 @@
       }
     },
     "The selected time range is invalid or overlaps with another schedule. Please adjust it before saving." : {
+      "extractionState" : "stale",
       "localizations" : {
         "pt-BR" : {
           "stringUnit" : {

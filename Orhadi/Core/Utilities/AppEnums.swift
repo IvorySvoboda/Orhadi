@@ -24,6 +24,10 @@ enum Priority: Int, Codable, CaseIterable, Comparable {
         }
     }
 
+    var symbolName: String {
+        rawValue > 1 ? "exclamationmark.\(rawValue)" : "exclamationmark"
+    }
+
     static func < (lhs: Self, rhs: Self) -> Bool {
         lhs.rawValue < rhs.rawValue
     }

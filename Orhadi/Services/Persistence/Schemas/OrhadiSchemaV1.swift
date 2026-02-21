@@ -234,7 +234,7 @@ enum OrhadiSchemaV1: VersionedSchema {
         var name: String = ""
         var studyDay: Date = Date(timeIntervalSince1970: 0)
         var studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!
-        var lastStudied: Date = Date(timeIntervalSince1970: 0)
+        var lastStudied: Date?
         var isStudyDeleted: Bool = false
         var deletedAt: Date?
 
@@ -242,7 +242,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             name: String = "",
             studyDay: Date = Date(timeIntervalSince1970: 0),
             studyTime: Date = Calendar.current.date(bySettingHour: 0, minute: 30, second: 0, of: Date(timeIntervalSince1970: 0))!,
-            lastStudied: Date = Date(timeIntervalSince1970: 0),
+            lastStudied: Date? = nil,
         ) {
             self.name = name
             self.studyDay = studyDay
@@ -262,7 +262,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             name = try container.decode(String.self, forKey: .name)
             studyDay = try container.decode(Date.self, forKey: .studyDay)
             studyTime = try container.decode(Date.self, forKey: .studyTime)
-            lastStudied = try container.decode(Date.self, forKey: .lastStudied)
+            lastStudied = try container.decodeIfPresent(Date.self, forKey: .lastStudied)
         }
 
         func encode(to encoder: any Encoder) throws {
@@ -270,7 +270,7 @@ enum OrhadiSchemaV1: VersionedSchema {
             try container.encode(name, forKey: .name)
             try container.encode(studyDay, forKey: .studyDay)
             try container.encode(studyTime, forKey: .studyTime)
-            try container.encode(lastStudied, forKey: .lastStudied)
+            try container.encodeIfPresent(lastStudied, forKey: .lastStudied)
         }
     }
 

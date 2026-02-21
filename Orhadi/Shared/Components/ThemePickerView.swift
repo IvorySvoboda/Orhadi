@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ThemePickerView: View {
+struct ThemePicker: View {
     @Environment(\.modelContext) private var context
     @Environment(Settings.self) private var settings
 

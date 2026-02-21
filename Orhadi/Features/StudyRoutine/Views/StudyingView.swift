@@ -11,7 +11,7 @@ import SwiftData
 struct StudyingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Settings.self) private var settings
-    @State private var viewModel: ViewModel
+    @State private var vm: ViewModel
 
     // MARK: - Views
 
@@ -20,12 +20,12 @@ struct StudyingView: View {
             Divider()
 
             HStack {
-                if viewModel.currentSessionIndex < viewModel.sessionItems.count {
-                    Text(viewModel.currentStudyName)
-                        .lineLimit(1)
-                        .frame(width: 200, alignment: .leading)
+                if vm.currentSessionIndex < vm.sessionItems.count {
+                    Text(vm.currentStudyName)
+                        .titleStyle()
                 } else {
                     Text("All studies completed! 🔥")
+                        .titleStyle()
                 }
                 Spacer()
             }
@@ -36,19 +36,19 @@ struct StudyingView: View {
 
             VStack {
                 HStack {
-                    RollingTextView(text: viewModel.timeString)
+                    RollingTextView(text: vm.timeString)
                         .font(.system(size: 40, weight: .bold, design: .monospaced))
                 }
             }.frame(height: 200)
 
             List {
-                if viewModel.currentSessionIndex < viewModel.sessionItems.count {
-                    ForEach(viewModel.filteredSessionItems) { sessionItem in
+                if vm.currentSessionIndex < vm.sessionItems.count {
+                    ForEach(vm.filteredSessionItems) { sessionItem in
                         if sessionItem.isBreak {
                             HStack {
                                 Text("Interval")
                                 Spacer()
-                                Text(viewModel.breakTime.durationString())
+                                Text(vm.breakTime.durationString())
                             }
                             .font(.system(size: 14))
                             .foregroundStyle(Color.secondary)
@@ -69,49 +69,54 @@ struct StudyingView: View {
                 }
             }
             .listStyle(.plain)
-            .background(.orhadiBG)
             .environment(\.defaultMinListRowHeight, 20)
         }
         .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button("Stop Studying", systemImage: "chevron.backward") {
-                    viewModel.stopStudying()
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    viewModel.isRunning.toggle()
-                } label: {
-                    if viewModel.isRunning && !viewModel.studyFinished {
-                        Label("Pause", systemImage: "pause")
-                    } else {
-                        Label("Play", systemImage: "play.fill")
-                    }
-                }
-                .tint(.accentColor)
-                .disabled(viewModel.studyFinished)
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Next", systemImage: "forward.fill") {
-                    viewModel.skipToNext()
-                }
-                .tint(.accentColor)
-                .disabled(viewModel.studyFinished)
-            }
-        }
-        .toolbarBackground(.orhadiBG, for: .navigationBar)
+        .toolbar { toolbarComponents }
         .toolbarVisibility(.hidden, for: .tabBar)
-        .onChange(of: viewModel.isRunning) { _, _ in
-            viewModel.handleRunningChange()
+        .onChange(of: vm.isRunning) { _, _ in
+            vm.handleRunningChange()
         }
         .disableIdleTimer()
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarComponents: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button("Stop Studying", systemImage: "chevron.backward") {
+                vm.stopStudying()
+                dismiss()
+            }
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                vm.isRunning.toggle()
+            } label: {
+                if vm.isRunning && !vm.studyFinished {
+                    Label("Pause", systemImage: "pause")
+                } else {
+                    Label("Play", systemImage: "play.fill")
+                }
+            }
+            .tint(.accentColor)
+            .disabled(vm.studyFinished)
+        }
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("Next", systemImage: "forward.fill") {
+                vm.skipToNext()
+            }
+            .tint(.accentColor)
+            .disabled(vm.studyFinished)
+        }
     }
 
     // MARK: - INIT
 
     init(studies: [SRStudy]) {
-        _viewModel = State(initialValue: ViewModel(studies: studies, dataManager: .shared))
+        _vm = State(initialValue: ViewModel(studies: studies, dataManager: .shared))
     }
 }

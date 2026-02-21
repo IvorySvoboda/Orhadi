@@ -17,7 +17,6 @@ extension SubjectSheetView {
         let subject: Subject
         let isNew: Bool
         var draftSubject: DraftSubject
-        var showConflictAlert = false
         var showErrorAlert = false
         var errorAlertMessage = ""
 
@@ -29,6 +28,12 @@ extension SubjectSheetView {
             } else {
                 return subject.isRecess ? "Edit Interval" : "Edit Subject"
             }
+        }
+
+        var canSave: Bool {
+            draftSubject.name.isEmpty &&
+            !draftSubject.isRecess ||
+            !dataManager.isSubjectScheduleInvalid(isNew ? Subject(from: draftSubject) : subject)
         }
 
         // MARK: - INIT
@@ -44,16 +49,6 @@ extension SubjectSheetView {
 
         /// `extraAction()` --> An action to be executed if the save succeeds. Can be used to dismiss the view after the save.
         func trySave(extraAction: (() -> Void)? = nil) throws {
-            let hasConflict = dataManager.subjectHasConflict(
-                isNew ? Subject(from: draftSubject) : subject
-            )
-
-            if hasConflict {
-                showConflictAlert.toggle()
-                FeedbackGenerator().notificationOccurred(.error)
-                throw ModelsErrors.conflicting /// Useful for unit tests.
-            }
-
             do {
                 if isNew {
                     try dataManager.addSubject(Subject(from: draftSubject))

@@ -16,7 +16,15 @@ extension ToDoSheetView {
         private let dataManager: DataManager
         let todo: ToDo
         let isNew: Bool
-        var draftToDo: DraftToDo
+        var draftToDo: DraftToDo {
+            didSet {
+                if draftToDo.withHour {
+                    isHourPickerExpanded = true
+                } else {
+                    isHourPickerExpanded = false
+                }
+            }
+        }
         var isHourPickerExpanded = false
         var showErrorAlert = false
         var errorAlertMessage = ""
@@ -29,6 +37,13 @@ extension ToDoSheetView {
             } else {
                 return "Edit To-Do"
             }
+        }
+
+        var isTimePickerExpanded: Binding<Bool> {
+            Binding(
+                get: { self.isHourPickerExpanded && self.draftToDo.withHour },
+                set: { self.isHourPickerExpanded = self.draftToDo.withHour ? $0 : false }
+            )
         }
 
         // MARK: - INIT

@@ -36,8 +36,9 @@ final class DataManager {
             if let settings = try context.fetch(FetchDescriptor<Settings>()).first {
                 self.priveteSettings = settings
             } else {
-                self.priveteSettings = Settings()
-                context.insert(self.settings)
+                let newSettings = Settings()
+                self.priveteSettings = newSettings
+                context.insert(newSettings)
                 try save()
             }
 
@@ -89,7 +90,7 @@ final class DataManager {
         try save()
     }
 
-    func subjectHasConflict(_ subject: Subject) -> Bool {
+    func isSubjectScheduleInvalid(_ subject: Subject) -> Bool {
         let subjects = fetchSubjects(predicate: #Predicate { !$0.isSubjectDeleted })
 
         let sameScheduleSubjects = subjects.filter { other in

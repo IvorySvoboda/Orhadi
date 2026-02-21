@@ -8,6 +8,14 @@
 import SwiftUI
 
 extension View {
+    func titleStyle() -> some View {
+        self
+            .font(.headline)
+            .fontWeight(.semibold)
+            .lineLimit(1)
+            .frame(maxWidth: 200, alignment: .leading)
+    }
+
     func plainListRow() -> some View {
         self
             .padding(.horizontal)

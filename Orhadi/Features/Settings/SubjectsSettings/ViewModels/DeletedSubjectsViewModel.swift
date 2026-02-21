@@ -17,7 +17,6 @@ extension DeletedSubjectsView {
         private var cancellable: AnyCancellable?
         var deletedSubjects: [Subject] = []
         var selectedSubjects = Set<Subject>()
-        var conflictingSubjects: [Subject] = []
         var showDeleteConfirmation = false
         var showConflictAlert = false
 
@@ -74,7 +73,7 @@ extension DeletedSubjectsView {
         }
 
         func restoreSubject(_ subject: Subject) throws {
-            let hasConflictWithOthersSubjects = dataManager.subjectHasConflict(subject)
+            let hasConflictWithOthersSubjects = dataManager.isSubjectScheduleInvalid(subject)
 
             if hasConflictWithOthersSubjects {
                 showConflictAlert = true

@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct ToDosDataSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -19,76 +19,76 @@ struct ToDosDataSettingsView: View {
                 HStack {
                     Text("All to-dos")
                     Spacer()
-                    Text("\(viewModel.todos.count)")
+                    Text("\(vm.todos.count)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Completed")
                     Spacer()
-                    Text("\(viewModel.completedTodos)")
+                    Text("\(vm.completedTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Overdue")
                     Spacer()
-                    Text("\(viewModel.overdueTodos)")
+                    Text("\(vm.overdueTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Pending")
                     Spacer()
-                    Text("\(viewModel.pendingTodos)")
+                    Text("\(vm.pendingTodos)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Archived")
                     Spacer()
-                    Text("\(viewModel.archivedTodos)")
+                    Text("\(vm.archivedTodos)")
                         .foregroundStyle(.secondary)
                 }
             }
 
             Section {
                 Button("Export To-Dos") {
-                    try? viewModel.exportToDos()
+                    try? vm.exportToDos()
                 }
-                .disabled(viewModel.todos.isEmpty)
+                .disabled(vm.todos.isEmpty)
                 .fileExporter(
-                    isPresented: $viewModel.showToDosFileExporter,
-                    item: viewModel.todosExportItem,
+                    isPresented: $vm.showToDosFileExporter,
+                    item: vm.todosExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "To-Dos")
                 ) { result in
                     switch result {
                     case .success:
-                        viewModel.todosExportItem = nil
+                        vm.todosExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
-                        viewModel.todosExportItem = nil
+                        vm.todosExportItem = nil
                     }
                 } onCancellation: {
-                    viewModel.todosExportItem = nil
+                    vm.todosExportItem = nil
                 }
 
                 Button("Import To-Dos") {
-                    viewModel.showToDosImportAlert.toggle()
+                    vm.showToDosImportAlert.toggle()
                 }
-                .alert("Import To-Dos?", isPresented: $viewModel.showToDosImportAlert) {
+                .alert("Import To-Dos?", isPresented: $vm.showToDosImportAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Continue") {
-                        viewModel.showToDosFileImporter.toggle()
+                        vm.showToDosFileImporter.toggle()
                     }
                 } message: {
                     Text("When importing, all existing to-dos will be deleted. Do you wish to continue?")
                 }
                 .fileImporter(
-                    isPresented: $viewModel.showToDosFileImporter,
+                    isPresented: $vm.showToDosFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        viewModel.importedURL = url
-                        try? viewModel.importToDos()
+                        vm.importedURL = url
+                        try? vm.importToDos()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -97,24 +97,24 @@ struct ToDosDataSettingsView: View {
 
             Section {
                 Button("Delete All to-dos") {
-                    viewModel.showDeleteConfirmation.toggle()
+                    vm.showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
-                .disabled(viewModel.todos.isEmpty)
-                .alert("Delete All to-dos?", isPresented: $viewModel.showDeleteConfirmation) {
+                .disabled(vm.todos.isEmpty)
+                .alert("Delete All to-dos?", isPresented: $vm.showDeleteConfirmation) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        try? viewModel.deleteAllToDos()
+                        try? vm.deleteAllToDos()
                     }
                 }
             }
         }
         .navigationTitle("To-Dos")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $vm.showErrorMessage) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(vm.errorMessage)
         }
     }
 }

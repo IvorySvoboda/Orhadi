@@ -18,7 +18,7 @@ extension SubjectsView {
         private var cancellable: AnyCancellable?
         var subjects: [Subject] = []
         var selectedDay = Calendar.current.component(.weekday, from: Date())
-        var showConfirmation = false
+        var showAddOptionsSheet  = false
         var subjectToAdd: Subject?
         var subjectToEdit: Subject?
         var showTitle = false

@@ -10,10 +10,6 @@ import SwiftUI
 import WidgetKit
 
 struct ContentView: View {
-    @Environment(\.modelContext) private var context
-
-    // MARK: - Views
-
     var body: some View {
         TabView {
             Tab("Subjects", systemImage: "book.fill") {

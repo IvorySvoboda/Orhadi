@@ -11,125 +11,91 @@ import WidgetKit
 
 struct SubjectsView: View {
     @Namespace private var animation
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
-    // MARK: - Views
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
             List {
-                WeekdayPickerBar(selectedDay: $viewModel.selectedDay)
-                    .opacity(viewModel.showSelectedWeekday ? 0 : 1)
+                WeekdayPickerBar(selectedDay: $vm.selectedDay)
+                    .opacity(vm.showSelectedWeekday ? 0 : 1)
 
-                ForEach(viewModel.filteredSubjects) { subject in
-                    SubjectRowView(
-                        subject: subject,
-                        onAdd: { viewModel.subjectToAdd = subject },
-                        onEdit: { viewModel.subjectToEdit = subject },
-                        onDelete: { try? viewModel.softDeleteSubject(subject) }
-                    )
-                }
+                ForEach(vm.filteredSubjects, content: SubjectRow.init)
             }
+            .environment(vm)
             .listStyle(.plain)
             .navigationTitle("Subjects")
             .onScrollGeometryChange(for: CGFloat.self, of: { geo in
                 geo.contentOffset.y
             }, action: { _, scrollOffset in
-                viewModel.handleScrollGeoChange(scrollOffset)
+                vm.handleScrollGeoChange(scrollOffset)
             })
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    ZStack {
-                        Text("Subjects")
-                            .font(.headline)
-                            .frame(height: 30)
-                            .opacity(viewModel.showTitle ? 1 : 0)
-                            .blur(radius: viewModel.showTitle ? 0 : 3)
-                            .offset(y: viewModel.showSelectedWeekday ? -8 : viewModel.showTitle ? 0 : 14)
-
-                        Text(viewModel.toolbarTitle)
-                            .foregroundStyle(.tint)
-                            .font(.caption)
-                            .frame(height: 30)
-                            .opacity(viewModel.showSelectedWeekday ? 1 : 0)
-                            .blur(radius: viewModel.showSelectedWeekday ? 0 : 3)
-                            .offset(y: viewModel.showSelectedWeekday ? 8 : 14)
-                    }
-                }
-
-                if #available(iOS 26, *) {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Add", systemImage: "plus") {
-                            viewModel.showConfirmation.toggle()
-                        }.tint(.accentColor)
-                    }.matchedTransitionSource(id: "Add", in: animation)
-                } else {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Add", systemImage: "plus") {
-                            viewModel.showConfirmation.toggle()
-                        }.tint(.accentColor)
-                    }
-                }
-            }
-            .overlay {
-                if viewModel.filteredSubjects.isEmpty, !viewModel.hideOverlay {
-                    ContentUnavailableView {
-                        Label("No Subjects", systemImage: "book")
-                    } description: {
-                        Text("No subjects today. How about taking some time to rest a little?")
-                    }
-                }
-            }
-            .sheet(item: $viewModel.subjectToAdd) { subject in
+            .toolbar { toolbarComponents }
+            .overlay { emptyStateOverlay }
+            .sheet(item: $vm.subjectToAdd) { subject in
                 SubjectSheetView(subject: subject, isNew: true)
                     .interactiveDismissDisabled()
             }
-            .sheet(item: $viewModel.subjectToEdit) { subject in
+            .sheet(item: $vm.subjectToEdit) { subject in
                 SubjectSheetView(subject: subject, isNew: false)
                     .interactiveDismissDisabled()
             }
-            .sheet(isPresented: $viewModel.showConfirmation) {
-                subjectAddOptions
+            .sheet(isPresented: $vm.showAddOptionsSheet) {
+                SubjectsAddOptionsSheet(subjectToAdd: $vm.subjectToAdd, selectedDay: vm.selectedDay)
+                    .navigationTransition(.zoom(sourceID: "Add", in: animation))
             }
         }
     }
 
-    private var subjectAddOptions: some View {
-        VStack {
-            VStack(spacing: 10) {
-                ForEach([
-                    (title: String(localized: "Add Subject"), isRecess: false),
-                    (title: String(localized: "Add Interval"), isRecess: true)
-                ], id: \.title) { option in
-                    Button {
-                        viewModel.showConfirmation.toggle()
-                        viewModel.subjectToAdd = Subject(
-                            schedule: Calendar.current.date(bySetting: .weekday, value: viewModel.selectedDay, of: Date(timeIntervalSince1970: 0))!,
-                            isRecess: option.isRecess)
-                    } label: {
-                        let buttonText = Text(option.title)
-                            .textCase(.uppercase)
-                            .font(.headline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.orhadiSecondaryForeground)
+    // MARK: - Toolbar
 
-                        if #available(iOS 26, *) {
-                            Capsule()
-                                .fill(Color.accentColor)
-                                .frame(maxWidth: .infinity, minHeight: 45)
-                                .overlay { buttonText }
-                        } else {
-                            RoundedRectangle(cornerRadius: 15, style: .continuous)
-                                .fill(Color.accentColor)
-                                .frame(maxWidth: .infinity, minHeight: 45)
-                                .overlay { buttonText }
-                        }
-                    }
-                }
-            }.offset(y: 15)
+    @ToolbarContentBuilder
+    private var toolbarComponents: some ToolbarContent {
+        ToolbarItem(placement: .principal) {
+            ZStack {
+                Text("Subjects")
+                    .font(.headline)
+                    .frame(height: 30)
+                    .opacity(vm.showTitle ? 1 : 0)
+                    .blur(radius: vm.showTitle ? 0 : 3)
+                    .offset(y: vm.showSelectedWeekday ? -8 : vm.showTitle ? 0 : 14)
+
+                Text(vm.toolbarTitle)
+                    .foregroundStyle(.tint)
+                    .font(.caption)
+                    .frame(height: 30)
+                    .opacity(vm.showSelectedWeekday ? 1 : 0)
+                    .blur(radius: vm.showSelectedWeekday ? 0 : 3)
+                    .offset(y: vm.showSelectedWeekday ? 8 : 14)
+            }
         }
-        .padding()
-        .navigationTransition(.zoom(sourceID: "Add", in: animation))
-        .presentationDetents([.height(135)])
+
+        if #available(iOS 26, *) {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Add", systemImage: "plus") {
+                    vm.showAddOptionsSheet.toggle()
+                }.tint(.accentColor)
+            }.matchedTransitionSource(id: "Add", in: animation)
+        } else {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Add", systemImage: "plus") {
+                    vm.showAddOptionsSheet.toggle()
+                }.tint(.accentColor)
+            }
+        }
+    }
+
+    // MARK: - Overlay
+
+    @ViewBuilder
+    private var emptyStateOverlay: some View {
+        if vm.filteredSubjects.isEmpty, !vm.hideOverlay {
+            ContentUnavailableView {
+                Label("No Subjects", systemImage: "book")
+            } description: {
+                Text("No subjects today. How about taking some time to rest a little?")
+            }
+        }
     }
 }

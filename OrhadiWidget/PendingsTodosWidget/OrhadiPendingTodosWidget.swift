@@ -110,7 +110,7 @@ struct PendingTodoWidgetRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .frame(width: 10, alignment: .center)
-                    Text("\(todo.formattedDueDate)")
+                    Text("\(todo.dueDate.friendlyDateString)")
                         .font(.caption)
                         .foregroundStyle(Color.secondary)
                 }

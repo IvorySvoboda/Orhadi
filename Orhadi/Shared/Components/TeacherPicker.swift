@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct SubjectTeacherPickerView: View {
+struct TeacherPicker: View {
 
     @Binding var teacher: Teacher?
 
@@ -16,7 +16,7 @@ struct SubjectTeacherPickerView: View {
 
     var body: some View {
         NavigationLink {
-            SubjectTeacherPicker(teacher: $teacher)
+            TeacherPickerList(teacher: $teacher)
         } label: {
             HStack {
                 Label("Teacher", systemImage: "person.fill")
@@ -28,7 +28,7 @@ struct SubjectTeacherPickerView: View {
     }
 }
 
-struct SubjectTeacherPicker: View {
+struct TeacherPickerList: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
 

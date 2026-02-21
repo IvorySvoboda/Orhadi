@@ -10,30 +10,30 @@ import SwiftUI
 
 struct TeachersView: View {
 
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     var body: some View {
-        List(viewModel.teachers) { teacher in
+        List(vm.teachers) { teacher in
             TeacherRowView(
                 teacher: teacher,
-                onEdit: { viewModel.teacherToEdit = teacher },
-                onDelete: { try? viewModel.hardDeleteTeacher(teacher) }
+                onEdit: { vm.teacherToEdit = teacher },
+                onDelete: { try? vm.hardDeleteTeacher(teacher) }
             )
         }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Add", systemImage: "plus") {
-                    viewModel.teacherToAdd = Teacher()
+                    vm.teacherToAdd = Teacher()
                 }.tint(.accentColor)
             }
         }
         .navigationTitle("Teachers")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $viewModel.teacherToAdd) { teacher in
+        .sheet(item: $vm.teacherToAdd) { teacher in
             TeacherSheetView(teacher: teacher, isNew: true)
                 .interactiveDismissDisabled()
         }
-        .sheet(item: $viewModel.teacherToEdit) { teacher in
+        .sheet(item: $vm.teacherToEdit) { teacher in
             TeacherSheetView(teacher: teacher, isNew: false)
                 .interactiveDismissDisabled()
         }

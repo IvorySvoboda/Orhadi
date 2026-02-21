@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SRDataSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     var body: some View {
         Form {
@@ -17,53 +17,53 @@ struct SRDataSettingsView: View {
                 HStack {
                     Text("Total Studies")
                     Spacer()
-                    Text("\(viewModel.studies.count)")
+                    Text("\(vm.studies.count)")
                         .foregroundStyle(.secondary)
                 }
             }
 
             Section {
                 Button("Export Study Routine") {
-                    try? viewModel.exportSR()
+                    try? vm.exportSR()
                 }
-                .disabled(viewModel.studies.isEmpty)
+                .disabled(vm.studies.isEmpty)
                 .fileExporter(
-                    isPresented: $viewModel.showSRFileExporter,
-                    item: viewModel.srExportItem,
+                    isPresented: $vm.showSRFileExporter,
+                    item: vm.srExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "Study Routine")
                 ) { result in
                     switch result {
                     case .success:
                         print("Success!")
-                        viewModel.srExportItem = nil
+                        vm.srExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
-                        viewModel.srExportItem = nil
+                        vm.srExportItem = nil
                     }
                 } onCancellation: {
-                    viewModel.srExportItem = nil
+                    vm.srExportItem = nil
                 }
 
                 Button("Import Study Routine") {
-                    viewModel.showSRImportAlert.toggle()
+                    vm.showSRImportAlert.toggle()
                 }
-                .alert("Import Study Routine?", isPresented: $viewModel.showSRImportAlert) {
+                .alert("Import Study Routine?", isPresented: $vm.showSRImportAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Continue") {
-                        viewModel.showSRFileImporter.toggle()
+                        vm.showSRFileImporter.toggle()
                     }
                 } message: {
                     Text("When importing a new study routine, all existing studies in the current routine will be deleted. Do you want to continue?")
                 }
                 .fileImporter(
-                    isPresented: $viewModel.showSRFileImporter,
+                    isPresented: $vm.showSRFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        viewModel.importedURL = url
-                        try? viewModel.importSR()
+                        vm.importedURL = url
+                        try? vm.importSR()
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -72,24 +72,24 @@ struct SRDataSettingsView: View {
 
             Section {
                 Button("Delete all studies") {
-                    viewModel.showDeleteConfirmation.toggle()
+                    vm.showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
-                .disabled(viewModel.studies.isEmpty)
-                .alert("Delete all studies?", isPresented: $viewModel.showDeleteConfirmation) {
+                .disabled(vm.studies.isEmpty)
+                .alert("Delete all studies?", isPresented: $vm.showDeleteConfirmation) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        try? viewModel.deleteAllStudies()
+                        try? vm.deleteAllStudies()
                     }
                 }
             }
         }
         .navigationTitle("Study Routine")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $vm.showErrorMessage) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(vm.errorMessage)
         }
     }
 }

@@ -10,64 +10,67 @@ import SwiftData
 
 struct SRSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel: ViewModel
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField("Name (ex: English)", text: $viewModel.draftStudy.name)
-                        .autocorrectionDisabled()
-                }
-
-                Section {
-                    Picker("Weekday", selection: Binding(
-                        get: { Calendar.current.component(.weekday, from: viewModel.draftStudy.studyDay) },
-                        set: { newWeekday in
-                            if let newDate = Calendar.current.nextDate(
-                                after: viewModel.draftStudy.studyDay,
-                                matching: DateComponents(weekday: newWeekday),
-                                matchingPolicy: .nextTimePreservingSmallerComponents
-                            ) {
-                                viewModel.draftStudy.studyDay = newDate
-                            }
-                        })
-                    ) {
-                        ForEach(Array(Calendar.current.weekdaySymbols.enumerated()), id: \.offset) { index, name in
-                            Text(name.capitalized).tag(index + 1)
-                        }
-                    }.pickerStyle(.navigationLink)
-
-                    DatePicker(
-                        "Study Duration",
-                        selection: $viewModel.draftStudy.studyTime,
-                        displayedComponents: [.hourAndMinute]
-                    )
-                }
-            }
-            .navigationTitle(viewModel.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", systemImage: "xmark", role: .cancel) {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", systemImage: "checkmark") {
-                        try? viewModel.trySave {
-                            dismiss()
-                        }
-                    }.disabled(viewModel.draftStudy.name.isEmpty)
-                }
-            }
-        }
-    }
+    @State private var vm: ViewModel
 
     // MARK: - INIT
 
     init(study: SRStudy, isNew: Bool) {
-        _viewModel = State(initialValue: ViewModel(study: study, isNew: isNew, dataManager: .shared))
+        _vm = State(initialValue: ViewModel(study: study, isNew: isNew, dataManager: .shared))
+    }
+
+    // MARK: - Body
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                studyInfoSection
+                scheduleSection
+            }
+            .navigationTitle(vm.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { toolbarComponents }
+        }
+    }
+
+    // MARK: - Form Components
+
+    private var studyInfoSection: some View {
+        Section {
+            TextField("Name (ex: English)", text: $vm.draftStudy.name)
+                .autocorrectionDisabled()
+
+            DatePicker(
+                "Study Duration",
+                selection: $vm.draftStudy.studyTime,
+                displayedComponents: [.hourAndMinute]
+            )
+        }
+    }
+
+    private var scheduleSection: some View {
+        Section {
+            WeekdayPicker(selection: $vm.draftStudy.studyDay)
+        } header: {
+            Text("Study Schedule")
+        }
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarComponents: some ToolbarContent {
+        ToolbarItem(placement: .cancellationAction) {
+            Button("Cancel", systemImage: "xmark", role: .cancel) {
+                dismiss()
+            }
+        }
+
+        ToolbarItem(placement: .confirmationAction) {
+            Button("Save", systemImage: "checkmark") {
+                try? vm.trySave {
+                    dismiss()
+                }
+            }.disabled(vm.draftStudy.name.isEmpty)
+        }
     }
 }

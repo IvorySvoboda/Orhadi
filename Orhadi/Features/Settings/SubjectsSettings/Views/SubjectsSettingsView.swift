@@ -10,20 +10,20 @@ import SwiftData
 import WidgetKit
 
 struct SubjectsSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
     var body: some View {
         Form {
             Section {
-                Toggle("Subject indicator", isOn: $viewModel.settings.showCurrentSubjectIndicator)
-                    .onChange(of: viewModel.settings.showCurrentSubjectIndicator) { _, _ in
-                        viewModel.save()
+                Toggle("Subject indicator", isOn: $vm.settings.showCurrentSubjectIndicator)
+                    .onChange(of: vm.settings.showCurrentSubjectIndicator) { _, _ in
+                        vm.save()
                     }
             }
 
-            if !viewModel.deletedSubjects.isEmpty {
+            if !vm.deletedSubjects.isEmpty {
                 Section {
                     NavigationLink("Deleted Subjects") {
                         DeletedSubjectsView()

@@ -5,22 +5,6 @@
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "540B00E4-67C9-4EF0-B7A7-D6AF72E6C097"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Orhadi/Features/Settings/DataSettings/ViewModels/SubjectsDataSettingsViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "deleteAllSubjects()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.IDETestFailureBreakpoint">
          <BreakpointContent
             uuid = "72F5D36E-5D06-48D1-A05F-D887A4117EB7"

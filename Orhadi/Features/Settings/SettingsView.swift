@@ -39,7 +39,7 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    ThemePickerView()
+                    ThemePicker()
                 }
 
                 Section {

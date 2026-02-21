@@ -57,26 +57,4 @@ extension ToDo {
             body: String(localized: "The to-do: \(title) is overdue!"),
             date: dueDate)
     }
-
-    var formattedDueDate: String {
-        let calendar = Calendar.current
-        let now = Date()
-
-        guard let twoDaysAhead = calendar.date(byAdding: .day, value: 2, to: now),
-              let twoDaysAgo = calendar.date(byAdding: .day, value: -3, to: now) else {
-            return ""
-        }
-
-        let formatter = DateFormatter()
-
-        if dueDate > twoDaysAhead || dueDate <= twoDaysAgo {
-            formatter.dateFormat = withHour ? "dd/MM/yyyy, HH:mm" : "dd/MM/yyyy"
-        } else {
-            formatter.timeStyle = withHour ? .short : .none
-            formatter.dateStyle = .medium
-            formatter.doesRelativeDateFormatting = true
-        }
-
-        return formatter.string(from: dueDate)
-    }
 }

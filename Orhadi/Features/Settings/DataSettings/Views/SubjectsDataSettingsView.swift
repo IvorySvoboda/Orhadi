@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct SubjectsDataSettingsView: View {
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
@@ -19,64 +19,68 @@ struct SubjectsDataSettingsView: View {
                 HStack {
                     Text("All items")
                     Spacer()
-                    Text("\((viewModel.subjects.count))")
+                    Text("\((vm.subjects.count))")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Subjects")
                     Spacer()
-                    Text("\(viewModel.allSubjects)")
+                    Text("\(vm.allSubjects)")
                         .foregroundStyle(.secondary)
                 }
                 HStack {
                     Text("Interval")
                     Spacer()
-                    Text("\(viewModel.allRecess)")
+                    Text("\(vm.allRecess)")
                         .foregroundStyle(.secondary)
                 }
             }
 
             Section {
                 Button("Export Subjects") {
-                    try? viewModel.exportSubjects()
+                    try? vm.exportSubjects()
                 }
-                .disabled((viewModel.subjects.isEmpty))
+                .disabled((vm.subjects.isEmpty))
                 .fileExporter(
-                    isPresented: $viewModel.showSubjectsFileExporter,
-                    item: viewModel.subjectsExportItem,
+                    isPresented: $vm.showSubjectsFileExporter,
+                    item: vm.subjectsExportItem,
                     contentTypes: [.data],
                     defaultFilename: String(localized: "Subjects")
                 ) { result in
                     switch result {
                     case .success:
-                        viewModel.subjectsExportItem = nil
+                        vm.subjectsExportItem = nil
                     case .failure(let error):
                         print(error.localizedDescription)
-                        viewModel.subjectsExportItem = nil
+                        vm.subjectsExportItem = nil
                     }
                 } onCancellation: {
-                    viewModel.subjectsExportItem = nil
+                    vm.subjectsExportItem = nil
                 }
 
                 Button("Import Subjects") {
-                    viewModel.showSubjectsImportAlert.toggle()
+                    vm.showSubjectsImportAlert.toggle()
                 }
-                .alert("Import Subjects?", isPresented: $viewModel.showSubjectsImportAlert) {
+                .alert("Import Subjects?", isPresented: $vm.showSubjectsImportAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Continue") {
-                        viewModel.showSubjectsFileImporter.toggle()
+                        vm.showSubjectsFileImporter.toggle()
                     }
                 } message: {
                     Text("When importing, all existing subjects will be erased. Do you wish to continue?")
                 }
                 .fileImporter(
-                    isPresented: $viewModel.showSubjectsFileImporter,
+                    isPresented: $vm.showSubjectsFileImporter,
                     allowedContentTypes: [.data]
                 ) { result in
                     switch result {
                     case .success(let url):
-                        viewModel.importedURL = url
-                        try? viewModel.importSubjects()
+                        Task {
+                            vm.importedURL = url
+                            withAnimation {
+                                try? vm.importSubjects()
+                            }
+                        }
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
@@ -85,24 +89,24 @@ struct SubjectsDataSettingsView: View {
 
             Section {
                 Button("Delete all subjects") {
-                    viewModel.showDeleteConfirmation.toggle()
+                    vm.showDeleteConfirmation.toggle()
                 }
                 .tint(.red)
-                .disabled(viewModel.subjects.isEmpty)
-                .alert("Delete all subjects?", isPresented: $viewModel.showDeleteConfirmation) {
+                .disabled(vm.subjects.isEmpty)
+                .alert("Delete all subjects?", isPresented: $vm.showDeleteConfirmation) {
                     Button("Cancel", role: .cancel) {}
                     Button("Delete", role: .destructive) {
-                        try? viewModel.deleteAllSubjects()
+                        try? vm.deleteAllSubjects()
                     }
                 }
             }
         }
         .navigationTitle("Subjects")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Error!", isPresented: $viewModel.showErrorMessage) {
+        .alert("Error!", isPresented: $vm.showErrorMessage) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(viewModel.errorMessage)
+            Text(vm.errorMessage)
         }
     }
 }

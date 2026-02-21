@@ -104,28 +104,25 @@ extension SRDataSettingsView {
             guard url.startAccessingSecurityScopedResource() || isInBundle else { return }
             defer { if !isInBundle { url.stopAccessingSecurityScopedResource() } }
             do {
+                let data = try Data(contentsOf: url)
+                let studiesToImport = try JSONDecoder().decode([SRStudy].self, from: data)
+
                 let context = ModelContext(dataManager.container)
 
-                let data = try Data(contentsOf: url)
-                let importedStudies = try JSONDecoder().decode(
-                    [SRStudy].self, from: data)
-
-                var deletedStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                    $0.isStudyDeleted
-                }))
-
-                let existingStudies = try context.fetch(FetchDescriptor<SRStudy>(predicate: #Predicate<SRStudy> {
-                    !$0.isStudyDeleted
-                }))
+                let existingStudies = try context.fetch(FetchDescriptor<SRStudy>(
+                    predicate: #Predicate<SRStudy> { !$0.isStudyDeleted }
+                ))
 
                 for study in existingStudies {
                     study.isStudyDeleted = true
                     study.deletedAt = .now
-
-                    deletedStudies.append(study)
                 }
 
-                for study in importedStudies {
+                let deletedStudies = try context.fetch(FetchDescriptor<SRStudy>(
+                    predicate: #Predicate<SRStudy> { $0.isStudyDeleted }
+                ))
+
+                for study in studiesToImport {
                     if let matchInTrash = deletedStudies.first(where: {
                         $0.name == study.name &&
                         $0.studyDay == study.studyDay &&

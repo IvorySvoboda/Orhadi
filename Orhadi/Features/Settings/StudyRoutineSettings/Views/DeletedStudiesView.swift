@@ -11,12 +11,12 @@ import SwiftData
 struct DeletedStudiesView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.editMode) private var editMode
-    @State private var viewModel = ViewModel(dataManager: .shared)
+    @State private var vm = ViewModel(dataManager: .shared)
 
     // MARK: - Views
 
     var body: some View {
-        List(selection: $viewModel.selectedStudies) {
+        List(selection: $vm.selectedStudies) {
             Section {} footer: {
                 Text("The studies remain available here for 30 days. After this period, they will be permanently deleted.")
                     .multilineTextAlignment(.leading)
@@ -24,47 +24,48 @@ struct DeletedStudiesView: View {
             }
 
             Section {
-                ForEach(viewModel.deletedStudies) { study in
-                    DeletedStudyRowView(
-                        study: study,
-                        onRestore: { try? viewModel.restoreStudy(study) },
-                        onDelete: { try? viewModel.hardDeleteStudy(study) }
-                    )
+                ForEach(vm.deletedStudies) { study in
+                    DeletedStudyRow(study: study)
                         .tag(study)
                 }
             }
         }
+        .environment(vm)
         .navigationTitle("Deleted Studies")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible, for: .bottomBar)
-        .toolbarBackground(Color.orhadiBG, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true ? .visible : .hidden, for: .bottomBar)
         .toolbarVisibility(editMode?.wrappedValue.isEditing == true && .iOS26 ? .hidden : .visible, for: .tabBar)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                EditButton()
-            }
-
-            ToolbarItemGroup(placement: .bottomBar) {
-                Button(viewModel.selectedStudies.isEmpty ? "Restore All" : "Restore") {
-                    viewModel.restoreStudies()
-                }
-
-                Spacer()
-
-                Button(viewModel.selectedStudies.isEmpty ? "Delete All" : "Delete") {
-                    viewModel.showDeleteConfirmation.toggle()
-                }
-                .confirmationDialog(viewModel.deleteMessageText, isPresented: $viewModel.showDeleteConfirmation, titleVisibility: .visible) {
-                    Button(viewModel.deleteActionTitle, role: .destructive) {
-                        viewModel.deleteStudies()
-                    }
-                }
-            }
-        }
-        .onChange(of: viewModel.deletedStudies) { _, newStudies in
+        .toolbar { toolbarComponents }
+        .onChange(of: vm.deletedStudies) { _, newStudies in
             if newStudies.isEmpty {
                 dismiss()
+            }
+        }
+    }
+
+    // MARK: - Toolbar Components
+
+    @ToolbarContentBuilder
+    private var toolbarComponents: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            EditButton()
+        }
+
+        ToolbarItemGroup(placement: .bottomBar) {
+            Button(vm.selectedStudies.isEmpty ? "Restore All" : "Restore") {
+                vm.restoreStudies()
+            }
+
+            Spacer()
+
+            Button(vm.selectedStudies.isEmpty ? "Delete All" : "Delete") {
+                vm.showDeleteConfirmation.toggle()
+            }
+            .confirmationDialog(vm.deleteMessageText, isPresented: $vm.showDeleteConfirmation, titleVisibility: .visible) {
+                Button(vm.deleteActionTitle, role: .destructive) {
+                    vm.deleteStudies()
+                }
             }
         }
     }

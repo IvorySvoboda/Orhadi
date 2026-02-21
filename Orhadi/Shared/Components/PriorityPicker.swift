@@ -1,5 +1,5 @@
 //
-//  PriorityPickerView.swift
+//  PriorityPicker.swift
 //  Orhadi
 //
 //  Created by Ivory Svoboda on 28/04/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PriorityPickerView: View {
+struct PriorityPicker: View {
 
     @Binding var priority: Priority
 
@@ -15,7 +15,7 @@ struct PriorityPickerView: View {
 
     var body: some View {
         NavigationLink {
-            PriorityPicker(priority: $priority)
+            PriorityPickerList(priority: $priority)
         } label: {
             HStack {
                 Label("Priority", systemImage: "exclamationmark.3")
@@ -27,7 +27,7 @@ struct PriorityPickerView: View {
     }
 }
 
-struct PriorityPicker: View {
+struct PriorityPickerList: View {
     @Environment(\.dismiss) private var dismiss
 
     @Binding var priority: Priority

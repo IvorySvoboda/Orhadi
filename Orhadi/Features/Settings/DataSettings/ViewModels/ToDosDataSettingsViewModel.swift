@@ -127,46 +127,43 @@ extension ToDosDataSettingsView {
                 let context = ModelContext(dataManager.container)
 
                 let data = try Data(contentsOf: url)
-                let importedTodos = try JSONDecoder().decode([ToDo].self, from: data)
+                let todosToImport = try JSONDecoder().decode([ToDo].self, from: data)
 
-                var deletedToDos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate<ToDo> {
-                    $0.isToDoDeleted
-                }))
+                let existingToDos = try context.fetch(FetchDescriptor<ToDo>(
+                    predicate: #Predicate<ToDo> { !$0.isToDoDeleted }
+                ))
 
-                let activeToDos = try context.fetch(FetchDescriptor<ToDo>(predicate: #Predicate<ToDo> {
-                    !$0.isToDoDeleted
-                }))
-
-                /// Marcar All to-dos ativas como deletadas
-                for todo in activeToDos {
+                for todo in existingToDos {
                     NotificationsManager.shared.removePendingNotifications(withIdentifiers: todo.identifiers)
 
                     todo.isToDoDeleted = true
                     todo.deletedAt = .now
-
-                    deletedToDos.append(todo)
                 }
 
-                for imported in importedTodos {
+                let deletedToDos = try context.fetch(FetchDescriptor<ToDo>(
+                    predicate: #Predicate<ToDo> { $0.isToDoDeleted }
+                ))
+
+                for todo in todosToImport {
                     /// Verificar se há uma tarefa no lixo com mesmo conteúdo
                     if let matchInTrash = deletedToDos.first(where: {
-                        $0.title == imported.title &&
-                        Calendar.current.isDate($0.dueDate, equalTo: imported.dueDate, toGranularity: .minute) &&
-                        $0.info == imported.info
+                        $0.title == todo.title &&
+                        Calendar.current.isDate($0.dueDate, equalTo: todo.dueDate, toGranularity: .minute) &&
+                        $0.info == todo.info
                     }) {
                         /// Restaura a tarefa do lixo
                         matchInTrash.isToDoDeleted = false
                         matchInTrash.deletedAt = nil
-                        matchInTrash.isCompleted = imported.isCompleted
+                        matchInTrash.isCompleted = todo.isCompleted
                         if !matchInTrash.isCompleted, matchInTrash.dueDate > .now {
                             matchInTrash.scheduleNotification()
                         }
                     } else {
                         /// Nova tarefa
-                        if !imported.isCompleted, imported.dueDate > .now {
-                            imported.scheduleNotification()
+                        if !todo.isCompleted, todo.dueDate > .now {
+                            todo.scheduleNotification()
                         }
-                        context.insert(imported)
+                        context.insert(todo)
                     }
                 }
 

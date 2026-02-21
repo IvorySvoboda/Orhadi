@@ -10,23 +10,23 @@ import SwiftUI
 
 struct TeacherSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var viewModel: ViewModel
+    @State private var vm: ViewModel
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("Mr. Johnson", text: $viewModel.draftTeacher.name)
+                    TextField("Mr. Johnson", text: $vm.draftTeacher.name)
                         .autocorrectionDisabled()
-                        .onChange(of: viewModel.draftTeacher.name) { _, _ in
-                            viewModel.handleNameChange()
+                        .onChange(of: vm.draftTeacher.name) { _, _ in
+                            vm.handleNameChange()
                         }
 
-                    TextField("\(String(localized: "email@exemple.com"))", text: $viewModel.draftTeacher.email)
+                    TextField("\(String(localized: "email@exemple.com"))", text: $vm.draftTeacher.email)
                         .autocorrectionDisabled()
                 }
             }
-            .navigationTitle(viewModel.navigationTitle)
+            .navigationTitle(vm.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -37,16 +37,16 @@ struct TeacherSheetView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save", systemImage: "checkmark") {
-                        try? viewModel.trySave {
+                        try? vm.trySave {
                             dismiss()
                         }
-                    }.disabled(viewModel.preventSave)
+                    }.disabled(vm.preventSave)
                 }
             }
-            .alert("Failed to save!", isPresented: $viewModel.showErrorAlert) {
+            .alert("Failed to save!", isPresented: $vm.showErrorAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text(viewModel.errorAlertMessage)
+                Text(vm.errorAlertMessage)
             }
         }
     }
@@ -54,6 +54,6 @@ struct TeacherSheetView: View {
     // MARK: - INIT
 
     init(teacher: Teacher, isNew: Bool) {
-        _viewModel = State(initialValue: ViewModel(teacher: teacher, isNew: isNew, dataManager: .shared))
+        _vm = State(initialValue: ViewModel(teacher: teacher, isNew: isNew, dataManager: .shared))
     }
 }
