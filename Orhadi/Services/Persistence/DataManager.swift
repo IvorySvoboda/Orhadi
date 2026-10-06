@@ -98,7 +98,7 @@ final class DataManager {
             let otherWeekday = calendar.component(.weekday, from: other.schedule)
             let subjectWeekday = calendar.component(.weekday, from: subject.schedule)
 
-            return otherWeekday == subjectWeekday && other.id != subject.id
+            return otherWeekday == subjectWeekday && other.id != subject.originalID
         }
 
         let conflictSubjects = sameScheduleSubjects.filter { other in
