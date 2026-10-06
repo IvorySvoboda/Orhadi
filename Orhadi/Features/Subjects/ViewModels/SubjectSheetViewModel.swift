@@ -33,7 +33,7 @@ extension SubjectSheetView {
         var canSave: Bool {
             draftSubject.name.isEmpty &&
             !draftSubject.isRecess ||
-            !dataManager.isSubjectScheduleInvalid(isNew ? Subject(from: draftSubject) : subject)
+            !dataManager.isSubjectScheduleInvalid(isNew ? draftSubject : subject)
         }
 
         // MARK: - INIT
