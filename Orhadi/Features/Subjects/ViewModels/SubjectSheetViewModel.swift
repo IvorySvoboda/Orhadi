@@ -31,10 +31,10 @@ extension SubjectSheetView {
         }
 
         var canSave: Bool {
-            draftSubject.name.isEmpty &&
-            !draftSubject.isRecess ||
+            (!draftSubject.name.isEmpty || draftSubject.isRecess) &&
             !dataManager.isSubjectScheduleInvalid(draftSubject)
         }
+
 
         // MARK: - INIT
 
