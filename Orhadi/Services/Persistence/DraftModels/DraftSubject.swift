@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftData
 
 struct DraftSubject {
     var name: String
@@ -15,6 +16,7 @@ struct DraftSubject {
     var endTime: Date
     var place: String
     var isRecess: Bool
+    var originalID: PersistentIdentifier?
 
     init(
         name: String,
@@ -32,6 +34,7 @@ struct DraftSubject {
         self.endTime = endTime
         self.place = place
         self.isRecess = isRecess
+        self.originalID = nil
     }
 
     init(from subject: Subject) {
@@ -42,5 +45,6 @@ struct DraftSubject {
         self.endTime = subject.endTime
         self.place = subject.place
         self.isRecess = subject.isRecess
+        self.originalID = subject.persistentModelID
     }
 }
