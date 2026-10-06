@@ -73,7 +73,9 @@ extension DeletedSubjectsView {
         }
 
         func restoreSubject(_ subject: Subject) throws {
-            let hasConflictWithOthersSubjects = dataManager.isSubjectScheduleInvalid(subject)
+            let hasConflictWithOthersSubjects = dataManager.isSubjectScheduleInvalid(
+                DraftSubject(from: subject)
+            )
 
             if hasConflictWithOthersSubjects {
                 showConflictAlert = true
