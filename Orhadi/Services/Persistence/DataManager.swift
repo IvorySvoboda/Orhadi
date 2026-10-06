@@ -90,7 +90,7 @@ final class DataManager {
         try save()
     }
 
-    func isSubjectScheduleInvalid(_ subject: Subject) -> Bool {
+    func isSubjectScheduleInvalid(_ subject: DraftSubject) -> Bool {
         let subjects = fetchSubjects(predicate: #Predicate { !$0.isSubjectDeleted })
 
         let sameScheduleSubjects = subjects.filter { other in
