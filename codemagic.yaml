@@ -1,17 +1,23 @@
-name: Build IPA
-on:
-  workflow_dispatch:
-  push:
-    tags: ['v*']
+workflows:
+  ios-unsigned:
+    name: Orhadi IPA (sem assinatura)
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      xcode: latest
 
-jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
+    # Opcional: dispara sozinho ao criar uma tag tipo v1.0
+    # Sem isso, você inicia na mão pelo painel.
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
 
+    scripts:
       - name: Build sem assinatura
-        run: |
+        script: |
           xcodebuild build \
             -project Orhadi.xcodeproj \
             -scheme Orhadi \
@@ -24,12 +30,10 @@ jobs:
             CODE_SIGN_IDENTITY=""
 
       - name: Empacotar IPA
-        run: |
+        script: |
           mkdir Payload
           cp -R build/Build/Products/Release-iphoneos/Orhadi.app Payload/
           zip -r Orhadi.ipa Payload
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Orhadi-ipa
-          path: Orhadi.ipa
+    artifacts:
+      - Orhadi.ipa
